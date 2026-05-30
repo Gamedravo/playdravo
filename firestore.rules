@@ -1,0 +1,218 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: bugReports
+    // Fields:
+    //   - gameName: string (required)
+    //   - description: string (required)
+    //   - email: string (optional)
+    //   - createdAt: timestamp (required)
+    //   - userId: string (optional)
+    //
+    // Collection: gameRequests
+    // Fields:
+    //   - gameName: string (required)
+    //   - link: string (optional)
+    //   - description: string (optional)
+    //   - createdAt: timestamp (required)
+    //   - userId: string (optional)
+    //
+    // Collection: games
+    // Fields:
+    //   - title: string (required)
+    //   - thumbnail: string (required)
+    //   - category: string (required)
+    //   - url: string (required)
+    //   - description: string
+    //   - rating: number
+    //   - plays: number
+    //   - authorUid: string
+    //   - createdAt: timestamp
+    //
+    // Collection: chat
+    // Fields:
+    //   - uid: string (required)
+    //   - displayName: string (required)
+    //   - text: string (required)
+    //   - timestamp: timestamp (required)
+    //
+    // Collection: users
+    // Fields:
+    //   - uid: string (required)
+    //   - displayName: string
+    //   - email: string (required)
+    //   - photoURL: string
+    //   - role: string (required, ['user', 'admin'])
+    //   - favorites: list
+    //   - coins: number
+    //   - xp: number
+    //   - createdAt: string | timestamp
+    //   - lastClaim: timestamp | null
+    //   - noAdsUntil: timestamp | null
+    //
+    // Collection: contactMessages
+    // Fields:
+    //   - subject: string (required)
+    //   - message: string (required)
+    //   - email: string (optional)
+    //   - userId: string (optional)
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+         (request.auth.token.email == "ssimarpreet271@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isRecent(time) {
+      return time > request.time - duration.value(5, 'm') && time < request.time + duration.value(5, 'm');
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidBugReport(data) {
+      return data.keys().hasAll(['gameName', 'description', 'createdAt']) &&
+             data.gameName is string && data.gameName.size() > 0 && data.gameName.size() < 200 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 5000 &&
+             data.createdAt is timestamp &&
+             (!('email' in data) || data.email == null || (data.email is string && data.email.size() < 200)) &&
+             (!('userId' in data) || data.userId == null || (data.userId is string));
+    }
+
+    function isValidGameRequest(data) {
+      return data.keys().hasAll(['gameName', 'createdAt']) &&
+             data.gameName is string && data.gameName.size() > 0 && data.gameName.size() < 200 &&
+             data.createdAt is timestamp &&
+             (!('link' in data) || data.link == null || (data.link is string && data.link.size() < 500)) &&
+             (!('description' in data) || data.description == null || (data.description is string && data.description.size() < 2000)) &&
+             (!('userId' in data) || data.userId == null || (data.userId is string));
+    }
+
+    function isValidGame(data) {
+      return data.keys().hasAll(['title', 'thumbnail', 'category', 'url']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.thumbnail is string && data.thumbnail.size() < 2000 &&
+             data.category is string &&
+             data.url is string && data.url.size() < 2000;
+    }
+
+    function isValidChatMessage(data) {
+      return data.keys().hasAll(['uid', 'displayName', 'text', 'timestamp']) &&
+             data.uid is string &&
+             data.displayName is string && data.displayName.size() < 200 &&
+             data.text is string && data.text.size() > 0 && data.text.size() < 1000 &&
+             data.timestamp is timestamp;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role', 'uid']) &&
+             data.email is string && isValidEmail(data.email) &&
+             data.role in ['user', 'admin'] &&
+             data.uid is string &&
+             (!('displayName' in data) || data.displayName == null || (data.displayName is string && data.displayName.size() < 200)) &&
+             (!('photoURL' in data) || data.photoURL == null || (data.photoURL is string && data.photoURL.size() < 2000)) &&
+             (!('favorites' in data) || data.favorites is list) &&
+             (!('coins' in data) || data.coins is number) &&
+             (!('xp' in data) || data.xp is number) &&
+             (!('createdAt' in data) || (data.createdAt is string || data.createdAt is timestamp)) &&
+             (!('isDarkMode' in data) || (data.isDarkMode is bool)) &&
+             (!('accentColor' in data) || (data.accentColor is string)) &&
+             (!('lastClaim' in data) || data.lastClaim == null || data.lastClaim is timestamp) &&
+             (!('noAdsUntil' in data) || data.noAdsUntil == null || data.noAdsUntil is timestamp) &&
+             (!('gamerPersona' in data) || data.gamerPersona is map) &&
+             (!('playHistory' in data) || data.playHistory is list) &&
+             (!('usernameSet' in data) || data.usernameSet is bool) &&
+             (!('preferredCategories' in data) || data.preferredCategories is list);
+    }
+
+    function isValidContactMessage(data) {
+      return data.keys().hasAll(['subject', 'message', 'createdAt']) &&
+             data.subject is string && data.subject.size() > 0 && data.subject.size() < 200 &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 5000 &&
+             data.createdAt is timestamp &&
+             (!('email' in data) || data.email == null || (data.email is string && data.email.size() < 200)) &&
+             (!('userId' in data) || data.userId == null || (data.userId is string));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow update: if isAdmin() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plays']) && request.resource.data.plays == resource.data.plays + 1);
+      allow create, delete: if isAdmin();
+
+      match /mods/{modId} {
+        allow read: if true;
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /ratings/{userId} {
+        allow read: if true;
+        allow create, update: if isOwner(userId);
+        allow delete: if isAdmin();
+      }
+    }
+
+    match /chat/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isValidChatMessage(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /bugReports/{reportId} {
+      allow create: if isValidBugReport(request.resource.data);
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /gameRequests/{requestId} {
+      allow create: if isValidGameRequest(request.resource.data);
+      allow read: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    match /contactMessages/{messageId} {
+      allow create: if isValidContactMessage(request.resource.data);
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (userId == request.auth.uid || request.auth.token.email == "ssimarpreet271@gmail.com");
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && 
+                      (request.resource.data.role == 'user' || request.auth.token.email == "ssimarpreet271@gmail.com");
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) && 
+                      request.resource.data.uid == resource.data.uid &&
+                      request.resource.data.email == resource.data.email &&
+                      (request.resource.data.role == resource.data.role || request.auth.token.email == "ssimarpreet271@gmail.com");
+      allow delete: if request.auth.token.email == "ssimarpreet271@gmail.com";
+    }
+  }
+}

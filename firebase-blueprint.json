@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "BugReport": {
+      "title": "Bug Report",
+      "description": "A report of a bug found in a game.",
+      "type": "object",
+      "properties": {
+        "gameName": { "type": "string", "description": "The name of the game where the bug was found." },
+        "description": { "type": "string", "description": "A detailed description of the bug." },
+        "email": { "type": "string", "format": "email", "description": "The email of the user who reported the bug." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "The timestamp when the report was created." },
+        "userId": { "type": "string", "description": "The ID of the user who reported the bug (if logged in)." }
+      },
+      "required": ["gameName", "description", "createdAt"]
+    },
+    "GameRequest": {
+      "title": "Game Request",
+      "description": "A request for a new game to be added to the portal.",
+      "type": "object",
+      "properties": {
+        "gameName": { "type": "string", "description": "The name of the requested game." },
+        "link": { "type": "string", "format": "uri", "description": "An optional link to the game." },
+        "description": { "type": "string", "description": "An optional description of the game." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "The timestamp when the request was created." },
+        "userId": { "type": "string", "description": "The ID of the user who made the request (if logged in)." }
+      },
+      "required": ["gameName", "createdAt"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "A message sent via the contact form.",
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["subject", "message", "createdAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and role information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "favorites": { "type": "array", "items": { "type": "string" } },
+        "coins": { "type": "number" },
+        "xp": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastClaim": { "type": "string", "format": "date-time" },
+        "noAdsUntil": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/bugReports/{reportId}": {
+      "schema": "BugReport",
+      "description": "Collection of bug reports."
+    },
+    "/gameRequests/{requestId}": {
+      "schema": "GameRequest",
+      "description": "Collection of game requests."
+    },
+    "/contactMessages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Collection of contact messages."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles."
+    },
+    "/chat/{messageId}": {
+      "schema": "object",
+      "description": "Collection of chat messages."
+    },
+    "/games/{gameId}": {
+      "schema": "object",
+      "description": "Collection of games."
+    }
+  }
+}
