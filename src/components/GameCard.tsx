@@ -76,7 +76,7 @@ export const GameCard = memo(function GameCard({
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
       setShowPreview(true);
-    }, 300); // 300ms hover delay
+    }, 200);
   };
 
   const handleMouseLeave = () => {
@@ -99,11 +99,11 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title} - ${game.category} game`}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden cursor-pointer border transition-all duration-300 ease-out will-change-transform ${
+        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-all duration-200 ease-out will-change-transform ${
           isDarkMode 
-            ? 'border-white/5 bg-white/[0.02] shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(157,92,255,0.25)]' 
-            : 'border-black/5 bg-black/[0.02] shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(157,92,255,0.15)]'
-        } hover:-translate-y-2 hover:border-accent/60 active:scale-95`}
+            ? 'border-white/5 bg-white/[0.02] shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_28px_rgba(157,92,255,0.2)]' 
+            : 'border-black/5 bg-black/[0.02] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_28px_rgba(157,92,255,0.12)]'
+        } hover:-translate-y-1 hover:border-accent/50 active:scale-[0.98] group-hover:ring-1 group-hover:ring-accent/30`}
       >
         <GameThumbnail 
           src={game.thumbnail} 
@@ -111,8 +111,15 @@ export const GameCard = memo(function GameCard({
           category={game.category}
           title={game.title}
           gameId={game.id}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
         />
+        
+        {/* Hover play indicator */}
+        <div className="absolute inset-0 z-[5] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg">
+            <Play className="w-4 h-4 text-white fill-white ml-0.5" />
+          </div>
+        </div>
         
         {/* Live Gameplay Preview Overlay Layer */}
         <AnimatePresence>
@@ -122,7 +129,7 @@ export const GameCard = memo(function GameCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0 z-10 rounded-xl md:rounded-2xl overflow-hidden"
+              className="absolute inset-0 z-10 rounded-xl overflow-hidden"
             >
               <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} />
             </motion.div>
@@ -163,24 +170,24 @@ export const GameCard = memo(function GameCard({
         </button>
 
         {/* Info Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-black/100 via-black/80 to-transparent pt-20 z-20 pointer-events-none translate-y-1 group-hover:translate-y-0 transition-all duration-300 ease-out">
-          <div className="transition-transform duration-300">
-            <h3 className="text-white font-extrabold text-sm md:text-[15px] leading-tight line-clamp-1 mb-1.5 drop-shadow-md tracking-tight group-hover:text-accent group-hover:scale-[1.01] transition-all duration-300 origin-left">
+        <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-14 z-20 pointer-events-none transition-transform duration-200 group-hover:translate-y-0">
+          <div>
+            <h3 className="text-white font-bold text-xs md:text-sm leading-tight line-clamp-1 mb-1 drop-shadow-sm tracking-tight group-hover:text-accent transition-colors duration-200">
               <HighlightText text={game.title} query={searchQuery} />
             </h3>
             
             <div className="flex items-center justify-between">
-              <span className="text-white/60 text-[9px] font-extrabold uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded border border-white/5 backdrop-blur-xs">
+              <span className="text-white/50 text-[8px] font-semibold uppercase tracking-wide">
                 {t(categoryKeyMap[game.category] || game.category)}
               </span>
               
-              <div className="flex items-center gap-2.5">
-                <div className="flex items-center gap-0.5 text-yellow-400 font-bold text-[10px] tracking-wide">
-                  <Star className="w-3 h-3 fill-current" />
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5 text-yellow-400 font-semibold text-[9px]">
+                  <Star className="w-2.5 h-2.5 fill-current" />
                   {(game.rating || 4.5).toFixed(1)}
                 </div>
-                <div className="flex items-center gap-1 text-white/50 text-[10px] font-bold tracking-wide">
-                  <Play className="w-3 h-3 fill-current" />
+                <div className="flex items-center gap-0.5 text-white/40 text-[9px] font-semibold">
+                  <Play className="w-2.5 h-2.5 fill-current" />
                   {game.plays >= 1000 ? `${(game.plays / 1000).toFixed(1)}K` : game.plays}
                 </div>
               </div>

@@ -3,7 +3,6 @@ import { SubmitGameModal } from './modals/SubmitGameModal';
 import { SubmitModModal } from './modals/SubmitModModal';
 import { GameRequestModal } from './modals/GameRequestModal';
 import { AccountSettingsModal } from './AccountSettingsModal';
-import { ShopModal } from './ShopModal';
 import { SupportModal } from './modals/SupportModal';
 import { SystemStatusModal } from './modals/SystemStatusModal';
 import { LegalModal } from './modals/LegalModal';
@@ -13,6 +12,7 @@ import { UsernameSetupModal } from './UsernameSetupModal';
 import { BugReportModal } from './modals/BugReportModal';
 import { UserProfile, Game } from '../types';
 import { User as FirebaseUser } from 'firebase/auth';
+import { AccountSettingsView } from '../hooks/useModals';
 
 interface GlobalModalsProps {
   modalsState: any;
@@ -23,6 +23,7 @@ interface GlobalModalsProps {
   isDarkMode: boolean;
   t: (key: string) => string;
   activeGame: Game | null;
+  accountSettingsView: AccountSettingsView;
 }
 
 export function GlobalModals({
@@ -33,7 +34,8 @@ export function GlobalModals({
   legalContent,
   isDarkMode,
   t,
-  activeGame
+  activeGame,
+  accountSettingsView,
 }: GlobalModalsProps) {
   const {
     isStatusModalOpen, setIsStatusModalOpen,
@@ -43,7 +45,6 @@ export function GlobalModals({
     isLoginModalOpen, setIsLoginModalOpen,
     isUsernameModalOpen, setIsUsernameModalOpen,
     isBugReportModalOpen, setIsBugReportModalOpen,
-    isShopModalOpen, setIsShopModalOpen,
     isAccountSettingsOpen, setIsAccountSettingsOpen,
     isSubmitModalOpen, setIsSubmitModalOpen,
     isSubmitModModalOpen, setIsSubmitModModalOpen,
@@ -83,51 +84,40 @@ export function GlobalModals({
         />
       )}
 
-      {isAccountSettingsOpen && (
-        <AccountSettingsModal 
-          isOpen={isAccountSettingsOpen}
-          onClose={() => setIsAccountSettingsOpen(false)}
+      <AccountSettingsModal
+        isOpen={isAccountSettingsOpen}
+        onClose={() => setIsAccountSettingsOpen(false)}
+        user={user as any}
+        isDarkMode={isDarkMode}
+        t={t}
+        initialView={accountSettingsView}
+      />
+
+      {isSupportModalOpen && (
+        <SupportModal
+          isOpen={isSupportModalOpen}
+          onClose={() => setIsSupportModalOpen(false)}
+          isDarkMode={isDarkMode}
+          t={t}
           user={user as any}
+        />
+      )}
+
+      {isStatusModalOpen && (
+        <SystemStatusModal
+          isOpen={isStatusModalOpen}
+          onClose={() => setIsStatusModalOpen(false)}
           isDarkMode={isDarkMode}
           t={t}
         />
       )}
 
-      {isShopModalOpen && (
-        <ShopModal 
-          isOpen={isShopModalOpen}
-          onClose={() => setIsShopModalOpen(false)}
-          isDarkMode={isDarkMode}
-          onLoginClick={() => setIsLoginModalOpen(true)}
-          isLoginOpen={isLoginModalOpen}
-        />
-      )}
-
-      {isSupportModalOpen && (
-        <SupportModal 
-          isOpen={isSupportModalOpen} 
-          onClose={() => setIsSupportModalOpen(false)} 
-          isDarkMode={isDarkMode} 
-          t={t} 
-          user={user as any} 
-        />
-      )}
-
-      {isStatusModalOpen && (
-        <SystemStatusModal 
-          isOpen={isStatusModalOpen} 
-          onClose={() => setIsStatusModalOpen(false)} 
-          isDarkMode={isDarkMode} 
-          t={t} 
-        />
-      )}
-
       {isLegalModalOpen && (
-        <LegalModal 
-          isOpen={isLegalModalOpen} 
-          onClose={() => setIsLegalModalOpen(false)} 
-          isDarkMode={isDarkMode} 
-          t={t} 
+        <LegalModal
+          isOpen={isLegalModalOpen}
+          onClose={() => setIsLegalModalOpen(false)}
+          isDarkMode={isDarkMode}
+          t={t}
           legalContent={legalContent}
         />
       )}
@@ -144,7 +134,7 @@ export function GlobalModals({
       )}
 
       {isLoginModalOpen && (
-        <LoginModal 
+        <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
           isDarkMode={isDarkMode}
@@ -167,12 +157,12 @@ export function GlobalModals({
       )}
 
       {isBugReportModalOpen && (
-        <BugReportModal 
-          isOpen={isBugReportModalOpen} 
-          onClose={() => setIsBugReportModalOpen(false)} 
-          isDarkMode={isDarkMode} 
-          t={t} 
-          user={userProfile as any} 
+        <BugReportModal
+          isOpen={isBugReportModalOpen}
+          onClose={() => setIsBugReportModalOpen(false)}
+          isDarkMode={isDarkMode}
+          t={t}
+          user={userProfile as any}
         />
       )}
     </>

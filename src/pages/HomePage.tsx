@@ -32,7 +32,6 @@ import { Game, UserProfile, Language } from '../types';
 import { GameGrid } from '../components/GameGrid';
 import { SEO } from '../components/SEO';
 import { SectionErrorBoundary } from '../components/SectionErrorBoundary';
-import { GameThumbnail } from '../components/GameThumbnail';
 import { GameCard } from '../components/GameCard';
 
 interface HomePageProps {
@@ -168,6 +167,7 @@ export const HomePage = React.memo(function HomePage({
   const recRef = React.useRef<HTMLDivElement>(null);
   const trendingRef = React.useRef<HTMLDivElement>(null);
   const recentRef = React.useRef<HTMLDivElement>(null);
+  const featuredRef = React.useRef<HTMLDivElement>(null);
 
   useHorizontalScroll(categoriesRef);
   useHorizontalScroll(newArrivalsRef);
@@ -175,6 +175,7 @@ export const HomePage = React.memo(function HomePage({
   useHorizontalScroll(recRef);
   useHorizontalScroll(trendingRef);
   useHorizontalScroll(recentRef);
+  useHorizontalScroll(featuredRef);
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -224,37 +225,20 @@ export const HomePage = React.memo(function HomePage({
         .slice(0, 12)
     : [];
 
-  // Slideshow state for Featured Hero section
-  const [activeSlideIndex, setActiveSlideIndex] = React.useState(0);
-  
-  const slideshowGames = React.useMemo(() => {
+  const featuredGames = React.useMemo(() => {
     const uniqueGames = new Map<string, Game>();
     if (featuredGame) uniqueGames.set(featuredGame.id, featuredGame);
-    
-    // Add 4 more top/trending/popular games from active pools for variety
-    if (recommendedGames && recommendedGames.length > 0) {
-      recommendedGames.slice(0, 3).forEach(g => uniqueGames.set(g.id, g));
+    if (recommendedGames?.length) {
+      recommendedGames.slice(0, 4).forEach(g => uniqueGames.set(g.id, g));
     }
-    if (newArrivals && newArrivals.length > 0) {
-      newArrivals.slice(0, 3).forEach(g => uniqueGames.set(g.id, g));
+    if (newArrivals?.length) {
+      newArrivals.slice(0, 4).forEach(g => uniqueGames.set(g.id, g));
     }
-    
-    return Array.from(uniqueGames.values()).slice(0, 5);
+    return Array.from(uniqueGames.values()).slice(0, 8);
   }, [featuredGame, newArrivals, recommendedGames]);
 
-  // Autoplay slideshow
-  React.useEffect(() => {
-    if (slideshowGames.length <= 1) return;
-    const interval = setInterval(() => {
-      setActiveSlideIndex(prev => (prev + 1) % slideshowGames.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [slideshowGames.length]);
-
   return (
-    <div
-      className="space-y-6 px-3 md:px-6 mt-2"
-    >
+    <div className="space-y-4 px-1 md:px-2">
       <SEO 
         title="Play Best Online Games Free" 
         description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
@@ -262,323 +246,106 @@ export const HomePage = React.memo(function HomePage({
         url={window.location.href}
       />
 
-            {/* Featured Section */}
-
-<SectionErrorBoundary sectionName="Featured Game">
-        {selectedCategory === 'All' && !searchQuery && slideshowGames.length > 0 && (
-          (() => {
-            const activeGame = slideshowGames[activeSlideIndex] || featuredGame || slideshowGames[0];
-            const categoryKey = activeGame.category.toLowerCase();
-            return (
-              <section className="relative h-[200px] xs:h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px] rounded-2xl md:rounded-3xl overflow-hidden group border border-white/5 transition-all duration-300">
-                {/* Background Image / Thumbnail */}
-                <div className="absolute inset-0">
-                  <GameThumbnail 
-                    src={activeGame.thumbnail || ''} 
-                    alt={activeGame.title || 'Featured Game'}
-                    category={activeGame.category}
-                    title={activeGame.title}
-                    gameId={activeGame.id}
-                    priority
-                    className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-[1.02]"
-                  />
-                  {/* High Contrast Gradient Overlays for Readability */}
-                  <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r transition-all duration-300 ${
-                    isDarkMode 
-                      ? 'from-black/95 via-black/60 md:via-black/40 to-transparent' 
-                      : 'from-white/95 via-white/70 md:via-white/50 to-transparent'
-                  }`} />
+      {/* Featured Games — compact discoverable shelf */}
+      <SectionErrorBoundary sectionName="Featured Games">
+        {selectedCategory === 'All' && !searchQuery && featuredGames.length > 0 && (
+          <section className="shelf-section">
+            <div className="shelf-header">
+              <div className="space-y-0.5">
+                <div className="section-eyebrow">
+                  <Star className="w-3.5 h-3.5" />
+                  <span>{t('featuredGame')}</span>
                 </div>
-
-                {/* Left/Right Arrow Toggles for Slideshow */}
-                {slideshowGames.length > 1 && (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveSlideIndex(prev => (prev - 1 + slideshowGames.length) % slideshowGames.length);
-                      }}
-                      className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 rounded-2xl border transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 cursor-pointer ${
-                        isDarkMode 
-                          ? 'bg-[#151525]/80 border-white/10 text-white hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.5)]' 
-                          : 'bg-white/80 border-black/10 text-black hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
-                      }`}
-                      aria-label="Previous Featured Slide"
-                    >
-                      <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveSlideIndex(prev => (prev + 1) % slideshowGames.length);
-                      }}
-                      className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 rounded-2xl border transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 cursor-pointer ${
-                        isDarkMode 
-                          ? 'bg-[#151525]/80 border-white/10 text-white hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.5)]' 
-                          : 'bg-white/80 border-black/10 text-black hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
-                      }`}
-                      aria-label="Next Featured Slide"
-                    >
-                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                  </>
-                )}
-
-                {/* Banner Content Panel (Left half) */}
-                <div className="absolute inset-0 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-left select-none md:justify-center">
-                  <div className="max-w-xl md:max-w-2xl space-y-2 md:space-y-3">
-                    {/* Active Badges */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-3 py-1 bg-accent text-bg-dark text-[9px] font-extrabold uppercase tracking-widest rounded-lg shadow-sm">
-                        {t('featuredGame')}
-                      </span>
-                      <span className={`px-2.5 py-1 rounded-lg border text-[9px] font-bold uppercase tracking-wide backdrop-blur-sm flex items-center gap-1 ${
-                        isDarkMode ? 'bg-white/5 border-white/10 text-white/95' : 'bg-black/5 border-black/10 text-black/90'
-                      }`}>
-                        <Star className="w-3 h-3 text-accent fill-current shrink-0" />
-                        {activeGame.rating}
-                      </span>
-                      <span className={`px-2.5 py-1 rounded-lg border text-[9px] font-bold uppercase tracking-wide backdrop-blur-sm ${
-                        isDarkMode ? 'bg-white/5 border-white/10 text-white/95' : 'bg-black/5 border-black/10 text-black/90'
-                      }`}>
-                        {t(categoryKey) || activeGame.category}
-                      </span>
-                    </div>
-                    
-                    {/* Active Title */}
-                    <h2 
-                      onClick={() => handleGameClick(activeGame)}
-                      className={`text-2.5xl sm:text-3.5xl md:text-5xl lg:text-5.5.xl font-black tracking-tight leading-[1.1] cursor-pointer hover:underline transition-colors ${
-                        isDarkMode ? 'text-white' : 'text-black'
-                      }`}
-                    >
-                      {activeGame.title}
-                    </h2>
-                    
-                    {/* Lightweight gameplay description to prevent giant empty areas */}
-                    <p className={`text-xs md:text-sm max-w-md lg:max-w-lg leading-relaxed font-semibold line-clamp-1 md:line-clamp-2 ${
-                      isDarkMode ? 'text-white/70' : 'text-black/70'
-                    }`}>
-                      {activeGame.description || 'Experience immersive high-octane gameplay directly inside your modern browser sandbox. Launch instantly with zero downloads.'}
-                    </p>
-                    
-                    {/* Action buttons on banner */}
-                    <div className="flex items-center gap-3 pt-1">
-                      <button 
-                        onClick={() => handleGameClick(activeGame)}
-                        className="px-6 py-2.5 md:px-7 md:py-3.5 bg-accent text-bg-dark font-black tracking-wider uppercase text-xs rounded-xl md:rounded-2xl shadow-lg shadow-accent/20 hover:scale-[1.03] hover:shadow-accent/40 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2"
-                      >
-                        <Play className="w-4 h-4 fill-current" />
-                        {t('playNow') || 'PLAY NOW'}
-                      </button>
-                      
-                      <button 
-                        onClick={() => toggleFavorite(activeGame.id)}
-                        className={`p-2.5 md:p-3.5 rounded-xl md:rounded-2xl border transition-all active:scale-95 cursor-pointer ${
-                          (userProfile?.favorites || []).includes(activeGame.id)
-                            ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/10 hover:bg-red-600'
-                            : isDarkMode
-                              ? 'bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20'
-                              : 'bg-black/5 border-black/10 text-black/80 hover:bg-black/10 hover:border-black/20'
-                        }`}
-                        title={t('favorite') || "Favorite"}
-                      >
-                        <Heart className={`w-4 h-4 ${((userProfile?.favorites || []).includes(activeGame.id)) ? 'fill-current animate-pulse' : ''}`} />
-                      </button>
-                    </div>
-                  </div>
+                <h2 className="section-title">{t('featuredGame') || 'Featured Games'}</h2>
+              </div>
+              <div className="hidden md:flex items-center gap-1.5 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
+                <button onClick={() => handleScroll(featuredRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={() => handleScroll(featuredRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+            <div className="shelf-scroll" ref={featuredRef}>
+              {featuredGames.map((game, index) => (
+                <div key={`featured-${game.id}-${index}`} className="shelf-card">
+                  <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                 </div>
-
-                {/* Slideshow interactive game thumbnails in bottom right corner */}
-                {slideshowGames.length > 1 && (
-                  <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 z-30 hidden sm:flex items-center gap-2.5 bg-black/35 p-1.5 rounded-2xl backdrop-blur-md border border-white/5">
-                    {slideshowGames.map((slideGame, sIdx) => (
-                      <button
-                        key={`slide-thumbnail-${slideGame.id}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveSlideIndex(sIdx);
-                        }}
-                        className={`relative w-12 h-9 md:w-16 md:h-12 rounded-xl border-2 overflow-hidden transition-all duration-300 cursor-pointer ${
-                          activeSlideIndex === sIdx
-                            ? 'border-accent scale-105 shadow-[0_0_12px_rgba(157,92,255,0.4)]'
-                            : 'border-white/10 hover:border-white/30 opacity-60 hover:opacity-100'
-                        }`}
-                        title={slideGame.title}
-                      >
-                        <GameThumbnail 
-                          src={slideGame.thumbnail} 
-                          alt={slideGame.title} 
-                          category={slideGame.category}
-                          className="w-full h-full object-cover" 
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })()
+              ))}
+            </div>
+          </section>
         )}
       </SectionErrorBoundary>
 
-      {/* Continue Playing */}
-
-<SectionErrorBoundary sectionName="Recently Played">
+      {/* Continue Playing — compact horizontal shelf */}
+      <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('history') || 'CONTINUE PLAYING'}</span>
+          <section className="shelf-section">
+            <div className="shelf-header">
+              <div className="space-y-0.5">
+                <div className="section-eyebrow">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{t('history') || 'Continue'}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2">
-                  {t('continuePlaying')}
-                </h3>
+                <h3 className="section-title">{t('continuePlaying')}</h3>
               </div>
-              <div className="flex items-center gap-4">
-                {/* Scroll Navigation Arrows */}
+              <div className="flex items-center gap-3">
                 {recentlyPlayedGames.length > 0 && (
-                  <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-300">
-                    <button 
-                      onClick={() => handleScroll(recentRef, 'left')}
-                      className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+                  <>
+                    <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
+                      <button onClick={() => handleScroll(recentRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => handleScroll(recentRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => setPlayHistory([])}
+                      className={`text-[10px] font-medium hover:text-red-500 transition-colors ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}
                     >
-                      <ChevronLeft className="w-4 h-4" />
+                      {t('clear')}
                     </button>
-                    <button 
-                      onClick={() => handleScroll(recentRef, 'right')}
-                      className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-                {recentlyPlayedGames.length > 0 && (
-                  <button 
-                    onClick={() => setPlayHistory([])}
-                    className={`text-[10px] font-semibold tracking-wide hover:text-red-500 transition-colors ${isDarkMode ? 'text-white/20' : 'text-black/20'}`}
-                  >
-                    {t('clear')}
-                  </button>
+                  </>
                 )}
               </div>
             </div>
 
-            {recentlyPlayedGames.length > 0 ? (
-              <div className="relative -mx-4 md:-mx-8">
-                <div 
-                  ref={recentRef}
-                  className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-                >
-                  {recentlyPlayedGames.map((game, index) => (
-                  <div key={`recent-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start relative">
-                    {index === 0 && (
-                      <div className="absolute -top-1.5 -left-1.5 z-30 bg-accent text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-lg pointer-events-none border border-white/20">
-                        Quick Resume
-                      </div>
-                    )}
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-                
-                {/* Persistent Mystery Match Card */}
-                <div className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start relative flex flex-col">
-                  <button
-                    onClick={triggerMysteryMatch}
-                    disabled={isFindingMysteryMatch}
-                    title="Find a random game"
-                    className={`flex-1 w-full aspect-[4/5] rounded-xl md:rounded-2xl border flex flex-col items-center justify-center p-4 transition-all duration-300 shadow-sm group overflow-hidden relative cursor-pointer ${
-                      isDarkMode
-                      ? 'bg-gradient-to-br from-[#121225] via-black/[0.2] to-[#0a0a1a] border-accent/20 hover:border-accent/40 text-accent'
-                      : 'bg-gradient-to-br from-[#f5f0ff] via-white to-[#eff4ff] border-purple-500/10 hover:border-purple-500/30 text-[#8b46ff]'
-                    }`}
-                  >
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(139,70,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(139,70,255,0.015)_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none" />
-                    <div className="relative mb-3 z-10">
-                        <Sparkles className="w-8 h-8 md:w-10 md:h-10 transition-transform duration-500 group-hover:scale-110" />
-                        {isFindingMysteryMatch && (
-                          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
-                          </span>
-                        )}
+            <div className="shelf-scroll" ref={recentRef}>
+              {recentlyPlayedGames.map((game, index) => (
+                <div key={`recent-${game.id}-${index}`} className="shelf-card relative">
+                  {index === 0 && (
+                    <div className="absolute -top-1 left-0 z-30 bg-accent text-white text-[8px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded pointer-events-none">
+                      Resume
                     </div>
-                    <span className="text-sm font-black text-center tracking-tight leading-tight z-10 px-2 line-clamp-2">
-                       {isFindingMysteryMatch ? (mysteryMatchTitle || "Finding a match…") : "Mystery Match"}
-                    </span>
-                    <span className="text-[9px] md:text-[10px] opacity-70 mt-1.5 uppercase tracking-widest font-bold z-10">
-                       {isFindingMysteryMatch ? "Searching…" : "Feeling lucky?"}
-                    </span>
-                  </button>
-                </div>
-              </div>
-             </div>
-            ) : (
-              <div className={`p-8 md:p-12 rounded-[2rem] border overflow-hidden relative transition-all duration-300 ${
-                isDarkMode 
-                  ? 'bg-gradient-to-br from-[#121225] via-black/[0.1] to-[#0a0a1a] border-accent/10' 
-                  : 'bg-gradient-to-br from-[#f5f0ff] via-[#fafafa] to-[#eff4ff] border-purple-500/5'
-              }`}>
-                {/* Visual background mesh */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(139,70,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(139,70,255,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-                
-                <div className="max-w-xl mx-auto text-center space-y-6 relative z-10">
-                  <div className="inline-flex relative">
-                    <div className={`w-16 h-16 rounded-3xl flex items-center justify-center border animate-bounce shadow-md ${
-                      isDarkMode ? 'bg-[#1a1a35] border-[#8b46ff]/20 text-accent' : 'bg-white border-purple-500/10 text-[#8b46ff]'
-                    }`}>
-                      <Sparkles className="w-8 h-8" />
-                    </div>
-                    {isFindingMysteryMatch && (
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-xl md:text-2xl font-black tracking-tight">
-                      {isFindingMysteryMatch ? (
-                        <span className="bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent">
-                          Finding a random classic mismatch...
-                        </span>
-                      ) : (
-                        "Ready for a Wild Card?"
-                      )}
-                    </h4>
-                    <p className={`text-xs md:text-sm leading-relaxed max-w-sm mx-auto ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
-                      {isFindingMysteryMatch 
-                        ? "Selecting an exciting hand-picked title from our classic retro arcade games list..."
-                        : "Unsure of what to play? Let our matching algorithm choose a handpicked classic favorite directly from our retro library!"
-                      }
-                    </p>
-                  </div>
-
-                  {isFindingMysteryMatch ? (
-                    <div className="py-2 space-y-3">
-                      <div className={`text-base font-black font-mono tracking-wider animate-pulse ${isDarkMode ? 'text-accent' : 'text-[#8b46ff]'}`}>
-                        {mysteryMatchTitle || "Finding a match…"}
-                      </div>
-                      <div className={`w-32 mx-auto bg-white/10 h-1.5 rounded-full overflow-hidden shadow-inner`}>
-                        <div className="bg-accent h-full rounded-full animate-pulse w-full" />
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={triggerMysteryMatch}
-                      className="btn-primary inline-flex items-center gap-2 text-xs font-semibold px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-2xl shadow-md cursor-pointer transition-transform duration-200 active:scale-95"
-                    >
-                      <Gamepad2 className="w-4 h-4" />
-                      Find Mystery Match
-                    </button>
                   )}
+                  <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                 </div>
+              ))}
+
+              {/* Mystery Match — compact card in shelf */}
+              <div className="shelf-card">
+                <button
+                  onClick={triggerMysteryMatch}
+                  disabled={isFindingMysteryMatch}
+                  title="Find a random game"
+                  className={`w-full aspect-[4/5] rounded-xl border flex flex-col items-center justify-center p-3 transition-all duration-200 group overflow-hidden relative cursor-pointer ${
+                    isDarkMode
+                      ? 'bg-white/[0.03] border-white/10 hover:border-accent/40 text-accent'
+                      : 'bg-black/[0.02] border-black/10 hover:border-accent/30 text-accent'
+                  }`}
+                >
+                  <Sparkles className={`w-6 h-6 mb-2 transition-transform group-hover:scale-110 ${isFindingMysteryMatch ? 'animate-pulse' : ''}`} />
+                  <span className="text-xs font-bold text-center leading-tight line-clamp-2">
+                    {isFindingMysteryMatch ? (mysteryMatchTitle || 'Finding…') : 'Mystery Match'}
+                  </span>
+                  <span className="text-[9px] opacity-60 mt-1 uppercase tracking-wide font-medium">
+                    {isFindingMysteryMatch ? 'Searching' : 'Random pick'}
+                  </span>
+                </button>
               </div>
-            )}
+            </div>
           </section>
         )}
       </SectionErrorBoundary>
@@ -587,14 +354,14 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Trending Now">
         {selectedCategory === 'All' && !searchQuery && filteredGames.length > 0 && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <TrendingUp className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('trending') || 'TRENDING'}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">{t('trendingNow') || 'Trending Now'}</h3>
+                <h3 className="section-title">{t('trendingNow') || 'Trending Now'}</h3>
               </div>
               <div className="flex items-center gap-4">
                 {/* Scroll Navigation Arrows */}
@@ -624,18 +391,12 @@ export const HomePage = React.memo(function HomePage({
               </div>
             </div>
  
-            <div className="relative -mx-4 md:-mx-8">
-              <div 
-                ref={trendingRef}
-                className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-              >
+            <div className="shelf-scroll" ref={trendingRef}>
                 {[...filteredGames].sort((a,b)=>b.plays-a.plays).slice(0,12).map((game, index) => (
-                  <div key={`trending-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`trending-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-             </div>
             </div>
           </section>
         )}
@@ -645,17 +406,12 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 pt-2">
-            <div className="flex items-center gap-2 mb-6">
-              <Compass className="w-4 h-4 text-accent" />
-              <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>{t('exploreByGenre') || 'BROWSE CATEGORIES'}</span>
+          <section className="mb-3">
+            <div className="section-eyebrow mb-2">
+              <Compass className="w-3.5 h-3.5" />
+              <span>{t('exploreByGenre') || 'Browse Categories'}</span>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div 
-                ref={categoriesRef}
-                className="flex gap-4 overflow-x-auto pb-4 px-4 md:px-8 scrollbar-hide snap-x snap-mandatory cursor-grab active:cursor-grabbing" 
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-              >
+            <div className="shelf-scroll" ref={categoriesRef}>
                 {POPULAR_CATEGORIES.map((cat, idx) => (
                   <div
                     key={`cat-pill-${cat.id}-${idx}`}
@@ -668,20 +424,19 @@ export const HomePage = React.memo(function HomePage({
                       }
                       navigate(`/category/${cat.id.toLowerCase()}`);
                     }}
-                    className={`flex items-center gap-4 px-6 py-4 rounded-2xl border min-w-[170px] shrink-0 bg-gradient-to-br transition-all duration-300 snap-start select-none ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border min-w-[140px] shrink-0 bg-gradient-to-br transition-all duration-200 snap-start select-none cursor-pointer hover:border-accent/30 ${
                     isDarkMode 
                       ? `${cat.bg} border-white/5 bg-white/[0.01]` 
                       : `${cat.bg.replace('/10', '/5')} border-black/5 bg-black/[0.01]`
                   }`}
                 >
-                  <span className="text-3xl select-none">{cat.icon}</span>
+                  <span className="text-2xl select-none">{cat.icon}</span>
                   <div>
                     <h4 className={`text-sm font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>{cat.title}</h4>
                     <p className={`text-[10px] font-medium tracking-wide ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{cat.count} {t('games') || 'games'}</p>
                   </div>
                 </div>
               ))}
-             </div>
             </div>
           </section>
         )}
@@ -691,14 +446,14 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Recommended Games">
         {selectedCategory === 'All' && !searchQuery && (recommendedGames.length > 0 || isGeneratingRecommendations) && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Target className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('personalized')}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">{t('pickedForYou')}</h3>
+                <h3 className="section-title">{t('pickedForYou')}</h3>
               </div>
               <div className="flex items-center gap-4">
                 {/* Scroll Navigation Arrows */}
@@ -743,26 +498,20 @@ export const HomePage = React.memo(function HomePage({
                 </button>
               </div>
             ) : isGeneratingRecommendations && recommendedGames.length === 0 ? (
-              <div className="flex gap-4 overflow-hidden pb-4">
+              <div className="flex gap-3 overflow-hidden pb-2">
                 {[...Array(6)].map((_, i) => (
-                  <div key={`skeleton-${i}`} className={`aspect-[4/5] w-[170px] sm:w-[200px] md:w-[220px] shrink-0 rounded-2xl border overflow-hidden relative shadow-sm ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
+                  <div key={`skeleton-${i}`} className={`aspect-[4/5] w-[120px] sm:w-[136px] md:w-[156px] shrink-0 rounded-xl border overflow-hidden relative ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
                     <div className="absolute inset-0 shimmer-overlay z-10 opacity-50" />
                   </div>
                 ))}
               </div>
             ) : recommendedGames.length > 0 ? (
-              <div className="relative -mx-4 md:-mx-8">
-                <div 
-                  ref={recRef}
-                  className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-                >
+              <div className="shelf-scroll" ref={recRef}>
                   {recommendedGames.map((game, index) => (
-                  <div key={`rec-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`rec-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-               </div>
               </div>
             ) : null}
           </section>
@@ -771,30 +520,25 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Because You Played">
         {selectedCategory === 'All' && !searchQuery && personalizedRecommendations.length > 0 && (
-          <section className="mb-4 lg:mb-6">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Compass className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('exploreByGenre')}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">
+                <h3 className="section-title">
                   {topCategory === 'Trending' ? 'Trending Right Now' : `Because you played ${topCategory}`}
                 </h3>
               </div>
             </div>
             
-            <div className="relative -mx-4 md:-mx-8">
-              <div 
-                className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-              >
+            <div className="shelf-scroll">
                 {personalizedRecommendations.map((game, index) => (
-                  <div key={`because-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`because-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -804,14 +548,14 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="New Arrivals">
         {selectedCategory === 'All' && !searchQuery && newArrivals.length > 0 && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('discover') || 'DISCOVER'}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">{t('newArrivals')}</h3>
+                <h3 className="section-title">{t('newArrivals')}</h3>
               </div>
               <div className="flex items-center gap-4">
                 {/* Scroll Navigation Arrows */}
@@ -841,19 +585,13 @@ export const HomePage = React.memo(function HomePage({
               </div>
             </div>
  
-            <div className="relative -mx-4 md:-mx-8">
-              <div 
-                ref={newArrivalsRef}
-                className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-              >
+            <div className="shelf-scroll" ref={newArrivalsRef}>
                 {newArrivals.map((game, index) => (
-                  <div key={`new-arrival-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`new-arrival-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
-             </div>
+            </div>
           </section>
         )}
       </SectionErrorBoundary>
@@ -862,24 +600,22 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Quick Sessions">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Clock className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">Quick play</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Quick 2-Minute Games</h3>
+                <h3 className="section-title">Quick 2-Minute Games</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {filteredGames.filter(g => g.avgPlayTime === '2m' || g.avgPlayTime === '5m' || (g.tags && g.tags.includes('Quick'))).slice(0, 10).map((game, index) => (
-                  <div key={`quick-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`quick-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -887,24 +623,22 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Mobile Friendly">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Smartphone className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">On the go</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Good on Mobile</h3>
+                <h3 className="section-title">Good on Mobile</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {filteredGames.filter(g => g.mobileOptimization === 'touch-friendly' || (g.tags && g.tags.includes('Mobile'))).slice(0, 10).map((game, index) => (
-                  <div key={`mobile-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`mobile-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -912,24 +646,22 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Most Played">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Users className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">Classics</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Most Played</h3>
+                <h3 className="section-title">Most Played</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {[...filteredGames].sort((a, b) => b.plays - a.plays).slice(0, 10).map((game, index) => (
-                  <div key={`most-played-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`most-played-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -937,24 +669,22 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Hidden Gems">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">Hidden gems</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Highly Rated, Barely Played</h3>
+                <h3 className="section-title">Highly Rated, Barely Played</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {[...filteredGames].sort((a, b) => b.rating - a.rating).filter(g => g.plays < 60000).slice(0, 10).map((game, index) => (
-                  <div key={`hidden-gems-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`hidden-gems-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -962,24 +692,22 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Deep Dives">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Hourglass className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">Long sessions</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Deep Dives & Campaigns</h3>
+                <h3 className="section-title">Deep Dives & Campaigns</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {filteredGames.filter(g => g.avgPlayTime === '20m' || g.avgPlayTime === '30m+').slice(0, 10).map((game, index) => (
-                  <div key={`deep-dives-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`deep-dives-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}
@@ -1027,24 +755,22 @@ export const HomePage = React.memo(function HomePage({
 
             <SectionErrorBoundary sectionName="Try Something Different">
         {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && userProfile?.preferredCategories && userProfile.preferredCategories.length > 0 && (
-          <section className="mb-4 lg:mb-6 relative group/shelf">
-            <div className="flex items-end justify-between mb-3 lg:mb-4">
+          <section className="mb-3 relative group/shelf">
+            <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Compass className="w-4 h-4" />
                   <span className="text-xs font-semibold text-accent/80 tracking-tight">HIDDEN GEMS</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold tracking-tight">Try Something Different</h3>
+                <h3 className="section-title">Try Something Different</h3>
               </div>
             </div>
-            <div className="relative -mx-4 md:-mx-8">
-              <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
+            <div className="shelf-scroll">
                 {filteredGames.filter(g => g.category !== userProfile.preferredCategories![0] && !recentlyPlayedGames.some(rg => rg.id === g.id)).slice(0, 10).map((game, index) => (
-                  <div key={`diff-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
+                  <div key={`diff-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
-              </div>
             </div>
           </section>
         )}

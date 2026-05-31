@@ -70,9 +70,6 @@ export interface UserProfile {
   role: 'user' | 'admin';
   favorites: string[];
   preferredCategories?: string[];
-  coins?: number;
-  lastClaim?: any;
-  noAdsUntil?: any;
   xp?: number;
   level?: number;
   achievements?: string[];

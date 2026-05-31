@@ -26,7 +26,6 @@ import {
   Settings,
   Flame,
   Rocket,
-  Download,
   Plus,
   Wrench,
   Video,
@@ -57,7 +56,6 @@ import {
   Sun,
   Moon,
   Target,
-  Coins,
   Ban,
   BookOpen,
   MessageCircle,
@@ -68,18 +66,17 @@ import {
   Filter,
   Bug,
   LayoutGrid,
-  Loader2
 } from 'lucide-react';
 import { GameThumbnail } from './components/GameThumbnail';
 import { Footer } from './components/Footer';
+import { PlatformLoader } from './components/PlatformLoader';
 import { useModals } from './hooks/useModals';
 
 import { Toaster, toast } from 'sonner';
 import { Analytics } from './lib/analytics';
 import { LoginModal } from './components/LoginModal';
 import { UsernameSetupModal } from './components/UsernameSetupModal';
-import { AccountSettingsModal } from './components/AccountSettingsModal';
-import { ShopModal } from './components/ShopModal';
+import { PreferencesModal } from './components/PreferencesModal';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST } from './games';
 import { parseFirebaseGame } from './utils/gameUtils';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
@@ -110,7 +107,6 @@ import {
   where
 } from 'firebase/firestore';
 import { onAuthStateChanged, User as FirebaseUser, getRedirectResult } from 'firebase/auth';
-import { EconomyProvider } from './components/EconomyProvider';
 import { NotificationsProvider, useNotifications } from './components/NotificationsProvider';
 import { SEO } from './components/SEO';
 import { Sidebar } from './components/Sidebar';
@@ -281,9 +277,7 @@ export default function App() {
       <Router>
         <ErrorBoundary>
           <NotificationsProvider>
-            <EconomyProvider>
               <AppContent />
-            </EconomyProvider>
           </NotificationsProvider>
         </ErrorBoundary>
       </Router>
@@ -411,8 +405,8 @@ function AppContent() {
     isLoginModalOpen, setIsLoginModalOpen,
     isUsernameModalOpen, setIsUsernameModalOpen,
     isBugReportModalOpen, setIsBugReportModalOpen,
-    isShopModalOpen, setIsShopModalOpen,
-    isAccountSettingsOpen, setIsAccountSettingsOpen,
+    openAccountSettings,
+    accountSettingsView,
     isProfileDropdownOpen, setIsProfileDropdownOpen,
     isSubmitModalOpen, setIsSubmitModalOpen,
     isSubmitModModalOpen, setIsSubmitModModalOpen,
@@ -421,8 +415,6 @@ function AppContent() {
 
   const [isGameLoading, setIsGameLoading] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [logoDownloadSize, setLogoDownloadSize] = useState(512);
-  const [isLogoDownloading, setIsLogoDownloading] = useState(false);
 
   // Redundant window listener removed. Merged into mainRef listener for performance.
   useEffect(() => {
@@ -659,9 +651,6 @@ function AppContent() {
               photoURL: firebaseUser.photoURL || '',
               role: firebaseUser.email === 'ssimarpreet271@gmail.com' ? 'admin' : 'user',
               favorites: [],
-              coins: 3000,
-              lastClaim: null,
-              noAdsUntil: null,
               xp: 0,
               createdAt: new Date().toISOString()
             };
@@ -680,7 +669,6 @@ function AppContent() {
             photoURL: firebaseUser.photoURL || '',
             role: firebaseUser.email === 'ssimarpreet271@gmail.com' ? 'admin' : 'user',
             favorites: [],
-            coins: 3000,
             xp: 0,
             createdAt: new Date().toISOString()
           });
@@ -710,7 +698,7 @@ function AppContent() {
         // Let user settle in, then trigger the recommendation toast with login access
         const timer = setTimeout(() => {
           toast("Sign in for a better experience! 🔑", {
-            description: "Log in or sign up to save your game scores, accumulate coins, buy profile frames, select persona types, and track achievements!",
+            description: "Log in or sign up to save your game scores, track achievements, and personalize your gaming experience!",
             duration: 9000,
             action: {
               label: "Log In Now",
@@ -1213,7 +1201,7 @@ function AppContent() {
           User Context:
           - User: ${user?.displayName || 'Guest'}
           - Persona: ${userProfile?.gamerPersona?.title || 'Unknown'}
-          - Coins: ${userProfile?.coins || 0}
+          - XP: ${userProfile?.xp || 0}
           - Current Language: ${language}
           
           Your Goals:
@@ -1675,37 +1663,17 @@ function AppContent() {
             key="global-loader"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg-dark"
           >
-            <motion.div
-              animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="mb-8"
-            >
-              <div className="w-24 h-24 bg-accent rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_rgba(157,92,255,0.4)]">
-                <Gamepad2 className="w-12 h-12 text-white" />
-              </div>
-            </motion.div>
-            <div className="flex flex-col items-center gap-4">
-              <h1 className="text-4xl font-bold tracking-tighter uppercase text-white">
-                Play<span className="text-accent">Dravo</span>
-              </h1>
-              <div className="flex items-center gap-3">
-                <Loader2 className="w-4 h-4 text-accent animate-spin" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 animate-pulse">
-                  {t('synchronizing')}
-                </span>
-              </div>
-            </div>
+            <PlatformLoader message="Preparing your gaming experience..." />
           </motion.div>
         ) : (
           <motion.div
             key="app-content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className="flex flex-col h-full"
           >
             {/* Global Background Effects Removed for Performance */}
@@ -1734,7 +1702,6 @@ function AppContent() {
           setIsLegalModalOpen={setIsLegalModalOpen}
           setIsBugReportModalOpen={setIsBugReportModalOpen}
           setIsAIAssistantOpen={setIsAIAssistantOpen}
-          setIsShopModalOpen={setIsShopModalOpen}
           setIsSubmitModalOpen={setIsSubmitModalOpen}
           isAIAssistantOpen={isAIAssistantOpen}
           handleSurpriseMe={handleSurpriseMe}
@@ -1754,12 +1721,10 @@ function AppContent() {
             setSearchQuery={setSearchQuery}
             userProfile={userProfile}
             setIsLoginModalOpen={setIsLoginModalOpen}
-            setIsShopModalOpen={setIsShopModalOpen}
             logout={logout}
             accentColor={accentColor}
             setIsCommandPaletteOpen={setIsCommandPaletteOpen}
-            setIsPreferencesModalOpen={setIsPreferencesModalOpen}
-            setIsAccountSettingsOpen={setIsAccountSettingsOpen}
+            openAccountSettings={openAccountSettings}
             setIsUsernameModalOpen={setIsUsernameModalOpen}
             setIsHelpCenterOpen={setIsHelpCenterOpen}
             setIsSubmitModalOpen={setIsSubmitModalOpen}
@@ -1782,8 +1747,7 @@ function AppContent() {
               userProfile={userProfile}
               isDarkMode={isDarkMode}
               logout={logout}
-              setIsPreferencesModalOpen={setIsPreferencesModalOpen}
-              setIsAccountSettingsOpen={setIsAccountSettingsOpen}
+              openAccountSettings={openAccountSettings}
               setIsUsernameModalOpen={setIsUsernameModalOpen}
               setIsHelpCenterOpen={setIsHelpCenterOpen}
               setSelectedCategory={setSelectedCategory}
@@ -1791,16 +1755,8 @@ function AppContent() {
             />
           </div>
 
-          <main ref={mainRef} className={`flex-1 overflow-y-auto ${location.pathname === '/search' ? 'p-0' : activeGame ? 'p-0 md:p-8' : 'p-4 md:p-8'} relative`}>
-            <Suspense fallback={
-              <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <div className="relative">
-                  <div className="absolute inset-0 blur-xl bg-accent/20 rounded-full animate-pulse" />
-                  <Loader2 className="w-10 h-10 text-accent animate-spin relative z-10" />
-                </div>
-                <div className="text-xs font-bold tracking-widest uppercase opacity-50 animate-pulse">Loading Environment...</div>
-              </div>
-            }>
+          <main ref={mainRef} className={`flex-1 overflow-y-auto ${location.pathname === '/search' ? 'p-0' : activeGame ? 'p-0 md:p-5' : 'p-3 md:p-5'} relative`}>
+            <Suspense fallback={<PlatformLoader message="Loading games..." compact />}>
               <Routes>
                 <Route path="/" element={
                   <PageLayout>
@@ -2163,431 +2119,25 @@ function AppContent() {
               </motion.div>
             </div>
 
-        {/* User Preferences Modal */}
-        <AnimatePresence>
-          {isPreferencesModalOpen && (
-            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsPreferencesModalOpen(false);
-                }}
-                className={`absolute inset-0 backdrop-blur-sm ${isDarkMode ? 'bg-bg-dark/90' : 'bg-white/90'}`}
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-                onClick={(e) => e.stopPropagation()}
-                className={`relative w-full max-w-xl border rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] transition-all duration-500 ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
-              >
-                <div className={`p-8 border-b flex items-center justify-between shrink-0 transition-all ${isDarkMode ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
-                  <div className="flex items-center gap-4">
-                    <motion.div 
-                      whileHover={{ scale: 1.1, rotate: 15 }}
-                      className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20"
-                    >
-                      <Settings className="w-6 h-6 text-accent" />
-                    </motion.div>
-                    <div>
-                      <h2 className={`text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('preferences').split(' ')[0]} <span className="text-accent">{t('preferences').split(' ').slice(1).join(' ')}</span></h2>
-                      <p className={`text-[10px] font-bold uppercase tracking-[0.3em] ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('tailorGamingStats')}</p>
-                    </div>
-                  </div>
-                  <motion.button 
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsPreferencesModalOpen(false);
-                    }}
-                    className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white' : 'bg-black/5 border-black/10 hover:bg-black/10 text-black'}`}
-                  >
-                    <X className="w-6 h-6" />
-                  </motion.button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
-                  <h3 className={`text-[11px] font-semibold tracking-wide mb-6 ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('visualInterfaceTheme')}</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-12">
-                    {THEMES.map((theme, idx) => (
-                      <motion.button
-                        key={`theme-${theme.name}-${idx}`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setAccentColor(theme.color)}
-                        className={`
-                          p-4 rounded-2xl flex flex-col items-center gap-3 transition-all border
-                          ${accentColor === theme.color
-                            ? 'bg-accent/10 border-accent shadow-[0_0_20px_rgba(157,92,255,0.2)]'
-                            : isDarkMode ? 'bg-white/10 border-white/10 hover:border-white/30' : 'bg-black/10 border-black/10 hover:border-black/30'}
-                        `}
-                      >
-                        <div 
-                          className="w-10 h-10 rounded-xl flex items-center justify-center"
-                          style={{ backgroundColor: `${theme.color}20`, color: theme.color }}
-                        >
-                          <theme.icon className="w-6 h-6" />
-                        </div>
-                        <span className={`text-[11px] font-semibold tracking-wide ${accentColor === theme.color ? 'text-accent' : isDarkMode ? 'text-white' : 'text-black'}`}>
-                          {t(theme.key as keyof typeof translations['en'])}
-                        </span>
-                      </motion.button>
-                    ))}
-                  </div>
-
-              <h2 className={`text-[11px] font-bold uppercase tracking-[0.2em] px-4 mb-3 ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('gamerPersonaAnalysis')}</h2>
-                  <div className={`p-6 border rounded-3xl mb-12 relative overflow-hidden group transition-all duration-500 ${isDarkMode ? 'bg-white/[0.05] border-white/10 hover:border-accent/50' : 'bg-black/[0.05] border-black/10 hover:border-accent/50'}`}>
-                    <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                      <Bot className="w-24 h-24 text-accent" />
-                    </div>
-                    
-                    {/* Background Glow */}
-                    <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-accent/5 blur-3xl group-hover:bg-accent/10 transition-all duration-1000" />
-                    
-                    {gamerPersona ? (
-                      <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 shadow-[0_0_15px_rgba(157,92,255,0.1)]">
-                            <Trophy className="w-6 h-6 text-accent" />
-                          </div>
-                          <div>
-                            <h4 className="text-xl font-bold tracking-tight text-accent">{gamerPersona.title}</h4>
-                            <div className="flex items-center gap-2">
-                              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/40">{t('aiPersonaLocked')}</span>
-                              <motion.div 
-                                animate={{ opacity: [0.2, 1, 0.2] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="w-1 h-1 rounded-full bg-accent" 
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <p className={`text-sm leading-relaxed italic ${isDarkMode ? 'text-white/90' : 'text-black/90'}`}>
-                          "{gamerPersona.description}"
-                        </p>
-                          <motion.button 
-                            onClick={analyzeGamerPersona}
-                            whileHover={{ scale: 1.05, color: isDarkMode ? '#fff' : '#000' }}
-                            whileTap={{ scale: 0.95 }}
-                            disabled={isAnalyzingPersona}
-                            className="mt-6 text-[11px] font-semibold tracking-wide text-white/70 transition-colors flex items-center gap-2 group/refresh"
-                          >
-                            <RotateCcw className={`w-3 h-3 group-hover/refresh:rotate-180 transition-transform duration-500 ${isAnalyzingPersona ? 'animate-spin' : ''}`} />
-                            {t('reAnalyzePersona')}
-                          </motion.button>
-                      </div>
-                    ) : (
-                      <div className="text-center relative z-10 py-4">
-                        <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4 border border-accent/20">
-                          <BrainCircuit className="w-8 h-8 text-accent/60" />
-                        </div>
-                        <p className={`text-xs mb-6 max-w-[200px] mx-auto ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>{t('analyzeGamesUnlock')}</p>
-                        <motion.button 
-                          whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(157,92,255,0.3)' }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={analyzeGamerPersona}
-                          disabled={isAnalyzingPersona}
-                          className="px-8 py-3 bg-accent text-bg-dark text-[11px] font-bold rounded-xl transition-all uppercase tracking-widest shadow-lg"
-                        >
-                          {isAnalyzingPersona ? t('analyzing') : t('initializeAnalysis')}
-                        </motion.button>
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className={`text-[10px] font-semibold tracking-wide mb-6 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('language')}</h3>
-                  <div className="mb-12">
-                    <LanguageSwitcher 
-                      currentLanguage={language}
-                      setLanguage={setLanguage}
-                      isDarkMode={isDarkMode}
-                      variant="grid"
-                    />
-                  </div>
-
-                  <h3 className={`text-[10px] font-semibold tracking-wide mb-6 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('preferredCategories')}</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {CATEGORIES.filter(c => c !== 'All' && c !== 'Favorites' && c !== 'Mods').map((cat, idx) => (
-                      <motion.button
-                        key={`pref-cat-${cat}-${idx}`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => togglePreferredCategory(cat)}
-                        className={`
-                          px-4 py-3 rounded-xl text-[10px] font-semibold tracking-wide transition-all border
-                          ${userProfile?.preferredCategories?.includes(cat)
-                            ? 'bg-accent/10 border-accent text-accent shadow-[0_0_15px_rgba(157,92,255,0.2)]'
-                            : 'bg-white/5 border-white/5 text-white/40 hover:border-white/20'}
-                        `}
-                      >
-                        {t((categoryKeyMap[cat] || cat) as keyof typeof translations['en'])}
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  {/* PlayDravo Brand Kit & Logo Assets */}
-                  <h3 className={`text-[10px] font-semibold tracking-wide mt-12 mb-6 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>Official Brand Assets & Logo Kit</h3>
-                  <div className={`p-6 border rounded-3xl relative overflow-hidden transition-all duration-300 ${isDarkMode ? 'bg-white/[0.02] border-white/10' : 'bg-black/[0.02] border-black/10'}`}>
-                    <div className="flex flex-col sm:flex-row gap-6 items-center">
-                      {/* Logo Preview box */}
-                      <div className="relative shrink-0 w-28 h-28 rounded-2xl bg-gradient-to-br from-violet-400 to-violet-600 p-0.5 shadow-xl group">
-                        <img 
-                          src="/logo.svg" 
-                          alt="PlayDravo Brand Logo" 
-                          className="w-full h-full object-contain rounded-[14px]" 
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-[14px] flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white uppercase tracking-wider">Preview Logo</span>
-                        </div>
-                      </div>
-
-                      {/* Info & Settings */}
-                      <div className="flex-1 text-center sm:text-left">
-                        <h4 className="text-base font-bold text-accent mb-1">PlayDravo Brand Kit</h4>
-                        <p className={`text-xs mb-4 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
-                          Download official scalable vector paths (SVG) or pixel-perfect icons (PNG, JPG) for your setup, banners, or streaming overlays.
-                        </p>
-
-                        {/* Pixel Resolution Multipliers */}
-                        <div className="flex items-center justify-center sm:justify-start gap-2 mb-4">
-                          <span className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>Resolution:</span>
-                          {[192, 512, 1024].map((size) => (
-                            <button
-                              key={`size-btn-${size}`}
-                              onClick={() => setLogoDownloadSize(size)}
-                              className={`px-2.5 py-1 text-[10px] font-bold rounded-lg transition-all ${
-                                logoDownloadSize === size 
-                                  ? 'bg-accent text-bg-dark shadow-md' 
-                                  : (isDarkMode ? 'bg-white/5 text-white/50 hover:bg-white/10' : 'bg-black/5 text-black/50 hover:bg-black/10')
-                              }`}
-                            >
-                              {size}²
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Download Actions Panel */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-6 pt-6 border-t border-white/5">
-                      {/* SVG */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={isLogoDownloading}
-                        onClick={() => {
-                          setIsLogoDownloading(true);
-                          fetch('/logo.svg')
-                            .then(res => res.text())
-                            .then(text => {
-                              const blob = new Blob([text], { type: 'image/svg+xml' });
-                              const url = URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = 'playdravo-logo.svg';
-                              document.body.appendChild(a);
-                              a.click();
-                              document.body.removeChild(a);
-                              URL.revokeObjectURL(url);
-                              toast.success('Successfully downloaded PlayDravo logo (SVG)!');
-                              setIsLogoDownloading(false);
-                            })
-                            .catch(() => {
-                              toast.error('Failed to download SVG file.');
-                              setIsLogoDownloading(false);
-                            });
-                        }}
-                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
-                          isDarkMode 
-                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
-                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
-                        }`}
-                      >
-                        <Download className="w-3.5 h-3.5 text-accent" />
-                        Download SVG
-                      </motion.button>
-
-                      {/* PNG */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={isLogoDownloading}
-                        onClick={() => {
-                          setIsLogoDownloading(true);
-                          fetch('/logo.svg')
-                            .then(res => res.text())
-                            .then(svgText => {
-                              const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                const img = new window.Image();
-                                img.onload = () => {
-                                  const canvas = document.createElement('canvas');
-                                  canvas.width = logoDownloadSize;
-                                  canvas.height = logoDownloadSize;
-                                  const ctx = canvas.getContext('2d');
-                                  if (ctx) {
-                                    ctx.imageSmoothingEnabled = true;
-                                    ctx.imageSmoothingQuality = 'high';
-                                    ctx.drawImage(img, 0, 0, logoDownloadSize, logoDownloadSize);
-                                    try {
-                                      const dataUrl = canvas.toDataURL('image/png', 1.0);
-                                      const a = document.createElement('a');
-                                      a.href = dataUrl;
-                                      a.download = `playdravo-logo-${logoDownloadSize}x${logoDownloadSize}.png`;
-                                      document.body.appendChild(a);
-                                      a.click();
-                                      document.body.removeChild(a);
-                                      toast.success(`Downloaded PNG logo (${logoDownloadSize}x${logoDownloadSize}px)!`);
-                                    } catch (err) {
-                                      toast.error('Browser blocked asset export. Try opening in a new tab.');
-                                    }
-                                  }
-                                  setIsLogoDownloading(false);
-                                };
-                                img.onerror = () => {
-                                  toast.error('Conversion failed to load image context.');
-                                  setIsLogoDownloading(false);
-                                };
-                                img.src = reader.result as string;
-                              };
-                              reader.readAsDataURL(svgBlob);
-                            })
-                            .catch(() => {
-                              toast.error('Failed to convert logo to PNG.');
-                              setIsLogoDownloading(false);
-                            });
-                        }}
-                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
-                          isDarkMode 
-                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
-                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
-                        }`}
-                      >
-                        <Download className="w-3.5 h-3.5 text-accent" />
-                        Download PNG
-                      </motion.button>
-
-                      {/* JPG */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={isLogoDownloading}
-                        onClick={() => {
-                          setIsLogoDownloading(true);
-                          fetch('/logo.svg')
-                            .then(res => res.text())
-                            .then(svgText => {
-                              const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                const img = new window.Image();
-                                img.onload = () => {
-                                  const canvas = document.createElement('canvas');
-                                  canvas.width = logoDownloadSize;
-                                  canvas.height = logoDownloadSize;
-                                  const ctx = canvas.getContext('2d');
-                                  if (ctx) {
-                                    ctx.imageSmoothingEnabled = true;
-                                    ctx.imageSmoothingQuality = 'high';
-                                    ctx.fillStyle = '#1e1b4b'; // Signature brand dark backdrop 
-                                    ctx.fillRect(0, 0, logoDownloadSize, logoDownloadSize);
-                                    ctx.drawImage(img, 0, 0, logoDownloadSize, logoDownloadSize);
-                                    try {
-                                      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
-                                      const a = document.createElement('a');
-                                      a.href = dataUrl;
-                                      a.download = `playdravo-logo-${logoDownloadSize}x${logoDownloadSize}.jpg`;
-                                      document.body.appendChild(a);
-                                      a.click();
-                                      document.body.removeChild(a);
-                                      toast.success(`Downloaded JPEG logo (${logoDownloadSize}x${logoDownloadSize}px)!`);
-                                    } catch (err) {
-                                      toast.error('Browser blocked asset export. Try opening in a new tab.');
-                                    }
-                                  }
-                                  setIsLogoDownloading(false);
-                                };
-                                img.onerror = () => {
-                                  toast.error('Conversion failed to load image context.');
-                                  setIsLogoDownloading(false);
-                                };
-                                img.src = reader.result as string;
-                              };
-                              reader.readAsDataURL(svgBlob);
-                            })
-                            .catch(() => {
-                              toast.error('Failed to convert logo to JPG.');
-                              setIsLogoDownloading(false);
-                            });
-                        }}
-                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
-                          isDarkMode 
-                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
-                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
-                        }`}
-                      >
-                        <Download className="w-3.5 h-3.5 text-accent" />
-                        Download JPG
-                      </motion.button>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-8 p-6 bg-accent/5 border border-accent/20 rounded-3xl">
-                    <div className="flex items-center gap-4 mb-3">
-                      <BrainCircuit className="w-5 h-5 text-accent" />
-                      <h4 className="text-sm font-bold">{t('aiImprovementActive')}</h4>
-                    </div>
-                    <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                      {t('aiImprovementDesc')}
-                    </p>
-                  </div>
-
-                  {userProfile?.role === 'admin' && (
-                    <div className="mt-8 p-6 bg-red-500/5 border border-red-500/20 rounded-3xl">
-                      <div className="flex items-center gap-4 mb-3">
-                        <Zap className="w-5 h-5 text-red-500" />
-                        <h4 className="text-sm font-bold text-red-500 uppercase tracking-widest">{t('adminTools')}</h4>
-                      </div>
-                      <p className={`text-xs leading-relaxed mb-6 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                        {t('adminToolsDesc')}
-                      </p>
-                      <motion.button 
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleGenerateDescriptions}
-                        className="w-full py-3 bg-red-500 text-white rounded-xl font-semibold tracking-wide text-[10px] shadow-lg"
-                      >
-                        {t('optimizeGameDescriptions')}
-                      </motion.button>
-                    </div>
-                  )}
-
-                  <motion.button 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsPreferencesModalOpen(false);
-                    }}
-                    className="w-full mt-8 py-4 bg-accent text-bg-dark rounded-2xl font-semibold tracking-wide text-xs shadow-[0_0_30px_rgba(157,92,255,0.3)]"
-                  >
-                    {t('savePreferences')}
-                  </motion.button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
-
+        <PreferencesModal
+          isOpen={isPreferencesModalOpen}
+          onClose={() => setIsPreferencesModalOpen(false)}
+          isDarkMode={isDarkMode}
+          t={t}
+          accentColor={accentColor}
+          setAccentColor={setAccentColor}
+          THEMES={THEMES}
+          language={language}
+          setLanguage={setLanguage}
+          userProfile={userProfile}
+          togglePreferredCategory={togglePreferredCategory}
+          categoryKeyMap={categoryKeyMap}
+          categories={CATEGORIES}
+          gamerPersona={gamerPersona}
+          isAnalyzingPersona={isAnalyzingPersona}
+          analyzeGamerPersona={analyzeGamerPersona}
+          handleGenerateDescriptions={handleGenerateDescriptions}
+        />
 
         {/* Floating Actions */}
         <div className="fixed bottom-10 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col gap-4">
@@ -2617,33 +2167,10 @@ function AppContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-bg-dark/90 backdrop-blur-sm"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-bg-dark/85 backdrop-blur-sm"
           >
-            <motion.div
-              animate={{ 
-                rotate: 360,
-                scale: [1, 1.2, 1]
-              }}
-              transition={{ 
-                rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-                scale: { duration: 1, repeat: Infinity, ease: "easeInOut" }
-              }}
-              className="relative w-24 h-24 mb-8"
-            >
-              <div className="absolute inset-0 border-4 border-accent/20 rounded-full" />
-              <div className="absolute inset-0 border-4 border-accent border-t-transparent rounded-full" />
-              <Gamepad2 className="absolute inset-0 m-auto w-10 h-10 text-accent" />
-            </motion.div>
-            <div className="flex flex-col items-center gap-2">
-              <h2 className="text-2xl font-bold tracking-tight text-white">
-                {t('loadingGame')}
-              </h2>
-              <div className="flex gap-1">
-                <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity }} className="w-1.5 h-1.5 rounded-full bg-accent" />
-                <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-accent" />
-                <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity, delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-accent" />
-              </div>
-            </div>
+            <PlatformLoader message={t('loadingGame') || 'Loading games...'} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -2657,6 +2184,7 @@ function AppContent() {
         isDarkMode={isDarkMode}
         t={t}
         activeGame={activeGame}
+        accountSettingsView={accountSettingsView}
       />
 
       <Toaster 

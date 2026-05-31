@@ -25,8 +25,7 @@ interface ProfileDropdownProps {
   userProfile: UserProfile | null;
   isDarkMode: boolean;
   logout: () => void;
-  setIsPreferencesModalOpen: (open: boolean) => void;
-  setIsAccountSettingsOpen: (open: boolean) => void;
+  openAccountSettings: (view?: 'main' | 'email' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
   setIsUsernameModalOpen: (open: boolean) => void;
   setIsHelpCenterOpen: (open: boolean) => void;
   setSelectedCategory?: (category: string) => void;
@@ -40,8 +39,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
   userProfile,
   isDarkMode,
   logout,
-  setIsPreferencesModalOpen,
-  setIsAccountSettingsOpen,
+  openAccountSettings,
   setIsUsernameModalOpen,
   setIsHelpCenterOpen,
   setSelectedCategory,
@@ -80,19 +78,17 @@ export const ProfileDropdown = memo(function ProfileDropdown({
     { 
       icon: <Bell className="w-4 h-4" />, 
       label: t('notificationPrefs') || 'Notification preferences', 
-      onClick: () => { 
-        window.dispatchEvent(new CustomEvent('set-account-view', { detail: 'notifications' }));
-        setIsAccountSettingsOpen(true); 
-        onClose(); 
+      onClick: () => {
+        openAccountSettings('notifications');
+        onClose();
       } 
     },
     { 
       icon: <Shield className="w-4 h-4" />, 
       label: t('privacyPrefs') || 'Privacy preferences', 
-      onClick: () => { 
-        window.dispatchEvent(new CustomEvent('set-account-view', { detail: 'privacy' }));
-        setIsAccountSettingsOpen(true); 
-        onClose(); 
+      onClick: () => {
+        openAccountSettings('privacy');
+        onClose();
       } 
     },
     { 
@@ -223,10 +219,9 @@ export const ProfileDropdown = memo(function ProfileDropdown({
 
                 <div className="flex gap-3">
                   <button 
-                    onClick={() => { 
-                      window.dispatchEvent(new CustomEvent('set-account-view', { detail: 'main' }));
-                      setIsAccountSettingsOpen(true); 
-                      onClose(); 
+                    onClick={() => {
+                      openAccountSettings('main');
+                      onClose();
                     }}
                     className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-2xl uppercase tracking-widest text-xs hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2"
                   >

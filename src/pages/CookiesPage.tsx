@@ -15,7 +15,7 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
     {
       icon: <Eye className="w-5 h-5 text-accent" />,
       title: "Essential Cookies",
-      desc: "These cookies are strictly required to verify OAuth sessions, track logged-in users, and process game store coins balances seamlessly."
+      desc: "These cookies are strictly required to verify OAuth sessions, track logged-in users, and save your game preferences seamlessly."
     },
     {
       icon: <Info className="w-5 h-5 text-accent" />,
@@ -148,7 +148,7 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Managing Your Preferences</h2>
             </div>
             <p>
-              You can adjust, clear, or suspend site storage in your browser settings. Clearing local storage will reset your high scores and offline coin balances unless they are saved to your account.
+              You can adjust, clear, or suspend site storage in your browser settings. Clearing local storage will reset your high scores and play history unless they are saved to your account.
             </p>
           </section>
         </motion.div>

@@ -105,6 +105,53 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-accent/20 rounded-full hover:bg-accent/40 transition-colors;
   }
+
+  .shimmer-overlay {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  .section-eyebrow {
+    @apply flex items-center gap-1.5 text-accent text-[10px] font-semibold uppercase tracking-wide;
+  }
+
+  .section-title {
+    @apply text-base md:text-lg font-bold tracking-tight;
+  }
+
+  .shelf-section {
+    @apply mb-3 relative;
+  }
+
+  .shelf-header {
+    @apply flex items-end justify-between mb-2;
+  }
+
+  .shelf-scroll {
+    @apply flex overflow-x-auto gap-3 pb-2 pt-0.5 px-3 md:px-5 -mx-3 md:-mx-5 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shelf-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shelf-card {
+    @apply w-[120px] sm:w-[136px] md:w-[156px] shrink-0 snap-start;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Custom scrollbar */

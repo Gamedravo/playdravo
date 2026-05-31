@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+export type AccountSettingsView = 'main' | 'email' | 'logout-all' | 'delete' | 'notifications' | 'privacy';
+
 export function useModals() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
@@ -11,12 +13,17 @@ export function useModals() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [isBugReportModalOpen, setIsBugReportModalOpen] = useState(false);
-  const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [isAccountSettingsOpen, setIsAccountSettingsOpen] = useState(false);
+  const [accountSettingsView, setAccountSettingsView] = useState<AccountSettingsView>('main');
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isSubmitModModalOpen, setIsSubmitModModalOpen] = useState(false);
   const [isGameRequestModalOpen, setIsGameRequestModalOpen] = useState(false);
+
+  const openAccountSettings = (view: AccountSettingsView = 'main') => {
+    setAccountSettingsView(view);
+    setIsAccountSettingsOpen(true);
+  };
 
   return {
     isCommandPaletteOpen, setIsCommandPaletteOpen,
@@ -29,8 +36,9 @@ export function useModals() {
     isLoginModalOpen, setIsLoginModalOpen,
     isUsernameModalOpen, setIsUsernameModalOpen,
     isBugReportModalOpen, setIsBugReportModalOpen,
-    isShopModalOpen, setIsShopModalOpen,
     isAccountSettingsOpen, setIsAccountSettingsOpen,
+    accountSettingsView, setAccountSettingsView,
+    openAccountSettings,
     isProfileDropdownOpen, setIsProfileDropdownOpen,
     isSubmitModalOpen, setIsSubmitModalOpen,
     isSubmitModModalOpen, setIsSubmitModModalOpen,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Home, ChevronRight, Zap, Activity, CheckCircle2, AlertTriangle, ShieldCheck, Gamepad2, Coins, Server, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Home, ChevronRight, Zap, Activity, CheckCircle2, AlertTriangle, ShieldCheck, Gamepad2, Server, RefreshCw } from 'lucide-react';
 
 interface StatusPageProps {
   isDarkMode: boolean;
@@ -48,12 +48,12 @@ export function StatusPage({ isDarkMode, t }: StatusPageProps) {
       icon: <Gamepad2 className="w-5 h-5 text-emerald-500" />
     },
     {
-      name: "Economy Engine & Shop Integrations",
-      description: "Coin tracking transactions, coin reward balance, cosmetic shop purchases, and safe state checks",
+      name: "User Profiles & Progress Sync",
+      description: "Saved favorites, play history, achievements, and cross-device profile synchronization",
       status: "operational",
       uptime: "99.95%",
       latency: "82ms",
-      icon: <Coins className="w-5 h-5 text-emerald-500" />
+      icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />
     },
     {
       name: "High Scores Database & Analytics APIs",

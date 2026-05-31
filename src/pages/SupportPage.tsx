@@ -59,7 +59,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
           icon: <ShieldCheck className="w-8 h-8 text-accent" />,
           content: (
             <div className="space-y-6">
-              <p>Keep your profile, achievements, and coin balances safe with these critical security best practices.</p>
+              <p>Keep your profile, achievements, and game progress safe with these critical security best practices.</p>
               <h3 className="text-xl font-bold mt-8">Strong Passwords</h3>
               <p>Always use a strong, unique passkey for your account, and avoid recycling credentials used on other platforms.</p>
               <h3 className="text-xl font-bold mt-8">OAuth Integrity</h3>
@@ -197,7 +197,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
                   id: 'getting-started',
                   icon: <BookOpen className="w-6 h-6 text-accent" />,
                   title: 'Getting Started Guide',
-                  desc: 'Learn how to create customized profile configurations, save games, and buy shop assets.'
+                  desc: 'Learn how to create customized profile configurations, save games, and track your favorites.'
                 },
                 {
                   id: 'modding-guide',
@@ -215,7 +215,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
                   id: 'faq',
                   icon: <MessageCircle className="w-6 h-6 text-accent" />,
                   title: 'Community FAQ',
-                  desc: 'Curated list of standard questions regarding high scores, coin economy, and bug reports.'
+                  desc: 'Curated list of standard questions regarding high scores, saved progress, and bug reports.'
                 }
               ].map((doc, idx) => (
                 <button
@@ -315,7 +315,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
                         <option value="general">General Inquiries / Partner Request</option>
                         <option value="account">Account Access & OAuth Issue</option>
                         <option value="bug">Report a Platform Bug / Glitch</option>
-                        <option value="economy">Economy, Coins & Shop Items</option>
+                        <option value="account">Account & Saved Progress</option>
                       </select>
                     </div>
 

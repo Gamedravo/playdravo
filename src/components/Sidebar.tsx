@@ -13,7 +13,6 @@ import {
   Gamepad2,
   Sparkles,
   Dices,
-  Coins,
   Plus
 } from 'lucide-react';
 import { UserProfile, Language } from '../types';
@@ -42,7 +41,6 @@ interface SidebarProps {
   setIsLegalModalOpen: (open: boolean) => void;
   setIsBugReportModalOpen: (open: boolean) => void;
   setIsAIAssistantOpen: (open: boolean) => void;
-  setIsShopModalOpen: (open: boolean) => void;
   setIsSubmitModalOpen: (open: boolean) => void;
   isAIAssistantOpen: boolean;
   handleSurpriseMe: () => void;
@@ -58,7 +56,6 @@ const categoryKeyMap: Record<string, string> = {
   'History': 'history',
   'Trending': 'trending',
   'Mods': 'mods',
-  'Shop': 'shop',
   'Action': 'action',
   'Adventure': 'adventure',
   'Arcade': 'arcade',
@@ -100,7 +97,6 @@ export const Sidebar = memo(function Sidebar({
   setIsLegalModalOpen,
   setIsBugReportModalOpen,
   setIsAIAssistantOpen,
-  setIsShopModalOpen,
   setIsSubmitModalOpen,
   isAIAssistantOpen,
   handleSurpriseMe,
@@ -140,7 +136,7 @@ export const Sidebar = memo(function Sidebar({
         className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col"
       >
         {/* Sidebar Header */}
-        <div className="p-6 flex items-center justify-between shrink-0">
+        <div className="px-4 py-3 flex items-center justify-between shrink-0">
           <a 
             href="/"
             onClick={(e) => {
@@ -169,17 +165,17 @@ export const Sidebar = memo(function Sidebar({
         </div>
 
         {/* Categories Content */}
-        <div className="flex-1 px-4 py-6 space-y-10">
+        <div className="flex-1 px-3 py-3 space-y-5">
           {/* Quick Actions Section */}
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <button 
               onClick={handleSurpriseMe}
-              className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 bg-accent/10 text-accent hover:bg-accent hover:text-bg-dark group`}
+              className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 bg-accent/10 text-accent hover:bg-accent hover:text-bg-dark group`}
             >
-              <div className="shrink-0 w-6 flex justify-center">
-                <Dices className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+              <div className="shrink-0 w-8 flex justify-center">
+                <Dices className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className={`text-xs font-semibold tracking-tight transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+              <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                 {t('randomGames')}
               </span>
             </button>
@@ -189,35 +185,21 @@ export const Sidebar = memo(function Sidebar({
                 setIsPreferencesModalOpen(true);
                 if (window.innerWidth < 768) setIsSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 group`}
+              className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 hover:bg-white/10 group`}
             >
-              <div className="shrink-0 w-6 flex justify-center">
-                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+              <div className="shrink-0 w-8 flex justify-center">
+                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </div>
-              <span className={`text-xs font-semibold tracking-tight transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+              <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                 {t('personalize')}
-              </span>
-            </button>
-            <button 
-              onClick={() => {
-                setIsShopModalOpen(true);
-                if (window.innerWidth < 768) setIsSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 hover:bg-white/10 group`}
-            >
-              <div className="shrink-0 w-6 flex justify-center">
-                <Coins className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <span className={`text-xs font-semibold tracking-tight transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                {t('shop')}
               </span>
             </button>
           </div>
 
           {categoryGroups.map((group, groupIndex) => {
             return (
-              <div key={`group-${groupIndex}-${group.title}`} className="space-y-1">
-                <div className="space-y-1">
+              <div key={`group-${groupIndex}-${group.title}`} className="space-y-0.5">
+                <div className="space-y-0.5">
                   {group.items.map((cat, catIndex) => {
                     const isSelected = selectedCategory === cat;
                     const getCategoryUrl = (cat: string) => {
@@ -238,19 +220,19 @@ export const Sidebar = memo(function Sidebar({
                           if (window.innerWidth < 768) setIsSidebarOpen(false);
                         }}
                         className={`
-                          w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 relative
+                          w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 relative
                           ${isSelected 
                             ? 'bg-accent/10 text-accent' 
                             : (isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black')}
                         `}
                       >
                         {isSelected && (
-                          <div className="absolute left-0 w-1 h-6 bg-accent rounded-r-full" />
+                          <div className="absolute left-0 w-0.5 h-5 bg-accent rounded-r-full" />
                         )}
-                        <div className="shrink-0 w-6 flex justify-center">
+                        <div className="shrink-0 w-8 flex justify-center">
                           {getCategoryIcon(cat)}
                         </div>
-                        <span className={`text-xs font-semibold transition-all duration-200 whitespace-nowrap ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+                        <span className={`text-xs font-medium transition-all duration-200 whitespace-nowrap ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                           {t(categoryKeyMap[cat] || cat)}
                         </span>
                         {isExpanded && categoryCounts[cat] > 0 && (
@@ -267,55 +249,55 @@ export const Sidebar = memo(function Sidebar({
           })}
 
 
-          <div className="space-y-1 pt-4 border-t border-white/5">
-            <div className="space-y-1">
+          <div className="space-y-0.5 pt-3 border-t border-white/5">
+            <div className="space-y-0.5">
               <Link 
                 to="/support"
                 onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
+                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
-                <div className="shrink-0 w-6 flex justify-center"><HelpCircle className="w-5 h-5" /></div>
-                <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('helpCenter')}</span>
+                <div className="shrink-0 w-8 flex justify-center"><HelpCircle className="w-4 h-4" /></div>
+                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('helpCenter')}</span>
               </Link>
               <Link 
                 to="/terms"
                 onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
+                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
-                <div className="shrink-0 w-6 flex justify-center"><FileText className="w-5 h-5" /></div>
-                <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('legal')}</span>
+                <div className="shrink-0 w-8 flex justify-center"><FileText className="w-4 h-4" /></div>
+                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('legal')}</span>
               </Link>
               <Link 
                 to="/report-bug"
                 onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
+                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
-                <div className="shrink-0 w-6 flex justify-center"><Bug className="w-5 h-5" /></div>
-                <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('bugReport')}</span>
+                <div className="shrink-0 w-8 flex justify-center"><Bug className="w-4 h-4" /></div>
+                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('bugReport')}</span>
               </Link>
               {userProfile?.role === 'admin' && (
                 <button 
                   onClick={() => setIsSubmitModalOpen(true)}
-                  className={`md:hidden w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
+                  className={`md:hidden w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
                 >
-                  <div className="shrink-0 w-6 flex justify-center"><Plus className="w-5 h-5" /></div>
-                  <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('submitGameButton')}</span>
+                  <div className="shrink-0 w-8 flex justify-center"><Plus className="w-4 h-4" /></div>
+                  <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('submitGameButton')}</span>
                 </button>
               )}
               {userProfile?.role === 'admin' && (
                 <Link 
                   to="/admin/bug-reports"
-                  className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${location.pathname.startsWith('/admin') ? 'bg-accent/10 text-accent' : (isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black')}`}
+                  className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${location.pathname.startsWith('/admin') ? 'bg-accent/10 text-accent' : (isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black')}`}
                 >
-                  <div className="shrink-0 w-6 flex justify-center"><Settings className="w-5 h-5" /></div>
-                  <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('adminPanel')}</span>
+                  <div className="shrink-0 w-8 flex justify-center"><Settings className="w-4 h-4" /></div>
+                  <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('adminPanel')}</span>
                 </Link>
               )}
             </div>
           </div>
 
           {/* Language Switcher for Mobile/Sidebar */}
-          <div className={`mt-4 px-4 py-4 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+          <div className={`mt-2 px-2 py-3 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
             <div className="flex justify-start">
               <LanguageSwitcher 
                 currentLanguage={language}
@@ -330,10 +312,10 @@ export const Sidebar = memo(function Sidebar({
         </div>
 
         {/* User Profile / Auth */}
-        <div className={`p-4 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+        <div className={`p-3 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
           {userProfile ? (
-            <div className="space-y-4">
-              <div className={`flex items-center gap-3 p-2 rounded-2xl transition-all duration-200 ${isExpanded ? 'bg-white/5' : ''}`}>
+            <div className="space-y-2">
+              <div className={`flex items-center gap-2.5 p-2 rounded-xl transition-all duration-200 ${isExpanded ? 'bg-white/5' : ''}`}>
                 <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-accent/20">
                   <img src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
@@ -347,16 +329,16 @@ export const Sidebar = memo(function Sidebar({
               </div>
               <button 
                 onClick={logout}
-                className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500' : 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500'}`}
+                className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500' : 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500'}`}
               >
-                <div className="shrink-0 w-6 flex justify-center"><LogOut className="w-4 h-4" /></div>
-                <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('logout')}</span>
+                <div className="shrink-0 w-8 flex justify-center"><LogOut className="w-4 h-4" /></div>
+                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('logout')}</span>
               </button>
             </div>
           ) : (
             <button 
               onClick={() => setIsLoginModalOpen(true)}
-              className="w-full group/login relative overflow-hidden bg-accent text-white font-bold py-3 text-sm rounded-xl transition-all flex items-center justify-center gap-3"
+              className="w-full group/login relative overflow-hidden bg-accent text-white font-bold py-2.5 text-sm rounded-lg transition-all flex items-center justify-center gap-2"
             >
               <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/login:translate-x-[100%] transition-transform duration-1000" />
               <LogIn className="w-4 h-4 relative z-10" />

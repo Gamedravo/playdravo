@@ -25,47 +25,39 @@ export function ModalShell({
 }: ModalShellProps) {
   useEffect(() => {
     if (!isOpen) return;
-    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
     const prevOverflow = document.body.style.overflow;
-    const prevPadding = document.body.style.paddingRight;
     document.body.style.overflow = 'hidden';
-    if (scrollBarWidth > 0) {
-      document.body.style.paddingRight = `${scrollBarWidth}px`;
-    }
     return () => {
-      window.setTimeout(() => {
-        document.body.style.overflow = prevOverflow;
-        document.body.style.paddingRight = prevPadding;
-      }, 280);
+      document.body.style.overflow = prevOverflow;
     };
   }, [isOpen]);
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence initial={false} mode="wait">
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 flex items-center justify-center p-4 md:p-6"
           style={{ zIndex }}
         >
-          {/* Backdrop */}
           <motion.div
+            key="modal-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={onClose}
           />
-
-          {/* Modal Content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            key="modal-content"
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className={`relative w-full overflow-hidden rounded-[2rem] border shadow-2xl ${maxWidth} ${padding} ${
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+            className={`relative w-full overflow-hidden rounded-2xl border shadow-2xl ${maxWidth} ${padding} ${
               isDarkMode ? 'bg-[#12121e] border-white/10 text-white' : 'bg-white border-black/10 text-black'
             }`}
+            onClick={(e) => e.stopPropagation()}
           >
             {showCloseButton && (
               <button

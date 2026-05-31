@@ -35,7 +35,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
   };
 
   return (
-    <footer className={`mt-16 border-t transition-all duration-300 relative overflow-hidden rounded-[2.5rem] mb-6 ${
+    <footer className={`mt-8 border-t transition-all duration-300 relative overflow-hidden rounded-2xl mb-4 ${
       isDarkMode 
         ? 'bg-gradient-to-b from-[#111122]/80 to-[#0e0e1a]/95 border-white/5 text-white/70' 
         : 'bg-gradient-to-b from-slate-50/80 to-slate-100/95 border-black/5 text-black/70'

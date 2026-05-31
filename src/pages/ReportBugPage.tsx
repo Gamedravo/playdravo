@@ -175,7 +175,7 @@ export function ReportBugPage({ isDarkMode, t }: ReportBugPageProps) {
                     type="text"
                     value={formData.gameTitle}
                     onChange={(e) => setFormData({ ...formData, gameTitle: e.target.value })}
-                    placeholder="E.g., Z-Typer or Shop Modal"
+                    placeholder="E.g., Z-Typer or Settings Panel"
                     className={`w-full py-3.5 px-4 rounded-xl border text-xs font-semibold focus:outline-none focus:border-accent ${
                       isDarkMode ? 'bg-white/5 border-white/5 text-white' : 'bg-black/5 border-black/5 text-black'
                     }`}
@@ -193,7 +193,7 @@ export function ReportBugPage({ isDarkMode, t }: ReportBugPageProps) {
                     <option value="low">Low (Cosmetic/Typo/Suggestion)</option>
                     <option value="medium">Medium (Layout glitch/Minor bug)</option>
                     <option value="high">High (Game failing to load/Crashes)</option>
-                    <option value="critical">Critical (Account lock/Economy exploit)</option>
+                    <option value="critical">Critical (Account lock / Data loss)</option>
                   </select>
                 </div>
               </div>

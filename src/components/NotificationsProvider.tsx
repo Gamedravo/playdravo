@@ -7,7 +7,7 @@ export interface AppNotification {
   id: string;
   title: string;
   description: string;
-  type: 'system' | 'coins' | 'achievement' | 'game' | 'social';
+  type: 'system' | 'achievement' | 'game' | 'social';
   timestamp: string;
   read: boolean;
   link?: string;
@@ -59,25 +59,25 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
         {
           id: 'welcome',
           title: 'Welcome to PlayDravo! 🚀',
-          description: 'Browse over 100+ high-quality fully-responsive HTML5 games! Log in to save your game progress, select gamer personas, and earn achievements.',
+          description: 'Browse 60+ high-quality HTML5 games! Log in to save your progress, select gamer personas, and earn achievements.',
           type: 'system',
           timestamp: new Date().toISOString(),
           read: false
         },
         {
-          id: 'coins-tip',
+          id: 'xp-tip',
           title: 'Double XP Weekend is Live! 🎉',
-          description: 'Ready to level up? Every game you play this weekend awards DOUBLE XP. Earn experience points to customize your gamer profile.',
+          description: 'Ready to level up? Every game you play this weekend awards DOUBLE XP. Earn experience to customize your gamer profile.',
           type: 'achievement',
-          timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
           read: false
         },
         {
-          id: 'spin-alert',
-          title: 'Daily Claim Reset! 🪙',
-          description: 'Your free daily 100 coins claims are now unlocked. Head over to the Shop to unlock custom styling items or No Ads passes.',
-          type: 'coins',
-          timestamp: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+          id: 'new-games',
+          title: 'New Games Added! 🎮',
+          description: 'Check out the latest additions in New Arrivals. Fresh titles are added regularly to keep things exciting.',
+          type: 'game',
+          timestamp: new Date(Date.now() - 7200000).toISOString(),
           read: false
         }
       ];
