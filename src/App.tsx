@@ -513,22 +513,6 @@ function AppContent() {
     { name: 'Crimson Tide', key: 'crimsonTide', color: '#EF4444', icon: Target },
   ];
 
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = {
-      'All': games.length,
-      'Favorites': userProfile?.favorites?.length || 0,
-      'Recommended': recommendedGames.length
-    };
-    
-    CATEGORIES.forEach(cat => {
-      if (cat !== 'All' && cat !== 'Favorites' && cat !== 'Recommended' && cat !== 'History' && cat !== 'Trending') {
-        counts[cat] = games.filter(g => g.category === cat).length;
-      }
-    });
-    
-    return counts;
-  }, [games, userProfile]);
-
   const categoryGroups = useMemo(() => {
     const mainMenu = ['All', 'Favorites', 'Recommended', 'History', 'Trending'];
     const multiplayer = ['Multiplayer', '2 Player', '3 Player', '4 Player'];
@@ -552,32 +536,6 @@ function AppContent() {
       }
     ];
   }, []);
-
-  const getCategoryIcon = (cat: string) => {
-    const props = { className: `w-5 h-5 transition-colors duration-100 ${selectedCategory === cat ? 'text-accent' : (isDarkMode ? 'text-white/70 group-hover:text-white' : 'text-black/70 group-hover:text-black')}` };
-    switch (cat) {
-      case 'All': return <Zap {...props} className={`${props.className} ${selectedCategory === cat ? 'fill-accent' : ''}`} />;
-      case 'Favorites': return <Heart {...props} className={`${props.className} ${selectedCategory === cat ? 'fill-accent' : ''}`} />;
-      case 'Recommended': return <Sparkles {...props} className={`${props.className} ${selectedCategory === cat ? 'fill-accent' : ''}`} />;
-      case 'History': return <Clock {...props} />;
-      case 'Trending': return <TrendingUp {...props} />;
-      case 'Action': return <Zap {...props} />;
-      case 'Adventure': return <Sparkles {...props} />;
-      case 'Arcade': return <Gamepad2 {...props} />;
-      case 'Casual': return <Sparkles {...props} />;
-      case 'Horror': return <AlertTriangle {...props} />;
-      case 'Puzzle': return <Dices {...props} />;
-      case 'Simulator': return <Rocket {...props} />;
-      case 'Obby': return <ArrowRight {...props} />;
-      case 'Sports': return <Trophy {...props} />;
-      case 'Strategy': return <Settings {...props} />;
-      case 'Multiplayer': return <Users {...props} />;
-      case '2 Player': return <Users {...props} />;
-      case '3 Player': return <Users {...props} />;
-      case '4 Player': return <Users {...props} />;
-      default: return <Sparkles {...props} />;
-    }
-  };
 
   // Real-time Games Listener
   useEffect(() => {
@@ -1659,22 +1617,11 @@ function AppContent() {
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           categoryGroups={categoryGroups}
-          getCategoryIcon={getCategoryIcon}
-          categoryCounts={categoryCounts}
           userProfile={userProfile}
           setIsLoginModalOpen={setIsLoginModalOpen}
           logout={logout}
-          accentColor={accentColor}
-          setAccentColor={setAccentColor}
-          THEMES={THEMES}
           setIsPreferencesModalOpen={setIsPreferencesModalOpen}
-          setIsHelpCenterOpen={setIsHelpCenterOpen}
-          setIsStatusModalOpen={setIsStatusModalOpen}
-          setIsLegalModalOpen={setIsLegalModalOpen}
-          setIsBugReportModalOpen={setIsBugReportModalOpen}
-          setIsAIAssistantOpen={setIsAIAssistantOpen}
           setIsSubmitModalOpen={setIsSubmitModalOpen}
-          isAIAssistantOpen={isAIAssistantOpen}
           handleSurpriseMe={handleSurpriseMe}
           language={language}
           setLanguage={setLanguage}

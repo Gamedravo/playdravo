@@ -6,12 +6,25 @@ export interface CuratedShelfBlock {
   title: string;
   subtitle: string;
   games: Game[];
-  variant: 'standard' | 'accent' | 'compact';
+  variant: 'standard' | 'accent';
   viewAllSlug?: string;
 }
 
+export const SHELF_MIN_GAMES = 10;
+export const SHELF_TARGET_GAMES = 28;
+
 /** Tag shelves that duplicate dedicated category rows — skip for variety. */
-const REDUNDANT_TAG_IDS = new Set(['racing', 'sports', 'action', 'puzzle', 'casual', 'multiplayer', 'shooting']);
+const REDUNDANT_TAG_IDS = new Set([
+  'racing',
+  'sports',
+  'action',
+  'puzzle',
+  'casual',
+  'multiplayer',
+  'shooting',
+  'driving',
+  'simulator',
+]);
 
 const TAG_SUBTITLES: Record<string, string> = {
   shooting: 'Aim and fire',
@@ -20,22 +33,60 @@ const TAG_SUBTITLES: Record<string, string> = {
   fighting: 'Combo breakers',
   'clicker-idle': 'Low effort, high fun',
   retro: 'Old-school vibes',
-  driving: 'Behind the wheel',
   sandbox: 'Create your world',
   'card-board': 'Tabletop classics',
   '2-player': 'Couch co-op',
-  simulator: 'Systems to master',
 };
+
+function haystack(game: Game): string {
+  return [...(game.tags || []), game.category, game.title].join(' ');
+}
+
+/** Fill a shelf toward target count from a matcher pool, then general backfill. */
+export function densifyShelf(
+  games: Game[],
+  allGames: Game[],
+  matchers?: RegExp[],
+  target = SHELF_TARGET_GAMES
+): Game[] {
+  const seen = new Set(games.map((g) => g.id));
+  const result = [...games];
+
+  const addFrom = (pool: Game[]) => {
+    for (const game of pool) {
+      if (result.length >= target) break;
+      if (seen.has(game.id)) continue;
+      result.push(game);
+      seen.add(game.id);
+    }
+  };
+
+  if (matchers?.length) {
+    const matched = allGames
+      .filter((g) => matchers.some((m) => m.test(haystack(g))))
+      .sort((a, b) => b.plays - a.plays);
+    addFrom(matched);
+  }
+
+  if (result.length < SHELF_MIN_GAMES) {
+    addFrom([...allGames].sort((a, b) => b.plays - a.plays));
+  }
+
+  return result.slice(0, target);
+}
 
 /**
  * Build a curated homepage sequence: category highlights interleaved with unique tag shelves.
+ * Sparse shelves are merged or dropped so rows always feel full.
  */
 export function buildCuratedHomepageBlocks(
   shelves: ReturnType<typeof import('../utils/recommendations').buildHomepageShelves>,
   tagShelves: ReturnType<typeof buildTagShelves>,
-  maxTagShelves = 5
+  allGames: Game[],
+  maxTagShelves = 4
 ): CuratedShelfBlock[] {
   const blocks: CuratedShelfBlock[] = [];
+  const usedBlockIds = new Set<string>();
 
   const push = (
     id: string,
@@ -43,40 +94,133 @@ export function buildCuratedHomepageBlocks(
     subtitle: string,
     games: Game[],
     variant: CuratedShelfBlock['variant'] = 'standard',
-    viewAllSlug?: string
+    viewAllSlug?: string,
+    matchers?: RegExp[]
   ) => {
-    if (games.length >= 4) {
-      blocks.push({ id, title, subtitle, games, variant, viewAllSlug });
-    }
+    if (usedBlockIds.has(id)) return;
+    const filled = densifyShelf(games, allGames, matchers);
+    if (filled.length < SHELF_MIN_GAMES) return;
+    usedBlockIds.add(id);
+    blocks.push({ id, title, subtitle, games: filled, variant, viewAllSlug });
   };
 
   push('top-rated', 'Top rated', 'Community favorites', shelves.topRated, 'accent', 'top-rated');
 
-  push('action', 'Action picks', 'Fast reflexes required', shelves.categoryShelves.Action, 'standard', 'action');
-  push('puzzle', 'Puzzle lab', 'Think before you click', shelves.categoryShelves.Puzzle, 'compact', 'puzzle');
+  push(
+    'action',
+    'Action picks',
+    'Fast reflexes required',
+    shelves.categoryShelves.Action,
+    'standard',
+    'action',
+    [/\baction\b/i]
+  );
+  push(
+    'puzzle',
+    'Puzzle lab',
+    'Think before you click',
+    shelves.categoryShelves.Puzzle,
+    'standard',
+    'puzzle',
+    [/\bpuzzle\b/i, /\blogic\b/i]
+  );
 
   const uniqueTags = tagShelves
-    .filter((s) => !REDUNDANT_TAG_IDS.has(s.id) && s.games.length >= 4)
+    .filter((s) => !REDUNDANT_TAG_IDS.has(s.id) && s.games.length >= 6)
     .slice(0, maxTagShelves);
 
-  uniqueTags.forEach((tag, i) => {
+  uniqueTags.forEach((tag) => {
     push(
       `tag-${tag.id}`,
       tag.title,
       TAG_SUBTITLES[tag.id] || 'Curated for you',
       tag.games,
-      i % 2 === 0 ? 'standard' : 'compact',
-      tag.id
+      'standard',
+      tag.id,
+      tag.matchers
     );
   });
 
-  push('racing', 'Racing & speed', 'Cross the finish line', shelves.categoryShelves.Racing, 'standard', 'racing');
-  push('arcade', 'Arcade hall', 'Coin-op energy', shelves.categoryShelves.Arcade, 'compact', 'arcade');
-  push('sports', 'Sports arena', 'Compete for glory', shelves.categoryShelves.Sports, 'standard', 'sports');
-  push('strategy', 'Strategy corner', 'Plan your moves', shelves.categoryShelves.Strategy, 'compact', 'strategy');
-  push('casual', 'Casual break', 'Five-minute sessions', shelves.categoryShelves.Casual, 'standard', 'casual');
-  push('adventure', 'Adventures', 'Explore new worlds', shelves.categoryShelves.Adventure, 'compact', 'adventure');
-  push('multiplayer', 'Play together', 'Shared sessions', shelves.categoryShelves.Multiplayer, 'accent', 'multiplayer');
+  push(
+    'racing',
+    'Racing & driving',
+    'Cross the finish line',
+    densifyShelf(
+      [...shelves.categoryShelves.Racing],
+      allGames,
+      [/\bracing\b/i, /\bdriving\b/i, /\bcar\b/i, /\bdrift\b/i]
+    ),
+    'standard',
+    'racing',
+    [/\bracing\b/i, /\bdriving\b/i, /\bcar\b/i]
+  );
+  push(
+    'arcade',
+    'Arcade hall',
+    'Coin-op energy',
+    shelves.categoryShelves.Arcade,
+    'standard',
+    'arcade',
+    [/\barcade\b/i]
+  );
+  push(
+    'sports',
+    'Sports arena',
+    'Compete for glory',
+    shelves.categoryShelves.Sports,
+    'standard',
+    'sports',
+    [/\bsports\b/i]
+  );
+  push(
+    'strategy',
+    'Strategy corner',
+    'Plan your moves',
+    shelves.categoryShelves.Strategy,
+    'standard',
+    'strategy',
+    [/\bstrategy\b/i]
+  );
+  push(
+    'simulator',
+    'Simulators',
+    'Systems to master',
+    densifyShelf(
+      shelves.categoryShelves.Simulator,
+      allGames,
+      [/\bsimulator\b/i, /\btycoon\b/i, /\bmanagement\b/i]
+    ),
+    'standard',
+    'simulation',
+    [/\bsimulator\b/i, /\btycoon\b/i]
+  );
+  push(
+    'casual',
+    'Casual break',
+    'Five-minute sessions',
+    shelves.categoryShelves.Casual,
+    'standard',
+    'casual',
+    [/\bcasual\b/i]
+  );
+  push(
+    'adventure',
+    'Adventures',
+    'Explore new worlds',
+    shelves.categoryShelves.Adventure,
+    'standard',
+    'adventure',
+    [/\badventure\b/i]
+  );
+  push(
+    'multiplayer',
+    'Play together',
+    'Shared sessions',
+    shelves.categoryShelves.Multiplayer,
+    'accent',
+    'multiplayer',
+    [/\bmultiplayer\b/i]
+  );
 
   return blocks;
 }

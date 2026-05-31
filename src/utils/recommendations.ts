@@ -75,7 +75,7 @@ export function buildRecommendations(
   return picked;
 }
 
-/** Pick games for a category shelf with deduped artwork vs already shown. */
+/** Pick games for a category shelf — independent pool per category for full shelves. */
 export function pickCategoryShelf(
   games: Game[],
   category: string,
@@ -92,10 +92,9 @@ export function pickCategoryShelf(
   for (const game of pool) {
     if (result.length >= limit) break;
     const thumb = thumbnailKey(game);
-    if (usedThumbnails.has(thumb) && result.length >= 2) continue;
+    if (usedThumbnails.has(thumb) && result.length >= 6) continue;
     result.push(game);
     usedThumbnails.add(thumb);
-    excludeIds.add(game.id);
   }
 
   return result;
@@ -140,9 +139,9 @@ export function buildHomepageShelves(games: Game[]) {
   ] as const;
 
   return {
-    trending: take(byPlays, 20),
-    topRated: take(byRating.filter((g) => g.rating >= 4.2), 20),
-    newArrivals: take(byNew, 20),
+    trending: take(byPlays, 28),
+    topRated: take(byRating.filter((g) => g.rating >= 4.2), 28),
+    newArrivals: take(byNew, 28),
     quickPlay: take(
       games.filter(
         (g) =>
@@ -150,7 +149,7 @@ export function buildHomepageShelves(games: Game[]) {
           g.avgPlayTime === '5m' ||
           g.tags?.some((t) => /Casual|Arcade|Fun/i.test(t))
       ),
-      20
+      24
     ),
     mobileFriendly: take(
       games.filter(
@@ -158,13 +157,10 @@ export function buildHomepageShelves(games: Game[]) {
           g.mobileOptimization === 'touch-friendly' ||
           g.tags?.some((t) => /Mobile/i.test(t))
       ),
-      20
+      24
     ),
     categoryShelves: Object.fromEntries(
-      categories.map((cat) => [
-        cat,
-        pickCategoryShelf(games, cat, 16, seenIds, seenThumbs),
-      ])
+      categories.map((cat) => [cat, pickCategoryShelf(games, cat, 28)])
     ) as Record<(typeof categories)[number], Game[]>,
     seenIds,
   };

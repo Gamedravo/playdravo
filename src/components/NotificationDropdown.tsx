@@ -13,17 +13,17 @@ interface NotificationDropdownProps {
   anchorRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-const PANEL_WIDTH = 360;
-const LIST_MAX_HEIGHT = 380;
+const PANEL_WIDTH = 268;
+const LIST_MAX_HEIGHT = 300;
 
 function formatTimeAgo(isoString: string) {
   try {
     const diffMins = Math.floor((Date.now() - new Date(isoString).getTime()) / 60000);
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffMins < 1) return 'Now';
+    if (diffMins < 60) return `${diffMins}m`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return `${Math.floor(diffHours / 24)}d ago`;
+    if (diffHours < 24) return `${diffHours}h`;
+    return `${Math.floor(diffHours / 24)}d`;
   } catch {
     return '';
   }
@@ -81,7 +81,7 @@ export function NotificationDropdown({
     if (!anchor) return;
     const rect = anchor.getBoundingClientRect();
     setPosition({
-      top: rect.bottom + 2,
+      top: rect.bottom + 4,
       left: Math.max(8, rect.right - PANEL_WIDTH),
     });
   };
@@ -125,8 +125,8 @@ export function NotificationDropdown({
   if (typeof document === 'undefined') return null;
 
   const panelSurface = isDarkMode
-    ? 'bg-[#1a1a24] text-white border-white/[0.08] shadow-[0_8px_24px_rgba(0,0,0,0.45)]'
-    : 'bg-white text-black border-black/[0.08] shadow-[0_8px_24px_rgba(0,0,0,0.12)]';
+    ? 'bg-[#16161e] text-white border-white/[0.07] shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
+    : 'bg-white text-black border-black/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.1)]';
 
   const tabs = [
     { id: 'all' as const, label: 'All' },
@@ -142,7 +142,7 @@ export function NotificationDropdown({
         id="header-notification-panel"
         role="menu"
         aria-label="Notifications"
-        className={`fixed z-[120] border ${panelSurface} ${isMobile ? 'left-0 right-0 rounded-b-md' : 'rounded-md'}`}
+        className={`fixed z-[120] border overflow-hidden ${panelSurface} ${isMobile ? 'left-0 right-0 rounded-b-lg' : 'rounded-lg'}`}
         style={{
           top: position.top,
           left: isMobile ? 0 : position.left,
@@ -150,19 +150,19 @@ export function NotificationDropdown({
         }}
       >
         <div
-          className={`flex items-center justify-between gap-1.5 px-3 py-2 border-b ${
+          className={`flex items-center justify-between gap-1 px-2.5 py-1.5 border-b ${
             isDarkMode ? 'border-white/[0.06]' : 'border-black/[0.06]'
           }`}
         >
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-[13px] font-semibold">Notifications</span>
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="text-[12px] font-semibold">Notifications</span>
             {unreadCount > 0 && (
-              <span className="min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold bg-accent text-bg-dark rounded-full">
+              <span className="min-w-[14px] h-3.5 px-1 flex items-center justify-center text-[8px] font-bold bg-accent text-bg-dark rounded-full">
                 {unreadCount}
               </span>
             )}
           </div>
-          <div className="flex items-center shrink-0">
+          <div className="flex items-center shrink-0 -mr-0.5">
             {hasAny && (
               <>
                 <button
@@ -171,10 +171,10 @@ export function NotificationDropdown({
                     markAllAsRead();
                     toast.success('All marked read');
                   }}
-                  className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}
+                  className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}
                   title="Mark all read"
                 >
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3 h-3" />
                 </button>
                 <button
                   type="button"
@@ -182,37 +182,37 @@ export function NotificationDropdown({
                     clearAll();
                     toast.success('Cleared');
                   }}
-                  className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}
+                  className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}
                   title="Clear all"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3 h-3" />
                 </button>
               </>
             )}
             <button
               type="button"
               onClick={onClose}
-              className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}
+              className={`p-1 rounded hover:bg-white/10 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}
               title="Close"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           </div>
         </div>
 
         {hasAny && (
           <div
-            className={`flex gap-3 px-3 border-b ${isDarkMode ? 'border-white/[0.06]' : 'border-black/[0.06]'}`}
+            className={`flex gap-2.5 px-2.5 border-b ${isDarkMode ? 'border-white/[0.06]' : 'border-black/[0.06]'}`}
           >
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-1.5 text-[11px] font-semibold border-b-2 -mb-px transition-colors duration-75 ${
+                className={`py-1 text-[10px] font-semibold border-b-2 -mb-px transition-colors duration-75 ${
                   activeTab === tab.id
                     ? 'border-accent text-accent'
-                    : `border-transparent ${isDarkMode ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'}`
+                    : `border-transparent ${isDarkMode ? 'text-white/35 hover:text-white/60' : 'text-black/35 hover:text-black/60'}`
                 }`}
               >
                 {tab.label}
@@ -222,21 +222,21 @@ export function NotificationDropdown({
         )}
 
         {!hasVisible ? (
-          <div className="flex flex-col items-center justify-center text-center px-4 py-7">
+          <div className="flex flex-col items-center justify-center text-center px-3 py-5">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center mb-1.5 ${
+              className={`w-7 h-7 rounded-full flex items-center justify-center mb-1 ${
                 isDarkMode ? 'bg-white/[0.05]' : 'bg-black/[0.04]'
               }`}
             >
-              <Bell className={`w-3.5 h-3.5 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`} />
+              <Bell className={`w-3 h-3 ${isDarkMode ? 'text-white/35' : 'text-black/35'}`} />
             </div>
-            <p className="text-[13px] font-semibold">You&apos;re all caught up</p>
-            <p className={`text-[11px] mt-0.5 leading-snug ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+            <p className="text-[11px] font-semibold">You&apos;re all caught up</p>
+            <p className={`text-[10px] mt-0.5 ${isDarkMode ? 'text-white/35' : 'text-black/35'}`}>
               {hasAny ? 'Nothing in this tab.' : 'Updates appear here.'}
             </p>
           </div>
         ) : (
-          <div className="overflow-y-auto overflow-x-hidden py-1" style={{ maxHeight: LIST_MAX_HEIGHT }}>
+          <div className="overflow-y-auto overflow-x-hidden py-0.5" style={{ maxHeight: LIST_MAX_HEIGHT }}>
             {filteredNotifications.map((notif) => {
               const unread = !notif.read;
               return (
@@ -244,10 +244,10 @@ export function NotificationDropdown({
                   key={notif.id}
                   role="menuitem"
                   onClick={() => markAsRead(notif.id)}
-                  className={`group flex items-start gap-2 mx-1 px-2 py-1.5 rounded cursor-pointer transition-colors duration-75 ${
+                  className={`group flex items-start gap-2 px-2 py-1.5 cursor-pointer transition-colors duration-75 ${
                     unread
                       ? isDarkMode
-                        ? 'bg-white/[0.03]'
+                        ? 'bg-white/[0.025]'
                         : 'bg-black/[0.02]'
                       : isDarkMode
                         ? 'hover:bg-white/[0.04]'
@@ -255,22 +255,24 @@ export function NotificationDropdown({
                   }`}
                 >
                   <div
-                    className={`w-6 h-6 rounded flex items-center justify-center shrink-0 mt-px ${
+                    className={`w-5 h-5 rounded flex items-center justify-center shrink-0 ${
                       isDarkMode ? 'bg-white/[0.06]' : 'bg-black/[0.04]'
                     }`}
                   >
                     {getNotificationIcon(notif.type)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-[11px] font-semibold leading-tight line-clamp-1 ${unread ? '' : 'opacity-75'}`}>
-                      {notif.title}
-                    </p>
-                    <p className={`text-[10px] leading-snug line-clamp-2 ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
+                  <div className="flex-1 min-w-0 pr-1">
+                    <div className="flex items-start justify-between gap-1">
+                      <p className={`text-[10px] font-semibold leading-tight line-clamp-1 ${unread ? '' : 'opacity-70'}`}>
+                        {notif.title}
+                      </p>
+                      <span className={`text-[9px] shrink-0 pt-px ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}>
+                        {formatTimeAgo(notif.timestamp)}
+                      </span>
+                    </div>
+                    <p className={`text-[9px] leading-snug line-clamp-1 mt-0.5 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
                       {notif.description}
                     </p>
-                    <span className={`text-[9px] ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}>
-                      {formatTimeAgo(notif.timestamp)}
-                    </span>
                   </div>
                   <button
                     type="button"
@@ -279,11 +281,11 @@ export function NotificationDropdown({
                       clearNotification(notif.id);
                     }}
                     className={`shrink-0 p-0.5 rounded opacity-0 group-hover:opacity-100 ${
-                      isDarkMode ? 'text-white/35 hover:bg-white/10' : 'text-black/35 hover:bg-black/10'
+                      isDarkMode ? 'text-white/30 hover:bg-white/10' : 'text-black/30 hover:bg-black/10'
                     }`}
                     aria-label="Dismiss"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-2.5 h-2.5" />
                   </button>
                 </div>
               );

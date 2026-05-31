@@ -5,7 +5,6 @@ import {
   Play, 
   Share2, 
   Star, 
-  Users, 
   Wrench, 
   Sparkles, 
   Target,
@@ -14,19 +13,12 @@ import {
   Trophy,
   Compass,
   Heart,
-  BrainCircuit, 
-  RotateCcw, 
-  Clock, 
-  AlertCircle,
+  Clock,
+  TrendingUp,
   Twitter,
   MessageSquare,
   Youtube,
   Github,
-  Check,
-  ArrowRight,
-  TrendingUp,
-  Smartphone,
-  Zap
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
 import { GameGrid } from '../components/GameGrid';
@@ -76,7 +68,7 @@ interface HomePageProps {
 }
 
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
-import { buildHomepageShelves, buildRecommendations } from '../utils/recommendations';
+import { buildHomepageShelves } from '../utils/recommendations';
 import { buildTagShelves } from '../lib/tagShelves';
 import { buildHomepageCategoryChips } from '../lib/homepageCategories';
 import { buildCuratedHomepageBlocks, pickFeaturedSpotlight } from '../lib/homepageCuration';
@@ -211,34 +203,19 @@ export const HomePage = React.memo(function HomePage({
     [filteredGames]
   );
 
-  // Dynamically generated personalized section based on user activity
-  const topCategory = (userProfile?.preferredCategories && userProfile.preferredCategories.length > 0) 
-    ? userProfile.preferredCategories[0] 
-    : (recentlyPlayedGames.length > 0 ? recentlyPlayedGames[0]?.category : null);
-    
-  const personalizedRecommendations = React.useMemo(() => {
-    if (!topCategory) return [];
-    return buildRecommendations(filteredGames, {
-      limit: 12,
-      excludeIds: recentlyPlayedGames.map((g) => g.id),
-      preferredCategories: topCategory === 'Trending' ? [] : [topCategory],
-      playHistory: recentlyPlayedGames.map((g) => g.id),
-    });
-  }, [filteredGames, topCategory, recentlyPlayedGames]);
-
   const homepageShelves = React.useMemo(
     () => buildHomepageShelves(filteredGames),
     [filteredGames]
   );
 
   const tagShelves = React.useMemo(
-    () => buildTagShelves(filteredGames, 14, new Set(homepageShelves.seenIds)),
-    [filteredGames, homepageShelves.seenIds]
+    () => buildTagShelves(filteredGames),
+    [filteredGames]
   );
 
   const curatedBlocks = React.useMemo(
-    () => buildCuratedHomepageBlocks(homepageShelves, tagShelves, 5),
-    [homepageShelves, tagShelves]
+    () => buildCuratedHomepageBlocks(homepageShelves, tagShelves, filteredGames, 4),
+    [homepageShelves, tagShelves, filteredGames]
   );
 
   const featuredSpotlight = React.useMemo(
@@ -250,17 +227,6 @@ export const HomePage = React.memo(function HomePage({
       ),
     [featuredGame, homepageShelves.topRated, homepageShelves.trending]
   );
-
-  const diversifyShelf = React.useMemo(() => {
-    if (!userProfile?.preferredCategories?.length) return [];
-    const preferred = userProfile.preferredCategories[0];
-    return buildRecommendations(filteredGames, {
-      limit: 10,
-      excludeIds: recentlyPlayedGames.map((g) => g.id),
-      preferredCategories: [],
-      playHistory: recentlyPlayedGames.map((g) => g.id),
-    }).filter((g) => g.category !== preferred);
-  }, [filteredGames, userProfile?.preferredCategories, recentlyPlayedGames]);
 
   const renderShelf = (
     title: string,
@@ -475,17 +441,10 @@ export const HomePage = React.memo(function HomePage({
                     else window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                     navigate(`/category/${cat.slug}`);
                   }}
-                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-left bg-gradient-to-br transition-colors duration-100 hover:border-accent/40 active:scale-[0.98] ${
-                    isDarkMode
-                      ? `${cat.bg} border-white/5 bg-white/[0.02]`
-                      : `${cat.bg.replace('/10', '/5')} border-black/5 bg-black/[0.02]`
-                  }`}
+                  className={`category-chip ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
-                  <span className="text-xl leading-none select-none shrink-0">{cat.icon}</span>
-                  <div className="min-w-0">
-                    <h4 className={`text-xs font-bold tracking-tight truncate ${isDarkMode ? 'text-white' : 'text-black'}`}>{cat.title}</h4>
-                    <p className={`text-[9px] font-medium ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{cat.count} {t('games') || 'games'}</p>
-                  </div>
+                  <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
+                  <span className="category-chip-label">{cat.title}</span>
                 </button>
               ))}
             </div>
@@ -524,32 +483,6 @@ export const HomePage = React.memo(function HomePage({
 <SectionErrorBoundary sectionName="Recommended Games">
         {selectedCategory === 'All' && !searchQuery && recommendedGames.length > 0 &&
           renderShelf(t('pickedForYou') || 'Picked for you', t('personalized') || 'For you', recommendedGames, 'rec', recRef, Target)}
-      </SectionErrorBoundary>
-
-<SectionErrorBoundary sectionName="Because You Played">
-        {selectedCategory === 'All' && !searchQuery && personalizedRecommendations.length > 0 && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Compass className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('exploreByGenre')}</span>
-                </div>
-                <h3 className="section-title">
-                  {topCategory === 'Trending' ? 'Trending Right Now' : `Because you played ${topCategory}`}
-                </h3>
-              </div>
-            </div>
-            
-            <div className="shelf-scroll">
-                {personalizedRecommendations.map((game, index) => (
-                  <div key={`because-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
       </SectionErrorBoundary>
 
       {/* New Arrivals */}
@@ -606,21 +539,6 @@ export const HomePage = React.memo(function HomePage({
 
       {/* Game Grid */}
 
-      <SectionErrorBoundary sectionName="Quick Sessions">
-        {selectedCategory === 'All' && !searchQuery &&
-          renderShelf('Quick 2-Minute Games', 'Quick play', homepageShelves.quickPlay.length ? homepageShelves.quickPlay : homepageShelves.topRated.slice(0, 10), 'quick', undefined, Clock)}
-      </SectionErrorBoundary>
-
-      <SectionErrorBoundary sectionName="Mobile Friendly">
-        {selectedCategory === 'All' && !searchQuery &&
-          renderShelf('Good on Mobile', 'On the go', homepageShelves.mobileFriendly, 'mobile', undefined, Smartphone)}
-      </SectionErrorBoundary>
-
-      <SectionErrorBoundary sectionName="Most Played">
-        {selectedCategory === 'All' && !searchQuery &&
-          renderShelf('Most Played', 'Classics', homepageShelves.trending.slice(0, 12), 'most-played', undefined, Users)}
-      </SectionErrorBoundary>
-
       <SectionErrorBoundary sectionName="Game Grid">
         <GameGrid 
           filteredGames={filteredGames}
@@ -652,22 +570,6 @@ export const HomePage = React.memo(function HomePage({
         </div>
       )}
       </SectionErrorBoundary>
-
-      {/* Continue Playing */}
-
-      {/* Popular Categories Selection */}
-
-      {/* New Arrivals Section */}
-
-      {/* Most Loved Section */}
-
-      <SectionErrorBoundary sectionName="Try Something Different">
-        {selectedCategory === 'All' && !searchQuery &&
-          renderShelf('Try Something Different', 'Discover new genres', diversifyShelf, 'diversify', undefined, Compass)}
-      </SectionErrorBoundary>
-      {/* Recommended for You Section */}
-
-      {/* Trending Now Section */}
 
       {/* Footer wrapped in hidden container */}
       <div className="hidden">

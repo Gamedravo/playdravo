@@ -272,7 +272,220 @@
   }
 
   .shelf-section--compact .shelf-card {
-    @apply w-[96px] sm:w-[108px] md:w-[120px];
+    @apply w-[88px] sm:w-[96px] md:w-[104px];
+  }
+
+  /* —— Category browse grid —— */
+  .category-chip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .category-chip-grid {
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 0.625rem;
+    }
+  }
+
+  .category-chip {
+    @apply flex flex-col items-center justify-center gap-1.5 h-[72px] rounded-xl border transition-colors duration-100 active:scale-[0.98] cursor-pointer;
+  }
+
+  .category-chip--dark {
+    @apply border-white/[0.06] bg-white/[0.03] hover:border-accent/35 hover:bg-white/[0.05];
+  }
+
+  .category-chip--light {
+    @apply border-black/[0.06] bg-black/[0.02] hover:border-accent/30 hover:bg-black/[0.04];
+  }
+
+  .category-chip-icon {
+    @apply text-[22px] leading-none select-none;
+  }
+
+  .category-chip-label {
+    @apply text-[10px] font-semibold tracking-tight text-center leading-tight px-1 line-clamp-2;
+  }
+
+  /* —— Sidebar —— */
+  .sidebar-shell {
+    @apply fixed md:sticky top-0 left-0 z-[60] h-screen shrink-0 transition-[width,transform] duration-150 ease-out;
+  }
+
+  .sidebar-shell--dark {
+    @apply bg-[#0c0c12] border-r border-white/[0.06];
+  }
+
+  .sidebar-shell--light {
+    @apply bg-white border-r border-black/[0.06];
+  }
+
+  .sidebar-shell--open {
+    @apply translate-x-0 w-[240px];
+  }
+
+  .sidebar-shell--closed {
+    @apply -translate-x-full w-0 overflow-hidden md:translate-x-0 md:w-[52px] md:hover:w-[220px] md:overflow-visible;
+  }
+
+  .sidebar-scroll {
+    @apply h-full overflow-y-auto overflow-x-hidden flex flex-col;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-brand-row {
+    @apply px-2 py-2.5 flex items-center justify-between shrink-0;
+  }
+
+  .sidebar-brand {
+    @apply flex items-center gap-2 min-w-0 hover:opacity-90 active:scale-[0.98] cursor-pointer;
+  }
+
+  .sidebar-brand-mark {
+    @apply w-8 h-8 bg-accent rounded-lg flex items-center justify-center shrink-0;
+  }
+
+  .sidebar-brand-text {
+    @apply font-bold text-base truncate opacity-0 max-w-0 overflow-hidden transition-[opacity,max-width] duration-100 md:group-hover/sidebar:opacity-100 md:group-hover/sidebar:max-w-[120px];
+  }
+
+  .sidebar-brand-text--visible {
+    @apply opacity-100 max-w-[120px];
+  }
+
+  .sidebar-close {
+    @apply p-1.5 rounded-lg hover:bg-white/5 transition-colors;
+  }
+
+  .sidebar-body {
+    @apply flex-1 px-1.5 py-1 space-y-1;
+  }
+
+  .sidebar-block {
+    @apply space-y-0.5;
+  }
+
+  .sidebar-block--divider {
+    @apply pt-1.5 border-t border-white/[0.06];
+  }
+
+  .sidebar-group-label {
+    @apply px-2 pt-1.5 pb-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/25 opacity-0 max-h-0 overflow-hidden transition-opacity duration-100 md:group-hover/sidebar:opacity-100 md:group-hover/sidebar:max-h-5;
+  }
+
+  .sidebar-group-label--visible {
+    @apply opacity-100 max-h-5;
+  }
+
+  .sidebar-nav {
+    @apply flex flex-col gap-px;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center gap-2 px-1.5 py-1.5 rounded-lg transition-colors duration-75 relative min-h-[34px];
+  }
+
+  .sidebar-nav-item--dark {
+    @apply text-white/60 hover:text-white hover:bg-white/[0.05];
+  }
+
+  .sidebar-nav-item--light {
+    @apply text-black/60 hover:text-black hover:bg-black/[0.04];
+  }
+
+  .sidebar-nav-item--active {
+    @apply bg-accent/12 text-accent font-semibold shadow-[inset_0_0_0_1px_rgba(157,92,255,0.18)];
+  }
+
+  .sidebar-nav-item--active.sidebar-nav-item--dark,
+  .sidebar-nav-item--active.sidebar-nav-item--light {
+    @apply text-accent;
+  }
+
+  .sidebar-icon {
+    @apply w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors duration-75;
+  }
+
+  .sidebar-nav-item--dark .sidebar-icon {
+    @apply bg-white/[0.04] text-white/55;
+  }
+
+  .sidebar-nav-item--light .sidebar-icon {
+    @apply bg-black/[0.04] text-black/55;
+  }
+
+  .sidebar-nav-item--active .sidebar-icon,
+  .sidebar-icon--active {
+    @apply bg-accent/20 text-accent;
+  }
+
+  .sidebar-label {
+    @apply text-[12px] font-medium whitespace-nowrap opacity-0 max-w-0 overflow-hidden transition-[opacity,max-width] duration-100 md:group-hover/sidebar:opacity-100 md:group-hover/sidebar:max-w-[140px];
+  }
+
+  .sidebar-label--visible {
+    @apply opacity-100 max-w-[140px];
+  }
+
+  .sidebar-cta {
+    @apply w-full flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-accent/12 text-accent hover:bg-accent hover:text-bg-dark transition-colors duration-100 min-h-[34px];
+  }
+
+  .sidebar-footer {
+    @apply p-2 border-t border-white/[0.06] shrink-0;
+  }
+
+  .sidebar-profile {
+    @apply flex items-center gap-2 p-1.5 rounded-lg mb-1 opacity-0 max-h-0 overflow-hidden md:group-hover/sidebar:opacity-100 md:group-hover/sidebar:max-h-12 bg-white/[0.03];
+  }
+
+  .sidebar-profile--visible {
+    @apply opacity-100 max-h-12;
+  }
+
+  .sidebar-profile-avatar {
+    @apply w-8 h-8 rounded-lg object-cover shrink-0 border border-accent/20;
+  }
+
+  .sidebar-profile-meta {
+    @apply min-w-0;
+  }
+
+  .sidebar-profile-name {
+    @apply text-xs font-bold truncate;
+  }
+
+  .sidebar-profile-role {
+    @apply text-[8px] font-semibold text-accent uppercase tracking-wide;
+  }
+
+  .sidebar-logout,
+  .sidebar-login {
+    @apply w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-colors duration-100;
+  }
+
+  .sidebar-logout {
+    @apply text-red-400/80 hover:text-red-400 hover:bg-red-500/10;
+  }
+
+  .sidebar-login {
+    @apply bg-accent text-white hover:brightness-110;
+  }
+
+  .sidebar-shell--light .sidebar-block--divider,
+  .sidebar-shell--light .sidebar-footer {
+    @apply border-black/[0.06];
+  }
+
+  .sidebar-shell--light .sidebar-group-label {
+    @apply text-black/30;
   }
 
   /* —— Shimmer skeletons —— */
@@ -283,19 +496,6 @@
 
   .shelf-header {
     @apply flex items-end justify-between mb-1;
-  }
-
-  .category-chip-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-    gap: 0.5rem;
-  }
-
-  @media (min-width: 768px) {
-    .category-chip-grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 0.625rem;
-    }
   }
 
   .shelf-scroll {
@@ -310,7 +510,7 @@
   }
 
   .shelf-card {
-    @apply w-[104px] sm:w-[118px] md:w-[132px] lg:w-[144px] shrink-0 snap-start;
+    @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] shrink-0 snap-start;
   }
 }
 

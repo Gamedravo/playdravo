@@ -20,7 +20,6 @@ export const TAG_SHELF_DEFINITIONS: Array<{
   { id: 'fighting', title: 'Fighting', matchers: [/\bfighting\b/i, /\bcombat\b/i] },
   { id: 'clicker-idle', title: 'Clicker & Idle', matchers: [/\bclicker\b/i, /\bidle\b/i] },
   { id: 'retro', title: 'Retro & Classics', matchers: [/\bretro\b/i, /\bclassic\b/i] },
-  { id: 'driving', title: 'Cars & Driving', matchers: [/\bdriving\b/i, /\bcar\b/i, /\btraffic\b/i] },
   { id: 'sandbox', title: 'Sandbox', matchers: [/\bsandbox\b/i, /\bcrafting\b/i] },
   { id: 'card-board', title: 'Card & Board', matchers: [/\bcard\b/i, /\bboard\b/i, /\bchess\b/i, /\bsolitaire\b/i] },
 ];
@@ -51,9 +50,9 @@ export function pickGamesByTagShelf(
   return picked;
 }
 
-export function buildTagShelves(games: Game[], limitPerShelf = 18, excludeIds = new Set<string>()) {
+export function buildTagShelves(games: Game[], limitPerShelf = 28) {
   return TAG_SHELF_DEFINITIONS.map((def) => ({
     ...def,
-    games: pickGamesByTagShelf(games, def.matchers, limitPerShelf, excludeIds),
-  })).filter((s) => s.games.length >= 4);
+    games: pickGamesByTagShelf(games, def.matchers, limitPerShelf, new Set()),
+  })).filter((s) => s.games.length >= 6);
 }
