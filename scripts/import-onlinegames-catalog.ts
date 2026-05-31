@@ -295,7 +295,13 @@ ${validGames
     const desc = escapeTsString((g.description || '').slice(0, 500));
     const title = escapeTsString(g.title.trim());
     const embed = escapeTsString(g.embed.trim());
-    const image = escapeTsString(g.image.trim());
+    const image = escapeTsString(
+      g.image
+        .trim()
+        .replace(/-xs\.webp$/i, '-lg.webp')
+        .replace(/-md\.webp$/i, '-lg.webp')
+        .replace(/-xs\.(jpg|jpeg|png)$/i, '-lg.$1')
+    );
     const tagsJson = JSON.stringify(g.tagList);
 
     return `  {

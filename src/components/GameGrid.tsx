@@ -3,6 +3,7 @@ import { Search, RotateCcw, Play, Star, Terminal, Filter, Trophy, Flame, Heart, 
 import { Game } from '../types';
 import { GameCard } from './GameCard';
 import { GameThumbnail } from './GameThumbnail';
+import { GameCardSkeleton } from './LoadingSkeletons';
 import { GAMES as STATIC_GAMES } from '../games';
 
 interface GameGridProps {
@@ -154,9 +155,7 @@ export const GameGrid = memo(function GameGrid({
         {isLoading ? (
           <div key="skeletons" className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3">
             {[...Array(12)].map((_, i) => (
-              <div key={`skeleton-${i}`} className={`aspect-[4/5] rounded-xl md:rounded-2xl border overflow-hidden relative shadow-sm ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
-                 <div className={`absolute inset-0 shimmer-overlay z-10 opacity-50`} />
-              </div>
+              <GameCardSkeleton key={`skeleton-${i}`} isDarkMode={isDarkMode} />
             ))}
           </div>
         ) : filteredGames.length === 0 ? (

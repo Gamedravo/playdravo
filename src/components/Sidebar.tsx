@@ -1,19 +1,18 @@
 import React, { useRef, memo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  X, 
-  Settings, 
-  HelpCircle, 
-  AlertCircle, 
-  FileText, 
-  Bug, 
-  LogOut, 
-  User, 
+import {
+  X,
+  Settings,
+  HelpCircle,
+  AlertCircle,
+  FileText,
+  Bug,
+  LogOut,
   LogIn,
   Gamepad2,
   Sparkles,
   Dices,
-  Plus
+  Plus,
 } from 'lucide-react';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -21,8 +20,6 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 interface SidebarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
-  isSidebarHovered: boolean;
-  setIsSidebarHovered: (hovered: boolean) => void;
   isDarkMode: boolean;
   selectedCategory: string;
   setSelectedCategory: (cat: string) => void;
@@ -50,35 +47,39 @@ interface SidebarProps {
 }
 
 const categoryKeyMap: Record<string, string> = {
-  'All': 'all',
-  'Favorites': 'favorites',
-  'Recommended': 'recommended',
-  'History': 'history',
-  'Trending': 'trending',
-  'Mods': 'mods',
-  'Action': 'action',
-  'Adventure': 'adventure',
-  'Arcade': 'arcade',
-  'Casual': 'casual',
-  'Horror': 'horror',
-  'Puzzle': 'puzzle',
-  'Simulator': 'simulator',
-  'Obby': 'obby',
-  'Sports': 'sports',
-  'Strategy': 'strategy',
-  'Multiplayer': 'multiplayer',
+  All: 'all',
+  Favorites: 'favorites',
+  Recommended: 'recommended',
+  History: 'history',
+  Trending: 'trending',
+  Mods: 'mods',
+  Action: 'action',
+  Adventure: 'adventure',
+  Arcade: 'arcade',
+  Casual: 'casual',
+  Horror: 'horror',
+  Puzzle: 'puzzle',
+  Simulator: 'simulator',
+  Obby: 'obby',
+  Sports: 'sports',
+  Strategy: 'strategy',
+  Multiplayer: 'multiplayer',
   '2 Player': 'twoPlayer',
   '3 Player': 'threePlayer',
   '4 Player': 'fourPlayer',
   'Main Menu': 'mainMenu',
-  'Categories': 'categories'
+  Categories: 'categories',
 };
+
+const labelClass =
+  'text-xs font-medium whitespace-nowrap overflow-hidden transition-[opacity,max-width] duration-100 ease-out max-w-0 opacity-0 md:group-hover/sidebar:max-w-[140px] md:group-hover/sidebar:opacity-100';
+
+const mobileLabelClass = (open: boolean) =>
+  `text-xs font-medium whitespace-nowrap transition-opacity duration-100 ${open ? 'opacity-100 max-w-[140px]' : 'max-w-0 opacity-0 md:max-w-0 md:opacity-0'}`;
 
 export const Sidebar = memo(function Sidebar({
   isSidebarOpen,
   setIsSidebarOpen,
-  isSidebarHovered,
-  setIsSidebarHovered,
   isDarkMode,
   selectedCategory,
   setSelectedCategory,
@@ -88,261 +89,261 @@ export const Sidebar = memo(function Sidebar({
   userProfile,
   setIsLoginModalOpen,
   logout,
-  accentColor,
-  setAccentColor,
-  THEMES,
   setIsPreferencesModalOpen,
   setIsHelpCenterOpen,
-  setIsStatusModalOpen,
   setIsLegalModalOpen,
   setIsBugReportModalOpen,
-  setIsAIAssistantOpen,
   setIsSubmitModalOpen,
-  isAIAssistantOpen,
   handleSurpriseMe,
   language,
   setLanguage,
-  t
+  t,
 }: SidebarProps) {
-  const isExpanded = (isSidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768) || isSidebarHovered;
   const location = useLocation();
   const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseEnter = () => {
-    setIsSidebarHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsSidebarHovered(false);
-  };
+  const mobileExpanded = isSidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768;
 
   return (
-    <aside 
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <aside
       className={`
-        fixed md:sticky top-0 left-0 z-[60] h-screen transition-all duration-300 ease-in-out group shrink-0
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        ${isSidebarOpen ? (isExpanded ? 'w-64' : 'w-20') : 'w-0 overflow-hidden'}
-        ${isDarkMode 
-          ? `bg-bg-dark ${isSidebarOpen ? 'border-r border-white/5' : 'border-none'}` 
-          : `bg-white ${isSidebarOpen ? 'border-r border-black/5' : 'border-none'}`
-        }
+        group/sidebar peer/sidebar fixed md:sticky top-0 left-0 z-[60] h-screen shrink-0
+        transition-[width,transform] duration-150 ease-out
+        ${isSidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full w-0 overflow-hidden'}
+        md:translate-x-0 md:w-14 md:hover:w-56 md:overflow-visible
+        ${isDarkMode ? 'bg-bg-dark border-r border-white/5' : 'bg-white border-r border-black/5'}
       `}
     >
-      <div 
-        ref={scrollerRef}
-        className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col"
-      >
-        {/* Sidebar Header */}
-        <div className="px-4 py-3 flex items-center justify-between shrink-0">
-          <a 
+      <div ref={scrollerRef} className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col">
+        <div className="px-2.5 py-2.5 flex items-center justify-between shrink-0">
+          <a
             href="/"
             onClick={(e) => {
               e.preventDefault();
               navigate('/');
-              if (setSelectedCategory) setSelectedCategory('All');
-              const main = document.querySelector('main');
-              if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              setSelectedCategory('All');
+              document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
-            className="flex items-center gap-3 group/logo transition-all hover:opacity-80 active:scale-95 cursor-pointer"
+            className="flex items-center gap-2.5 hover:opacity-90 active:scale-[0.98] cursor-pointer min-w-0"
             title="Home"
           >
-            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center group-hover/logo:scale-105 transition-transform">
+            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shrink-0">
               <Gamepad2 className="w-5 h-5 text-bg-dark" />
             </div>
-            <span className={`font-bold text-xl transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+            <span
+              className={`font-bold text-lg truncate ${mobileExpanded ? 'opacity-100' : labelClass} ${isDarkMode ? 'text-white' : 'text-black'}`}
+            >
               Play<span className="text-accent">Dravo</span>
             </span>
           </a>
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(false)}
-            className="md:hidden p-2 hover:bg-white/5 rounded-xl transition-colors"
+            className="md:hidden p-1.5 hover:bg-white/5 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Categories Content */}
-        <div className="flex-1 px-3 py-3 space-y-5">
-          {/* Quick Actions Section */}
+        <div className="flex-1 px-2 py-2 space-y-3">
           <div className="space-y-0.5">
-            <button 
+            <button
               onClick={handleSurpriseMe}
-              className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 bg-accent/10 text-accent hover:bg-accent hover:text-bg-dark group`}
+              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 bg-accent/10 text-accent hover:bg-accent hover:text-bg-dark"
             >
-              <div className="shrink-0 w-8 flex justify-center">
-                <Dices className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <div className="shrink-0 w-7 flex justify-center">
+                <Dices className="w-4 h-4" />
               </div>
-              <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                {t('randomGames')}
-              </span>
+              <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('randomGames')}</span>
             </button>
-             <button 
-              onClick={(e) => {
-                e.stopPropagation();
+            <button
+              onClick={() => {
                 setIsPreferencesModalOpen(true);
                 if (window.innerWidth < 768) setIsSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 hover:bg-white/10 group`}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-black/5'}`}
             >
-              <div className="shrink-0 w-8 flex justify-center">
-                <Sparkles className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <div className="shrink-0 w-7 flex justify-center">
+                <Sparkles className="w-4 h-4" />
               </div>
-              <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                {t('personalize')}
-              </span>
+              <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('personalize')}</span>
             </button>
           </div>
 
-          {categoryGroups.map((group, groupIndex) => {
-            return (
-              <div key={`group-${groupIndex}-${group.title}`} className="space-y-0.5">
-                <div className="space-y-0.5">
-                  {group.items.map((cat, catIndex) => {
-                    const isSelected = selectedCategory === cat;
-                    const getCategoryUrl = (cat: string) => {
-                      if (cat === 'All') return '/';
-                      if (cat === 'Favorites') return '/library/favorites';
-                      if (cat === 'History') return '/library/history';
-                      return `/category/${cat.toLowerCase()}`;
-                    };
-                    const categoryUrl = getCategoryUrl(cat);
-                    
-                    return (
-                      <Link
-                        key={`cat-${groupIndex}-${catIndex}-${cat}`}
-                        to={categoryUrl}
-                        onClick={() => {
-                          // Allow natural navigation to category page, but keep the homepage state clean
-                          setSelectedCategory('All');
-                          if (window.innerWidth < 768) setIsSidebarOpen(false);
-                        }}
-                        className={`
-                          w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 relative
-                          ${isSelected 
-                            ? 'bg-accent/10 text-accent' 
-                            : (isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black')}
-                        `}
+          {categoryGroups.map((group, groupIndex) => (
+            <div key={`group-${groupIndex}-${group.title}`} className="space-y-0.5">
+              {group.title !== 'Main Menu' && (
+                <p
+                  className={`px-2 pt-2 pb-0.5 text-[9px] font-bold uppercase tracking-widest truncate ${
+                    mobileExpanded
+                      ? 'opacity-100'
+                      : 'md:opacity-0 md:max-h-0 md:group-hover/sidebar:opacity-100 md:group-hover/sidebar:max-h-6'
+                  } transition-opacity duration-100 ${isDarkMode ? 'text-white/30' : 'text-black/35'}`}
+                >
+                  {group.title}
+                </p>
+              )}
+              {group.items.map((cat, catIndex) => {
+                const isSelected = selectedCategory === cat;
+                const categoryUrl =
+                  cat === 'All'
+                    ? '/'
+                    : cat === 'Favorites'
+                      ? '/library/favorites'
+                      : cat === 'History'
+                        ? '/library/history'
+                        : `/category/${cat.toLowerCase()}`;
+
+                return (
+                  <Link
+                    key={`cat-${groupIndex}-${catIndex}-${cat}`}
+                    to={categoryUrl}
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      if (window.innerWidth < 768) setIsSidebarOpen(false);
+                    }}
+                    className={`
+                      w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-75 relative
+                      ${
+                        isSelected
+                          ? 'bg-accent/15 text-accent font-semibold shadow-[inset_0_0_0_1px_rgba(157,92,255,0.2)]'
+                          : isDarkMode
+                            ? 'hover:bg-white/[0.06] text-white/65 hover:text-white'
+                            : 'hover:bg-black/[0.04] text-black/65 hover:text-black'
+                      }
+                    `}
+                  >
+                    {isSelected && <div className="absolute left-0 w-0.5 h-4 bg-accent rounded-r-full" />}
+                    <div className="shrink-0 w-7 flex justify-center">{getCategoryIcon(cat)}</div>
+                    <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>
+                      {t(categoryKeyMap[cat] || cat)}
+                    </span>
+                    {(mobileExpanded || false) && categoryCounts[cat] > 0 && (
+                      <span
+                        className={`ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full md:hidden ${isSelected ? 'bg-accent text-bg-dark' : 'bg-white/5 text-white/30'}`}
                       >
-                        {isSelected && (
-                          <div className="absolute left-0 w-0.5 h-5 bg-accent rounded-r-full" />
-                        )}
-                        <div className="shrink-0 w-8 flex justify-center">
-                          {getCategoryIcon(cat)}
-                        </div>
-                        <span className={`text-xs font-medium transition-all duration-200 whitespace-nowrap ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                          {t(categoryKeyMap[cat] || cat)}
-                        </span>
-                        {isExpanded && categoryCounts[cat] > 0 && (
-                          <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-accent text-bg-dark' : 'bg-white/5 text-white/30'}`}>
-                            {categoryCounts[cat]}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-
-
-          <div className="space-y-0.5 pt-3 border-t border-white/5">
-            <div className="space-y-0.5">
-              <Link 
-                to="/support"
-                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
-              >
-                <div className="shrink-0 w-8 flex justify-center"><HelpCircle className="w-4 h-4" /></div>
-                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('helpCenter')}</span>
-              </Link>
-              <Link 
-                to="/terms"
-                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
-              >
-                <div className="shrink-0 w-8 flex justify-center"><FileText className="w-4 h-4" /></div>
-                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('legal')}</span>
-              </Link>
-              <Link 
-                to="/report-bug"
-                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
-                className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
-              >
-                <div className="shrink-0 w-8 flex justify-center"><Bug className="w-4 h-4" /></div>
-                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('bugReport')}</span>
-              </Link>
-              {userProfile?.role === 'admin' && (
-                <button 
-                  onClick={() => setIsSubmitModalOpen(true)}
-                  className={`md:hidden w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
-                >
-                  <div className="shrink-0 w-8 flex justify-center"><Plus className="w-4 h-4" /></div>
-                  <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('submitGameButton')}</span>
-                </button>
-              )}
-              {userProfile?.role === 'admin' && (
-                <Link 
-                  to="/admin/bug-reports"
-                  className={`w-full group flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${location.pathname.startsWith('/admin') ? 'bg-accent/10 text-accent' : (isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black')}`}
-                >
-                  <div className="shrink-0 w-8 flex justify-center"><Settings className="w-4 h-4" /></div>
-                  <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('adminPanel')}</span>
-                </Link>
-              )}
+                        {categoryCounts[cat]}
+                      </span>
+                    )}
+                    <span
+                      className={`ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full hidden md:inline-flex md:opacity-0 md:group-hover/sidebar:opacity-100 transition-opacity duration-100 ${
+                        isSelected ? 'bg-accent text-bg-dark' : 'bg-white/5 text-white/30'
+                      } ${categoryCounts[cat] > 0 ? '' : 'invisible'}`}
+                    >
+                      {categoryCounts[cat] || 0}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
+          ))}
+
+          <div className="space-y-0.5 pt-2 border-t border-white/5">
+            <Link
+              to="/support"
+              onClick={() => {
+                if (window.innerWidth < 768) setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-black/5 text-black/70'}`}
+            >
+              <div className="shrink-0 w-7 flex justify-center">
+                <HelpCircle className="w-4 h-4" />
+              </div>
+              <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('helpCenter')}</span>
+            </Link>
+            <Link
+              to="/terms"
+              onClick={() => {
+                if (window.innerWidth < 768) setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-black/5 text-black/70'}`}
+            >
+              <div className="shrink-0 w-7 flex justify-center">
+                <FileText className="w-4 h-4" />
+              </div>
+              <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('legal')}</span>
+            </Link>
+            <Link
+              to="/report-bug"
+              onClick={() => {
+                if (window.innerWidth < 768) setIsSidebarOpen(false);
+              }}
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-black/5 text-black/70'}`}
+            >
+              <div className="shrink-0 w-7 flex justify-center">
+                <Bug className="w-4 h-4" />
+              </div>
+              <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('bugReport')}</span>
+            </Link>
+            {userProfile?.role === 'admin' && (
+              <button
+                onClick={() => setIsSubmitModalOpen(true)}
+                className={`md:hidden w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-black/5 text-black/70'}`}
+              >
+                <div className="shrink-0 w-7 flex justify-center">
+                  <Plus className="w-4 h-4" />
+                </div>
+                <span className={mobileLabelClass(true)}>{t('submitGameButton')}</span>
+              </button>
+            )}
+            {userProfile?.role === 'admin' && (
+              <Link
+                to="/admin/bug-reports"
+                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 ${location.pathname.startsWith('/admin') ? 'bg-accent/10 text-accent' : isDarkMode ? 'hover:bg-white/5 text-white/70' : 'hover:bg-black/5 text-black/70'}`}
+              >
+                <div className="shrink-0 w-7 flex justify-center">
+                  <Settings className="w-4 h-4" />
+                </div>
+                <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('adminPanel')}</span>
+              </Link>
+            )}
           </div>
 
-          {/* Language Switcher for Mobile/Sidebar */}
-          <div className={`mt-2 px-2 py-3 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-            <div className="flex justify-start">
-              <LanguageSwitcher 
-                currentLanguage={language}
-                setLanguage={setLanguage}
-                isDarkMode={isDarkMode}
-                align="left"
-                minimal={!isExpanded}
-                variant={isExpanded ? 'grid' : 'dropdown'}
-              />
-            </div>
+          <div className={`pt-2 border-t ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+            <LanguageSwitcher
+              currentLanguage={language}
+              setLanguage={setLanguage}
+              isDarkMode={isDarkMode}
+              align="left"
+              minimal={!mobileExpanded}
+              variant={mobileExpanded ? 'grid' : 'dropdown'}
+            />
           </div>
         </div>
 
-        {/* User Profile / Auth */}
-        <div className={`p-3 border-t transition-all duration-200 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+        <div className={`p-2.5 border-t ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
           {userProfile ? (
-            <div className="space-y-2">
-              <div className={`flex items-center gap-2.5 p-2 rounded-xl transition-all duration-200 ${isExpanded ? 'bg-white/5' : ''}`}>
-                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-accent/20">
-                  <img src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <div className="space-y-1.5">
+              <div className={`flex items-center gap-2 p-1.5 rounded-lg ${mobileExpanded ? 'bg-white/5' : 'md:group-hover/sidebar:bg-white/5'}`}>
+                <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-accent/20">
+                  <img
+                    src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
                 </div>
-                <div className={`transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                  <p className="text-sm font-bold tracking-tight truncate w-32">{userProfile.displayName}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                    <span className="text-[10px] font-semibold text-accent uppercase">{userProfile.role}</span>
-                  </div>
+                <div className={`min-w-0 ${mobileExpanded ? 'opacity-100' : labelClass}`}>
+                  <p className="text-sm font-bold truncate">{userProfile.displayName}</p>
+                  <span className="text-[9px] font-semibold text-accent uppercase">{userProfile.role}</span>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={logout}
-                className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-lg transition-all duration-150 ${isDarkMode ? 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500' : 'hover:bg-red-500/10 text-red-500/60 hover:text-red-500'}`}
+                className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors duration-100 text-red-500/70 hover:text-red-500 hover:bg-red-500/10`}
               >
-                <div className="shrink-0 w-8 flex justify-center"><LogOut className="w-4 h-4" /></div>
-                <span className={`text-xs font-medium transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('logout')}</span>
+                <div className="shrink-0 w-7 flex justify-center">
+                  <LogOut className="w-4 h-4" />
+                </div>
+                <span className={mobileExpanded ? mobileLabelClass(true) : labelClass}>{t('logout')}</span>
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="w-full group/login relative overflow-hidden bg-accent text-white font-bold py-2.5 text-sm rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full bg-accent text-white font-bold py-2 text-sm rounded-lg transition-colors duration-100 hover:brightness-110 flex items-center justify-center gap-2"
             >
-              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/login:translate-x-[100%] transition-transform duration-1000" />
-              <LogIn className="w-4 h-4 relative z-10" />
-              <span className={`relative z-10 text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'}`}>{t('login')}</span>
+              <LogIn className="w-4 h-4" />
+              <span className={mobileExpanded ? '' : labelClass}>{t('login')}</span>
             </button>
           )}
         </div>

@@ -1,0 +1,1046 @@
+{
+  "checkedAt": "2026-05-31T14:13:34.096Z",
+  "total": 259,
+  "working": 259,
+  "broken": 0,
+  "workingGames": [
+    {
+      "id": "golf-bit",
+      "title": "Golf Bit"
+    },
+    {
+      "id": "love-tester",
+      "title": "Love Tester"
+    },
+    {
+      "id": "stack-fire-ball",
+      "title": "Stack Fire Ball"
+    },
+    {
+      "id": "drift-king",
+      "title": "Drift King"
+    },
+    {
+      "id": "highway-traffic",
+      "title": "Highway Traffic"
+    },
+    {
+      "id": "cs-online",
+      "title": "CS Online"
+    },
+    {
+      "id": "stickman-parkour",
+      "title": "Stickman Parkour"
+    },
+    {
+      "id": "stickman-gta-city",
+      "title": "Stickman GTA City"
+    },
+    {
+      "id": "masked-special-forces",
+      "title": "Masked Special Forces"
+    },
+    {
+      "id": "checkout-frenzy",
+      "title": "Checkout Frenzy"
+    },
+    {
+      "id": "madalin-stunt-cars-pro",
+      "title": "Madalin Stunt Cars Pro"
+    },
+    {
+      "id": "velocity-rush",
+      "title": "Velocity Rush"
+    },
+    {
+      "id": "dublix",
+      "title": "Dublix"
+    },
+    {
+      "id": "escape-car",
+      "title": "Escape Car"
+    },
+    {
+      "id": "get-on-top",
+      "title": "Get On Top"
+    },
+    {
+      "id": "capybara-clicker-pro",
+      "title": "Capybara Clicker Pro"
+    },
+    {
+      "id": "real-flight-simulator",
+      "title": "Real Flight Simulator"
+    },
+    {
+      "id": "snaker-io",
+      "title": "Snaker io"
+    },
+    {
+      "id": "edys-car-simulator",
+      "title": "Edys Car Simulator"
+    },
+    {
+      "id": "drift-hunters-pro",
+      "title": "Drift Hunters Pro"
+    },
+    {
+      "id": "basket-hoop",
+      "title": "Basket Hoop"
+    },
+    {
+      "id": "highway-cars",
+      "title": "Highway Cars"
+    },
+    {
+      "id": "fps-strike",
+      "title": "FPS Strike"
+    },
+    {
+      "id": "burnout-city",
+      "title": "Burnout City"
+    },
+    {
+      "id": "basketball-io",
+      "title": "Basketball io"
+    },
+    {
+      "id": "drunken-duel",
+      "title": "Drunken Duel"
+    },
+    {
+      "id": "cube-worlds",
+      "title": "Cube Worlds"
+    },
+    {
+      "id": "99-nights-in-the-forest",
+      "title": "99 Nights in the Forest"
+    },
+    {
+      "id": "fast-food-rush",
+      "title": "Fast Food Rush"
+    },
+    {
+      "id": "love-tester-story",
+      "title": "Love Tester Story"
+    },
+    {
+      "id": "stickman-destruction",
+      "title": "Stickman Destruction"
+    },
+    {
+      "id": "warstrike",
+      "title": "WarStrike"
+    },
+    {
+      "id": "masked-forces-zombie-survival",
+      "title": "Masked Forces Zombie Survival"
+    },
+    {
+      "id": "cat-simulator",
+      "title": "Cat Simulator"
+    },
+    {
+      "id": "super-car-driving",
+      "title": "Super Car Driving"
+    },
+    {
+      "id": "crazy-strike-force",
+      "title": "Crazy Strike Force"
+    },
+    {
+      "id": "highway-racer-pro",
+      "title": "Highway Racer Pro"
+    },
+    {
+      "id": "armedforces-io",
+      "title": "ArmedForces.io"
+    },
+    {
+      "id": "car-football",
+      "title": "Car Football"
+    },
+    {
+      "id": "cake-match-puzzle",
+      "title": "Cake Match Puzzle"
+    },
+    {
+      "id": "pixelmon-town",
+      "title": "Pixelmon Town"
+    },
+    {
+      "id": "legendary-sniper",
+      "title": "Legendary Sniper"
+    },
+    {
+      "id": "geometry-vector",
+      "title": "Geometry Vector"
+    },
+    {
+      "id": "poop-clicker",
+      "title": "Poop Clicker"
+    },
+    {
+      "id": "cubecraft-survival",
+      "title": "CubeCraft Survival"
+    },
+    {
+      "id": "drift-rider",
+      "title": "Drift Rider"
+    },
+    {
+      "id": "chess-freezenova",
+      "title": "Chess FreezeNova"
+    },
+    {
+      "id": "block-blast",
+      "title": "Block Blast"
+    },
+    {
+      "id": "mob-city",
+      "title": "Mob City"
+    },
+    {
+      "id": "geometry-dash-freezenova",
+      "title": "Geometry Dash FreezeNova"
+    },
+    {
+      "id": "8-ball-pool-billiard",
+      "title": "8 Ball Pool Billiard"
+    },
+    {
+      "id": "kick-the-dummy",
+      "title": "Kick The Dummy"
+    },
+    {
+      "id": "crazy-drifter",
+      "title": "Crazy Drifter"
+    },
+    {
+      "id": "wasteland-shooters",
+      "title": "Wasteland Shooters"
+    },
+    {
+      "id": "backflip-challenge",
+      "title": "Backflip Challenge"
+    },
+    {
+      "id": "city-stunts",
+      "title": "City Stunts"
+    },
+    {
+      "id": "crazy-cattle-3d",
+      "title": "Crazy Cattle 3D"
+    },
+    {
+      "id": "urban-sniper",
+      "title": "Urban Sniper"
+    },
+    {
+      "id": "burnout-drift-hunter",
+      "title": "Burnout Drift Hunter"
+    },
+    {
+      "id": "egg-car-racing",
+      "title": "Egg Car Racing"
+    },
+    {
+      "id": "nuts-and-bolts-puzzle",
+      "title": "Nuts and Bolts Puzzle"
+    },
+    {
+      "id": "crazy-parking-fury",
+      "title": "Crazy Parking Fury"
+    },
+    {
+      "id": "four-colors",
+      "title": "Four Colors"
+    },
+    {
+      "id": "taxi-simulator",
+      "title": "Taxi Simulator"
+    },
+    {
+      "id": "head-soccer-2022",
+      "title": "Head Soccer 2022"
+    },
+    {
+      "id": "troll-level",
+      "title": "Troll Level"
+    },
+    {
+      "id": "alien-sky-invasion",
+      "title": "Alien Sky Invasion"
+    },
+    {
+      "id": "mini-cars-racing",
+      "title": "Mini Cars Racing"
+    },
+    {
+      "id": "fast-food-manager",
+      "title": "Fast Food Manager"
+    },
+    {
+      "id": "fall-brainrots",
+      "title": "Fall Brainrots"
+    },
+    {
+      "id": "dark-ninja-hanjo",
+      "title": "Dark Ninja Hanjo"
+    },
+    {
+      "id": "airplane-racer",
+      "title": "Airplane Racer"
+    },
+    {
+      "id": "drift-fury",
+      "title": "Drift Fury"
+    },
+    {
+      "id": "five-nights-at-poppy",
+      "title": "Five Nights at Poppy"
+    },
+    {
+      "id": "monster-truck-mountain-climb",
+      "title": "Monster Truck Mountain Climb"
+    },
+    {
+      "id": "tile-match",
+      "title": "Tile Match"
+    },
+    {
+      "id": "police-traffic",
+      "title": "Police Traffic"
+    },
+    {
+      "id": "rome-simulator",
+      "title": "Rome Simulator"
+    },
+    {
+      "id": "survival-island",
+      "title": "Survival Island"
+    },
+    {
+      "id": "rooftop-duel",
+      "title": "Rooftop Duel"
+    },
+    {
+      "id": "fort-drifter",
+      "title": "Fort Drifter"
+    },
+    {
+      "id": "deer-hunter",
+      "title": "Deer Hunter"
+    },
+    {
+      "id": "2-player-crazy-racer",
+      "title": "2 Player Crazy Racer"
+    },
+    {
+      "id": "atv-highway-traffic",
+      "title": "ATV Highway Traffic"
+    },
+    {
+      "id": "futuristic-racer",
+      "title": "Futuristic Racer"
+    },
+    {
+      "id": "cookie-clicker-pro",
+      "title": "Cookie Clicker Pro"
+    },
+    {
+      "id": "bandits-multiplayer-pvp",
+      "title": "Bandits Multiplayer PvP"
+    },
+    {
+      "id": "fnf-funk-3d",
+      "title": "FNF Funk 3D"
+    },
+    {
+      "id": "subway-idle-3d",
+      "title": "Subway Idle 3D"
+    },
+    {
+      "id": "army-combat",
+      "title": "Army Combat"
+    },
+    {
+      "id": "stunt-simulator-2",
+      "title": "Stunt Simulator 2"
+    },
+    {
+      "id": "basketball-slam-dunk",
+      "title": "Basketball Slam Dunk"
+    },
+    {
+      "id": "poly-racing-cars",
+      "title": "Poly Racing Cars"
+    },
+    {
+      "id": "motorbike-stunt-simulator",
+      "title": "Motorbike Stunt Simulator"
+    },
+    {
+      "id": "offroad-rally",
+      "title": "Offroad Rally"
+    },
+    {
+      "id": "speedrun-parkour",
+      "title": "Speedrun Parkour"
+    },
+    {
+      "id": "nova-craft",
+      "title": "Nova Craft"
+    },
+    {
+      "id": "among-impostor",
+      "title": "Among Impostor"
+    },
+    {
+      "id": "solitaire-adventure",
+      "title": "Solitaire Adventure"
+    },
+    {
+      "id": "jungle-mart",
+      "title": "Jungle Mart"
+    },
+    {
+      "id": "sniper-elite",
+      "title": "Sniper Elite"
+    },
+    {
+      "id": "limousine-simulator",
+      "title": "Limousine Simulator"
+    },
+    {
+      "id": "supercars-drift",
+      "title": "Supercars Drift"
+    },
+    {
+      "id": "jeep-driver",
+      "title": "Jeep Driver"
+    },
+    {
+      "id": "survival-karts",
+      "title": "Survival Karts"
+    },
+    {
+      "id": "snake-football",
+      "title": "Snake Football"
+    },
+    {
+      "id": "fun-party-makeup",
+      "title": "Fun Party Makeup"
+    },
+    {
+      "id": "spartahoppers",
+      "title": "SpartaHoppers"
+    },
+    {
+      "id": "tiny-crash-fighters",
+      "title": "Tiny Crash Fighters"
+    },
+    {
+      "id": "agent-smith",
+      "title": "Agent Smith"
+    },
+    {
+      "id": "wedding-beauty-salon",
+      "title": "Wedding Beauty Salon"
+    },
+    {
+      "id": "survival-craft",
+      "title": "Survival Craft"
+    },
+    {
+      "id": "car-wash",
+      "title": "Car Wash"
+    },
+    {
+      "id": "city-police-cars",
+      "title": "City Police Cars"
+    },
+    {
+      "id": "state-io-wars",
+      "title": "State io Wars"
+    },
+    {
+      "id": "pixel-driver",
+      "title": "Pixel Driver"
+    },
+    {
+      "id": "gta-simulator",
+      "title": "GTA Simulator"
+    },
+    {
+      "id": "football-king",
+      "title": "Football King"
+    },
+    {
+      "id": "galactic-sniper",
+      "title": "Galactic Sniper"
+    },
+    {
+      "id": "mech-shooter",
+      "title": "Mech Shooter"
+    },
+    {
+      "id": "super-mini-racing",
+      "title": "Super Mini Racing"
+    },
+    {
+      "id": "perfect-first-date",
+      "title": "Perfect First Date"
+    },
+    {
+      "id": "julie-beauty-salon",
+      "title": "Julie Beauty Salon"
+    },
+    {
+      "id": "hover-racer-pro",
+      "title": "Hover Racer Pro"
+    },
+    {
+      "id": "hero-rush-tower-defense",
+      "title": "Hero Rush Tower Defense"
+    },
+    {
+      "id": "romantic-secret-kiss",
+      "title": "Romantic Secret Kiss"
+    },
+    {
+      "id": "archer-hero",
+      "title": "Archer Hero"
+    },
+    {
+      "id": "train-racing",
+      "title": "Train Racing"
+    },
+    {
+      "id": "stick-guys-defense",
+      "title": "Stick Guys Defense"
+    },
+    {
+      "id": "mahjong",
+      "title": "Mahjong"
+    },
+    {
+      "id": "evil-santa",
+      "title": "Evil Santa"
+    },
+    {
+      "id": "crown-defense",
+      "title": "Crown Defense"
+    },
+    {
+      "id": "xmas-cookie-clicker",
+      "title": "Xmas Cookie Clicker"
+    },
+    {
+      "id": "fire-and-water",
+      "title": "Fire and Water"
+    },
+    {
+      "id": "hero-dragon-power",
+      "title": "Hero Dragon Power"
+    },
+    {
+      "id": "skibidi-toilet-io",
+      "title": "Skibidi Toilet io"
+    },
+    {
+      "id": "zombie-sniper",
+      "title": "Zombie Sniper"
+    },
+    {
+      "id": "farming-island",
+      "title": "Farming Island"
+    },
+    {
+      "id": "jacks-village",
+      "title": "Jacks Village"
+    },
+    {
+      "id": "idle-dev-startup",
+      "title": "Idle Dev Startup"
+    },
+    {
+      "id": "ultimate-moto",
+      "title": "Ultimate Moto"
+    },
+    {
+      "id": "find-it",
+      "title": "Find It"
+    },
+    {
+      "id": "dont-fall-io",
+      "title": "Dont Fall io"
+    },
+    {
+      "id": "mini-shooters",
+      "title": "Mini Shooters"
+    },
+    {
+      "id": "battle-royale-simulator",
+      "title": "Battle Royale Simulator"
+    },
+    {
+      "id": "american-touchdown",
+      "title": "American Touchdown"
+    },
+    {
+      "id": "pinball-simulator",
+      "title": "Pinball Simulator"
+    },
+    {
+      "id": "jeep-racing",
+      "title": "Jeep Racing"
+    },
+    {
+      "id": "steal-brainrot-heist",
+      "title": "Steal Brainrot Heist"
+    },
+    {
+      "id": "tank-arena",
+      "title": "Tank Arena"
+    },
+    {
+      "id": "princess-influencer-salon",
+      "title": "Princess Influencer Salon"
+    },
+    {
+      "id": "crazy-moto-racing",
+      "title": "Crazy Moto Racing"
+    },
+    {
+      "id": "war-simulator",
+      "title": "War Simulator"
+    },
+    {
+      "id": "blocky-parkour-ninja",
+      "title": "Blocky Parkour Ninja"
+    },
+    {
+      "id": "pets-beauty-salon",
+      "title": "Pets Beauty Salon"
+    },
+    {
+      "id": "first-day-of-school",
+      "title": "First Day of School"
+    },
+    {
+      "id": "moto-trials",
+      "title": "Moto Trials"
+    },
+    {
+      "id": "hill-climb-cars",
+      "title": "Hill Climb Cars"
+    },
+    {
+      "id": "kick-the-pirate",
+      "title": "Kick the Pirate"
+    },
+    {
+      "id": "cobraz-io-classic",
+      "title": "CobraZ.io Classic"
+    },
+    {
+      "id": "draw-here",
+      "title": "Draw Here"
+    },
+    {
+      "id": "crazy-car-arena",
+      "title": "Crazy Car Arena"
+    },
+    {
+      "id": "mad-doctor",
+      "title": "Mad Doctor"
+    },
+    {
+      "id": "darkness-survivors",
+      "title": "Darkness Survivors"
+    },
+    {
+      "id": "crazy-hill-climb",
+      "title": "Crazy Hill Climb"
+    },
+    {
+      "id": "guerrillas-io",
+      "title": "Guerrillas io"
+    },
+    {
+      "id": "head-soccer-football",
+      "title": "Head Soccer Football"
+    },
+    {
+      "id": "kingdom-attack",
+      "title": "Kingdom Attack"
+    },
+    {
+      "id": "baby-beauty-salon",
+      "title": "Baby Beauty Salon"
+    },
+    {
+      "id": "kick-the-zombie",
+      "title": "Kick the Zombie"
+    },
+    {
+      "id": "global-guesser",
+      "title": "Global Guesser"
+    },
+    {
+      "id": "monster-truck-booster",
+      "title": "Monster Truck Booster"
+    },
+    {
+      "id": "blocky-blast",
+      "title": "Blocky Blast"
+    },
+    {
+      "id": "kings-io",
+      "title": "Kings io"
+    },
+    {
+      "id": "mafia-getaway-cars",
+      "title": "Mafia Getaway Cars"
+    },
+    {
+      "id": "zombie-road",
+      "title": "Zombie Road"
+    },
+    {
+      "id": "skateboard-marathon",
+      "title": "Skateboard Marathon"
+    },
+    {
+      "id": "dockyard-tank-parking",
+      "title": "Dockyard Tank Parking"
+    },
+    {
+      "id": "kingdom-battle-3d",
+      "title": "Kingdom Battle 3D"
+    },
+    {
+      "id": "pyramid-solitaire",
+      "title": "Pyramid Solitaire"
+    },
+    {
+      "id": "rescue-helicopter",
+      "title": "Rescue Helicopter"
+    },
+    {
+      "id": "racing-cars",
+      "title": "Racing Cars"
+    },
+    {
+      "id": "sweet-sugar-match",
+      "title": "Sweet Sugar Match"
+    },
+    {
+      "id": "kawaii-shooter",
+      "title": "Kawaii Shooter"
+    },
+    {
+      "id": "army-driver",
+      "title": "Army Driver"
+    },
+    {
+      "id": "idle-restaurant",
+      "title": "Idle Restaurant"
+    },
+    {
+      "id": "egg-helix",
+      "title": "Egg Helix"
+    },
+    {
+      "id": "geometry-rash",
+      "title": "Geometry Rash"
+    },
+    {
+      "id": "storm-city-mafia",
+      "title": "Storm City Mafia"
+    },
+    {
+      "id": "the-farmer",
+      "title": "The Farmer"
+    },
+    {
+      "id": "monster-truck-racing",
+      "title": "Monster Truck Racing"
+    },
+    {
+      "id": "formula-1-driver",
+      "title": "Formula 1 Driver"
+    },
+    {
+      "id": "run-freezenova",
+      "title": "Run FreezeNova"
+    },
+    {
+      "id": "stunt-rider",
+      "title": "Stunt Rider"
+    },
+    {
+      "id": "nova-clicker",
+      "title": "Nova Clicker"
+    },
+    {
+      "id": "kick-the-alien",
+      "title": "Kick the Alien"
+    },
+    {
+      "id": "cool-brainrot-clicker",
+      "title": "Cool Brainrot Clicker"
+    },
+    {
+      "id": "draw-the-car-path",
+      "title": "Draw the Car Path"
+    },
+    {
+      "id": "crazy-karts",
+      "title": "Crazy Karts"
+    },
+    {
+      "id": "davo",
+      "title": "Davo"
+    },
+    {
+      "id": "monster-survivors",
+      "title": "Monster Survivors"
+    },
+    {
+      "id": "solitaire",
+      "title": "Solitaire"
+    },
+    {
+      "id": "crazy-stickman-physics",
+      "title": "Crazy Stickman Physics"
+    },
+    {
+      "id": "geometry-escape",
+      "title": "Geometry Escape"
+    },
+    {
+      "id": "apocalypse-truck",
+      "title": "Apocalypse Truck"
+    },
+    {
+      "id": "f1-drift-racer",
+      "title": "F1 Drift Racer"
+    },
+    {
+      "id": "neon-racer",
+      "title": "Neon Racer"
+    },
+    {
+      "id": "legends-arena",
+      "title": "Legends Arena"
+    },
+    {
+      "id": "soul-essence-adventure",
+      "title": "Soul Essence Adventure"
+    },
+    {
+      "id": "tank-racing",
+      "title": "Tank Racing"
+    },
+    {
+      "id": "bus-subway-runner",
+      "title": "Bus Subway Runner"
+    },
+    {
+      "id": "highway-racer-2",
+      "title": "Highway Racer 2"
+    },
+    {
+      "id": "dinosaur-game",
+      "title": "Dinosaur Game"
+    },
+    {
+      "id": "voxel-world",
+      "title": "Voxel World"
+    },
+    {
+      "id": "age-of-battle",
+      "title": "Age Of Battle"
+    },
+    {
+      "id": "draw-the-truck-bridge",
+      "title": "Draw the Truck Bridge"
+    },
+    {
+      "id": "draw-the-bridge",
+      "title": "Draw The Bridge"
+    },
+    {
+      "id": "zombie-war-defense",
+      "title": "Zombie War Defense"
+    },
+    {
+      "id": "princesses-prom-night",
+      "title": "Princesses Prom Night"
+    },
+    {
+      "id": "paradise-girls",
+      "title": "Paradise Girls"
+    },
+    {
+      "id": "galactic-driver",
+      "title": "Galactic Driver"
+    },
+    {
+      "id": "jul-moto-racing",
+      "title": "Jul Moto Racing"
+    },
+    {
+      "id": "police-chase-drifter",
+      "title": "Police Chase Drifter"
+    },
+    {
+      "id": "basketball-king",
+      "title": "Basketball King"
+    },
+    {
+      "id": "nova-billiard",
+      "title": "Nova Billiard"
+    },
+    {
+      "id": "motorbike-traffic",
+      "title": "Motorbike Traffic"
+    },
+    {
+      "id": "paw-clicker",
+      "title": "Paw Clicker"
+    },
+    {
+      "id": "2048",
+      "title": "2048"
+    },
+    {
+      "id": "cross-the-road",
+      "title": "Cross the Road"
+    },
+    {
+      "id": "shortcut-race",
+      "title": "Shortcut Race"
+    },
+    {
+      "id": "princess-beauty-salon",
+      "title": "Princess Beauty Salon"
+    },
+    {
+      "id": "powerslide-kart-simulator",
+      "title": "Powerslide Kart Simulator"
+    },
+    {
+      "id": "monster-truck-race-arena",
+      "title": "Monster Truck Race Arena"
+    },
+    {
+      "id": "truck-racing",
+      "title": "Truck Racing"
+    },
+    {
+      "id": "treasure-hunter",
+      "title": "Treasure Hunter"
+    },
+    {
+      "id": "hook-wars",
+      "title": "Hook Wars"
+    },
+    {
+      "id": "owl-and-rabbit-fashion",
+      "title": "Owl and Rabbit Fashion"
+    },
+    {
+      "id": "secret-sniper-agent",
+      "title": "Secret Sniper Agent"
+    },
+    {
+      "id": "snake",
+      "title": "Snake"
+    },
+    {
+      "id": "speed-drift-racing",
+      "title": "Speed Drift Racing"
+    },
+    {
+      "id": "monster-truck-city-parking",
+      "title": "Monster Truck City Parking"
+    },
+    {
+      "id": "head-basketball",
+      "title": "Head Basketball"
+    },
+    {
+      "id": "war-of-ships-io",
+      "title": "War of Ships io"
+    },
+    {
+      "id": "unicorn-beauty-salon",
+      "title": "Unicorn Beauty Salon"
+    },
+    {
+      "id": "tractor-farming-simulator",
+      "title": "Tractor Farming Simulator"
+    },
+    {
+      "id": "highway-moto",
+      "title": "Highway Moto"
+    },
+    {
+      "id": "trains-io",
+      "title": "Trains io"
+    },
+    {
+      "id": "snake-wars",
+      "title": "Snake Wars"
+    },
+    {
+      "id": "witch-beauty-salon",
+      "title": "Witch Beauty Salon"
+    },
+    {
+      "id": "mr-space-bullet",
+      "title": "Mr Space Bullet"
+    },
+    {
+      "id": "hover-racer",
+      "title": "Hover Racer"
+    },
+    {
+      "id": "draw-the-bird-path",
+      "title": "Draw the Bird Path"
+    },
+    {
+      "id": "run-3-space",
+      "title": "Run 3 Space"
+    },
+    {
+      "id": "racing-cars-2",
+      "title": "Racing Cars 2"
+    },
+    {
+      "id": "toonz-io",
+      "title": "ToonZ io"
+    },
+    {
+      "id": "squid-race-simulator",
+      "title": "Squid Race Simulator"
+    },
+    {
+      "id": "dino-chaos-idle",
+      "title": "Dino Chaos Idle"
+    },
+    {
+      "id": "funny-shooter-bro",
+      "title": "Funny Shooter Bro"
+    },
+    {
+      "id": "crazy-ball-adventures",
+      "title": "Crazy Ball Adventures"
+    }
+  ],
+  "brokenGames": [],
+  "removedGames": []
+}

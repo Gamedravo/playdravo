@@ -21,7 +21,6 @@ interface HeaderProps {
   isDarkMode: boolean;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
-  isSidebarHovered?: boolean;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   user: FirebaseUser | null;
@@ -47,7 +46,6 @@ export function Header({
   isDarkMode,
   isSidebarOpen,
   setIsSidebarOpen,
-  isSidebarHovered = false,
   searchQuery,
   setSearchQuery,
   user,
@@ -75,10 +73,8 @@ export function Header({
   const bellButtonRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
 
-  const isExpanded = isSidebarOpen || isSidebarHovered;
-
   return (
-    <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-200 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
+    <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-150 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
         {/* Mobile Menu Button & Logo */}
         <div className="flex items-center gap-4">
@@ -102,15 +98,10 @@ export function Header({
               const main = document.querySelector('main');
               if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
-            className={`flex items-center cursor-pointer group shrink-0 transition-all duration-300 ease-in-out origin-left gap-2.5
-              ${isExpanded 
-                ? 'md:opacity-0 md:max-w-0 md:-translate-x-4 md:pointer-events-none md:mr-0 overflow-hidden' 
-                : 'md:opacity-100 md:max-w-[200px] md:translate-x-0 md:mr-4'
-              }
-            `}
+            className="flex items-center cursor-pointer group shrink-0 transition-[opacity,max-width] duration-100 ease-out origin-left gap-2.5 md:opacity-100 md:max-w-[200px] md:mr-4 md:peer-hover/sidebar:opacity-0 md:peer-hover/sidebar:max-w-0 md:peer-hover/sidebar:pointer-events-none md:peer-hover/sidebar:mr-0 overflow-hidden"
             title="Home"
           >
-            <div className="w-8 h-8 md:w-9 md:h-9 bg-accent rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(var(--accent-rgb),0.4)] group-hover:rotate-12 transition-all duration-300">
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-accent rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(var(--accent-rgb),0.4)] group-hover:rotate-6 transition-transform duration-100">
               <Zap className="w-4 h-4 md:w-5 md:h-5 text-bg-dark fill-current" />
             </div>
             <span className="font-bold tracking-tight text-xl md:text-2xl transition-all duration-200 group-hover:opacity-80 hidden sm:block">
@@ -187,7 +178,7 @@ export function Header({
                 onClick={() => setIsNotificationsOpen((open) => !open)}
                 aria-label="Notifications"
                 aria-expanded={isNotificationsOpen}
-                aria-haspopup="dialog"
+                aria-haspopup="menu"
                 className={`p-2 sm:p-2.5 rounded-xl transition-all relative hover:scale-105 active:scale-95 ${isNotificationsOpen ? 'ring-2 ring-accent' : ''} ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white' : 'bg-black/5 hover:bg-black/10 text-black'}`}
               >
                 <Bell className="w-4 h-4 sm:w-4 sm:h-4" />

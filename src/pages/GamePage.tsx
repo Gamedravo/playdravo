@@ -70,6 +70,8 @@ const safeFormatDate = (createdAt: any) => {
   }
 };
 
+import { GamePageSkeleton } from '../components/LoadingSkeletons';
+
 interface GamePageProps {
   isDarkMode: boolean;
   t: (key: string) => string;
@@ -78,7 +80,6 @@ interface GamePageProps {
   toggleFavorite: (gameId: string) => void;
   handleGameClick: (game: Game) => void;
   user: any;
-  setIsGameLoading: (loading: boolean) => void;
 }
 
 // Category Specific screenshots pool
@@ -128,7 +129,6 @@ export const GamePage: React.FC<GamePageProps> = ({
   toggleFavorite,
   handleGameClick,
   user,
-  setIsGameLoading
 }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const navigate = useNavigate();
@@ -139,6 +139,7 @@ export const GamePage: React.FC<GamePageProps> = ({
   const [isPseudoFullScreen, setIsPseudoFullScreen] = useState(false);
   const [showRotateHint, setShowRotateHint] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const playerShellRef = useRef<HTMLDivElement>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [liked, setLiked] = useState<boolean | null>(null);
   const [claimedAchievements, setClaimedAchievements] = useState<string[]>([]);
@@ -269,9 +270,11 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
-      if (isPseudoFullScreen) {
-        e.preventDefault();
-      }
+      if (!isPseudoFullScreen) return;
+      const target = e.target as Node;
+      if (iframeRef.current?.contains(target)) return;
+      if (playerShellRef.current?.contains(target)) return;
+      e.preventDefault();
     };
 
     if (isPseudoFullScreen) {
@@ -316,17 +319,10 @@ export const GamePage: React.FC<GamePageProps> = ({
     if (foundGame) {
       setGame(foundGame);
       window.scrollTo(0, 0);
-      // Small delay to ensure the page has started rendering before hiding global loader
-      const timer = setTimeout(() => {
-        setIsGameLoading(false);
-      }, 800);
-      return () => clearTimeout(timer);
     } else {
-      // Handle game not found
-      setIsGameLoading(false);
       navigate('/');
     }
-  }, [gameId, games, navigate, setIsGameLoading]);
+  }, [gameId, games, navigate]);
 
   const relatedGames = useMemo(() => {
     if (!game) return [];
@@ -349,25 +345,7 @@ export const GamePage: React.FC<GamePageProps> = ({
   }, [games, game]);
 
   if (!game) {
-    return (
-      <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 space-y-8 animate-pulse">
-          {/* Breadcrumbs Skeleton */}
-          <div className="flex items-center gap-2 h-4 bg-white/5 dark:bg-black/5 rounded w-1/4" />
-          
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Main Column Skeleton */}
-            <div className="flex-1 space-y-4 md:space-y-6">
-              <div className={`aspect-[4/3] md:aspect-video rounded-[1.5rem] lg:rounded-[2.5rem] ${isDarkMode ? 'bg-white/5' : 'bg-gray-200'}`} />
-              <div className={`h-24 rounded-[2rem] ${isDarkMode ? 'bg-white/5' : 'bg-gray-200'}`} />
-            </div>
-            
-            {/* Sidebar Skeleton */}
-            <div className={`w-full lg:w-80 h-96 rounded-[1.5rem] lg:rounded-[2.5rem] ${isDarkMode ? 'bg-white/5' : 'bg-gray-200'}`} />
-          </div>
-        </div>
-      </div>
-    );
+    return <GamePageSkeleton isDarkMode={isDarkMode} />;
   }
 
   const isFavorite = favorites.includes(game.id);
@@ -451,13 +429,11 @@ export const GamePage: React.FC<GamePageProps> = ({
     setIsPseudoFullScreen(true);
     const scrollY = window.scrollY;
     document.documentElement.style.overscrollBehavior = 'none';
-    document.documentElement.style.touchAction = 'none';
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollY}px`;
     document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
     document.body.style.overscrollBehavior = 'none';
-    document.body.style.touchAction = 'none';
     document.body.style.userSelect = 'none';
     (document.body.style as any).webkitUserSelect = 'none';
     toast.info("Entering theater mode (native fullscreen not supported on this device)");
@@ -544,15 +520,10 @@ export const GamePage: React.FC<GamePageProps> = ({
                           return;
                         }
                         setIsPlaying(true);
-                        
-                        // Dispatch XP for playing a game
+
                         window.dispatchEvent(new CustomEvent('add-xp', { 
                           detail: { amount: 50, reason: `Played ${game.title}` } 
                         }));
-
-                        if (isMobile) {
-                          enablePseudoFullScreen();
-                        }
                       }}
                       className="group relative px-6 py-3 sm:px-12 sm:py-5 bg-accent hover:bg-accent/90 text-white rounded-2xl font-bold text-sm sm:text-base overflow-hidden shrink-0 shadow-lg"
                     >
@@ -569,9 +540,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                   </motion.div>
                 </div>
               ) : (
-                <div className="relative w-full h-full bg-black">
+                <div ref={playerShellRef} className="relative w-full h-full bg-black touch-auto">
                   {(!iframeLoaded || !embedStatus.embeddable) && (
-                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a0a0a] px-4">
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a0a0a] px-4 pointer-events-auto">
                       <div className="absolute inset-0 shimmer-overlay opacity-20" />
                       <div className="relative z-30 flex flex-col items-center gap-6 max-w-sm text-center">
                         <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl animate-pulse">
@@ -607,14 +578,12 @@ export const GamePage: React.FC<GamePageProps> = ({
                               </div>
                             </div>
                           ) : !loadingTimeout ? (
-                            <>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-accent animate-bounce" />
-                                <div className="w-2 h-2 rounded-full bg-accent animate-bounce [animation-delay:-0.15s]" />
-                                <div className="w-2 h-2 rounded-full bg-accent animate-bounce [animation-delay:-0.3s]" />
+                            <div className="w-full max-w-xs space-y-3">
+                              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                                <div className="h-full w-1/3 rounded-full bg-accent/60 animate-[loader-slide_1s_ease-in-out_infinite]" />
                               </div>
-                              <span className="text-xs font-semibold tracking-tight text-accent/80">Loading Game...</span>
-                            </>
+                              <span className="text-[10px] font-medium tracking-wide text-white/40 uppercase">Starting game</span>
+                            </div>
                           ) : (
                             <div className="space-y-4">
                               <span className="text-xs font-semibold text-amber-500 block leading-relaxed">
@@ -656,8 +625,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                       key={reloadKey}
                       ref={iframeRef}
                       src={game.url}
-                      className={`w-full border-0 touch-none transition-opacity duration-700 ${iframeLoaded ? 'opacity-100' : 'opacity-0'} ${isPseudoFullScreen ? 'h-[100dvh]' : 'h-full'}`}
-                      allow="autoplay; fullscreen; keyboard"
+                      className={`w-full border-0 touch-auto touch-manipulation transition-opacity duration-700 ${iframeLoaded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${isPseudoFullScreen ? 'h-[100dvh]' : 'h-full min-h-[240px]'}`}
+                      allow="autoplay; fullscreen; gamepad; keyboard *"
+                      allowFullScreen
                       title={game.title}
                       scrolling="no"
                       onLoad={() => setIframeLoaded(true)}
@@ -711,11 +681,11 @@ export const GamePage: React.FC<GamePageProps> = ({
                         </div>
 
                         {/* Center: Title */}
-                        <div className="flex-[2] flex justify-center items-center gap-2 pointer-events-auto cursor-default">
+                        <div className="flex-[2] flex justify-center items-center gap-2 pointer-events-none cursor-default">
                           <div className="w-5 h-5 sm:w-6 sm:h-6 rounded overflow-hidden shadow-sm border border-white/10 hidden sm:block">
                             <GameThumbnail src={game.thumbnail} alt="" category={game.category} className="w-full h-full object-cover" />
                           </div>
-                          <span className="text-white/90 font-medium tracking-wide text-[11px] sm:text-sm drop-shadow-md truncate">{game.title}</span>
+                          <span className="text-white/90 font-medium tracking-wide text-[11px] sm:text-sm drop-shadow-md truncate pointer-events-none">{game.title}</span>
                         </div>
                         
                         {/* Right: Reload */}

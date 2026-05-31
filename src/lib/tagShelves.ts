@@ -16,6 +16,13 @@ export const TAG_SHELF_DEFINITIONS: Array<{
   { id: 'puzzle', title: 'Puzzle', matchers: [/\bpuzzle\b/i, /\blogic\b/i, /\bmahjong\b/i] },
   { id: 'casual', title: 'Casual & Fun', matchers: [/\bcasual\b/i, /\bfun\b/i, /\bkids\b/i] },
   { id: 'simulator', title: 'Simulators', matchers: [/\bsimulator\b/i, /\btycoon\b/i, /\bmanagement\b/i] },
+  { id: 'horror', title: 'Horror & Scary', matchers: [/\bhorror\b/i, /\bscary\b/i] },
+  { id: 'fighting', title: 'Fighting', matchers: [/\bfighting\b/i, /\bcombat\b/i] },
+  { id: 'clicker-idle', title: 'Clicker & Idle', matchers: [/\bclicker\b/i, /\bidle\b/i] },
+  { id: 'retro', title: 'Retro & Classics', matchers: [/\bretro\b/i, /\bclassic\b/i] },
+  { id: 'driving', title: 'Cars & Driving', matchers: [/\bdriving\b/i, /\bcar\b/i, /\btraffic\b/i] },
+  { id: 'sandbox', title: 'Sandbox', matchers: [/\bsandbox\b/i, /\bcrafting\b/i] },
+  { id: 'card-board', title: 'Card & Board', matchers: [/\bcard\b/i, /\bboard\b/i, /\bchess\b/i, /\bsolitaire\b/i] },
 ];
 
 export function pickGamesByTagShelf(

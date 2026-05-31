@@ -1,4 +1,9 @@
 import { Game } from '../types';
+import { HOMEPAGE_CATEGORY_CHIPS } from '../lib/homepageCategories';
+
+function gameHaystack(game: Game): string {
+  return [...(game.tags || []), game.category, game.title].join(' ');
+}
 
 /** Sidebar / footer labels that use dedicated routes instead of /category/:slug */
 const ROUTE_OVERRIDES: Record<string, string> = {
@@ -57,6 +62,8 @@ export function getCategoryDisplayName(slug: string, fallbackGames: Game[]): str
     case 'recommended':
       return 'Recommended';
     default: {
+      const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
+      if (chip) return chip.title;
       const label = SLUG_TO_LABEL[lower];
       if (label) return label;
       if (fallbackGames.length > 0) return fallbackGames[0].category;
@@ -136,6 +143,10 @@ export function filterGamesForCategorySlug(
     }
 
     default: {
+      const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
+      if (chip) {
+        return games.filter((g) => chip.matchers.some((m) => m.test(gameHaystack(g))));
+      }
       const label = SLUG_TO_LABEL[lower];
       const match = label ?? lower.replace(/-/g, ' ');
       return games.filter(

@@ -26,7 +26,6 @@ import {
   ArrowRight,
   TrendingUp,
   Smartphone,
-  Hourglass,
   Zap
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
@@ -79,6 +78,10 @@ interface HomePageProps {
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves, buildRecommendations } from '../utils/recommendations';
 import { buildTagShelves } from '../lib/tagShelves';
+import { buildHomepageCategoryChips } from '../lib/homepageCategories';
+import { buildCuratedHomepageBlocks, pickFeaturedSpotlight } from '../lib/homepageCuration';
+import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
+import { HomePageShelf } from '../components/HomePageShelf';
 
 export const HomePage = React.memo(function HomePage({
   isDarkMode,
@@ -170,7 +173,6 @@ export const HomePage = React.memo(function HomePage({
   const recRef = React.useRef<HTMLDivElement>(null);
   const trendingRef = React.useRef<HTMLDivElement>(null);
   const recentRef = React.useRef<HTMLDivElement>(null);
-  const featuredRef = React.useRef<HTMLDivElement>(null);
 
   useHorizontalScroll(categoriesRef);
   useHorizontalScroll(newArrivalsRef);
@@ -178,7 +180,6 @@ export const HomePage = React.memo(function HomePage({
   useHorizontalScroll(recRef);
   useHorizontalScroll(trendingRef);
   useHorizontalScroll(recentRef);
-  useHorizontalScroll(featuredRef);
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -205,16 +206,10 @@ export const HomePage = React.memo(function HomePage({
     return 0;
   };
 
-  const POPULAR_CATEGORIES = [
-    { id: 'Puzzle', title: 'Puzzle', icon: '🧩', count: filteredGames.filter(g => g.category.toLowerCase() === 'puzzle').length, bg: 'from-blue-500/10 to-indigo-500/5 hover:border-blue-500/30' },
-    { id: 'Arcade', title: 'Arcade', icon: '👾', count: filteredGames.filter(g => g.category.toLowerCase() === 'arcade').length, bg: 'from-purple-500/10 to-pink-500/5 hover:border-purple-500/30' },
-    { id: 'Racing', title: 'Racing', icon: '🏎️', count: filteredGames.filter(g => g.category.toLowerCase() === 'racing').length, bg: 'from-amber-500/10 to-orange-500/5 hover:border-amber-500/30' },
-    { id: 'Sports', title: 'Sports', icon: '⚽', count: filteredGames.filter(g => g.category.toLowerCase() === 'sports').length, bg: 'from-emerald-500/10 to-teal-500/5 hover:border-emerald-500/30' },
-    { id: 'Adventure', title: 'Adventure', icon: '🗺️', count: filteredGames.filter(g => g.category.toLowerCase() === 'adventure').length, bg: 'from-cyan-500/10 to-blue-500/5 hover:border-cyan-500/30' },
-    { id: 'Action', title: 'Action', icon: '⚔️', count: filteredGames.filter(g => g.category.toLowerCase() === 'action').length, bg: 'from-rose-500/10 to-red-500/5 hover:border-rose-500/30' },
-    { id: 'Strategy', title: 'Strategy', icon: '🧠', count: filteredGames.filter(g => g.category.toLowerCase() === 'strategy').length, bg: 'from-violet-500/10 to-fuchsia-500/5 hover:border-violet-500/30' },
-    { id: 'Multiplayer', title: 'Multiplayer', icon: '👥', count: filteredGames.filter(g => g.category.toLowerCase() === 'multiplayer').length, bg: 'from-teal-500/10 to-green-500/5 hover:border-teal-500/30' }
-  ];
+  const exploreCategories = React.useMemo(
+    () => buildHomepageCategoryChips(filteredGames, 1),
+    [filteredGames]
+  );
 
   // Dynamically generated personalized section based on user activity
   const topCategory = (userProfile?.preferredCategories && userProfile.preferredCategories.length > 0) 
@@ -237,8 +232,23 @@ export const HomePage = React.memo(function HomePage({
   );
 
   const tagShelves = React.useMemo(
-    () => buildTagShelves(filteredGames, 18, new Set(homepageShelves.seenIds)),
+    () => buildTagShelves(filteredGames, 14, new Set(homepageShelves.seenIds)),
     [filteredGames, homepageShelves.seenIds]
+  );
+
+  const curatedBlocks = React.useMemo(
+    () => buildCuratedHomepageBlocks(homepageShelves, tagShelves, 5),
+    [homepageShelves, tagShelves]
+  );
+
+  const featuredSpotlight = React.useMemo(
+    () =>
+      pickFeaturedSpotlight(
+        featuredGame,
+        homepageShelves.topRated,
+        homepageShelves.trending
+      ),
+    [featuredGame, homepageShelves.topRated, homepageShelves.trending]
   );
 
   const diversifyShelf = React.useMemo(() => {
@@ -294,18 +304,10 @@ export const HomePage = React.memo(function HomePage({
     );
   };
 
-  const featuredGames = React.useMemo(() => {
-    const uniqueGames = new Map<string, Game>();
-    if (featuredGame) uniqueGames.set(featuredGame.id, featuredGame);
-    if (newArrivals?.length) {
-      newArrivals.slice(0, 6).forEach((g) => uniqueGames.set(g.id, g));
-    }
-    homepageShelves.topRated.slice(0, 6).forEach((g) => uniqueGames.set(g.id, g));
-    return Array.from(uniqueGames.values()).slice(0, 12);
-  }, [featuredGame, newArrivals, homepageShelves.topRated]);
+  const favorites = userProfile?.favorites || [];
 
   return (
-    <div className="space-y-2 px-1 md:px-2 pb-4">
+    <div className="space-y-1 px-1 md:px-2 pb-3">
       <SEO 
         title="Play Best Online Games Free" 
         description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
@@ -313,35 +315,15 @@ export const HomePage = React.memo(function HomePage({
         url={window.location.href}
       />
 
-      {/* Featured Games — compact discoverable shelf */}
-      <SectionErrorBoundary sectionName="Featured Games">
-        {selectedCategory === 'All' && !searchQuery && featuredGames.length > 0 && (
-          <section className="shelf-section">
-            <div className="shelf-header">
-              <div className="space-y-0.5">
-                <div className="section-eyebrow">
-                  <Star className="w-3.5 h-3.5" />
-                  <span>{t('featuredGame')}</span>
-                </div>
-                <h2 className="section-title">{t('featuredGame') || 'Featured Games'}</h2>
-              </div>
-              <div className="hidden md:flex items-center gap-1.5 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
-                <button onClick={() => handleScroll(featuredRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleScroll(featuredRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-            <div className="shelf-scroll" ref={featuredRef}>
-              {featuredGames.map((game, index) => (
-                <div key={`featured-${game.id}-${index}`} className="shelf-card">
-                  <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                </div>
-              ))}
-            </div>
-          </section>
+      <SectionErrorBoundary sectionName="Featured Spotlight">
+        {selectedCategory === 'All' && !searchQuery && featuredSpotlight.hero && (
+          <FeaturedSpotlight
+            hero={featuredSpotlight.hero}
+            picks={featuredSpotlight.picks}
+            isDarkMode={isDarkMode}
+            onPlay={handleGameClick}
+            t={t}
+          />
         )}
       </SectionErrorBoundary>
 
@@ -421,29 +403,28 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Trending Now">
         {selectedCategory === 'All' && !searchQuery && filteredGames.length > 0 && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('trending') || 'TRENDING'}</span>
+          <section className="shelf-section group/shelf">
+            <div className="shelf-header">
+              <div className="space-y-0.5">
+                <div className="section-eyebrow">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span>{t('trending') || 'Trending'}</span>
                 </div>
                 <h3 className="section-title">{t('trendingNow') || 'Trending Now'}</h3>
               </div>
-              <div className="flex items-center gap-4">
-                {/* Scroll Navigation Arrows */}
-                <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-300">
+              <div className="flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
                   <button 
                     onClick={() => handleScroll(trendingRef, 'left')}
-                    className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
                   <button 
                     onClick={() => handleScroll(trendingRef, 'right')}
-                    className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
+                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <button 
@@ -473,139 +454,76 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3">
-            <div className="section-eyebrow mb-2">
-              <Compass className="w-3.5 h-3.5" />
-              <span>{t('exploreByGenre') || 'Browse Categories'}</span>
+          <section className="shelf-section">
+            <div className="shelf-header">
+              <div className="space-y-0.5">
+                <div className="section-eyebrow">
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>{t('exploreByGenre') || 'Explore Categories'}</span>
+                </div>
+                <h3 className="section-title">Browse by genre</h3>
+              </div>
             </div>
-            <div className="shelf-scroll" ref={categoriesRef}>
-                {POPULAR_CATEGORIES.map((cat, idx) => (
-                  <div
-                    key={`cat-pill-${cat.id}-${idx}`}
-                    onClick={() => {
-                      const main = document.querySelector('main');
-                      if (main) {
-                        main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                      } else {
-                        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                      }
-                      navigate(`/category/${cat.id.toLowerCase()}`);
-                    }}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border min-w-[140px] shrink-0 bg-gradient-to-br transition-all duration-200 snap-start select-none cursor-pointer hover:border-accent/30 ${
-                    isDarkMode 
-                      ? `${cat.bg} border-white/5 bg-white/[0.01]` 
-                      : `${cat.bg.replace('/10', '/5')} border-black/5 bg-black/[0.01]`
+            <div className="category-chip-grid px-1 md:px-2" ref={categoriesRef}>
+              {exploreCategories.map((cat) => (
+                <button
+                  key={`cat-chip-${cat.slug}`}
+                  type="button"
+                  onClick={() => {
+                    const main = document.querySelector('main');
+                    if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                    else window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                    navigate(`/category/${cat.slug}`);
+                  }}
+                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-left bg-gradient-to-br transition-colors duration-100 hover:border-accent/40 active:scale-[0.98] ${
+                    isDarkMode
+                      ? `${cat.bg} border-white/5 bg-white/[0.02]`
+                      : `${cat.bg.replace('/10', '/5')} border-black/5 bg-black/[0.02]`
                   }`}
                 >
-                  <span className="text-2xl select-none">{cat.icon}</span>
-                  <div>
-                    <h4 className={`text-sm font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>{cat.title}</h4>
-                    <p className={`text-[10px] font-medium tracking-wide ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{cat.count} {t('games') || 'games'}</p>
+                  <span className="text-xl leading-none select-none shrink-0">{cat.icon}</span>
+                  <div className="min-w-0">
+                    <h4 className={`text-xs font-bold tracking-tight truncate ${isDarkMode ? 'text-white' : 'text-black'}`}>{cat.title}</h4>
+                    <p className={`text-[9px] font-medium ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{cat.count} {t('games') || 'games'}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
         )}
       </SectionErrorBoundary>
 
-      {/* Category shelves — deduped rows for density */}
-      <SectionErrorBoundary sectionName="Category Shelves">
-        {selectedCategory === 'All' && !searchQuery && (
-          <>
-            {renderShelf('Top Rated', 'Community picks', homepageShelves.topRated, 'top-rated', undefined, Star)}
-            {renderShelf('Action Games', 'Fast-paced', homepageShelves.categoryShelves.Action, 'cat-action', undefined, Zap)}
-            {renderShelf('Puzzle Games', 'Brain teasers', homepageShelves.categoryShelves.Puzzle, 'cat-puzzle', undefined, BrainCircuit)}
-            {renderShelf('Arcade Classics', 'Retro fun', homepageShelves.categoryShelves.Arcade, 'cat-arcade', undefined, Gamepad2)}
-            {renderShelf('Racing Games', 'Speed', homepageShelves.categoryShelves.Racing, 'cat-racing', undefined, TrendingUp)}
-            {renderShelf('Sports Games', 'Competitive', homepageShelves.categoryShelves.Sports, 'cat-sports', undefined, Trophy)}
-            {renderShelf('Strategy Games', 'Think ahead', homepageShelves.categoryShelves.Strategy, 'cat-strategy', undefined, Target)}
-          </>
-        )}
-      </SectionErrorBoundary>
-
-      {/* Tag-based shelves (auto from dataset) */}
-      <SectionErrorBoundary sectionName="Tag Shelves">
-        {selectedCategory === 'All' && !searchQuery &&
-          tagShelves.map((shelf) =>
-            renderShelf(shelf.title, shelf.title, shelf.games, `tag-${shelf.id}`, undefined, Gamepad2)
-          )}
+      <SectionErrorBoundary sectionName="Curated Shelves">
+        {selectedCategory === 'All' &&
+          !searchQuery &&
+          curatedBlocks.map((block) => (
+            <HomePageShelf
+              key={block.id}
+              title={block.title}
+              subtitle={block.subtitle}
+              games={block.games}
+              variant={block.variant}
+              keyPrefix={block.id}
+              isDarkMode={isDarkMode}
+              handleGameClick={handleGameClick}
+              favorites={favorites}
+              toggleFavorite={toggleFavorite}
+              t={t}
+              onViewAll={
+                block.viewAllSlug
+                  ? () => navigate(`/category/${block.viewAllSlug}`)
+                  : undefined
+              }
+              viewAllLabel={t('viewAll') || 'View all'}
+            />
+          ))}
       </SectionErrorBoundary>
 
       {/* Recommended */}
 
 <SectionErrorBoundary sectionName="Recommended Games">
-        {selectedCategory === 'All' && !searchQuery && (recommendedGames.length > 0 || isGeneratingRecommendations) && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Target className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('personalized')}</span>
-                </div>
-                <h3 className="section-title">{t('pickedForYou')}</h3>
-              </div>
-              <div className="flex items-center gap-4">
-                {/* Scroll Navigation Arrows */}
-                {recommendedGames.length > 0 && (
-                  <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-300">
-                    <button 
-                      onClick={() => handleScroll(recRef, 'left')}
-                      className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleScroll(recRef, 'right')}
-                      className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-                {(isGeneratingRecommendations || recommendedGames.length > 0 || recommendationError) && (
-                  <button 
-                    onClick={generateRecommendations}
-                    disabled={isGeneratingRecommendations}
-                    className={`flex items-center gap-2 text-[10px] font-semibold tracking-wide hover:text-accent transition-colors disabled:opacity-50 ${isDarkMode ? 'text-white/20' : 'text-black/20'}`}
-                  >
-                    <RotateCcw className={`w-3 h-3 ${isGeneratingRecommendations ? 'animate-spin' : ''}`} />
-                    {t('refresh')}
-                  </button>
-                )}
-              </div>
-            </div>
- 
-            {recommendationError ? (
-              <div className="glass p-12 rounded-[2rem] text-center border-red-500/20">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <p className="text-white/60 mb-6">{recommendationError}</p>
-                <button 
-                  onClick={generateRecommendations}
-                  className="px-8 py-3 bg-accent text-white font-bold rounded-xl transition-all uppercase tracking-widest text-[10px]"
-                >
-                  {t('retry')}
-                </button>
-              </div>
-            ) : isGeneratingRecommendations && recommendedGames.length === 0 ? (
-              <div className="flex gap-3 overflow-hidden pb-2">
-                {[...Array(6)].map((_, i) => (
-                  <div key={`skeleton-${i}`} className={`aspect-[4/5] w-[120px] sm:w-[136px] md:w-[156px] shrink-0 rounded-xl border overflow-hidden relative ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
-                    <div className="absolute inset-0 shimmer-overlay z-10 opacity-50" />
-                  </div>
-                ))}
-              </div>
-            ) : recommendedGames.length > 0 ? (
-              <div className="shelf-scroll" ref={recRef}>
-                  {recommendedGames.map((game, index) => (
-                  <div key={`rec-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </section>
-        )}
+        {selectedCategory === 'All' && !searchQuery && recommendedGames.length > 0 &&
+          renderShelf(t('pickedForYou') || 'Picked for you', t('personalized') || 'For you', recommendedGames, 'rec', recRef, Target)}
       </SectionErrorBoundary>
 
 <SectionErrorBoundary sectionName="Because You Played">
@@ -701,34 +619,6 @@ export const HomePage = React.memo(function HomePage({
       <SectionErrorBoundary sectionName="Most Played">
         {selectedCategory === 'All' && !searchQuery &&
           renderShelf('Most Played', 'Classics', homepageShelves.trending.slice(0, 12), 'most-played', undefined, Users)}
-      </SectionErrorBoundary>
-
-      <SectionErrorBoundary sectionName="Hidden Gems">
-        {selectedCategory === 'All' && !searchQuery &&
-          renderShelf('Highly Rated, Barely Played', 'Hidden gems', [...filteredGames].sort((a, b) => b.rating - a.rating).filter((g) => g.plays < 60000).slice(0, 12), 'hidden-gems', undefined, Sparkles)}
-      </SectionErrorBoundary>
-
-      <SectionErrorBoundary sectionName="Deep Dives">
-        {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Hourglass className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Long sessions</span>
-                </div>
-                <h3 className="section-title">Deep Dives & Campaigns</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {filteredGames.filter(g => g.avgPlayTime === '20m' || g.avgPlayTime === '30m+').slice(0, 10).map((game, index) => (
-                  <div key={`deep-dives-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Game Grid">

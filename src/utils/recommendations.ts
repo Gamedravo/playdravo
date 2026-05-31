@@ -126,7 +126,18 @@ export function buildHomepageShelves(games: Game[]) {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  const categories = ['Action', 'Puzzle', 'Arcade', 'Racing', 'Sports', 'Strategy'] as const;
+  const categories = [
+    'Action',
+    'Puzzle',
+    'Arcade',
+    'Racing',
+    'Sports',
+    'Strategy',
+    'Casual',
+    'Simulator',
+    'Adventure',
+    'Multiplayer',
+  ] as const;
 
   return {
     trending: take(byPlays, 20),

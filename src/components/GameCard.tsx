@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
-import { GameplayPreview } from './GameplayPreview';
-import { motion, AnimatePresence } from 'motion/react';
+import { GameCardHoverPreview } from './GameCardHoverPreview';
+import { AnimatePresence } from 'motion/react';
+import { claimHoverPreview, releaseHoverPreview } from '../lib/hoverPreviewSession';
 
 interface GameCardProps {
   game: Game;
@@ -40,6 +41,8 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer',
 };
 
+const HOVER_DELAY_MS = 300;
+
 export const GameCard = memo(function GameCard({
   game,
   isDarkMode,
@@ -53,29 +56,35 @@ export const GameCard = memo(function GameCard({
   const [showPreview, setShowPreview] = useState(false);
   const [hoverSupported, setHoverSupported] = useState(false);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const didPrefetchRef = useRef(false);
-
   useEffect(() => {
-    const mq = window.matchMedia('(hover: hover)');
-    setHoverSupported(mq.matches);
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setHoverSupported(mq.matches);
+    update();
+    mq.addEventListener('change', update);
     return () => {
+      mq.removeEventListener('change', update);
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      releaseHoverPreview(game.id);
     };
-  }, []);
+  }, [game.id]);
+
+  const stopPreview = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setShowPreview(false);
+    releaseHoverPreview(game.id);
+  };
 
   const handleMouseEnter = () => {
-    if (!didPrefetchRef.current) {
-      didPrefetchRef.current = true;
-      void import('../pages/GamePage');
-    }
     if (!hoverSupported) return;
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => setShowPreview(true), 280);
+    hoverTimeoutRef.current = setTimeout(() => {
+      claimHoverPreview(game.id);
+      setShowPreview(true);
+    }, HOVER_DELAY_MS);
   };
 
   const handleMouseLeave = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    setShowPreview(false);
+    stopPreview();
   };
 
   return (
@@ -84,6 +93,7 @@ export const GameCard = memo(function GameCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={(e) => {
+        stopPreview();
         if (handleGameClick) {
           e.preventDefault();
           handleGameClick(game);
@@ -91,25 +101,41 @@ export const GameCard = memo(function GameCard({
       }}
       className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-xl"
       aria-label={`Play ${game.title}`}
-      data-preview-video={game.previewVideoUrl || undefined}
     >
       <div
         className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-all duration-300 ease-out will-change-transform ${
           isDarkMode
             ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_16px_40px_rgba(157,92,255,0.35)] group-hover:border-accent/60'
             : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_16px_32px_rgba(157,92,255,0.2)] group-hover:border-accent/50'
-        } group-hover:-translate-y-1.5 group-hover:ring-1 group-hover:ring-accent/40 active:scale-[0.98]`}
+        } group-hover:-translate-y-1 group-hover:ring-1 group-hover:ring-accent/40 active:scale-[0.99]`}
       >
-        <div className="absolute inset-0 overflow-hidden">
+        <div
+          className={`absolute inset-0 overflow-hidden transition-opacity duration-300 ${
+            showPreview && hoverSupported ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
           <GameThumbnail
             src={game.thumbnail}
             alt={game.title}
             category={game.category}
             title={game.title}
             gameId={game.id}
-            className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.08]"
+            className="w-full h-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.06]"
           />
         </div>
+
+        {hoverSupported && (
+          <AnimatePresence>
+            {showPreview && (
+              <GameCardHoverPreview
+                game={game}
+                gameId={game.id}
+                active={showPreview}
+                isDarkMode={isDarkMode}
+              />
+            )}
+          </AnimatePresence>
+        )}
 
         <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -118,31 +144,6 @@ export const GameCard = memo(function GameCard({
             <Play className="w-5 h-5 fill-current ml-0.5" />
           </div>
         </div>
-
-        <AnimatePresence>
-          {showPreview && !game.previewVideoUrl && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="absolute inset-0 z-10 rounded-xl overflow-hidden"
-            >
-              <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {game.previewVideoUrl && (
-          <video
-            className="absolute inset-0 z-10 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-            src={game.previewVideoUrl}
-            muted
-            loop
-            playsInline
-            preload="none"
-          />
-        )}
 
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
           {game.isTop && (

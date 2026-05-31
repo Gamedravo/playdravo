@@ -14,6 +14,7 @@ import {
 import { Game } from '../types';
 import { SEO } from '../components/SEO';
 import { GameCard } from '../components/GameCard';
+import { filterGamesForCategorySlug, getCategoryDisplayName, getDefaultSortForSlug } from '../utils/categoryRoutes';
 
 interface CategoryPageProps {
   isDarkMode: boolean;
@@ -33,20 +34,12 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
   toggleFavorite
 }) => {
   const { categoryId } = useParams<{ categoryId: string }>();
-  const [sortBy, setSortBy] = useState<'plays' | 'rating' | 'title' | 'latest'>('plays');
+  const [sortBy, setSortBy] = useState<'plays' | 'rating' | 'title' | 'latest'>(() =>
+    getDefaultSortForSlug(categoryId || 'all')
+  );
 
   const categoryGames = useMemo(() => {
-    let filtered = games;
-    
-    // Handle special categories vs normal genre categories
-    const specialCategories = ['all', 'trending', 'new-arrivals', 'top-rated'];
-    const lowerId = categoryId?.toLowerCase() || 'all';
-    
-    if (!specialCategories.includes(lowerId)) {
-      filtered = games.filter(g => 
-        g.category.toLowerCase() === lowerId
-      );
-    }
+    const filtered = filterGamesForCategorySlug(categoryId || 'all', games);
 
     return [...filtered].sort((a, b) => {
       if (sortBy === 'latest') {
@@ -61,16 +54,13 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
     });
   }, [categoryId, games, sortBy]);
 
-  const categoryName = useMemo(() => {
-    const id = categoryId?.toLowerCase() || 'all';
-    if (id === 'trending') return 'Trending';
-    if (id === 'new-arrivals') return 'New Arrivals';
-    if (id === 'top-rated') return 'Top Rated';
-    if (id === 'all') return 'All';
-    return categoryGames.length > 0 ? categoryGames[0].category : categoryId;
-  }, [categoryId, categoryGames]);
+  const categoryName = useMemo(
+    () => getCategoryDisplayName(categoryId || 'all', categoryGames),
+    [categoryId, categoryGames]
+  );
 
   useEffect(() => {
+    setSortBy(getDefaultSortForSlug(categoryId || 'all'));
     const main = document.querySelector('main');
     if (main) {
       main.scrollTo({ top: 0, left: 0, behavior: 'instant' });

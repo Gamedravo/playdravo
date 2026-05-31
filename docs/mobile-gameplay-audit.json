@@ -1,0 +1,539 @@
+{
+  "generatedAt": "2026-05-31T14:38:37.366Z",
+  "catalogSize": 259,
+  "portalTouchBlockersFixed": [
+    "Removed touch-action: none (Tailwind touch-none) from game iframe",
+    "Stopped setting document/body touchAction:none during theater mode",
+    "touchmove preventDefault now skips events targeting iframe/player shell",
+    "Pseudo-fullscreen top bar title no longer captures pointer events",
+    "Mobile play no longer auto-enters theater mode (use fullscreen button)",
+    "iframe allowFullScreen + touch-manipulation enabled"
+  ],
+  "embedHosts": {
+    "cloud.onlinegames.io": 84,
+    "www.onlinegames.io": 175
+  },
+  "engineBuckets": {
+    "construct": 56,
+    "unknown": 97,
+    "unity-webgl": 66,
+    "construct-cloud": 40
+  },
+  "sampledEmbeds": [
+    {
+      "id": "2-player-crazy-racer",
+      "title": "2 Player Crazy Racer",
+      "url": "https://www.onlinegames.io/games/2022/unity3/2-player-crazy-racer/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "alien-sky-invasion",
+      "title": "Alien Sky Invasion",
+      "url": "https://www.onlinegames.io/games/2021/unity3/alien-sky-invasion/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "army-driver",
+      "title": "Army Driver",
+      "url": "https://www.onlinegames.io/games/2022/construct/63/army-driver/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "basketball-king",
+      "title": "Basketball King",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/316/basketball-king/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "burnout-drift-hunter",
+      "title": "Burnout Drift Hunter",
+      "url": "https://www.onlinegames.io/games/2022/unity4/burnout-drift-hunter/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "checkout-frenzy",
+      "title": "Checkout Frenzy",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/checkout-frenzy/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "crazy-ball-adventures",
+      "title": "Crazy Ball Adventures",
+      "url": "https://www.onlinegames.io/games/2021/unity2/crazy-ball-adventures/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "crazy-parking-fury",
+      "title": "Crazy Parking Fury",
+      "url": "https://www.onlinegames.io/games/2022/unity3/crazy-parking-fury/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "cubecraft-survival",
+      "title": "CubeCraft Survival",
+      "url": "https://cloud.onlinegames.io/games/2025/unity4/cubecraft-survival/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "dockyard-tank-parking",
+      "title": "Dockyard Tank Parking",
+      "url": "https://www.onlinegames.io/games/2021/unity/dockyard-tank-parking/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "drift-fury",
+      "title": "Drift Fury",
+      "url": "https://www.onlinegames.io/games/2023/unity/drift-fury/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "egg-car-racing",
+      "title": "Egg Car Racing",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/289/egg-car-racing/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "fast-food-manager",
+      "title": "Fast Food Manager",
+      "url": "https://cloud.onlinegames.io/games/2025/unity4/fast-food-manager/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "football-king",
+      "title": "Football King",
+      "url": "https://www.onlinegames.io/games/2024/construct/226/football-king/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "futuristic-racer",
+      "title": "Futuristic Racer",
+      "url": "https://cloud.onlinegames.io/games/2021/2/futuristic-racer/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "get-on-top",
+      "title": "Get On Top",
+      "url": "https://www.onlinegames.io/games/2024/code/6/get-on-top/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "head-soccer-football",
+      "title": "Head Soccer Football",
+      "url": "https://www.onlinegames.io/games/2022/unity/head-soccer-football/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "highway-traffic",
+      "title": "Highway Traffic",
+      "url": "https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "jacks-village",
+      "title": "Jacks Village",
+      "url": "https://www.onlinegames.io/games/2021/unity/jacks-village/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "kick-the-alien",
+      "title": "Kick the Alien",
+      "url": "https://cloud.onlinegames.io/games/2021/4/kick-the-alien/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "legendary-sniper",
+      "title": "Legendary Sniper",
+      "url": "https://www.onlinegames.io/games/2021/unity3/legendary-sniper/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "high",
+      "notes": "Tags suggest keyboard/mouse-heavy controls"
+    },
+    {
+      "id": "mafia-getaway-cars",
+      "title": "Mafia Getaway Cars",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/298/mafia-getaway-cars/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "mob-city",
+      "title": "Mob City",
+      "url": "https://www.onlinegames.io/games/2021/unity3/mob-city/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "moto-trials",
+      "title": "Moto Trials",
+      "url": "https://www.onlinegames.io/games/2021/unity/moto-trials/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "nova-craft",
+      "title": "Nova Craft",
+      "url": "https://cloud.onlinegames.io/games/2024/more2/nova-craft/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "pets-beauty-salon",
+      "title": "Pets Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/2/pets-beauty-salon/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "poop-clicker",
+      "title": "Poop Clicker",
+      "url": "https://www.onlinegames.io/games/2024/construct/292/poop-clicker/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "racing-cars-2",
+      "title": "Racing Cars 2",
+      "url": "https://www.onlinegames.io/games/2021/4/racing-cars-2/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "run-freezenova",
+      "title": "Run FreezeNova",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/run-3/game.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "snake-wars",
+      "title": "Snake Wars",
+      "url": "https://www.onlinegames.io/games/2024/unity/snake-wars/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "speed-drift-racing",
+      "title": "Speed Drift Racing",
+      "url": "https://www.onlinegames.io/games/2022/construct/124/speed-drift-racing/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "stickman-destruction",
+      "title": "Stickman Destruction",
+      "url": "https://www.onlinegames.io/games/2021/unity3/stickman-destruction/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "touch-friendly",
+      "touchRisk": "low",
+      "notes": "Tagged or marked touch-friendly"
+    },
+    {
+      "id": "super-car-driving",
+      "title": "Super Car Driving",
+      "url": "https://cloud.onlinegames.io/games/2024/unity2/super-car-driving/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct-cloud",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "tank-arena",
+      "title": "Tank Arena",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/293/tank-arena/index-og.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "construct",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "tractor-farming-simulator",
+      "title": "Tractor Farming Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity/tractor-farming-simulator/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unity-webgl",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Unity WebGL — touch works when game implements it; verify on device"
+    },
+    {
+      "id": "unicorn-beauty-salon",
+      "title": "Unicorn Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/1/unicorn-beauty-salon/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "medium",
+      "notes": "Standard HTML5 embed — verify tap/drag on device"
+    },
+    {
+      "id": "wasteland-shooters",
+      "title": "Wasteland Shooters",
+      "url": "https://www.onlinegames.io/games/2021/unity2/wasteland-shooters/index.html",
+      "embedOk": true,
+      "status": 200,
+      "engine": "unknown",
+      "mobileHint": "responsive",
+      "touchRisk": "high",
+      "notes": "Tags suggest keyboard/mouse-heavy controls"
+    }
+  ],
+  "likelyDesktopOnly": [
+    {
+      "id": "cs-online",
+      "title": "CS Online",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "masked-special-forces",
+      "title": "Masked Special Forces",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "fps-strike",
+      "title": "FPS Strike",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "warstrike",
+      "title": "WarStrike",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "masked-forces-zombie-survival",
+      "title": "Masked Forces Zombie Survival",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "crazy-strike-force",
+      "title": "Crazy Strike Force",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "armedforces-io",
+      "title": "ArmedForces.io",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "legendary-sniper",
+      "title": "Legendary Sniper",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "wasteland-shooters",
+      "title": "Wasteland Shooters",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "urban-sniper",
+      "title": "Urban Sniper",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "deer-hunter",
+      "title": "Deer Hunter",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "army-combat",
+      "title": "Army Combat",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "sniper-elite",
+      "title": "Sniper Elite",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "galactic-sniper",
+      "title": "Galactic Sniper",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "zombie-sniper",
+      "title": "Zombie Sniper",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "cobraz-io-classic",
+      "title": "CobraZ.io Classic",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "guerrillas-io",
+      "title": "Guerrillas io",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "kawaii-shooter",
+      "title": "Kawaii Shooter",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "secret-sniper-agent",
+      "title": "Secret Sniper Agent",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    },
+    {
+      "id": "funny-shooter-bro",
+      "title": "Funny Shooter Bro",
+      "reason": "Tag suggests keyboard/mouse-first gameplay"
+    }
+  ],
+  "recommendations": [
+    "Manually verify tap/drag on Android Chrome + iPhone Safari after portal fixes",
+    "Games with high touchRisk need per-title device QA — loading ≠ playable",
+    "Use fullscreen button for immersive mobile play; inline player preserves touch",
+    "Report broken titles via in-app bug report with game ID"
+  ]
+}

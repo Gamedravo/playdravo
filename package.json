@@ -10,7 +10,12 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "import:catalog": "tsx scripts/import-onlinegames-catalog.ts",
-    "import:catalog:audit": "tsx scripts/import-onlinegames-catalog.ts --audit-only"
+    "import:catalog:audit": "tsx scripts/import-onlinegames-catalog.ts --audit-only",
+    "health:games": "tsx scripts/game-health-check.ts",
+    "health:games:apply": "tsx scripts/game-health-check.ts --apply",
+    "audit:mobile": "tsx scripts/audit-mobile-gameplay.ts",
+    "audit:thumbnails": "tsx scripts/audit-thumbnails.ts",
+    "audit:thumbnails:apply": "tsx scripts/audit-thumbnails.ts -- --apply"
   },
   "dependencies": {
     "@google/genai": "^1.46.0",

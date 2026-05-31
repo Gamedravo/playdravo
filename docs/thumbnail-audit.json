@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-05-31T14:56:50.186Z",
+  "total": 259,
+  "upgradedToBetterVariant": 259,
+  "flaggedLowQuality": 0,
+  "samplesUpgraded": [
+    {
+      "id": "stickman-gta-city",
+      "title": "Stickman GTA City",
+      "original": "https://www.onlinegames.io/media/posts/900/responsive/stickman-gta-city-free-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/900/responsive/stickman-gta-city-free-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "stickman-parkour",
+      "title": "Stickman Parkour",
+      "original": "https://www.onlinegames.io/media/posts/871/responsive/stickman-parkour-OG-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/871/responsive/stickman-parkour-OG-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "golf-bit",
+      "title": "Golf Bit",
+      "original": "https://www.onlinegames.io/media/posts/1289/responsive/golf-bit-md.webp",
+      "best": "https://www.onlinegames.io/media/posts/1289/responsive/golf-bit-lg.webp",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "stack-fire-ball",
+      "title": "Stack Fire Ball",
+      "original": "https://www.onlinegames.io/media/posts/184/responsive/Stack-Fire-Ball-Game-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/184/responsive/Stack-Fire-Ball-Game-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "love-tester",
+      "title": "Love Tester",
+      "original": "https://www.onlinegames.io/media/posts/152/responsive/love-tester-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/152/responsive/love-tester-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "madalin-stunt-cars-pro",
+      "title": "Madalin Stunt Cars Pro",
+      "original": "https://www.onlinegames.io/media/posts/401/responsive/Madalin-Stunt-Cars-Pro-Game-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/401/responsive/Madalin-Stunt-Cars-Pro-Game-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "velocity-rush",
+      "title": "Velocity Rush",
+      "original": "https://www.onlinegames.io/media/posts/1265/responsive/velocity-rush-md.webp",
+      "best": "https://www.onlinegames.io/media/posts/1265/responsive/velocity-rush-lg.webp",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "highway-traffic",
+      "title": "Highway Traffic",
+      "original": "https://www.onlinegames.io/media/posts/32/responsive/Highway-Traffic-2-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/32/responsive/Highway-Traffic-2-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "checkout-frenzy",
+      "title": "Checkout Frenzy",
+      "original": "https://www.onlinegames.io/media/posts/974/responsive/checkout-frenzy-cashier-game-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/974/responsive/checkout-frenzy-cashier-game-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "cs-online",
+      "title": "CS Online",
+      "original": "https://www.onlinegames.io/media/posts/434/responsive/CS-Online-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/434/responsive/CS-Online-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "masked-special-forces",
+      "title": "Masked Special Forces",
+      "original": "https://www.onlinegames.io/media/posts/310/responsive/Masked-Special-Forces-FPS-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/310/responsive/Masked-Special-Forces-FPS-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "dublix",
+      "title": "Dublix",
+      "original": "https://www.onlinegames.io/media/posts/1126/responsive/dublix-md.webp",
+      "best": "https://www.onlinegames.io/media/posts/1126/responsive/dublix-lg.webp",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "snaker-io",
+      "title": "Snaker io",
+      "original": "https://www.onlinegames.io/media/posts/1261/responsive/snaker-io-md.webp",
+      "best": "https://www.onlinegames.io/media/posts/1261/responsive/snaker-io-lg.webp",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "escape-car",
+      "title": "Escape Car",
+      "original": "https://www.onlinegames.io/media/posts/1000/responsive/Escape-Car-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/1000/responsive/Escape-Car-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "basket-hoop",
+      "title": "Basket Hoop",
+      "original": "https://www.onlinegames.io/media/posts/843/responsive/Basket-Hoop-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/843/responsive/Basket-Hoop-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "edys-car-simulator",
+      "title": "Edys Car Simulator",
+      "original": "https://www.onlinegames.io/media/posts/238/responsive/Edys-Car-Simulator-Online-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/238/responsive/Edys-Car-Simulator-Online-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "drift-hunters-pro",
+      "title": "Drift Hunters Pro",
+      "original": "https://www.onlinegames.io/media/posts/397/responsive/Drift-Hunters-Pro-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/397/responsive/Drift-Hunters-Pro-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "drift-king",
+      "title": "Drift King",
+      "original": "https://www.onlinegames.io/media/posts/729/responsive/Drift-King-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/729/responsive/Drift-King-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "get-on-top",
+      "title": "Get On Top",
+      "original": "https://www.onlinegames.io/media/posts/697/responsive/Get-on-Top-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/697/responsive/Get-on-Top-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    },
+    {
+      "id": "capybara-clicker-pro",
+      "title": "Capybara Clicker Pro",
+      "original": "https://www.onlinegames.io/media/posts/554/responsive/Capybara-Clicker-Pro-md.jpg",
+      "best": "https://www.onlinegames.io/media/posts/554/responsive/Capybara-Clicker-Pro-lg.jpg",
+      "upgraded": true,
+      "lowQuality": false
+    }
+  ],
+  "samplesLowQuality": []
+}

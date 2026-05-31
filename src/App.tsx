@@ -69,7 +69,7 @@ import {
 } from 'lucide-react';
 import { GameThumbnail } from './components/GameThumbnail';
 import { Footer } from './components/Footer';
-import { PlatformLoader } from './components/PlatformLoader';
+import { RouteContentSkeleton } from './components/LoadingSkeletons';
 import { useModals } from './hooks/useModals';
 
 import { Toaster, toast } from 'sonner';
@@ -128,8 +128,9 @@ import { GlobalModals } from './components/GlobalModals';
 import { CommandPalette } from './components/CommandPalette';
 import { AIAssistant } from './components/AIAssistant';
 
-// Lazy load heavy components
-const HomePage = lazy(() => import('./pages/HomePage').then(module => ({ default: module.HomePage })));
+import { HomePage } from './pages/HomePage';
+
+// Lazy load secondary routes
 const GamePage = lazy(() => import('./pages/GamePage').then(module => ({ default: module.GamePage })));
 const CategoryPage = lazy(() => import('./pages/CategoryPage').then(module => ({ default: module.CategoryPage })));
 const AdminPanel = lazy(() => import('./pages/AdminPanel').then(module => ({ default: module.AdminPanel })));
@@ -374,7 +375,6 @@ function AppContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
   });
-  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [helpSearchQuery, setHelpSearchQuery] = useState('');
   const [isNewsletterSubscribed, setIsNewsletterSubscribed] = useState(() => {
@@ -414,7 +414,6 @@ function AppContent() {
     isGameRequestModalOpen, setIsGameRequestModalOpen,
   } = modalsState;
 
-  const [isGameLoading, setIsGameLoading] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   // Redundant window listener removed. Merged into mainRef listener for performance.
@@ -555,7 +554,7 @@ function AppContent() {
   }, []);
 
   const getCategoryIcon = (cat: string) => {
-    const props = { className: `w-5 h-5 transition-all duration-500 ${selectedCategory === cat ? 'text-accent scale-110' : (isDarkMode ? 'text-white/70 group-hover:text-white' : 'text-black/70 group-hover:text-black')}` };
+    const props = { className: `w-5 h-5 transition-colors duration-100 ${selectedCategory === cat ? 'text-accent' : (isDarkMode ? 'text-white/70 group-hover:text-white' : 'text-black/70 group-hover:text-black')}` };
     switch (cat) {
       case 'All': return <Zap {...props} className={`${props.className} ${selectedCategory === cat ? 'fill-accent' : ''}`} />;
       case 'Favorites': return <Heart {...props} className={`${props.className} ${selectedCategory === cat ? 'fill-accent' : ''}`} />;
@@ -856,18 +855,20 @@ function AppContent() {
       const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
       console.log(`Received ${gamesData.length} games from Firestore`);
       
-      // Merge STATIC_GAMES array with games from Firestore
-      const gamesMap = new Map(STATIC_GAMES.map(g => [g.id, g]));
-      gamesData.forEach(game => {
-        if (gamesMap.has(game.id)) {
-          gamesMap.set(game.id, { ...gamesMap.get(game.id), ...game });
-        } else {
-          gamesMap.set(game.id, game);
-        }
+      // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
+      const gamesMap = new Map(STATIC_GAMES.map((g) => [g.id, { ...g }]));
+      gamesData.forEach((game) => {
+        const catalog = gamesMap.get(game.id);
+        if (!catalog) return;
+        gamesMap.set(game.id, {
+          ...catalog,
+          plays: typeof game.plays === 'number' ? game.plays : catalog.plays,
+          rating: typeof game.rating === 'number' && game.rating > 0 ? game.rating : catalog.rating,
+          ratingCount: game.ratingCount ?? catalog.ratingCount,
+        });
       });
       
-      const mergedGames = Array.from(gamesMap.values());
-      setGames(mergedGames);
+      setGames(Array.from(gamesMap.values()));
     }, (error) => {
       console.error("Games listener failed:", error);
       handleFirestoreError(error, OperationType.LIST, 'games');
@@ -884,9 +885,12 @@ function AppContent() {
       orderBy('createdAt', 'desc'),
       limit(5)
     );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
-      setNewArrivals(gamesData);
+    const unsubscribe = onSnapshot(q, () => {
+      setNewArrivals(
+        [...STATIC_GAMES]
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 12)
+      );
     }, (error) => {
       handleFirestoreError(error, OperationType.LIST, 'games');
     });
@@ -1559,7 +1563,6 @@ function AppContent() {
   };
 
   const handleGameClick = async (game: Game) => {
-    setIsGameLoading(true);
     Analytics.trackGameOpen(game.id, game.title);
     navigate(`/games/${game.id}`);
     setIsSidebarOpen(false);
@@ -1645,33 +1648,13 @@ function AppContent() {
 
   return (
     <div className={`h-[100dvh] flex flex-col transition-colors duration-700 font-sans selection:bg-accent selection:text-bg-dark ${isDarkMode ? 'bg-bg-dark text-white' : 'bg-white text-black'}`}>
-      <AnimatePresence mode="wait">
-        {!isAuthReady ? (
-          <motion.div
-            key="global-loader"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg-dark"
-          >
-            <PlatformLoader message="Preparing your gaming experience..." />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="app-content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="flex flex-col h-full"
-          >
+      <div className="flex flex-col h-full">
             {/* Global Background Effects Removed for Performance */}
       <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
         <Sidebar 
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
-          isSidebarHovered={isSidebarHovered}
-          setIsSidebarHovered={setIsSidebarHovered}
           isDarkMode={isDarkMode}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
@@ -1703,7 +1686,6 @@ function AppContent() {
           <Header 
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
-            isSidebarHovered={isSidebarHovered}
             isDarkMode={isDarkMode}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -1744,7 +1726,7 @@ function AppContent() {
           </div>
 
           <main ref={mainRef} className={`flex-1 overflow-y-auto ${location.pathname === '/search' ? 'p-0' : activeGame ? 'p-0 md:p-5' : 'p-3 md:p-5'} relative`}>
-            <Suspense fallback={<PlatformLoader message="Loading games..." compact />}>
+            <Suspense fallback={<RouteContentSkeleton pathname={location.pathname} isDarkMode={isDarkMode} />}>
               <Routes>
                 <Route path="/" element={
                   <PageLayout>
@@ -1799,7 +1781,6 @@ function AppContent() {
                       toggleFavorite={toggleFavorite}
                       handleGameClick={handleGameClick}
                       user={user}
-                      setIsGameLoading={setIsGameLoading}
                     />
                 } />
                 <Route path="/category/:categoryId" element={
@@ -2147,22 +2128,6 @@ function AppContent() {
           </AnimatePresence>
         </div>
 
-      {/* Game Loading Overlay */}
-      <AnimatePresence>
-        {isGameLoading && (
-          <motion.div
-            key="game-loading-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-bg-dark/85 backdrop-blur-sm"
-          >
-            <PlatformLoader message={t('loadingGame') || 'Loading games...'} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <GlobalModals
         modalsState={modalsState}
         user={user}
@@ -2190,9 +2155,7 @@ function AppContent() {
           className: 'sonner-toast'
         }}
       />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

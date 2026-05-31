@@ -1,13 +1,50 @@
 import { Game } from '../types';
 import { GAMES } from '../games';
 
+/** Verified onlinegames.io catalog entries only. */
+export function isCatalogGame(game: Pick<Game, 'id' | 'sourceId' | 'authorUid'>): boolean {
+  const catalog = GAMES.find((g) => g.id === game.id);
+  if (!catalog) return false;
+  return catalog.sourceId === 'onlinegames-io' || catalog.authorUid === 'onlinegames-io';
+}
+
+export type ThumbnailSize = 'md' | 'lg';
+
+/** Prefer responsive artwork; lg for hero/featured, md for cards. */
+export function upgradeThumbnailResolution(url: string, size: ThumbnailSize = 'md'): string {
+  const trimmed = url.trim();
+  if (!trimmed.includes('onlinegames.io')) return trimmed;
+
+  const target = size === 'lg' ? 'lg' : 'md';
+
+  if (/-lg\.webp$/i.test(trimmed) && target === 'md') return trimmed.replace(/-lg\.webp$/i, '-md.webp');
+  if (/-lg\.(jpg|jpeg|png)$/i.test(trimmed) && target === 'md') {
+    return trimmed.replace(/-lg\.(jpg|jpeg|png)$/i, '-md.$1');
+  }
+  if (/-xs\.webp$/i.test(trimmed)) return trimmed.replace(/-xs\.webp$/i, `-${target}.webp`);
+  if (/-md\.webp$/i.test(trimmed) && target === 'lg') return trimmed.replace(/-md\.webp$/i, '-lg.webp');
+  if (/-xs\.(jpg|jpeg|png)$/i.test(trimmed)) {
+    return trimmed.replace(/-xs\.(jpg|jpeg|png)$/i, `-${target}.$1`);
+  }
+  if (/-md\.(jpg|jpeg|png)$/i.test(trimmed) && target === 'lg') {
+    return trimmed.replace(/-md\.(jpg|jpeg|png)$/i, '-lg.$1');
+  }
+  if (/\/responsive\/[^/]+-xs\./i.test(trimmed)) return trimmed.replace(/-xs\./, `-${target}.`);
+  if (/\/responsive\/[^/]+-md\./i.test(trimmed) && target === 'lg') {
+    return trimmed.replace(/-md\./, '-lg.');
+  }
+  return trimmed;
+}
+
 /** Use catalog thumbnail URL directly (onlinegames.io dataset). */
 export function resolveGameThumbnail(
   gameId: string,
-  thumbnail?: string
+  thumbnail?: string,
+  size: ThumbnailSize = 'md'
 ): string {
   const catalog = GAMES.find((g) => g.id === gameId);
-  return (catalog?.thumbnail || thumbnail || '').trim();
+  const raw = (catalog?.thumbnail || thumbnail || '').trim();
+  return upgradeThumbnailResolution(raw, size);
 }
 
 export function parseFirebaseGame(id: string, data: any): Game {
