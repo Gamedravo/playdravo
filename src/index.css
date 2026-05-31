@@ -126,15 +126,15 @@
   }
 
   .shelf-section {
-    @apply mb-3 relative;
+    @apply mb-2 relative;
   }
 
   .shelf-header {
-    @apply flex items-end justify-between mb-2;
+    @apply flex items-end justify-between mb-1.5;
   }
 
   .shelf-scroll {
-    @apply flex overflow-x-auto gap-3 pb-2 pt-0.5 px-3 md:px-5 -mx-3 md:-mx-5 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing;
+    @apply flex overflow-x-auto gap-2 pb-1.5 pt-0.5 px-2 md:px-4 -mx-2 md:-mx-4 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
@@ -145,7 +145,7 @@
   }
 
   .shelf-card {
-    @apply w-[120px] sm:w-[136px] md:w-[156px] shrink-0 snap-start;
+    @apply w-[104px] sm:w-[118px] md:w-[132px] lg:w-[144px] shrink-0 snap-start;
   }
 }
 

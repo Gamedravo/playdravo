@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-untrusted-adventure" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-untrusted-adventure" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-untrusted-adventure)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-untrusted-adventure)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#4f46e5" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+          <pattern id="empire-hex-untrusted-adventure" width="28" height="48.5" patternUnits="userSpaceOnUse">
+             <path d="M 14 0 L 28 8.08 L 28 24.25 L 14 32.33 L 0 24.25 L 0 8.08 Z" fill="none" stroke="#fbbf24" stroke-width="1" stroke-opacity="0.04" />
+          </pattern>
+          <rect width="512" height="512" fill="url(#empire-hex-untrusted-adventure)" />
+        
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+          <g transform="translate(256, 210)">
+            <!-- Ancient ritual circle -->
+            <circle cx="0" cy="0" r="105" fill="none" stroke="#06b6d4" stroke-dasharray="14,10" stroke-width="3" opacity="0.65" />
+            
+            <!-- Radiant magical crystal amulet -->
+            <polygon points="0,-82 42,0 0,82 -42,0" fill="#4f46e5" fill-opacity="0.4" stroke="#ffffff" stroke-width="4" />
+            <polygon points="0,-48 24,0 0,48 -24,0" fill="#ffffff" opacity="0.85" />
+            <circle cx="0" cy="0" r="14" fill="#06b6d4" />
+          </g>
+        
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-untrusted-adventure)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-untrusted-adventure" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

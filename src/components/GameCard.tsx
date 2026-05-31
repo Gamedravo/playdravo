@@ -1,5 +1,5 @@
 import { memo, useState, useEffect, useRef } from 'react';
-import { Trophy, Heart, Play, ArrowRight, Star } from 'lucide-react';
+import { Trophy, Heart, Play, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
@@ -18,48 +18,46 @@ interface GameCardProps {
 }
 
 const categoryKeyMap: Record<string, string> = {
-  'All': 'all',
-  'Favorites': 'favorites',
-  'Recommended': 'recommended',
-  'History': 'history',
-  'Trending': 'trending',
-  'Mods': 'mods',
-  'Action': 'action',
-  'Adventure': 'adventure',
-  'Arcade': 'arcade',
-  'Casual': 'casual',
-  'Horror': 'horror',
-  'Puzzle': 'puzzle',
-  'Simulator': 'simulator',
-  'Obby': 'obby',
-  'Sports': 'sports',
-  'Strategy': 'strategy',
-  'Multiplayer': 'multiplayer',
+  All: 'all',
+  Favorites: 'favorites',
+  Recommended: 'recommended',
+  History: 'history',
+  Trending: 'trending',
+  Mods: 'mods',
+  Action: 'action',
+  Adventure: 'adventure',
+  Arcade: 'arcade',
+  Casual: 'casual',
+  Horror: 'horror',
+  Puzzle: 'puzzle',
+  Simulator: 'simulator',
+  Obby: 'obby',
+  Sports: 'sports',
+  Strategy: 'strategy',
+  Multiplayer: 'multiplayer',
   '2 Player': 'twoPlayer',
   '3 Player': 'threePlayer',
-  '4 Player': 'fourPlayer'
+  '4 Player': 'fourPlayer',
 };
 
-export const GameCard = memo(function GameCard({ 
-  game, 
-  isDarkMode, 
-  handleGameClick, 
-  favorites = [], 
+export const GameCard = memo(function GameCard({
+  game,
+  isDarkMode,
+  handleGameClick,
+  favorites = [],
   toggleFavorite,
-  searchQuery = "",
-  t
+  searchQuery = '',
+  t,
 }: GameCardProps) {
   const isFavorite = favorites.includes(game.id);
   const [showPreview, setShowPreview] = useState(false);
   const [hoverSupported, setHoverSupported] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didPrefetchRef = useRef(false);
 
   useEffect(() => {
-    // Media query to check fine hover pointer inputs (e.g., desktops, notebooks)
     const mq = window.matchMedia('(hover: hover)');
     setHoverSupported(mq.matches);
-    
     return () => {
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     };
@@ -70,13 +68,9 @@ export const GameCard = memo(function GameCard({
       didPrefetchRef.current = true;
       void import('../pages/GamePage');
     }
-
     if (!hoverSupported) return;
-
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => {
-      setShowPreview(true);
-    }, 200);
+    hoverTimeoutRef.current = setTimeout(() => setShowPreview(true), 280);
   };
 
   const handleMouseLeave = () => {
@@ -85,8 +79,8 @@ export const GameCard = memo(function GameCard({
   };
 
   return (
-    <Link 
-      to={`/games/${game.id}`} 
+    <Link
+      to={`/games/${game.id}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={(e) => {
@@ -95,102 +89,102 @@ export const GameCard = memo(function GameCard({
           handleGameClick(game);
         }
       }}
-      className="block group focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-transparent rounded-xl md:rounded-2xl"
-      aria-label={`Play ${game.title} - ${game.category} game`}
+      className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-xl"
+      aria-label={`Play ${game.title}`}
+      data-preview-video={game.previewVideoUrl || undefined}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-all duration-200 ease-out will-change-transform ${
-          isDarkMode 
-            ? 'border-white/5 bg-white/[0.02] shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_28px_rgba(157,92,255,0.2)]' 
-            : 'border-black/5 bg-black/[0.02] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_28px_rgba(157,92,255,0.12)]'
-        } hover:-translate-y-1 hover:border-accent/50 active:scale-[0.98] group-hover:ring-1 group-hover:ring-accent/30`}
+        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-all duration-300 ease-out will-change-transform ${
+          isDarkMode
+            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_16px_40px_rgba(157,92,255,0.35)] group-hover:border-accent/60'
+            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_16px_32px_rgba(157,92,255,0.2)] group-hover:border-accent/50'
+        } group-hover:-translate-y-1.5 group-hover:ring-1 group-hover:ring-accent/40 active:scale-[0.98]`}
       >
-        <GameThumbnail 
-          src={game.thumbnail} 
-          alt={game.title}
-          category={game.category}
-          title={game.title}
-          gameId={game.id}
-          className="w-full h-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
-        />
-        
-        {/* Hover play indicator */}
-        <div className="absolute inset-0 z-[5] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-          <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg">
-            <Play className="w-4 h-4 text-white fill-white ml-0.5" />
+        <div className="absolute inset-0 overflow-hidden">
+          <GameThumbnail
+            src={game.thumbnail}
+            alt={game.title}
+            category={game.category}
+            title={game.title}
+            gameId={game.id}
+            className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.08]"
+          />
+        </div>
+
+        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+        <div className="absolute inset-0 z-[6] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+          <div className="w-12 h-12 rounded-full bg-accent/90 text-bg-dark flex items-center justify-center shadow-[0_0_24px_rgba(157,92,255,0.6)] scale-90 group-hover:scale-100 transition-transform duration-300">
+            <Play className="w-5 h-5 fill-current ml-0.5" />
           </div>
         </div>
-        
-        {/* Live Gameplay Preview Overlay Layer */}
+
         <AnimatePresence>
-          {showPreview && (
+          {showPreview && !game.previewVideoUrl && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
               className="absolute inset-0 z-10 rounded-xl overflow-hidden"
             >
               <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} />
             </motion.div>
           )}
         </AnimatePresence>
-        
-        {/* Top Badges */}
-        <div className="absolute top-2.5 left-2.5 md:top-3 md:left-3 z-30 flex flex-col gap-1.5 pointer-events-none group-hover:scale-95 transition-transform duration-300">
+
+        {game.previewVideoUrl && (
+          <video
+            className="absolute inset-0 z-10 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+            src={game.previewVideoUrl}
+            muted
+            loop
+            playsInline
+            preload="none"
+          />
+        )}
+
+        <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
           {game.isTop && (
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-yellow-500/95 backdrop-blur-md text-white text-[9px] font-extrabold uppercase tracking-widest rounded border border-yellow-400/20 shadow-md">
-              <Trophy className="w-2.5 h-2.5 fill-current" />
+            <div className="px-1.5 py-0.5 bg-yellow-500/95 text-white text-[8px] font-bold uppercase rounded">
+              <Trophy className="w-2.5 h-2.5 inline mr-0.5" />
               {t('top')}
             </div>
           )}
           {game.isHot && (
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-accent/95 backdrop-blur-md text-white text-[9px] font-extrabold uppercase tracking-widest rounded border border-accent/20 shadow-md">
-              <Play className="w-2.5 h-2.5 fill-current" />
+            <div className="px-1.5 py-0.5 bg-accent/95 text-white text-[8px] font-bold uppercase rounded">
               {t('hot')}
             </div>
           )}
         </div>
 
-        {/* Favorite Button */}
-        <button 
+        <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             toggleFavorite(game.id);
           }}
           aria-label={isFavorite ? `Remove ${game.title} from favorites` : `Add ${game.title} to favorites`}
-          className={`absolute top-2.5 right-2.5 md:top-3 md:right-3 z-30 p-2 rounded-xl transition-all duration-300 border shadow-md focus:outline-none focus:ring-2 focus:ring-white/50 active:scale-90 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-3 pointer-events-auto md:flex items-center hidden ${
-            isFavorite 
-              ? 'bg-red-500/95 hover:bg-red-500 border-red-400/30 text-white' 
-              : 'bg-black/45 backdrop-blur-md border-white/15 text-white/90 hover:bg-black/75 hover:text-white'
+          className={`absolute top-2 right-2 z-30 p-1.5 rounded-lg transition-all border opacity-0 group-hover:opacity-100 pointer-events-auto ${
+            isFavorite
+              ? 'bg-red-500/95 border-red-400/30 text-white'
+              : 'bg-black/50 border-white/15 text-white/90 hover:bg-black/70'
           }`}
         >
-          <Heart className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform ${isFavorite ? 'fill-current animate-pulse' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Info Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-14 z-20 pointer-events-none transition-transform duration-200 group-hover:translate-y-0">
-          <div>
-            <h3 className="text-white font-bold text-xs md:text-sm leading-tight line-clamp-1 mb-1 drop-shadow-sm tracking-tight group-hover:text-accent transition-colors duration-200">
-              <HighlightText text={game.title} query={searchQuery} />
-            </h3>
-            
-            <div className="flex items-center justify-between">
-              <span className="text-white/50 text-[8px] font-semibold uppercase tracking-wide">
-                {t(categoryKeyMap[game.category] || game.category)}
-              </span>
-              
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-0.5 text-yellow-400 font-semibold text-[9px]">
-                  <Star className="w-2.5 h-2.5 fill-current" />
-                  {(game.rating || 4.5).toFixed(1)}
-                </div>
-                <div className="flex items-center gap-0.5 text-white/40 text-[9px] font-semibold">
-                  <Play className="w-2.5 h-2.5 fill-current" />
-                  {game.plays >= 1000 ? `${(game.plays / 1000).toFixed(1)}K` : game.plays}
-                </div>
-              </div>
+        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/95 via-black/75 to-transparent pt-10 z-20 pointer-events-none">
+          <h3 className="text-white font-bold text-[11px] leading-tight line-clamp-2 mb-0.5 group-hover:text-accent transition-colors">
+            <HighlightText text={game.title} query={searchQuery} />
+          </h3>
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-white/45 text-[8px] font-semibold uppercase tracking-wide truncate">
+              {t(categoryKeyMap[game.category] || game.category)}
+            </span>
+            <div className="flex items-center gap-1 shrink-0">
+              <Star className="w-2.5 h-2.5 text-yellow-400 fill-yellow-400" />
+              <span className="text-[9px] font-semibold text-white/80">{(game.rating || 4.5).toFixed(1)}</span>
             </div>
           </div>
         </div>
@@ -198,4 +192,3 @@ export const GameCard = memo(function GameCard({
     </Link>
   );
 });
-

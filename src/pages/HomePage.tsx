@@ -26,7 +26,8 @@ import {
   ArrowRight,
   TrendingUp,
   Smartphone,
-  Hourglass
+  Hourglass,
+  Zap
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
 import { GameGrid } from '../components/GameGrid';
@@ -76,6 +77,8 @@ interface HomePageProps {
 }
 
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
+import { buildHomepageShelves, buildRecommendations } from '../utils/recommendations';
+import { buildTagShelves } from '../lib/tagShelves';
 
 export const HomePage = React.memo(function HomePage({
   isDarkMode,
@@ -218,27 +221,91 @@ export const HomePage = React.memo(function HomePage({
     ? userProfile.preferredCategories[0] 
     : (recentlyPlayedGames.length > 0 ? recentlyPlayedGames[0]?.category : null);
     
-  const personalizedRecommendations = topCategory 
-    ? filteredGames
-        .filter(g => g.category === topCategory && !recentlyPlayedGames.some(r => r.id === g.id))
-        .sort((a,b) => b.plays - a.plays)
-        .slice(0, 12)
-    : [];
+  const personalizedRecommendations = React.useMemo(() => {
+    if (!topCategory) return [];
+    return buildRecommendations(filteredGames, {
+      limit: 12,
+      excludeIds: recentlyPlayedGames.map((g) => g.id),
+      preferredCategories: topCategory === 'Trending' ? [] : [topCategory],
+      playHistory: recentlyPlayedGames.map((g) => g.id),
+    });
+  }, [filteredGames, topCategory, recentlyPlayedGames]);
+
+  const homepageShelves = React.useMemo(
+    () => buildHomepageShelves(filteredGames),
+    [filteredGames]
+  );
+
+  const tagShelves = React.useMemo(
+    () => buildTagShelves(filteredGames, 18, new Set(homepageShelves.seenIds)),
+    [filteredGames, homepageShelves.seenIds]
+  );
+
+  const diversifyShelf = React.useMemo(() => {
+    if (!userProfile?.preferredCategories?.length) return [];
+    const preferred = userProfile.preferredCategories[0];
+    return buildRecommendations(filteredGames, {
+      limit: 10,
+      excludeIds: recentlyPlayedGames.map((g) => g.id),
+      preferredCategories: [],
+      playHistory: recentlyPlayedGames.map((g) => g.id),
+    }).filter((g) => g.category !== preferred);
+  }, [filteredGames, userProfile?.preferredCategories, recentlyPlayedGames]);
+
+  const renderShelf = (
+    title: string,
+    eyebrow: string,
+    shelfGames: Game[],
+    keyPrefix: string,
+    shelfRef?: React.RefObject<HTMLDivElement | null>,
+    EyebrowIcon?: React.ComponentType<{ className?: string }>
+  ) => {
+    if (!shelfGames.length) return null;
+    const Icon = EyebrowIcon;
+    return (
+      <section className="shelf-section group/shelf">
+        <div className="shelf-header">
+          <div className="space-y-0.5">
+            <div className="section-eyebrow">
+              {Icon && <Icon className="w-3.5 h-3.5" />}
+              <span>{eyebrow}</span>
+            </div>
+            <h3 className="section-title">{title}</h3>
+          </div>
+          {shelfRef && (
+            <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
+              <button onClick={() => handleScroll(shelfRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => handleScroll(shelfRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="shelf-scroll" ref={shelfRef}>
+          {shelfGames.map((game, index) => (
+            <div key={`${keyPrefix}-${game.id}-${index}`} className="shelf-card">
+              <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  };
 
   const featuredGames = React.useMemo(() => {
     const uniqueGames = new Map<string, Game>();
     if (featuredGame) uniqueGames.set(featuredGame.id, featuredGame);
-    if (recommendedGames?.length) {
-      recommendedGames.slice(0, 4).forEach(g => uniqueGames.set(g.id, g));
-    }
     if (newArrivals?.length) {
-      newArrivals.slice(0, 4).forEach(g => uniqueGames.set(g.id, g));
+      newArrivals.slice(0, 6).forEach((g) => uniqueGames.set(g.id, g));
     }
-    return Array.from(uniqueGames.values()).slice(0, 8);
-  }, [featuredGame, newArrivals, recommendedGames]);
+    homepageShelves.topRated.slice(0, 6).forEach((g) => uniqueGames.set(g.id, g));
+    return Array.from(uniqueGames.values()).slice(0, 12);
+  }, [featuredGame, newArrivals, homepageShelves.topRated]);
 
   return (
-    <div className="space-y-4 px-1 md:px-2">
+    <div className="space-y-2 px-1 md:px-2 pb-4">
       <SEO 
         title="Play Best Online Games Free" 
         description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
@@ -392,7 +459,7 @@ export const HomePage = React.memo(function HomePage({
             </div>
  
             <div className="shelf-scroll" ref={trendingRef}>
-                {[...filteredGames].sort((a,b)=>b.plays-a.plays).slice(0,12).map((game, index) => (
+                {homepageShelves.trending.map((game, index) => (
                   <div key={`trending-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
@@ -440,6 +507,29 @@ export const HomePage = React.memo(function HomePage({
             </div>
           </section>
         )}
+      </SectionErrorBoundary>
+
+      {/* Category shelves — deduped rows for density */}
+      <SectionErrorBoundary sectionName="Category Shelves">
+        {selectedCategory === 'All' && !searchQuery && (
+          <>
+            {renderShelf('Top Rated', 'Community picks', homepageShelves.topRated, 'top-rated', undefined, Star)}
+            {renderShelf('Action Games', 'Fast-paced', homepageShelves.categoryShelves.Action, 'cat-action', undefined, Zap)}
+            {renderShelf('Puzzle Games', 'Brain teasers', homepageShelves.categoryShelves.Puzzle, 'cat-puzzle', undefined, BrainCircuit)}
+            {renderShelf('Arcade Classics', 'Retro fun', homepageShelves.categoryShelves.Arcade, 'cat-arcade', undefined, Gamepad2)}
+            {renderShelf('Racing Games', 'Speed', homepageShelves.categoryShelves.Racing, 'cat-racing', undefined, TrendingUp)}
+            {renderShelf('Sports Games', 'Competitive', homepageShelves.categoryShelves.Sports, 'cat-sports', undefined, Trophy)}
+            {renderShelf('Strategy Games', 'Think ahead', homepageShelves.categoryShelves.Strategy, 'cat-strategy', undefined, Target)}
+          </>
+        )}
+      </SectionErrorBoundary>
+
+      {/* Tag-based shelves (auto from dataset) */}
+      <SectionErrorBoundary sectionName="Tag Shelves">
+        {selectedCategory === 'All' && !searchQuery &&
+          tagShelves.map((shelf) =>
+            renderShelf(shelf.title, shelf.title, shelf.games, `tag-${shelf.id}`, undefined, Gamepad2)
+          )}
       </SectionErrorBoundary>
 
       {/* Recommended */}
@@ -599,95 +689,23 @@ export const HomePage = React.memo(function HomePage({
       {/* Game Grid */}
 
       <SectionErrorBoundary sectionName="Quick Sessions">
-        {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Quick play</span>
-                </div>
-                <h3 className="section-title">Quick 2-Minute Games</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {filteredGames.filter(g => g.avgPlayTime === '2m' || g.avgPlayTime === '5m' || (g.tags && g.tags.includes('Quick'))).slice(0, 10).map((game, index) => (
-                  <div key={`quick-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+        {selectedCategory === 'All' && !searchQuery &&
+          renderShelf('Quick 2-Minute Games', 'Quick play', homepageShelves.quickPlay.length ? homepageShelves.quickPlay : homepageShelves.topRated.slice(0, 10), 'quick', undefined, Clock)}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Mobile Friendly">
-        {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Smartphone className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">On the go</span>
-                </div>
-                <h3 className="section-title">Good on Mobile</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {filteredGames.filter(g => g.mobileOptimization === 'touch-friendly' || (g.tags && g.tags.includes('Mobile'))).slice(0, 10).map((game, index) => (
-                  <div key={`mobile-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+        {selectedCategory === 'All' && !searchQuery &&
+          renderShelf('Good on Mobile', 'On the go', homepageShelves.mobileFriendly, 'mobile', undefined, Smartphone)}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Most Played">
-        {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Users className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Classics</span>
-                </div>
-                <h3 className="section-title">Most Played</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {[...filteredGames].sort((a, b) => b.plays - a.plays).slice(0, 10).map((game, index) => (
-                  <div key={`most-played-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+        {selectedCategory === 'All' && !searchQuery &&
+          renderShelf('Most Played', 'Classics', homepageShelves.trending.slice(0, 12), 'most-played', undefined, Users)}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Hidden Gems">
-        {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Sparkles className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Hidden gems</span>
-                </div>
-                <h3 className="section-title">Highly Rated, Barely Played</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {[...filteredGames].sort((a, b) => b.rating - a.rating).filter(g => g.plays < 60000).slice(0, 10).map((game, index) => (
-                  <div key={`hidden-gems-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+        {selectedCategory === 'All' && !searchQuery &&
+          renderShelf('Highly Rated, Barely Played', 'Hidden gems', [...filteredGames].sort((a, b) => b.rating - a.rating).filter((g) => g.plays < 60000).slice(0, 12), 'hidden-gems', undefined, Sparkles)}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Deep Dives">
@@ -753,27 +771,9 @@ export const HomePage = React.memo(function HomePage({
 
       {/* Most Loved Section */}
 
-            <SectionErrorBoundary sectionName="Try Something Different">
-        {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && userProfile?.preferredCategories && userProfile.preferredCategories.length > 0 && (
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Compass className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">HIDDEN GEMS</span>
-                </div>
-                <h3 className="section-title">Try Something Different</h3>
-              </div>
-            </div>
-            <div className="shelf-scroll">
-                {filteredGames.filter(g => g.category !== userProfile.preferredCategories![0] && !recentlyPlayedGames.some(rg => rg.id === g.id)).slice(0, 10).map((game, index) => (
-                  <div key={`diff-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+      <SectionErrorBoundary sectionName="Try Something Different">
+        {selectedCategory === 'All' && !searchQuery &&
+          renderShelf('Try Something Different', 'Discover new genres', diversifyShelf, 'diversify', undefined, Compass)}
       </SectionErrorBoundary>
       {/* Recommended for You Section */}
 

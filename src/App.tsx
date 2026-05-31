@@ -79,6 +79,7 @@ import { UsernameSetupModal } from './components/UsernameSetupModal';
 import { PreferencesModal } from './components/PreferencesModal';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST } from './games';
 import { parseFirebaseGame } from './utils/gameUtils';
+import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import { 
   db, 
@@ -1073,7 +1074,7 @@ function AppContent() {
   const [gameRequests, setGameRequests] = useState<GameRequest[]>([]);
   const [modSearchQuery, setModSearchQuery] = useState('');
   const [modSortBy, setModSortBy] = useState<'downloads' | 'rating' | 'newest'>('downloads');
-  const [displayLimit, setDisplayLimit] = useState(48);
+  const [displayLimit, setDisplayLimit] = useState(80);
 
   const handleGenerateDescriptions = () => {
     toast.error('AI automatic generations have been disabled for performance.');
@@ -1275,24 +1276,11 @@ function AppContent() {
 
   const generateRecommendations = () => {
     setIsGeneratingRecommendations(true);
-    // Local scoring algorithm
-    const recommendations = games
-      .filter(g => !playHistory.includes(g.id))
-      .map(g => {
-        let score = 0;
-        if (userProfile?.preferredCategories?.includes(g.category)) score += 10;
-        if (g.rating >= 4.5) score += 5;
-        if (g.plays > 1000) score += 3;
-        
-        // Add some randomness
-        score += Math.random() * 5;
-        
-        return { game: g, score };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 4)
-      .map(item => item.game);
-
+    const recommendations = buildRecommendations(games, {
+      limit: 12,
+      playHistory,
+      preferredCategories: userProfile?.preferredCategories || preferredCategories,
+    });
     setRecommendedGames(recommendations);
     setIsGeneratingRecommendations(false);
   };

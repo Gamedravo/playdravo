@@ -8,7 +8,9 @@
     "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "import:catalog": "tsx scripts/import-onlinegames-catalog.ts",
+    "import:catalog:audit": "tsx scripts/import-onlinegames-catalog.ts --audit-only"
   },
   "dependencies": {
     "@google/genai": "^1.46.0",

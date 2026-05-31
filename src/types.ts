@@ -44,7 +44,9 @@ export interface Game {
   fullscreenSupport?: boolean;
   orientation?: 'landscape' | 'portrait' | 'any';
   screenshots?: string[];
-  
+  /** Future hover preview (MP4/WebM) — optional per game */
+  previewVideoUrl?: string;
+
   // Authenticity & Quality Control metrics
   sourceId?: string;
   validationState?: 'Verified Working' | 'Needs Review' | 'Unavailable';

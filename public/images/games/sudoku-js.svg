@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-sudoku-js" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-sudoku-js" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eab308" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ea580c" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-sudoku-js)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-sudoku-js)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#ea580c" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+          <pattern id="arc-dots-sudoku-js" width="28" height="28" patternUnits="userSpaceOnUse">
+             <circle cx="14" cy="14" r="1.5" fill="#ffffff" fill-opacity="0.08" />
+          </pattern>
+          <rect width="512" height="512" fill="url(#arc-dots-sudoku-js)" />
+        
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#eab308" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+          <g transform="translate(256, 210)">
+             <!-- Retro joystick sphere -->
+             <circle cx="-45" cy="-35" r="34" fill="#ef4444" filter="drop-shadow(0 6px 12px rgba(239, 68, 68, 0.45))" />
+             <!-- Joystick shaft -->
+             <line x1="-45" y1="-5" x2="-20" y2="45" stroke="#94a3b8" stroke-width="12" stroke-linecap="round" />
+             <!-- Joystick base -->
+             <ellipse cx="-20" cy="48" rx="34" ry="14" fill="#334155" />
+
+             <!-- Neon fire-buttons action pads -->
+             <circle cx="55" cy="5" r="16" fill="#eab308" stroke="#ffffff" stroke-width="2.5" />
+             <circle cx="95" cy="35" r="13" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+          </g>
+        
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-sudoku-js)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-sudoku-js" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>
