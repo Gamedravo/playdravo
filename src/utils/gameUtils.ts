@@ -1,6 +1,28 @@
 import { Game } from '../types';
 import { GAMES } from '../games';
 
+/** Prefer bundled artwork for catalog games; ignore broken remote placeholders. */
+export function resolveGameThumbnail(
+  gameId: string,
+  thumbnail?: string
+): string {
+  const catalog = GAMES.find((g) => g.id === gameId);
+  const candidate = catalog?.thumbnail || thumbnail || '';
+  if (!candidate) return '';
+  if (candidate.startsWith('/images/games/')) return candidate;
+  if (
+    candidate.includes('placeholder') ||
+    candidate.includes('via.placeholder') ||
+    candidate.includes('picsum.photos') ||
+    candidate.endsWith('/null') ||
+    candidate === 'null' ||
+    candidate === 'undefined'
+  ) {
+    return catalog?.thumbnail || '';
+  }
+  return candidate;
+}
+
 export function parseFirebaseGame(id: string, data: any): Game {
   return {
     id,
@@ -30,7 +52,7 @@ export function parseFirebaseGame(id: string, data: any): Game {
     ...data,
     // Force the correct URL if it's one of our hardcoded games, so we replace broken Firebase state
     url: GAMES.find(g => g.id === id)?.url || data.url || '',
-    thumbnail: GAMES.find(g => g.id === id)?.thumbnail || data.thumbnail || '',
+    thumbnail: resolveGameThumbnail(id, data.thumbnail),
     mobileOptimization: GAMES.find(g => g.id === id)?.mobileOptimization || data.mobileOptimization || 'touch-friendly',
   };
 }

@@ -473,9 +473,9 @@ export const GamePage: React.FC<GamePageProps> = ({
         url={window.location.href}
       />
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-3 md:py-4">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-6 opacity-70">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-3 md:mb-4 opacity-70">
           <Link to="/" className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">Home</Link>
           <ChevronRight className="w-3 h-3" aria-hidden="true" />
           <Link to={`/category/${game.category.toLowerCase()}`} className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">{game.category}</Link>
@@ -483,9 +483,9 @@ export const GamePage: React.FC<GamePageProps> = ({
           <span className="text-accent truncate flex-1" aria-current="page">{game.title}</span>
         </nav>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-6">
           {/* Main Content Column */}
-          <div className="flex-1 min-w-0 space-y-6">
+          <div className="flex-1 min-w-0 space-y-4 md:space-y-5">
             {/* Unified Player & Action Bar Container */}
             <div className={`flex flex-col rounded-[1.5rem] lg:rounded-[2.5rem] border overflow-hidden shadow-2xl transition-all duration-300 ${isDarkMode ? 'bg-[#0f0f13] border-white/5' : 'bg-white border-black/5'}`}>
               
@@ -500,6 +500,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   <GameThumbnail 
                     src={game.thumbnail} 
                     alt={game.title} 
+                    category={game.category}
                     className="absolute inset-0 w-full h-full object-cover blur-sm opacity-40 scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -511,7 +512,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   >
                     <div className="mb-4 sm:mb-6 lg:mb-8 relative shrink-0">
                       <div className="w-16 h-16 sm:w-32 sm:h-32 md:w-48 md:h-48 rounded-3xl sm:rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden border-4 border-white/20 shadow-2xl mx-auto">
-                        <GameThumbnail src={game.thumbnail} alt={game.title} className="w-full h-full object-cover shadow-lg" />
+                        <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover shadow-lg" />
                       </div>
                       <div className="absolute -bottom-3 sm:-bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1 bg-accent text-bg-dark text-[8px] sm:text-xs font-semibold tracking-tight uppercase rounded-full shadow-md whitespace-nowrap">
                         {game.category}
@@ -574,7 +575,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       <div className="absolute inset-0 shimmer-overlay opacity-20" />
                       <div className="relative z-30 flex flex-col items-center gap-6 max-w-sm text-center">
                         <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl animate-pulse">
-                          <GameThumbnail src={game.thumbnail} alt={game.title} className="w-full h-full object-cover" />
+                          <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col items-center gap-3">
                           {!embedStatus.embeddable ? (
@@ -712,7 +713,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                         {/* Center: Title */}
                         <div className="flex-[2] flex justify-center items-center gap-2 pointer-events-auto cursor-default">
                           <div className="w-5 h-5 sm:w-6 sm:h-6 rounded overflow-hidden shadow-sm border border-white/10 hidden sm:block">
-                            <GameThumbnail src={game.thumbnail} alt="" className="w-full h-full object-cover" />
+                            <GameThumbnail src={game.thumbnail} alt="" category={game.category} className="w-full h-full object-cover" />
                           </div>
                           <span className="text-white/90 font-medium tracking-wide text-[11px] sm:text-sm drop-shadow-md truncate">{game.title}</span>
                         </div>
@@ -739,7 +740,7 @@ export const GamePage: React.FC<GamePageProps> = ({
             <div className={`p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-500 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark/95 backdrop-blur-xl border-white/5' : 'bg-white/95 backdrop-blur-xl border-black/5'} w-full`}>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
-                  <GameThumbnail src={game.thumbnail} alt={game.title} className="w-full h-full object-cover" />
+                  <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
@@ -956,6 +957,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                         <GameThumbnail 
                           src={getCategoryScreenshots(game.category, num, game.thumbnail)} 
                           alt={`Screenshot ${num}`} 
+                          category={game.category}
                           className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity hover:scale-105 duration-300" 
                         />
                       </div>
@@ -1085,10 +1087,10 @@ export const GamePage: React.FC<GamePageProps> = ({
               <div className="flex items-center justify-between">
                 <h2 className={`text-xl font-bold tracking-tight flex items-center gap-3 ${isDarkMode ? 'text-white' : 'text-black'}`}>
                   <div className="w-1.5 h-6 bg-accent rounded-full" />
-                  Players Also Liked
+                  {t('playersAlsoLiked') || 'Players Also Liked'}
                 </h2>
                 <Link to={`/category/${game.category.toLowerCase()}`} className="text-xs font-semibold tracking-tight uppercase text-accent hover:underline">
-                  More from {game.category}
+                  {t('moreFrom' + game.category) || `More from ${game.category}`}
                 </Link>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -1125,7 +1127,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   >
                     <div className="flex gap-4">
                       <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/5 shrink-0 relative bg-white/[0.02]">
-                        <GameThumbnail src={recGame.thumbnail} alt={recGame.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <GameThumbnail src={recGame.thumbnail} alt={recGame.title} category={recGame.category} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
                       <div className="flex flex-col justify-center min-w-0">
                         <h4 className={`text-xs font-bold leading-tight truncate group-hover:text-accent transition-colors ${isDarkMode ? 'text-white' : 'text-black'}`}>

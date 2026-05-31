@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-swooop-playcanvas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-swooop-playcanvas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-swooop-playcanvas)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-swooop-playcanvas)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#7c3aed" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Fluffy cumulus cloud circles layout -->
+        <g fill="#ffffff" opacity="0.06">
+          <circle cx="90" cy="110" r="45" />
+          <circle cx="130" cy="120" r="35" />
+          <circle cx="390" cy="280" r="55" />
+          <circle cx="430" cy="290" r="45" />
+        </g>
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Flying loop trail representing the propeller trajectory -->
+          <path d="M -160,80 C -120,-140 120,-140 160,80 C 180,140 -180,140 -160,80" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="10,12" opacity="0.65" />
+
+          <!-- Red and gold custom propeller airplane swooping high -->
+          <g transform="translate(20, -25) rotate(-16)">
+            <!-- Fuselage -->
+            <ellipse cx="0" cy="0" rx="42" ry="16" fill="#e53e3e" stroke="#2d3748" stroke-width="3" />
+            <!-- Yellow Tail wing -->
+            <path d="M -34,-12 L -46,-32 L -28,-14" fill="#ecc94b" stroke="#2d3748" stroke-width="2.5" />
+            <!-- Double wings -->
+            <rect x="-12" y="-55" width="22" height="110" rx="6" fill="#ecc94b" stroke="#2d3748" stroke-width="3" />
+            <!-- Propeller spinner and shiny chrome hub -->
+            <rect x="38" y="-14" width="8" height="28" fill="#1a202c" />
+            <line x1="42" y1="-44" x2="42" y2="44" stroke="#ffffff" stroke-width="3.5" />
+            <circle cx="42" cy="0" r="7.5" fill="#e2e8f0" stroke="#1a202c" stroke-width="2" />
+          </g>
+
+          <!-- Shiny gold stars around plane representing coins -->
+          <g transform="translate(-110, -65)" stroke="#ecc94b" stroke-width="2.5" fill="#f6e05e">
+             <polygon points="0,-12 3,-3 12,-3 5,3 8,12 0,6 -8,12 -5,3 -12,-3 -3,-3" />
+          </g>
+          <g transform="translate(130, 90)" stroke="#ecc94b" stroke-width="2.5" fill="#f6e05e" scale="0.8">
+             <polygon points="0,-12 3,-3 12,-3 5,3 8,12 0,6 -8,12 -5,3 -12,-3 -3,-3" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-swooop-playcanvas)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-swooop-playcanvas" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

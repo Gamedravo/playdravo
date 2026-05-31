@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-js-tetris" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-js-tetris" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-js-tetris)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-js-tetris)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#f43f5e" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <pattern id="tetris-mesh" width="30" height="30" patternUnits="userSpaceOnUse">
+          <rect width="30" height="30" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.03" />
+        </pattern>
+        <rect width="512" height="512" fill="url(#tetris-mesh)" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Neon colored Tetromino block structures locking in cascade -->
+          <!-- Orange L piece -->
+          <g transform="translate(-105, 55)">
+            <rect x="0" y="0" width="36" height="36" rx="4" fill="#f97316" stroke="#ffffff" stroke-width="2" />
+            <rect x="36" y="0" width="36" height="36" rx="4" fill="#f97316" stroke="#ffffff" stroke-width="2" />
+            <rect x="72" y="0" width="36" height="36" rx="4" fill="#f97316" stroke="#ffffff" stroke-width="2" />
+            <rect x="72" y="-36" width="36" height="36" rx="4" fill="#f97316" stroke="#ffffff" stroke-width="2" />
+          </g>
+          
+          <!-- Cyan I piece lying flat -->
+          <g transform="translate(-105, 91)">
+            <rect x="0" y="0" width="36" height="36" rx="4" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+            <rect x="36" y="0" width="36" height="36" rx="4" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+            <rect x="72" y="0" width="36" height="36" rx="4" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+            <rect x="108" y="0" width="36" height="36" rx="4" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+          </g>
+
+          <!-- Yellow O Square piece -->
+          <g transform="translate(39, 55)">
+            <rect x="0" y="0" width="36" height="36" rx="4" fill="#eab308" stroke="#ffffff" stroke-width="2" />
+            <rect x="36" y="0" width="36" height="36" rx="4" fill="#eab308" stroke="#ffffff" stroke-width="2" />
+            <rect x="0" y="36" width="36" height="36" rx="4" fill="#eab308" stroke="#ffffff" stroke-width="2" />
+            <rect x="36" y="36" width="36" height="36" rx="4" fill="#eab308" stroke="#ffffff" stroke-width="2" />
+          </g>
+
+          <!-- Purple T piece falling down -->
+          <g transform="translate(-32, -65) rotate(15)">
+            <rect x="-18" y="-18" width="36" height="36" rx="4" fill="#a855f7" stroke="#ffffff" stroke-width="2" />
+            <rect x="-54" y="-18" width="36" height="36" rx="4" fill="#a855f7" stroke="#ffffff" stroke-width="2" />
+            <rect x="18" y="-18" width="36" height="36" rx="4" fill="#a855f7" stroke="#ffffff" stroke-width="2" />
+            <rect x="-18" y="18" width="36" height="36" rx="4" fill="#a855f7" stroke="#ffffff" stroke-width="2" />
+            <!-- Action speed vectors on falling block -->
+            <path d="M -18,-50 V -28 M 18,-50 V -28" stroke="#ffffff" stroke-width="2.5" opacity="0.75" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-js-tetris)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-js-tetris" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

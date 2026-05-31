@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-js-racer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-js-racer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-js-racer)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-js-racer)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#ef4444" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Speed radial motion beams -->
+        <g stroke="#ffffff" stroke-width="2.5" opacity="0.14" stroke-dasharray="20,15">
+          <line x1="256" y1="120" x2="-50" y2="280" />
+          <line x1="256" y1="120" x2="562" y2="280" />
+          <line x1="256" y1="120" x2="256" y2="562" />
+        </g>
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f97316" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <!-- Curved F1-style raceway track layout -->
+        <path d="M 210,140 L 50,440 L 462,440 L 302,140 Z" fill="#2d3748" />
+        <!-- Striped track border curbstones -->
+        <path d="M 210,140 L 50,440" stroke="#e53e3e" stroke-width="12" stroke-dasharray="25,25" />
+        <path d="M 302,140 L 462,440" stroke="#ffffff" stroke-width="12" stroke-dasharray="25,25" />
+
+        <!-- High speed red racing formula car screaming downhill toward camera -->
+        <g transform="translate(256, 305)">
+          <!-- Giant black track tires -->
+          <rect x="-105" y="15" width="38" height="65" rx="8" fill="#1a202c" stroke="#ffffff" stroke-width="1.5" />
+          <rect x="67" y="15" width="38" height="65" rx="8" fill="#1a202c" stroke="#ffffff" stroke-width="1.5" />
+          <!-- Car chassis aerofoil elements -->
+          <rect x="-85" y="45" width="170" height="28" rx="6" fill="#e53e3e" stroke="#742a2a" stroke-width="3" />
+          <path d="M -45,45 L -20,-35 L 20,-35 L 45,45 Z" fill="#ff1744" stroke="#9bff44" stroke-width="1.5" />
+          <!-- Formula Spoiler wing -->
+          <rect x="-95" y="-12" width="190" height="15" rx="3" fill="#111" />
+          <line x1="-95" y1="3" x2="-95" y2="45" stroke="#111" stroke-width="5" />
+          <line x1="95" y1="3" x2="95" y2="45" stroke="#111" stroke-width="5" />
+          <!-- Golden engine exhaust fire sparks -->
+          <circle cx="0" cy="52" r="11" fill="#ffeb3b" opacity="0.9" />
+          <!-- Driver white helmet -->
+          <circle cx="0" cy="-5" r="14" fill="#ffffff" />
+          <rect x="-7" y="-10" width="14" height="8" fill="#1a202c" rx="1.5" />
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-js-racer)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-js-racer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

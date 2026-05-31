@@ -89,7 +89,7 @@ export function CommandPalette({
                       className="flex items-center gap-4 p-4 rounded-2xl transition-all group text-left"
                     >
                       <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/5 group-hover:border-accent/50 transition-all">
-                        <GameThumbnail src={game.thumbnail} alt={game.title} />
+                        <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} />
                       </div>
                       <div className="flex-1">
                         <p className="font-bold group-hover:text-accent transition-colors">{game.title}</p>

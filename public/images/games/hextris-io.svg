@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-hextris-io" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-hextris-io" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-hextris-io)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-hextris-io)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#8b5cf6" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <circle cx="256" cy="230" r="190" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.05" />
+        <circle cx="256" cy="230" r="140" fill="none" stroke="#ffffff" stroke-dasharray="6,8" stroke-width="1.5" stroke-opacity="0.04" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#ec4899" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 215)">
+          <!-- Core Central Hexagon -->
+          <polygon points="0,-75 65,-37 65,37 0,75 -65,37 -65,-37" fill="#1e1e38" stroke="#ffffff" stroke-width="4.5" />
+          <!-- Colorful falling segment layers -->
+          <path d="M 0,-110 L 95,-55 L 80,-30 L 0,-75 Z" fill="#ef4444" opacity="0.9" />
+          <path d="M 0,110 L -95,55 L -80,30 L 0,75 Z" fill="#06b6d4" opacity="0.9" />
+          <path d="M 95,55 L 95,-55 L 70,-40 L 70,40 Z" fill="#f59e0b" opacity="0.95" />
+          <path d="M -95,-55 L -95,55 L -70,40 L -70,-40 Z" fill="#a855f7" opacity="0.85" />
+          <polygon points="0,-10 8,-5 8,5 0,10 -8,5 -8,-5" fill="#ffffff" />
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-hextris-io)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-hextris-io" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

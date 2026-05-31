@@ -71,6 +71,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { GameThumbnail } from './components/GameThumbnail';
+import { Footer } from './components/Footer';
 import { useModals } from './hooks/useModals';
 
 import { Toaster, toast } from 'sonner';
@@ -138,6 +139,14 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel').then(module => ({ def
 const SearchPage = lazy(() => import('./pages/SearchPage').then(module => ({ default: module.SearchPage })));
 const SupportPage = lazy(() => import('./pages/SupportPage').then(module => ({ default: module.SupportPage })));
 const LibraryPage = lazy(() => import('./pages/LibraryPage').then(module => ({ default: module.LibraryPage })));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(module => ({ default: module.PrivacyPage })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(module => ({ default: module.TermsPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(module => ({ default: module.AboutPage })));
+const StatusPage = lazy(() => import('./pages/StatusPage').then(module => ({ default: module.StatusPage })));
+const ReportBugPage = lazy(() => import('./pages/ReportBugPage').then(module => ({ default: module.ReportBugPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ default: module.ContactPage })));
+const SubmitGamePage = lazy(() => import('./pages/SubmitGamePage').then(module => ({ default: module.SubmitGamePage })));
+const CookiesPage = lazy(() => import('./pages/CookiesPage').then(module => ({ default: module.CookiesPage })));
 
 const categoryKeyMap: Record<string, keyof typeof translations['en']> = {
   'Action': 'action',
@@ -194,9 +203,23 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     if (this.state.hasError) {
       const language = (localStorage.getItem('language') || 'en') as Language;
       const t = (key: string) => {
+        if (!key) return '';
         const langData = (translations as any)[language] || translations['en'];
-        const result = langData[key] || (translations['en'] as any)[key] || key;
-        return result;
+        const result = langData[key] || (translations['en'] as any)[key];
+        if (result) return result;
+        
+        const isVariable = /^[a-zA-Z0-9_-]+$/.test(key) && 
+                           (/[A-Z]/.test(key) || /_[a-zA-Z]/.test(key) || /-[a-zA-Z]/.test(key) || key === 'history');
+        if (isVariable) {
+          return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/[_-]+/g, ' ')
+            .trim()
+            .split(/\s+/)
+            .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '')
+            .join(' ');
+        }
+        return key;
       };
       
       return (
@@ -279,9 +302,49 @@ function AppContent() {
   });
 
   const t = useMemo(() => (key: string) => {
+    if (!key) return '';
     const langData = (translations as any)[language] || translations['en'];
-    const result = langData[key] || (translations['en'] as any)[key] || key;
-    return result;
+    const result = langData[key] || (translations['en'] as any)[key];
+    if (result) return result;
+
+    // Explicit translations for common internal keys
+    if (key === 'continuePlaying') return language === 'pt' ? 'Continuar Jogando' : language === 'es' ? 'Continuar Jugando' : language === 'fr' ? 'Continuer à Jouer' : language === 'de' ? 'Weiterspielen' : language === 'it' ? 'Continua a Giocare' : 'Continue Playing';
+    if (key === 'playersAlsoLiked') return language === 'pt' ? 'Jogadores Também Gostaram' : language === 'es' ? 'A otros jugadores también les gustó' : language === 'fr' ? 'Les joueurs ont aussi aimé' : language === 'de' ? 'Anderen Spielern gefiel auch' : language === 'it' ? 'Anche ai giocatori è piaciuto' : 'Players Also Liked';
+    if (key === 'quickResume') return language === 'pt' ? 'Retomar Rápido' : language === 'es' ? 'Reanudación Rápida' : language === 'fr' ? 'Reprise Rapide' : language === 'de' ? 'Schnellfortsetzung' : language === 'it' ? 'Ripristino Rapido' : 'Quick Resume';
+    
+    // Dynamic category translation for "moreFrom" keys
+    if (key.startsWith('moreFrom')) {
+      const cat = key.slice(8);
+      const categoryLabel = cat
+        .replace(/([A-Z])/g, ' $1')
+        .trim();
+      
+      if (language === 'pt') return `Mais de ${categoryLabel}`;
+      if (language === 'es') return `Más de ${categoryLabel}`;
+      if (language === 'fr') return `Plus de ${categoryLabel}`;
+      if (language === 'de') return `Mehr von ${categoryLabel}`;
+      if (language === 'it') return `Di più da ${categoryLabel}`;
+      return `More from ${categoryLabel}`;
+    }
+
+    // High fidelity auto-formatting for other camelCase, snake_case, PascalCase labels
+    const isVariable = /^[a-zA-Z0-9_-]+$/.test(key) && 
+                       (/[A-Z]/.test(key) || /_[a-zA-Z]/.test(key) || /-[a-zA-Z]/.test(key) || key === 'history');
+    if (isVariable) {
+      return key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/[_-]+/g, ' ')
+        .trim()
+        .split(/\s+/)
+        .map(word => {
+          if (!word) return '';
+          if (word === word.toUpperCase() && word.length > 1) return word;
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+    }
+
+    return key;
   }, [language]);
 
   useEffect(() => {
@@ -358,6 +421,8 @@ function AppContent() {
 
   const [isGameLoading, setIsGameLoading] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [logoDownloadSize, setLogoDownloadSize] = useState(512);
+  const [isLogoDownloading, setIsLogoDownloading] = useState(false);
 
   // Redundant window listener removed. Merged into mainRef listener for performance.
   useEffect(() => {
@@ -1020,7 +1085,7 @@ function AppContent() {
   const [gameRequests, setGameRequests] = useState<GameRequest[]>([]);
   const [modSearchQuery, setModSearchQuery] = useState('');
   const [modSortBy, setModSortBy] = useState<'downloads' | 'rating' | 'newest'>('downloads');
-  const [displayLimit, setDisplayLimit] = useState(40);
+  const [displayLimit, setDisplayLimit] = useState(48);
 
   const handleGenerateDescriptions = () => {
     toast.error('AI automatic generations have been disabled for performance.');
@@ -1418,7 +1483,7 @@ function AppContent() {
   }, [isNewsletterSubscribed]);
 
   useEffect(() => {
-    setDisplayLimit(40);
+    setDisplayLimit(48);
   }, [selectedCategory, searchQuery, sortBy, selectedTags]);
 
   const filteredGames = useMemo(() => {
@@ -1890,7 +1955,52 @@ function AppContent() {
                     </div>
                   )
                 } />
+                <Route path="/privacy" element={
+                  <PageLayout>
+                    <PrivacyPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/terms" element={
+                  <PageLayout>
+                    <TermsPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/about" element={
+                  <PageLayout>
+                    <AboutPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/status" element={
+                  <PageLayout>
+                    <StatusPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/report-bug" element={
+                  <PageLayout>
+                    <ReportBugPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/contact" element={
+                  <PageLayout>
+                    <ContactPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/submit-game" element={
+                  <PageLayout>
+                    <SubmitGamePage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
+                <Route path="/cookies" element={
+                  <PageLayout>
+                    <CookiesPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                } />
           </Routes>
+          
+          {/* Universal Footer section on every page */}
+          {location.pathname !== '/search' && !location.pathname.startsWith('/games/') && (
+            <Footer isDarkMode={isDarkMode} t={t} />
+          )}
           </Suspense>
           </main>
         </div>
@@ -1911,23 +2021,7 @@ function AppContent() {
           categoryKeyMap={categoryKeyMap as any}
         />
 
-        {/* Scroll to Top */}
-        <AnimatePresence>
-          {showScrollTop && (
-            <motion.button
-              key="scroll-top-header"
-              initial={{ opacity: 0, scale: 0.5, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.5, y: 20 }}
-              whileHover={{ scale: 1.1, boxShadow: '0 0 40px rgba(157,92,255,0.6)' }}
-              whileTap={{ scale: 0.9 }}
-              onClick={scrollToTop}
-              className="fixed bottom-8 right-8 z-[100] p-4 bg-accent text-bg-dark rounded-2xl shadow-[0_0_30px_rgba(157,92,255,0.5)] transition-all hidden md:flex"
-            >
-              <ArrowUp className="w-6 h-6" />
-            </motion.button>
-          )}
-        </AnimatePresence>
+
 
         {/* Help Center Modal */}
         <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 transition-[visibility] duration-300 ${isHelpCenterOpen ? 'visible' : 'invisible'}`}>
@@ -2070,20 +2164,28 @@ function AppContent() {
             </div>
 
         {/* User Preferences Modal */}
-        <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 transition-[visibility] duration-300 ${isPreferencesModalOpen ? 'visible' : 'invisible'}`}>
-          <motion.div 
-            initial={false}
-            animate={isPreferencesModalOpen ? { opacity: 1, pointerEvents: 'auto' } as any : { opacity: 0, pointerEvents: 'none' } as any}
-            transition={{ duration: 0.3 }}
-            onClick={() => setIsPreferencesModalOpen(false)}
-            className={`absolute inset-0 transition-all duration-500 backdrop-blur-sm ${isDarkMode ? 'bg-bg-dark/90' : 'bg-white/90'}`}
-          />
-          <motion.div
-            initial={false}
-            animate={isPreferencesModalOpen ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.98, y: 10 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className={`relative w-full max-w-xl border rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] transition-all duration-500 ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
-          >
+        <AnimatePresence>
+          {isPreferencesModalOpen && (
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPreferencesModalOpen(false);
+                }}
+                className={`absolute inset-0 backdrop-blur-sm ${isDarkMode ? 'bg-bg-dark/90' : 'bg-white/90'}`}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+                onClick={(e) => e.stopPropagation()}
+                className={`relative w-full max-w-xl border rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] transition-all duration-500 ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
+              >
                 <div className={`p-8 border-b flex items-center justify-between shrink-0 transition-all ${isDarkMode ? 'border-white/5 bg-white/[0.02]' : 'border-black/5 bg-black/[0.02]'}`}>
                   <div className="flex items-center gap-4">
                     <motion.div 
@@ -2100,7 +2202,10 @@ function AppContent() {
                   <motion.button 
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsPreferencesModalOpen(false)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsPreferencesModalOpen(false);
+                    }}
                     className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white' : 'bg-black/5 border-black/10 hover:bg-black/10 text-black'}`}
                   >
                     <X className="w-6 h-6" />
@@ -2225,6 +2330,215 @@ function AppContent() {
                       </motion.button>
                     ))}
                   </div>
+
+                  {/* PlayDravo Brand Kit & Logo Assets */}
+                  <h3 className={`text-[10px] font-semibold tracking-wide mt-12 mb-6 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>Official Brand Assets & Logo Kit</h3>
+                  <div className={`p-6 border rounded-3xl relative overflow-hidden transition-all duration-300 ${isDarkMode ? 'bg-white/[0.02] border-white/10' : 'bg-black/[0.02] border-black/10'}`}>
+                    <div className="flex flex-col sm:flex-row gap-6 items-center">
+                      {/* Logo Preview box */}
+                      <div className="relative shrink-0 w-28 h-28 rounded-2xl bg-gradient-to-br from-violet-400 to-violet-600 p-0.5 shadow-xl group">
+                        <img 
+                          src="/logo.svg" 
+                          alt="PlayDravo Brand Logo" 
+                          className="w-full h-full object-contain rounded-[14px]" 
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-[14px] flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-white uppercase tracking-wider">Preview Logo</span>
+                        </div>
+                      </div>
+
+                      {/* Info & Settings */}
+                      <div className="flex-1 text-center sm:text-left">
+                        <h4 className="text-base font-bold text-accent mb-1">PlayDravo Brand Kit</h4>
+                        <p className={`text-xs mb-4 leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
+                          Download official scalable vector paths (SVG) or pixel-perfect icons (PNG, JPG) for your setup, banners, or streaming overlays.
+                        </p>
+
+                        {/* Pixel Resolution Multipliers */}
+                        <div className="flex items-center justify-center sm:justify-start gap-2 mb-4">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>Resolution:</span>
+                          {[192, 512, 1024].map((size) => (
+                            <button
+                              key={`size-btn-${size}`}
+                              onClick={() => setLogoDownloadSize(size)}
+                              className={`px-2.5 py-1 text-[10px] font-bold rounded-lg transition-all ${
+                                logoDownloadSize === size 
+                                  ? 'bg-accent text-bg-dark shadow-md' 
+                                  : (isDarkMode ? 'bg-white/5 text-white/50 hover:bg-white/10' : 'bg-black/5 text-black/50 hover:bg-black/10')
+                              }`}
+                            >
+                              {size}²
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Download Actions Panel */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-6 pt-6 border-t border-white/5">
+                      {/* SVG */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        disabled={isLogoDownloading}
+                        onClick={() => {
+                          setIsLogoDownloading(true);
+                          fetch('/logo.svg')
+                            .then(res => res.text())
+                            .then(text => {
+                              const blob = new Blob([text], { type: 'image/svg+xml' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = 'playdravo-logo.svg';
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              URL.revokeObjectURL(url);
+                              toast.success('Successfully downloaded PlayDravo logo (SVG)!');
+                              setIsLogoDownloading(false);
+                            })
+                            .catch(() => {
+                              toast.error('Failed to download SVG file.');
+                              setIsLogoDownloading(false);
+                            });
+                        }}
+                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
+                          isDarkMode 
+                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
+                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
+                        }`}
+                      >
+                        <Download className="w-3.5 h-3.5 text-accent" />
+                        Download SVG
+                      </motion.button>
+
+                      {/* PNG */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        disabled={isLogoDownloading}
+                        onClick={() => {
+                          setIsLogoDownloading(true);
+                          fetch('/logo.svg')
+                            .then(res => res.text())
+                            .then(svgText => {
+                              const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const img = new window.Image();
+                                img.onload = () => {
+                                  const canvas = document.createElement('canvas');
+                                  canvas.width = logoDownloadSize;
+                                  canvas.height = logoDownloadSize;
+                                  const ctx = canvas.getContext('2d');
+                                  if (ctx) {
+                                    ctx.imageSmoothingEnabled = true;
+                                    ctx.imageSmoothingQuality = 'high';
+                                    ctx.drawImage(img, 0, 0, logoDownloadSize, logoDownloadSize);
+                                    try {
+                                      const dataUrl = canvas.toDataURL('image/png', 1.0);
+                                      const a = document.createElement('a');
+                                      a.href = dataUrl;
+                                      a.download = `playdravo-logo-${logoDownloadSize}x${logoDownloadSize}.png`;
+                                      document.body.appendChild(a);
+                                      a.click();
+                                      document.body.removeChild(a);
+                                      toast.success(`Downloaded PNG logo (${logoDownloadSize}x${logoDownloadSize}px)!`);
+                                    } catch (err) {
+                                      toast.error('Browser blocked asset export. Try opening in a new tab.');
+                                    }
+                                  }
+                                  setIsLogoDownloading(false);
+                                };
+                                img.onerror = () => {
+                                  toast.error('Conversion failed to load image context.');
+                                  setIsLogoDownloading(false);
+                                };
+                                img.src = reader.result as string;
+                              };
+                              reader.readAsDataURL(svgBlob);
+                            })
+                            .catch(() => {
+                              toast.error('Failed to convert logo to PNG.');
+                              setIsLogoDownloading(false);
+                            });
+                        }}
+                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
+                          isDarkMode 
+                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
+                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
+                        }`}
+                      >
+                        <Download className="w-3.5 h-3.5 text-accent" />
+                        Download PNG
+                      </motion.button>
+
+                      {/* JPG */}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        disabled={isLogoDownloading}
+                        onClick={() => {
+                          setIsLogoDownloading(true);
+                          fetch('/logo.svg')
+                            .then(res => res.text())
+                            .then(svgText => {
+                              const svgBlob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' });
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const img = new window.Image();
+                                img.onload = () => {
+                                  const canvas = document.createElement('canvas');
+                                  canvas.width = logoDownloadSize;
+                                  canvas.height = logoDownloadSize;
+                                  const ctx = canvas.getContext('2d');
+                                  if (ctx) {
+                                    ctx.imageSmoothingEnabled = true;
+                                    ctx.imageSmoothingQuality = 'high';
+                                    ctx.fillStyle = '#1e1b4b'; // Signature brand dark backdrop 
+                                    ctx.fillRect(0, 0, logoDownloadSize, logoDownloadSize);
+                                    ctx.drawImage(img, 0, 0, logoDownloadSize, logoDownloadSize);
+                                    try {
+                                      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+                                      const a = document.createElement('a');
+                                      a.href = dataUrl;
+                                      a.download = `playdravo-logo-${logoDownloadSize}x${logoDownloadSize}.jpg`;
+                                      document.body.appendChild(a);
+                                      a.click();
+                                      document.body.removeChild(a);
+                                      toast.success(`Downloaded JPEG logo (${logoDownloadSize}x${logoDownloadSize}px)!`);
+                                    } catch (err) {
+                                      toast.error('Browser blocked asset export. Try opening in a new tab.');
+                                    }
+                                  }
+                                  setIsLogoDownloading(false);
+                                };
+                                img.onerror = () => {
+                                  toast.error('Conversion failed to load image context.');
+                                  setIsLogoDownloading(false);
+                                };
+                                img.src = reader.result as string;
+                              };
+                              reader.readAsDataURL(svgBlob);
+                            })
+                            .catch(() => {
+                              toast.error('Failed to convert logo to JPG.');
+                              setIsLogoDownloading(false);
+                            });
+                        }}
+                        className={`flex items-center justify-center gap-2 p-3 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all border ${
+                          isDarkMode 
+                            ? 'bg-white/5 border-white/15 hover:bg-white/10 text-white' 
+                            : 'bg-black/5 border-black/15 hover:bg-black/10 text-black'
+                        }`}
+                      >
+                        <Download className="w-3.5 h-3.5 text-accent" />
+                        Download JPG
+                      </motion.button>
+                    </div>
+                  </div>
                   
                   <div className="mt-8 p-6 bg-accent/5 border border-accent/20 rounded-3xl">
                     <div className="flex items-center gap-4 mb-3">
@@ -2259,7 +2573,10 @@ function AppContent() {
                   <motion.button 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setIsPreferencesModalOpen(false)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsPreferencesModalOpen(false);
+                    }}
                     className="w-full mt-8 py-4 bg-accent text-bg-dark rounded-2xl font-semibold tracking-wide text-xs shadow-[0_0_30px_rgba(157,92,255,0.3)]"
                   >
                     {t('savePreferences')}
@@ -2267,6 +2584,8 @@ function AppContent() {
                 </div>
               </motion.div>
             </div>
+          )}
+        </AnimatePresence>
 
 
 

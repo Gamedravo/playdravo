@@ -11,7 +11,6 @@ import {
   User, 
   LogIn,
   Gamepad2,
-  Bot,
   Sparkles,
   Dices,
   Coins,
@@ -184,8 +183,9 @@ export const Sidebar = memo(function Sidebar({
                 {t('randomGames')}
               </span>
             </button>
-            <button 
-              onClick={() => {
+             <button 
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsPreferencesModalOpen(true);
                 if (window.innerWidth < 768) setIsSidebarOpen(false);
               }}
@@ -269,34 +269,30 @@ export const Sidebar = memo(function Sidebar({
 
           <div className="space-y-1 pt-4 border-t border-white/5">
             <div className="space-y-1">
-              <button 
-                onClick={() => setIsPreferencesModalOpen(true)}
-                className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
-              >
-                <div className="shrink-0 w-6 flex justify-center"><Settings className="w-5 h-5" /></div>
-                <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('settings')}</span>
-              </button>
-              <button 
-                onClick={() => setIsHelpCenterOpen(true)}
+              <Link 
+                to="/support"
+                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
                 className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
                 <div className="shrink-0 w-6 flex justify-center"><HelpCircle className="w-5 h-5" /></div>
                 <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('helpCenter')}</span>
-              </button>
-              <button 
-                onClick={() => setIsLegalModalOpen(true)}
+              </Link>
+              <Link 
+                to="/terms"
+                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
                 className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
                 <div className="shrink-0 w-6 flex justify-center"><FileText className="w-5 h-5" /></div>
                 <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('legal')}</span>
-              </button>
-              <button 
-                onClick={() => setIsBugReportModalOpen(true)}
+              </Link>
+              <Link 
+                to="/report-bug"
+                onClick={() => { if (window.innerWidth < 768) setIsSidebarOpen(false); }}
                 className={`w-full group flex items-center gap-4 p-3 rounded-xl transition-all duration-200 ${isDarkMode ? 'hover:bg-white/5 text-white/70 hover:text-white' : 'hover:bg-black/5 text-black/70 hover:text-black'}`}
               >
                 <div className="shrink-0 w-6 flex justify-center"><Bug className="w-5 h-5" /></div>
                 <span className={`text-xs font-semibold transition-all duration-200 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>{t('bugReport')}</span>
-              </button>
+              </Link>
               {userProfile?.role === 'admin' && (
                 <button 
                   onClick={() => setIsSubmitModalOpen(true)}

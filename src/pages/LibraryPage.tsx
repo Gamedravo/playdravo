@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Game, UserProfile } from '../types';
 import { GameCard } from '../components/GameCard';
+import { GameThumbnail } from '../components/GameThumbnail';
 import { 
   Heart, 
   History, 
@@ -212,8 +213,8 @@ export const LibraryPage: React.FC<LibraryPageProps> = ({
                     className={`group cursor-pointer rounded-[2rem] border overflow-hidden relative flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-accent/30' : 'bg-black/[0.02] border-black/5 hover:border-accent/30'}`}
                   >
                     <div className="aspect-video relative overflow-hidden">
-                      <img src={game.thumbnail || ''} alt={game.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
+                      <GameThumbnail src={game.thumbnail || ''} alt={game.title} category={game.category} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6 z-20">
                         <div className="w-full">
                           <h3 className="text-white font-bold text-lg mb-1 truncate">{game.title}</h3>
                           <div className="flex items-center gap-2 text-white/70 text-xs font-semibold">

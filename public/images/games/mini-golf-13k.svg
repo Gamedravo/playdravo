@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-mini-golf-13k" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-mini-golf-13k" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-mini-golf-13k)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-mini-golf-13k)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#7c3aed" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Soft green grassy fairways grid -->
+        <rect x="25" y="25" width="462" height="462" fill="#1b5e20" rx="30" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Isometric Sandbox bunker hazard -->
+          <path d="M -145,-105 Q -85,-145 0,-105 Q 120,-85 20,-25 Q -80,20 -145,-105 Z" fill="#eed9b2" stroke="#ca8a04" stroke-width="3" />
+          <!-- Blue Water pond hazard -->
+          <path d="M 65,45 Q 125,15 180,55 Q 190,115 125,135 Q 25,115 65,45 Z" fill="#29b6f6" stroke="#0288d1" stroke-width="3" />
+
+          <!-- Circular Green Putting Cup hole with white inner casing -->
+          <circle cx="-50" cy="55" r="19" fill="#111" stroke="#ffffff" stroke-width="2" />
+          <!-- Solid red golf flag stick standing in the hole -->
+          <g transform="translate(-50, 55)">
+             <line x1="0" y1="0" x2="0" y2="-125" stroke="#e2e8f0" stroke-width="4.5" />
+             <!-- Triangular flying Red flag -->
+             <polygon points="0,-125 55,-105 0,-85" fill="#f44336" />
+          </g>
+
+          <!-- Pristine white dimpled golf ball close to the hole -->
+          <g transform="translate(10, 40)">
+             <!-- Shadow -->
+             <circle cx="2" cy="11" r="10" fill="#000000" fill-opacity="0.32" />
+             <circle cx="0" cy="0" r="12" fill="#ffffff" />
+             <!-- Dimple shader layout simple dot pattern -->
+             <circle cx="-3" cy="-3" r="1.5" fill="#cbd5e1" />
+             <circle cx="3" cy="-3" r="1.5" fill="#cbd5e1" />
+             <circle cx="-3" cy="3" r="1.5" fill="#cbd5e1" />
+             <circle cx="3" cy="3" r="1.5" fill="#cbd5e1" />
+             <circle cx="0" cy="5" r="1" fill="#cbd5e1" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-mini-golf-13k)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-mini-golf-13k" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

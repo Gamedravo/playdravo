@@ -23,20 +23,25 @@ export function ModalShell({
   padding = 'p-8',
   showCloseButton = true
 }: ModalShellProps) {
-  // Lock body scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+    if (!isOpen) return;
+    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const prevOverflow = document.body.style.overflow;
+    const prevPadding = document.body.style.paddingRight;
+    document.body.style.overflow = 'hidden';
+    if (scrollBarWidth > 0) {
+      document.body.style.paddingRight = `${scrollBarWidth}px`;
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      window.setTimeout(() => {
+        document.body.style.overflow = prevOverflow;
+        document.body.style.paddingRight = prevPadding;
+      }, 280);
     };
   }, [isOpen]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen && (
         <div 
           className="fixed inset-0 flex items-center justify-center p-4 md:p-6"

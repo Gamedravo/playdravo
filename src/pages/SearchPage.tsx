@@ -349,7 +349,7 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                           }`}
                         >
                           <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/10">
-                            <GameThumbnail src={game.thumbnail} alt={game.title} />
+                            <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} />
                           </div>
                           <div className="min-w-0 flex-1">
                             <h5 className="text-sm font-bold truncate pr-1">{game.title}</h5>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-maze-of-death" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-maze-of-death" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-maze-of-death)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-maze-of-death)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#7c3aed" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+          <pattern id="combat-grid-maze-of-death" width="40" height="40" patternUnits="userSpaceOnUse">
+             <line x1="0" y1="0" x2="40" y2="40" stroke="#f43f5e" stroke-width="1.2" stroke-opacity="0.04" />
+          </pattern>
+          <rect width="512" height="512" fill="url(#combat-grid-maze-of-death)" />
+        
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+          <g transform="translate(256, 210)">
+            <!-- Laser vectors crossed -->
+            <line x1="-125" y1="-125" x2="125" y2="125" stroke="#f43f5e" stroke-width="5" filter="drop-shadow(0 0 4px #f43f5e)" />
+            <line x1="125" y1="-125" x2="-125" y2="125" stroke="#00f5ff" stroke-width="5" filter="drop-shadow(0 0 4px #00f5ff)" />
+            
+            <!-- Metallic cyber shield center -->
+            <polygon points="0,-68 46,-32 46,36 0,72 -46,36 -46,-32" fill="#1e1b4b" stroke="#ffffff" stroke-width="4.5" />
+            
+            <!-- Radiant star logo -->
+            <polygon points="0,-32 8,-8 32,-8 12,6 18,28 0,14 -18,28 -12,6 -32,-8 -8,-8" fill="#f59e0b" />
+          </g>
+        
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-maze-of-death)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-maze-of-death" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

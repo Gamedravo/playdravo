@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-master-archer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-master-archer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-master-archer)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-master-archer)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#06b6d4" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Standard concentric bullseye target radial grid lines -->
+        <circle cx="256" cy="230" r="220" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.04" />
+        <circle cx="256" cy="230" r="160" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.06" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Isometric Archery Straw Butt Shield -->
+          <circle cx="0" cy="0" r="115" fill="#f59e0b" stroke="#78350f" stroke-width="6" />
+          <!-- Circular score rings matching Olympic standard specs -->
+          <circle cx="0" cy="0" r="90" fill="#3b82f6" />
+          <circle cx="0" cy="0" r="65" fill="#ef4444" />
+          <circle cx="0" cy="0" r="35" fill="#facc15" />
+          <circle cx="0" cy="0" r="11" fill="#ca8a04" />
+          
+          <!-- Crosshair focus coordinates overlaid -->
+          <g stroke="#ffffff" stroke-width="2" opacity="0.45" fill="none">
+             <line x1="-150" y1="0" x2="150" y2="0" />
+             <line x1="0" y1="-150" x2="0" y2="150" />
+          </g>
+
+          <!-- Steel-tipped wooden arrow pierced directly into the yellow bullseye -->
+          <g transform="translate(-15, -15) rotate(-35)">
+             <line x1="-190" y1="0" x2="80" y2="0" stroke="#78350f" stroke-width="5" />
+             <!-- Arrowhead inserted in target -->
+             <polygon points="80,-9 98,0 80,9" fill="#94a3b8" />
+             <!-- Feather flights at the rear end -->
+             <polygon points="-170,0 -195,-13 -175,-13" fill="#ffffff" />
+             <polygon points="-170,0 -195,13 -175,13" fill="#ffffff" />
+             <polygon points="-160,0 -185,-13 -168,-13" fill="#ef4444" opacity="0.9" />
+             <polygon points="-160,0 -185,13 -168,13" fill="#ef4444" opacity="0.9" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-master-archer)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-master-archer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

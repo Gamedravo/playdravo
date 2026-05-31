@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Search, RotateCcw, Play, Star, Terminal, Filter, Trophy, Flame, Heart, Clock } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
+import { GameThumbnail } from './GameThumbnail';
 import { GAMES as STATIC_GAMES } from '../games';
 
 interface GameGridProps {
@@ -73,9 +74,9 @@ export const GameGrid = memo(function GameGrid({
   };
 
   return (
-    <div className="flex flex-col gap-6 md:gap-8">
-      <div id="bento-grid" className="flex flex-col gap-6 md:gap-8 mb-2 md:mb-4">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-white/5">
+    <div className="flex flex-col gap-4 md:gap-5">
+      <div id="bento-grid" className="flex flex-col gap-4 md:gap-5 mb-1 md:mb-2">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-white/5">
             <div className="space-y-1.5">
               <div className="flex items-center gap-2 text-accent/80">
                 <Flame className="w-3.5 h-3.5" />
@@ -151,7 +152,7 @@ export const GameGrid = memo(function GameGrid({
         </div>
 
         {isLoading ? (
-          <div key="skeletons" className="grid grid-cols-2 lg:grid-cols-6 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+          <div key="skeletons" className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3">
             {[...Array(12)].map((_, i) => (
               <div key={`skeleton-${i}`} className={`aspect-[4/5] rounded-xl md:rounded-2xl border overflow-hidden relative shadow-sm ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
                  <div className={`absolute inset-0 shimmer-overlay z-10 opacity-50`} />
@@ -176,7 +177,7 @@ export const GameGrid = memo(function GameGrid({
               
               <div className={`pt-8 border-t border-dashed ${isDarkMode ? 'border-white/10' : 'border-black/10'}`}>
                 <h4 className="text-[10px] font-bold uppercase tracking-widest text-accent mb-6">Popular starting picks</h4>
-                <div className="grid grid-cols-2 lg:grid-cols-6 sm:grid-cols-4 gap-3 text-left">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
                   {STATIC_GAMES.slice(0, 4).map((gm) => (
                     <div 
                       key={`fav-empty-${gm.id}`}
@@ -186,7 +187,7 @@ export const GameGrid = memo(function GameGrid({
                     >
                       <div className="flex justify-between items-start">
                         <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shrink-0">
-                          <img src={gm.thumbnail} alt={gm.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          <GameThumbnail src={gm.thumbnail} alt={`Play ${gm.title} game online free`} category={gm.category} className="w-full h-full object-cover" />
                         </div>
                         <button
                           onClick={(e) => {
@@ -239,7 +240,7 @@ export const GameGrid = memo(function GameGrid({
         ) : (
           <div 
             key={selectedCategory + searchQuery}
-            className="grid grid-cols-2 lg:grid-cols-6 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4"
+            className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3"
           >
             {filteredGames.slice(0, displayLimit).map((game, index) => (
               <GameCard

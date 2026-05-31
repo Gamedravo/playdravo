@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-core-ball-clone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-core-ball-clone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-core-ball-clone)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-core-ball-clone)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#ef4444" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Minimal radar lines -->
+        <circle cx="256" cy="220" r="210" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.04" />
+        <circle cx="256" cy="220" r="150" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.04" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f97316" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Core Central Spun Sphere -->
+          <circle cx="0" cy="0" r="62" fill="#ffffff" stroke="#22c55e" stroke-width="5" filter="drop-shadow(0 0 12px #22c55e)" />
+          
+          <!-- Outer pin connectors projecting at various indices -->
+          <g stroke="#ffffff" stroke-width="3">
+             <!-- Pin 1 -->
+             <line x1="0" y1="-60" x2="0" y2="-155" />
+             <circle cx="0" cy="-155" r="11" fill="#ffffff" />
+             <!-- Pin 2 -->
+             <line x1="52" y1="30" x2="134" y2="78" />
+             <circle cx="134" cy="78" r="11" fill="#ffffff" />
+             <!-- Pin 3 -->
+             <line x1="-52" y1="30" x2="-134" y2="78" />
+             <circle cx="-134" cy="78" r="11" fill="#ffffff" />
+             <!-- Pin 4 -->
+             <line x1="52" y1="-30" x2="134" y2="-78" />
+             <circle cx="134" cy="-78" r="11" fill="#ffffff" />
+             <!-- Pin 5 -->
+             <line x1="-52" y1="-30" x2="-134" y2="-78" />
+             <circle cx="-134" cy="-78" r="11" fill="#ffffff" />
+          </g>
+
+          <!-- Core indicator text displays inside sphere -->
+          <text x="0" y="2" fill="#000" font-family="'Impact', sans-serif" font-weight="900" font-size="28" text-anchor="middle" dominant-baseline="central">93</text>
+
+          <!-- Floating needle/pin ready to be launched uphill -->
+          <g transform="translate(0, 160)">
+             <line x1="0" y1="34" x2="0" y2="-8" stroke="#38bdf8" stroke-width="4" stroke-dasharray="4,2" />
+             <circle cx="0" cy="-8" r="13" fill="#38bdf8" stroke="#ffffff" stroke-width="2.5" />
+             <text x="0" y="-7" fill="#000" font-family="sans-serif" font-weight="bold" font-size="12" text-anchor="middle" dominant-baseline="central">94</text>
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-core-ball-clone)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-core-ball-clone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

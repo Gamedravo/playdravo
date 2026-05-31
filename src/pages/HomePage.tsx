@@ -224,9 +224,36 @@ export const HomePage = React.memo(function HomePage({
         .slice(0, 12)
     : [];
 
+  // Slideshow state for Featured Hero section
+  const [activeSlideIndex, setActiveSlideIndex] = React.useState(0);
+  
+  const slideshowGames = React.useMemo(() => {
+    const uniqueGames = new Map<string, Game>();
+    if (featuredGame) uniqueGames.set(featuredGame.id, featuredGame);
+    
+    // Add 4 more top/trending/popular games from active pools for variety
+    if (recommendedGames && recommendedGames.length > 0) {
+      recommendedGames.slice(0, 3).forEach(g => uniqueGames.set(g.id, g));
+    }
+    if (newArrivals && newArrivals.length > 0) {
+      newArrivals.slice(0, 3).forEach(g => uniqueGames.set(g.id, g));
+    }
+    
+    return Array.from(uniqueGames.values()).slice(0, 5);
+  }, [featuredGame, newArrivals, recommendedGames]);
+
+  // Autoplay slideshow
+  React.useEffect(() => {
+    if (slideshowGames.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveSlideIndex(prev => (prev + 1) % slideshowGames.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [slideshowGames.length]);
+
   return (
     <div
-      className="space-y-12 px-4 md:px-8 mt-4"
+      className="space-y-6 px-3 md:px-6 mt-2"
     >
       <SEO 
         title="Play Best Online Games Free" 
@@ -238,57 +265,160 @@ export const HomePage = React.memo(function HomePage({
             {/* Featured Section */}
 
 <SectionErrorBoundary sectionName="Featured Game">
-        {selectedCategory === 'All' && !searchQuery && featuredGame && (
-          <section className="relative h-[450px] md:h-[600px] rounded-[2rem] md:rounded-[3rem] overflow-hidden group border border-white/5">
-            <div className="absolute inset-0">
-              <GameThumbnail 
-                src={(featuredGame.thumbnail || '').replace('400/300', '1920/1080')} 
-                alt={featuredGame.title || 'Featured Game'}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${isDarkMode ? 'from-black via-black/40 to-transparent' : 'from-white via-white/40 to-transparent'}`} />
-            </div>
-
-            <div className="absolute inset-0 p-8 md:p-16 flex flex-col items-center justify-end text-center md:items-start md:text-left md:justify-center">
-              <div
-                className="max-w-3xl space-y-4 md:space-y-6"
-              >
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                  <span className="px-3 md:px-4 py-1.5 bg-accent text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-sm">
-                    {t('featuredGame')}
-                  </span>
-                  <span className={`px-3 md:px-4 py-1.5 rounded-full border text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-black/5 border-black/10 text-black'}`}>
-                    Tap to play instantly
-                  </span>
-                  <span className={`px-3 md:px-4 py-1.5 rounded-full border text-xs font-bold uppercase tracking-widest ${isDarkMode ? 'bg-white/10 border-white/20 text-white' : 'bg-black/5 border-black/10 text-black'}`}>
-                    No downloads
-                  </span>
+        {selectedCategory === 'All' && !searchQuery && slideshowGames.length > 0 && (
+          (() => {
+            const activeGame = slideshowGames[activeSlideIndex] || featuredGame || slideshowGames[0];
+            const categoryKey = activeGame.category.toLowerCase();
+            return (
+              <section className="relative h-[200px] xs:h-[220px] sm:h-[240px] md:h-[260px] lg:h-[280px] rounded-2xl md:rounded-3xl overflow-hidden group border border-white/5 transition-all duration-300">
+                {/* Background Image / Thumbnail */}
+                <div className="absolute inset-0">
+                  <GameThumbnail 
+                    src={activeGame.thumbnail || ''} 
+                    alt={activeGame.title || 'Featured Game'}
+                    category={activeGame.category}
+                    title={activeGame.title}
+                    gameId={activeGame.id}
+                    priority
+                    className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover:scale-[1.02]"
+                  />
+                  {/* High Contrast Gradient Overlays for Readability */}
+                  <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r transition-all duration-300 ${
+                    isDarkMode 
+                      ? 'from-black/95 via-black/60 md:via-black/40 to-transparent' 
+                      : 'from-white/95 via-white/70 md:via-white/50 to-transparent'
+                  }`} />
                 </div>
-                
-                <h2 className={`text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  {featuredGame.title}
-                </h2>
-                
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 pt-4">
-                  <button 
-                    onClick={() => handleGameClick(featuredGame)}
-                    className="btn-primary w-full md:w-auto"
-                  >
-                    <Play className="w-5 h-5 fill-current" />
-                    {t('playNow')}
-                  </button>
-                  <div className={`hidden md:flex items-center gap-4 px-6 py-3 border rounded-2xl ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-accent fill-current" />
-                      <span className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{featuredGame.rating}</span>
+
+                {/* Left/Right Arrow Toggles for Slideshow */}
+                {slideshowGames.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveSlideIndex(prev => (prev - 1 + slideshowGames.length) % slideshowGames.length);
+                      }}
+                      className={`absolute left-3 md:left-4 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 rounded-2xl border transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 cursor-pointer ${
+                        isDarkMode 
+                          ? 'bg-[#151525]/80 border-white/10 text-white hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.5)]' 
+                          : 'bg-white/80 border-black/10 text-black hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
+                      }`}
+                      aria-label="Previous Featured Slide"
+                    >
+                      <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveSlideIndex(prev => (prev + 1) % slideshowGames.length);
+                      }}
+                      className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 z-30 p-2 md:p-3 rounded-2xl border transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-100 cursor-pointer ${
+                        isDarkMode 
+                          ? 'bg-[#151525]/80 border-white/10 text-white hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.5)]' 
+                          : 'bg-white/80 border-black/10 text-black hover:bg-accent hover:border-accent hover:text-bg-dark shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
+                      }`}
+                      aria-label="Next Featured Slide"
+                    >
+                      <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                  </>
+                )}
+
+                {/* Banner Content Panel (Left half) */}
+                <div className="absolute inset-0 p-4 sm:p-6 md:p-8 flex flex-col justify-end text-left select-none md:justify-center">
+                  <div className="max-w-xl md:max-w-2xl space-y-2 md:space-y-3">
+                    {/* Active Badges */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-3 py-1 bg-accent text-bg-dark text-[9px] font-extrabold uppercase tracking-widest rounded-lg shadow-sm">
+                        {t('featuredGame')}
+                      </span>
+                      <span className={`px-2.5 py-1 rounded-lg border text-[9px] font-bold uppercase tracking-wide backdrop-blur-sm flex items-center gap-1 ${
+                        isDarkMode ? 'bg-white/5 border-white/10 text-white/95' : 'bg-black/5 border-black/10 text-black/90'
+                      }`}>
+                        <Star className="w-3 h-3 text-accent fill-current shrink-0" />
+                        {activeGame.rating}
+                      </span>
+                      <span className={`px-2.5 py-1 rounded-lg border text-[9px] font-bold uppercase tracking-wide backdrop-blur-sm ${
+                        isDarkMode ? 'bg-white/5 border-white/10 text-white/95' : 'bg-black/5 border-black/10 text-black/90'
+                      }`}>
+                        {t(categoryKey) || activeGame.category}
+                      </span>
                     </div>
-                    <div className={`w-px h-6 ${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`} />
-                    <span className={`text-sm font-medium ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>{featuredGame.category}</span>
+                    
+                    {/* Active Title */}
+                    <h2 
+                      onClick={() => handleGameClick(activeGame)}
+                      className={`text-2.5xl sm:text-3.5xl md:text-5xl lg:text-5.5.xl font-black tracking-tight leading-[1.1] cursor-pointer hover:underline transition-colors ${
+                        isDarkMode ? 'text-white' : 'text-black'
+                      }`}
+                    >
+                      {activeGame.title}
+                    </h2>
+                    
+                    {/* Lightweight gameplay description to prevent giant empty areas */}
+                    <p className={`text-xs md:text-sm max-w-md lg:max-w-lg leading-relaxed font-semibold line-clamp-1 md:line-clamp-2 ${
+                      isDarkMode ? 'text-white/70' : 'text-black/70'
+                    }`}>
+                      {activeGame.description || 'Experience immersive high-octane gameplay directly inside your modern browser sandbox. Launch instantly with zero downloads.'}
+                    </p>
+                    
+                    {/* Action buttons on banner */}
+                    <div className="flex items-center gap-3 pt-1">
+                      <button 
+                        onClick={() => handleGameClick(activeGame)}
+                        className="px-6 py-2.5 md:px-7 md:py-3.5 bg-accent text-bg-dark font-black tracking-wider uppercase text-xs rounded-xl md:rounded-2xl shadow-lg shadow-accent/20 hover:scale-[1.03] hover:shadow-accent/40 active:scale-[0.97] transition-all cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <Play className="w-4 h-4 fill-current" />
+                        {t('playNow') || 'PLAY NOW'}
+                      </button>
+                      
+                      <button 
+                        onClick={() => toggleFavorite(activeGame.id)}
+                        className={`p-2.5 md:p-3.5 rounded-xl md:rounded-2xl border transition-all active:scale-95 cursor-pointer ${
+                          (userProfile?.favorites || []).includes(activeGame.id)
+                            ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/10 hover:bg-red-600'
+                            : isDarkMode
+                              ? 'bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20'
+                              : 'bg-black/5 border-black/10 text-black/80 hover:bg-black/10 hover:border-black/20'
+                        }`}
+                        title={t('favorite') || "Favorite"}
+                      >
+                        <Heart className={`w-4 h-4 ${((userProfile?.favorites || []).includes(activeGame.id)) ? 'fill-current animate-pulse' : ''}`} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
+
+                {/* Slideshow interactive game thumbnails in bottom right corner */}
+                {slideshowGames.length > 1 && (
+                  <div className="absolute right-6 bottom-6 md:right-10 md:bottom-10 z-30 hidden sm:flex items-center gap-2.5 bg-black/35 p-1.5 rounded-2xl backdrop-blur-md border border-white/5">
+                    {slideshowGames.map((slideGame, sIdx) => (
+                      <button
+                        key={`slide-thumbnail-${slideGame.id}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveSlideIndex(sIdx);
+                        }}
+                        className={`relative w-12 h-9 md:w-16 md:h-12 rounded-xl border-2 overflow-hidden transition-all duration-300 cursor-pointer ${
+                          activeSlideIndex === sIdx
+                            ? 'border-accent scale-105 shadow-[0_0_12px_rgba(157,92,255,0.4)]'
+                            : 'border-white/10 hover:border-white/30 opacity-60 hover:opacity-100'
+                        }`}
+                        title={slideGame.title}
+                      >
+                        <GameThumbnail 
+                          src={slideGame.thumbnail} 
+                          alt={slideGame.title} 
+                          category={slideGame.category}
+                          className="w-full h-full object-cover" 
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })()
         )}
       </SectionErrorBoundary>
 
@@ -296,8 +426,8 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Clock className="w-4 h-4" />
@@ -344,7 +474,7 @@ export const HomePage = React.memo(function HomePage({
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
                 >
                   {recentlyPlayedGames.map((game, index) => (
-                  <div key={`recent-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start relative">
+                  <div key={`recent-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start relative">
                     {index === 0 && (
                       <div className="absolute -top-1.5 -left-1.5 z-30 bg-accent text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-lg pointer-events-none border border-white/20">
                         Quick Resume
@@ -355,7 +485,7 @@ export const HomePage = React.memo(function HomePage({
                 ))}
                 
                 {/* Persistent Mystery Match Card */}
-                <div className="w-[160px] md:w-[200px] shrink-0 snap-start relative flex flex-col">
+                <div className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start relative flex flex-col">
                   <button
                     onClick={triggerMysteryMatch}
                     disabled={isFindingMysteryMatch}
@@ -377,10 +507,10 @@ export const HomePage = React.memo(function HomePage({
                         )}
                     </div>
                     <span className="text-sm font-black text-center tracking-tight leading-tight z-10 px-2 line-clamp-2">
-                       {isFindingMysteryMatch ? (mysteryMatchTitle || "CALCULATING") : "Mystery Match"}
+                       {isFindingMysteryMatch ? (mysteryMatchTitle || "Finding a match…") : "Mystery Match"}
                     </span>
                     <span className="text-[9px] md:text-[10px] opacity-70 mt-1.5 uppercase tracking-widest font-bold z-10">
-                       {isFindingMysteryMatch ? "SEARCHING..." : "Feeling Lucky?"}
+                       {isFindingMysteryMatch ? "Searching…" : "Feeling lucky?"}
                     </span>
                   </button>
                 </div>
@@ -431,7 +561,7 @@ export const HomePage = React.memo(function HomePage({
                   {isFindingMysteryMatch ? (
                     <div className="py-2 space-y-3">
                       <div className={`text-base font-black font-mono tracking-wider animate-pulse ${isDarkMode ? 'text-accent' : 'text-[#8b46ff]'}`}>
-                        {mysteryMatchTitle || "CALCULATING"}
+                        {mysteryMatchTitle || "Finding a match…"}
                       </div>
                       <div className={`w-32 mx-auto bg-white/10 h-1.5 rounded-full overflow-hidden shadow-inner`}>
                         <div className="bg-accent h-full rounded-full animate-pulse w-full" />
@@ -443,7 +573,7 @@ export const HomePage = React.memo(function HomePage({
                       className="btn-primary inline-flex items-center gap-2 text-xs font-semibold px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-2xl shadow-md cursor-pointer transition-transform duration-200 active:scale-95"
                     >
                       <Gamepad2 className="w-4 h-4" />
-                      FIND MYSTERY MATCH
+                      Find Mystery Match
                     </button>
                   )}
                 </div>
@@ -457,8 +587,8 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Trending Now">
         {selectedCategory === 'All' && !searchQuery && filteredGames.length > 0 && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <TrendingUp className="w-4 h-4" />
@@ -501,7 +631,7 @@ export const HomePage = React.memo(function HomePage({
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
               >
                 {[...filteredGames].sort((a,b)=>b.plays-a.plays).slice(0,12).map((game, index) => (
-                  <div key={`trending-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`trending-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -561,8 +691,8 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Recommended Games">
         {selectedCategory === 'All' && !searchQuery && (recommendedGames.length > 0 || isGeneratingRecommendations) && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Target className="w-4 h-4" />
@@ -628,7 +758,7 @@ export const HomePage = React.memo(function HomePage({
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
                 >
                   {recommendedGames.map((game, index) => (
-                  <div key={`rec-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`rec-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -641,12 +771,12 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Because You Played">
         {selectedCategory === 'All' && !searchQuery && personalizedRecommendations.length > 0 && (
-          <section className="mb-8 lg:mb-10 lg:mb-16">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Compass className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">EXPLORE</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('exploreByGenre')}</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">
                   {topCategory === 'Trending' ? 'Trending Right Now' : `Because you played ${topCategory}`}
@@ -660,7 +790,7 @@ export const HomePage = React.memo(function HomePage({
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
               >
                 {personalizedRecommendations.map((game, index) => (
-                  <div key={`because-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`because-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -674,8 +804,8 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="New Arrivals">
         {selectedCategory === 'All' && !searchQuery && newArrivals.length > 0 && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-4 h-4" />
@@ -718,7 +848,7 @@ export const HomePage = React.memo(function HomePage({
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
               >
                 {newArrivals.map((game, index) => (
-                  <div key={`new-arrival-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`new-arrival-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -732,12 +862,12 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Quick Sessions">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Clock className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">QUICK PLAY</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Quick play</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">Quick 2-Minute Games</h3>
               </div>
@@ -745,7 +875,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {filteredGames.filter(g => g.avgPlayTime === '2m' || g.avgPlayTime === '5m' || (g.tags && g.tags.includes('Quick'))).slice(0, 10).map((game, index) => (
-                  <div key={`quick-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`quick-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -757,12 +887,12 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Mobile Friendly">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Smartphone className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">ON THE GO</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">On the go</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">Good on Mobile</h3>
               </div>
@@ -770,7 +900,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {filteredGames.filter(g => g.mobileOptimization === 'touch-friendly' || (g.tags && g.tags.includes('Mobile'))).slice(0, 10).map((game, index) => (
-                  <div key={`mobile-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`mobile-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -782,12 +912,12 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Most Played">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Users className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">CLASSICS</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Classics</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">Most Played</h3>
               </div>
@@ -795,7 +925,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {[...filteredGames].sort((a, b) => b.plays - a.plays).slice(0, 10).map((game, index) => (
-                  <div key={`most-played-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`most-played-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -807,12 +937,12 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Hidden Gems">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">HIDDEN GEMS</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Hidden gems</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">Highly Rated, Barely Played</h3>
               </div>
@@ -820,7 +950,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {[...filteredGames].sort((a, b) => b.rating - a.rating).filter(g => g.plays < 60000).slice(0, 10).map((game, index) => (
-                  <div key={`hidden-gems-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`hidden-gems-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -832,12 +962,12 @@ export const HomePage = React.memo(function HomePage({
 
       <SectionErrorBoundary sectionName="Deep Dives">
         {selectedCategory === 'All' && !searchQuery && (
-          <section className="mb-10 lg:mb-16 relative group/shelf">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
             <div className="flex items-end justify-between mb-6 lg:mb-8">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Hourglass className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">LONG SESSIONS</span>
+                  <span className="text-xs font-semibold text-accent/80 tracking-tight">Long sessions</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold tracking-tight">Deep Dives & Campaigns</h3>
               </div>
@@ -845,7 +975,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-4 pt-1 lg:pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {filteredGames.filter(g => g.avgPlayTime === '20m' || g.avgPlayTime === '30m+').slice(0, 10).map((game, index) => (
-                  <div key={`deep-dives-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`deep-dives-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -876,7 +1006,7 @@ export const HomePage = React.memo(function HomePage({
       />
 
       {displayLimit < filteredGames.length && (
-        <div className="mt-12 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <button 
             onClick={() => setDisplayLimit((prev: number) => prev + 40)}
             className="btn-primary"
@@ -897,8 +1027,8 @@ export const HomePage = React.memo(function HomePage({
 
             <SectionErrorBoundary sectionName="Try Something Different">
         {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && userProfile?.preferredCategories && userProfile.preferredCategories.length > 0 && (
-          <section className="mb-8 lg:mb-10 lg:mb-16 relative group/shelf">
-            <div className="flex items-end justify-between mb-6 lg:mb-8">
+          <section className="mb-4 lg:mb-6 relative group/shelf">
+            <div className="flex items-end justify-between mb-3 lg:mb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-accent">
                   <Compass className="w-4 h-4" />
@@ -910,7 +1040,7 @@ export const HomePage = React.memo(function HomePage({
             <div className="relative -mx-4 md:-mx-8">
               <div className="flex overflow-x-auto gap-4 lg:gap-5 pb-6 px-4 md:px-8 scrollbar-hide snap-x flex-nowrap">
                 {filteredGames.filter(g => g.category !== userProfile.preferredCategories![0] && !recentlyPlayedGames.some(rg => rg.id === g.id)).slice(0, 10).map((game, index) => (
-                  <div key={`diff-${game.id}-${index}`} className="w-[160px] md:w-[200px] shrink-0 snap-start">
+                  <div key={`diff-${game.id}-${index}`} className="w-[132px] sm:w-[148px] md:w-[172px] shrink-0 snap-start">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
@@ -923,8 +1053,8 @@ export const HomePage = React.memo(function HomePage({
 
       {/* Trending Now Section */}
 
-      {/* Footer */}
-      <footer className={`relative pt-16 lg:pt-32 pb-8 lg:pb-16 overflow-hidden border-t ${isDarkMode ? 'border-white/5 bg-bg-dark/40' : 'border-black/5 bg-white/40'}`}>
+      {/* Footer wrapped in hidden container */}
+      <div className="hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
         
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -1123,7 +1253,7 @@ export const HomePage = React.memo(function HomePage({
               </div>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 });

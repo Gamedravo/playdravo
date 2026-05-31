@@ -51,8 +51,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
       }
     }
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      window.setTimeout(() => {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }, 280);
     };
   }, [isOpen]);
 
@@ -170,7 +172,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen && (
         <div className="fixed inset-0 z-[2000] flex">
           <motion.div

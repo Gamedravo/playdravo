@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-lost-in-cyberspace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-lost-in-cyberspace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-lost-in-cyberspace)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-lost-in-cyberspace)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#7c3aed" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+          <g transform="translate(256, 210)"><circle cx="44" cy="-49" r="1" fill="#ffffff" fill-opacity="0.8" /><circle cx="103" cy="115" r="2" fill="#ffffff" fill-opacity="0.8" /><circle cx="-158" cy="-21" r="1" fill="#ffffff" fill-opacity="0.8" /><circle cx="-99" cy="143" r="2" fill="#ffffff" fill-opacity="0.8" /><circle cx="-40" cy="7" r="1" fill="#ffffff" fill-opacity="0.8" /><circle cx="19" cy="-129" r="2" fill="#ffffff" fill-opacity="0.8" /><circle cx="78" cy="35" r="1" fill="#ffffff" fill-opacity="0.8" /><circle cx="137" cy="-101" r="2" fill="#ffffff" fill-opacity="0.8" /><circle cx="-124" cy="63" r="1" fill="#ffffff" fill-opacity="0.8" /></g>
+        
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+          <g transform="translate(256, 215)">
+            <!-- Space Gas Planet -->
+            <circle cx="-10" cy="-10" r="58" fill="url(#planet-grad-lost-in-cyberspace)" />
+            
+            <!-- Planetary dust belt rings -->
+            <ellipse cx="-10" cy="-10" rx="115" ry="24" fill="none" stroke="#f59e0b" stroke-width="7" stroke-opacity="0.8" transform="rotate(-15)" />
+            <ellipse cx="-10" cy="-10" rx="95" ry="16" fill="none" stroke="#ffffff" stroke-width="2" stroke-opacity="0.9" transform="rotate(-15)" />
+
+            <!-- Sleek starfighter flying outwards -->
+            <g transform="translate(45, 35) rotate(45)">
+               <polygon points="0,-32 12,12 0,4 -12,12" fill="#ffffff" stroke="#7c3aed" stroke-width="2" />
+               <line x1="0" y1="4" x2="0" y2="24" stroke="#ef4444" stroke-width="3" />
+            </g>
+          </g>
+          <defs>
+             <radialGradient id="planet-grad-lost-in-cyberspace" cx="35%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="65%" stop-color="#7c3aed" />
+                <stop offset="100%" stop-color="#020617" />
+             </radialGradient>
+          </defs>
+        
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-lost-in-cyberspace)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-lost-in-cyberspace" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>
