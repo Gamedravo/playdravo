@@ -40,7 +40,10 @@ export const HomePageShelf = memo(function HomePageShelf({
   keyPrefix,
   cardClassName,
 }: HomePageShelfProps) {
-  if (!games.length) return null;
+  if (!Array.isArray(games) || !games.length) return null;
+
+  const shelfGames = games.filter((g): g is Game => Boolean(g?.id));
+  if (!shelfGames.length) return null;
 
   return (
     <section className={`shelf-section shelf-section--${variant} group/shelf`}>
@@ -79,7 +82,7 @@ export const HomePageShelf = memo(function HomePageShelf({
         </div>
       </div>
       <div className="shelf-scroll" ref={shelfRef}>
-        {games.map((game, index) => (
+        {shelfGames.map((game, index) => (
           <div key={`${keyPrefix}-${game.id}-${index}`} className={cardClassName || 'shelf-card'}>
             <GameCard
               game={game}

@@ -19,6 +19,8 @@ import {
   MessageSquare,
   Youtube,
   Github,
+  Check,
+  ArrowRight,
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
 import { GameGrid } from '../components/GameGrid';

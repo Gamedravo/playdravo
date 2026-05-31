@@ -1,0 +1,220 @@
+{
+  "checkedAt": "2026-05-31T15:49:02.734Z",
+  "imported": [
+    {
+      "id": "slope",
+      "title": "Slope",
+      "url": "https://y8.com/embed/slope",
+      "thumbnail": "https://cdn2.y8.com/cloudimage/384903/file/w380h285_retina_webp-2439f025ff9dbe192e31d23509c21375.webp",
+      "category": "Racing",
+      "tags": [
+        "3D",
+        "Arcade",
+        "Ball",
+        "Endless Runner",
+        "Free",
+        "Html5",
+        "Mobile",
+        "Running",
+        "Skill"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "wordle",
+      "title": "Wordle",
+      "url": "https://cdn.bubbleshooter.net/games/wordle/",
+      "thumbnail": "https://cdn.bubbleshooter.net/img/wordle.jpg",
+      "category": "Puzzle",
+      "tags": [
+        "1 Player",
+        "Free",
+        "Html5",
+        "Mobile",
+        "Puzzle",
+        "Word"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "tetris-cube",
+      "title": "Tetris Cube",
+      "url": "https://cdn.bubbleshooter.net/games/tetris-cube/",
+      "thumbnail": "https://cdn.bubbleshooter.net/img/tetris-cube.jpg",
+      "category": "Puzzle",
+      "tags": [
+        "1 Player",
+        "3D",
+        "Arcade",
+        "Block",
+        "Free",
+        "Html5",
+        "Mobile",
+        "Puzzle",
+        "Tetris"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": true
+    },
+    {
+      "id": "flappy-bird",
+      "title": "Flappy Bird",
+      "url": "https://funhtml5games.com?embed=flappy",
+      "thumbnail": "https://upload.wikimedia.org/wikipedia/en/0/0a/Flappy_Bird_icon.png",
+      "category": "Arcade",
+      "tags": [
+        "1 Player",
+        "2D",
+        "Arcade",
+        "Casual",
+        "Free",
+        "Fun",
+        "Html5",
+        "Mobile",
+        "Skill"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "clicker-heroes",
+      "title": "Clicker Heroes",
+      "url": "https://cdn.clickerheroes.com/gamebuild/index.php",
+      "thumbnail": "https://cdn.grindcraft.com/images/games/clicker-heroes.jpg",
+      "category": "Casual",
+      "tags": [
+        "1 Player",
+        "Clicker",
+        "Free",
+        "Fun",
+        "Html5",
+        "Idle",
+        "Mobile",
+        "RPG"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": true
+    },
+    {
+      "id": "mr-mine",
+      "title": "Mr.Mine",
+      "url": "https://mrmine.com/game/",
+      "thumbnail": "https://cdn.mrmine.com/title_square.png",
+      "category": "Simulator",
+      "tags": [
+        "1 Player",
+        "Free",
+        "Html5",
+        "Idle",
+        "Management",
+        "Mining",
+        "Mobile",
+        "Tycoon"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "poker-quest",
+      "title": "Poker Quest",
+      "url": "https://playsaurus.com/kongPokerQuest63/",
+      "thumbnail": "https://cdn.grindcraft.com/images/games/poker-quest.jpg",
+      "category": "Strategy",
+      "tags": [
+        "1 Player",
+        "Card",
+        "Free",
+        "Html5",
+        "Mobile",
+        "Puzzle",
+        "Roguelike",
+        "Strategy"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "grindcraft",
+      "title": "Grindcraft",
+      "url": "https://grindcraft.com/game.php",
+      "thumbnail": "https://cdn.grindcraft.com/images/grindcraft-logo-wide.png",
+      "category": "Simulator",
+      "tags": [
+        "1 Player",
+        "Crafting",
+        "Free",
+        "Fun",
+        "Html5",
+        "Idle",
+        "Management",
+        "Mobile"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    },
+    {
+      "id": "fray-fight",
+      "title": "Fray Fight",
+      "url": "https://frayfight.com/game/",
+      "thumbnail": "https://frayfight.com/og-image.webp",
+      "category": "Action",
+      "tags": [
+        "1 Player",
+        "2D",
+        "Action",
+        "Battle",
+        "Fighting",
+        "Free",
+        "Html5",
+        "Mobile"
+      ],
+      "mobileFriendly": true,
+      "fullscreenSupport": false
+    }
+  ],
+  "rejected": [
+    {
+      "title": "Fireboy and Watergirl",
+      "url": "(none)",
+      "reasons": [
+        "No embed URL — self-hosted game wrapper not found in public/games/"
+      ],
+      "embedOk": false,
+      "embeddable": false,
+      "thumbnailOk": false
+    },
+    {
+      "title": "Hole.io",
+      "url": "(none)",
+      "reasons": [
+        "No embed URL — self-hosted game wrapper not found in public/games/"
+      ],
+      "embedOk": false,
+      "embeddable": false,
+      "thumbnailOk": false
+    }
+  ],
+  "duplicates": [],
+  "mobileIssues": [],
+  "fullscreenIssues": [
+    "Slope",
+    "Wordle",
+    "Flappy Bird",
+    "Mr.Mine",
+    "Poker Quest",
+    "Grindcraft",
+    "Fray Fight"
+  ],
+  "thumbnailIssues": [
+    {
+      "title": "Fireboy and Watergirl",
+      "url": ""
+    },
+    {
+      "title": "Hole.io",
+      "url": ""
+    }
+  ]
+}

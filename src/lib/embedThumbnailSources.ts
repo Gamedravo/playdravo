@@ -44,6 +44,15 @@ export function getEmbedThumbnailCandidates(gameUrl: string): EmbedThumbnailCand
 
 /** Manual overrides where remote sources are verified stable gameplay/cover art. */
 export const MANUAL_THUMBNAIL_OVERRIDES: Record<string, string> = {
+  'slope': 'https://cdn2.y8.com/cloudimage/384903/file/w380h285_retina_webp-2439f025ff9dbe192e31d23509c21375.webp',
+  'wordle': 'https://cdn.bubbleshooter.net/img/wordle.jpg',
+  'tetris-cube': 'https://cdn.bubbleshooter.net/img/tetris-cube.jpg',
+  'flappy-bird': 'https://upload.wikimedia.org/wikipedia/en/0/0a/Flappy_Bird_icon.png',
+  'clicker-heroes': 'https://cdn.grindcraft.com/images/games/clicker-heroes.jpg',
+  'mr-mine': 'https://cdn.mrmine.com/title_square.png',
+  'poker-quest': 'https://cdn.grindcraft.com/images/games/poker-quest.jpg',
+  'grindcraft': 'https://cdn.grindcraft.com/images/grindcraft-logo-wide.png',
+  'fray-fight': 'https://frayfight.com/og-image.webp',
   '2048-original': 'https://gabrielecirulli.github.io/2048/meta/apple-touch-icon.png',
   'hextris-io': 'https://hextris.io/img/icons/apple-touch-icon.png',
   'duckhunt-js': 'https://duckhunt.js.org/favicon-196x196.png',

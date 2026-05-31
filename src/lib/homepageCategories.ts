@@ -13,9 +13,10 @@ export interface HomepageCategoryChip {
 export const HOMEPAGE_CATEGORY_CHIPS: HomepageCategoryChip[] = [
   { id: 'action', title: 'Action', icon: '⚔️', slug: 'action', matchers: [/\baction\b/i], bg: 'from-rose-500/10 to-red-500/5 hover:border-rose-500/30' },
   { id: 'shooter', title: 'Shooter', icon: '🎯', slug: 'shooter', matchers: [/\bshooting\b/i, /\bfps\b/i, /\bfirst person shooter\b/i, /\bsniper\b/i, /\bgun\b/i], bg: 'from-orange-500/10 to-red-500/5 hover:border-orange-500/30' },
-  { id: 'racing', title: 'Racing', icon: '🏎️', slug: 'racing', matchers: [/\bracing\b/i, /\bdrift\b/i], bg: 'from-amber-500/10 to-orange-500/5 hover:border-amber-500/30' },
+  { id: 'racing', title: 'Racing', icon: '🏎️', slug: 'racing', matchers: [/\bracing\b/i, /\bdrift\b/i, /\bendless runner\b/i], bg: 'from-amber-500/10 to-orange-500/5 hover:border-amber-500/30' },
   { id: 'driving', title: 'Driving', icon: '🚗', slug: 'driving', matchers: [/\bdriving\b/i, /\bcar\b/i, /\btraffic\b/i, /\btruck\b/i, /\btaxi\b/i], bg: 'from-yellow-500/10 to-amber-500/5 hover:border-yellow-500/30' },
   { id: 'puzzle', title: 'Puzzle', icon: '🧩', slug: 'puzzle', matchers: [/\bpuzzle\b/i, /\blogic\b/i, /\bmahjong\b/i], bg: 'from-blue-500/10 to-indigo-500/5 hover:border-blue-500/30' },
+  { id: 'word', title: 'Word', icon: '📝', slug: 'word', matchers: [/\bword\b/i], bg: 'from-indigo-500/10 to-violet-500/5 hover:border-indigo-500/30' },
   { id: 'arcade', title: 'Arcade', icon: '👾', slug: 'arcade', matchers: [/\barcade\b/i], bg: 'from-purple-500/10 to-pink-500/5 hover:border-purple-500/30' },
   { id: 'retro', title: 'Retro', icon: '🕹️', slug: 'retro', matchers: [/\bretro\b/i, /\bclassic\b/i], bg: 'from-fuchsia-500/10 to-purple-500/5 hover:border-fuchsia-500/30' },
   { id: 'casual', title: 'Casual', icon: '😊', slug: 'casual', matchers: [/\bcasual\b/i, /\bfun\b/i, /\bkids\b/i], bg: 'from-sky-500/10 to-cyan-500/5 hover:border-sky-500/30' },

@@ -44,32 +44,34 @@ function haystack(game: Game): string {
 
 /** Fill a shelf toward target count from a matcher pool, then general backfill. */
 export function densifyShelf(
-  games: Game[],
+  games: Game[] | null | undefined,
   allGames: Game[],
   matchers?: RegExp[],
   target = SHELF_TARGET_GAMES
 ): Game[] {
-  const seen = new Set(games.map((g) => g.id));
-  const result = [...games];
+  const safeGames = (games ?? []).filter((g): g is Game => Boolean(g?.id));
+  const safePool = (allGames ?? []).filter((g): g is Game => Boolean(g?.id));
+  const seen = new Set(safeGames.map((g) => g.id));
+  const result = [...safeGames];
 
   const addFrom = (pool: Game[]) => {
     for (const game of pool) {
       if (result.length >= target) break;
-      if (seen.has(game.id)) continue;
+      if (!game?.id || seen.has(game.id)) continue;
       result.push(game);
       seen.add(game.id);
     }
   };
 
   if (matchers?.length) {
-    const matched = allGames
+    const matched = safePool
       .filter((g) => matchers.some((m) => m.test(haystack(g))))
       .sort((a, b) => b.plays - a.plays);
     addFrom(matched);
   }
 
   if (result.length < SHELF_MIN_GAMES) {
-    addFrom([...allGames].sort((a, b) => b.plays - a.plays));
+    addFrom([...safePool].sort((a, b) => b.plays - a.plays));
   }
 
   return result.slice(0, target);
@@ -98,19 +100,22 @@ export function buildCuratedHomepageBlocks(
     matchers?: RegExp[]
   ) => {
     if (usedBlockIds.has(id)) return;
-    const filled = densifyShelf(games, allGames, matchers);
+    const filled = densifyShelf(games ?? [], allGames, matchers);
     if (filled.length < SHELF_MIN_GAMES) return;
     usedBlockIds.add(id);
     blocks.push({ id, title, subtitle, games: filled, variant, viewAllSlug });
   };
 
-  push('top-rated', 'Top rated', 'Community favorites', shelves.topRated, 'accent', 'top-rated');
+  const category = (name: keyof typeof shelves.categoryShelves) =>
+    shelves.categoryShelves[name] ?? [];
+
+  push('top-rated', 'Top rated', 'Community favorites', shelves.topRated ?? [], 'accent', 'top-rated');
 
   push(
     'action',
     'Action picks',
     'Fast reflexes required',
-    shelves.categoryShelves.Action,
+    category('Action'),
     'standard',
     'action',
     [/\baction\b/i]
@@ -119,7 +124,7 @@ export function buildCuratedHomepageBlocks(
     'puzzle',
     'Puzzle lab',
     'Think before you click',
-    shelves.categoryShelves.Puzzle,
+    category('Puzzle'),
     'standard',
     'puzzle',
     [/\bpuzzle\b/i, /\blogic\b/i]
@@ -134,7 +139,7 @@ export function buildCuratedHomepageBlocks(
       `tag-${tag.id}`,
       tag.title,
       TAG_SUBTITLES[tag.id] || 'Curated for you',
-      tag.games,
+      tag.games ?? [],
       'standard',
       tag.id,
       tag.matchers
@@ -145,11 +150,7 @@ export function buildCuratedHomepageBlocks(
     'racing',
     'Racing & driving',
     'Cross the finish line',
-    densifyShelf(
-      [...shelves.categoryShelves.Racing],
-      allGames,
-      [/\bracing\b/i, /\bdriving\b/i, /\bcar\b/i, /\bdrift\b/i]
-    ),
+    category('Racing'),
     'standard',
     'racing',
     [/\bracing\b/i, /\bdriving\b/i, /\bcar\b/i]
@@ -158,7 +159,7 @@ export function buildCuratedHomepageBlocks(
     'arcade',
     'Arcade hall',
     'Coin-op energy',
-    shelves.categoryShelves.Arcade,
+    category('Arcade'),
     'standard',
     'arcade',
     [/\barcade\b/i]
@@ -167,7 +168,7 @@ export function buildCuratedHomepageBlocks(
     'sports',
     'Sports arena',
     'Compete for glory',
-    shelves.categoryShelves.Sports,
+    category('Sports'),
     'standard',
     'sports',
     [/\bsports\b/i]
@@ -176,7 +177,7 @@ export function buildCuratedHomepageBlocks(
     'strategy',
     'Strategy corner',
     'Plan your moves',
-    shelves.categoryShelves.Strategy,
+    category('Strategy'),
     'standard',
     'strategy',
     [/\bstrategy\b/i]
@@ -185,11 +186,7 @@ export function buildCuratedHomepageBlocks(
     'simulator',
     'Simulators',
     'Systems to master',
-    densifyShelf(
-      shelves.categoryShelves.Simulator,
-      allGames,
-      [/\bsimulator\b/i, /\btycoon\b/i, /\bmanagement\b/i]
-    ),
+    category('Simulator'),
     'standard',
     'simulation',
     [/\bsimulator\b/i, /\btycoon\b/i]
@@ -198,7 +195,7 @@ export function buildCuratedHomepageBlocks(
     'casual',
     'Casual break',
     'Five-minute sessions',
-    shelves.categoryShelves.Casual,
+    category('Casual'),
     'standard',
     'casual',
     [/\bcasual\b/i]
@@ -207,7 +204,7 @@ export function buildCuratedHomepageBlocks(
     'adventure',
     'Adventures',
     'Explore new worlds',
-    shelves.categoryShelves.Adventure,
+    category('Adventure'),
     'standard',
     'adventure',
     [/\badventure\b/i]
@@ -216,7 +213,7 @@ export function buildCuratedHomepageBlocks(
     'multiplayer',
     'Play together',
     'Shared sessions',
-    shelves.categoryShelves.Multiplayer,
+    category('Multiplayer'),
     'accent',
     'multiplayer',
     [/\bmultiplayer\b/i]
