@@ -41,7 +41,7 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer',
 };
 
-const HOVER_DELAY_MS = 300;
+const HOVER_DELAY_MS = 150;
 
 export const GameCard = memo(function GameCard({
   game,

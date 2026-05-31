@@ -1,10 +1,10 @@
 import { toast } from 'sonner';
+import { isAuthCancelError } from './oauthSignIn';
 
 const PROVIDER_LABELS: Record<string, string> = {
   google: 'Google',
   microsoft: 'Microsoft',
   github: 'GitHub',
-  apple: 'Apple',
   phone: 'Phone',
   email: 'Email',
 };
@@ -48,6 +48,10 @@ export function handleAuthError(
         'Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.',
       duration: 8000,
     });
+    return;
+  }
+
+  if (isAuthCancelError(error)) {
     return;
   }
 

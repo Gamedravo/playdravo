@@ -48,7 +48,7 @@ export function SidebarIcon({ name, active }: { name: string; active?: boolean }
       className={`sidebar-icon ${active ? 'sidebar-icon--active' : ''}`}
       aria-hidden
     >
-      <Icon className="w-[15px] h-[15px]" strokeWidth={active ? 2.25 : 1.85} />
+      <Icon className="w-[15px] h-[15px]" strokeWidth={1.85} />
     </span>
   );
 }

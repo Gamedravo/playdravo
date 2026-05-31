@@ -15,7 +15,7 @@ for (const url of urls) {
   try {
     const r = await fetch(url, { method: 'GET', headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(12000) });
     const xfo = r.headers.get('x-frame-options');
-    const html = await r.text().slice(0, 5000);
+    const html = (await r.text()).slice(0, 5000);
     const embeddable = !(xfo?.toLowerCase() === 'deny' || xfo?.toLowerCase() === 'sameorigin');
     const unity = /createUnityInstance|UnityLoader|\.wasm/.test(html);
     const imgs = [...html.matchAll(/https?:[^\"'\s>]+\.(png|jpg|webp)/gi)].slice(0, 5).map((m) => m[0]);

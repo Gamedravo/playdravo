@@ -5,7 +5,6 @@ import {
   signInWithGoogle,
   signInWithMicrosoft,
   signInWithGithub,
-  signInWithApple,
   signInWithEmail,
   signUpWithEmail,
   setupRecaptcha,
@@ -35,7 +34,6 @@ const OAUTH_HANDLERS: Record<OAuthProviderId, () => ReturnType<typeof signInWith
   google: signInWithGoogle,
   microsoft: signInWithMicrosoft,
   github: signInWithGithub,
-  apple: signInWithApple,
 };
 
 export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
@@ -62,6 +60,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         console.error('Error clearing recaptcha:', e);
       }
     }
+  }, []);
+
+  const resetAuthLoading = useCallback(() => {
+    setLoadingProvider(null);
   }, []);
 
   useEffect(() => {
@@ -92,23 +94,23 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
 
   const handleOAuthLogin = async (provider: OAuthProviderId) => {
     if (loadingProvider) return;
+    setLoadingProvider(provider);
     try {
-      setLoadingProvider(provider);
       await OAUTH_HANDLERS[provider]();
       onClose();
       toast.success(t('loginSuccess') || 'Successfully logged in!');
     } catch (error) {
       handleAuthError(error, provider, t);
     } finally {
-      setLoadingProvider(null);
+      resetAuthLoading();
     }
   };
 
   const handlePhoneAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loadingProvider) return;
+    setLoadingProvider('phone');
     try {
-      setLoadingProvider('phone');
       if (!isOtpSent) {
         if (!window.recaptchaVerifier) {
           window.recaptchaVerifier = setupRecaptcha('recaptcha-container');
@@ -126,7 +128,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
       handleAuthError(error, 'phone', t);
       resetPhoneState();
     } finally {
-      setLoadingProvider(null);
+      resetAuthLoading();
     }
   };
 
@@ -150,7 +152,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     } catch (error) {
       handleAuthError(error, 'email', t);
     } finally {
-      setLoadingProvider(null);
+      resetAuthLoading();
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, Suspense, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -69,7 +69,6 @@ import {
 } from 'lucide-react';
 import { GameThumbnail } from './components/GameThumbnail';
 import { Footer } from './components/Footer';
-import { RouteContentSkeleton } from './components/LoadingSkeletons';
 import { useModals } from './hooks/useModals';
 
 import { Toaster, toast } from 'sonner';
@@ -129,12 +128,13 @@ import { CommandPalette } from './components/CommandPalette';
 import { AIAssistant } from './components/AIAssistant';
 
 import { HomePage } from './pages/HomePage';
+import { SearchPage } from './pages/SearchPage';
+import { GamePage } from './pages/GamePage';
+import { LazyRoute } from './components/LazyRoute';
+import { SidebarProvider } from './contexts/SidebarContext';
 
-// Lazy load secondary routes
-const GamePage = lazy(() => import('./pages/GamePage').then(module => ({ default: module.GamePage })));
-const CategoryPage = lazy(() => import('./pages/CategoryPage').then(module => ({ default: module.CategoryPage })));
-const AdminPanel = lazy(() => import('./pages/AdminPanel').then(module => ({ default: module.AdminPanel })));
-const SearchPage = lazy(() => import('./pages/SearchPage').then(module => ({ default: module.SearchPage })));
+const CategoryPage = lazy(() => import('./pages/CategoryPage').then((module) => ({ default: module.CategoryPage })));
+const AdminPanel = lazy(() => import('./pages/AdminPanel').then((module) => ({ default: module.AdminPanel })));
 const SupportPage = lazy(() => import('./pages/SupportPage').then(module => ({ default: module.SupportPage })));
 const LibraryPage = lazy(() => import('./pages/LibraryPage').then(module => ({ default: module.LibraryPage })));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(module => ({ default: module.PrivacyPage })));
@@ -372,9 +372,7 @@ function AppContent() {
   const [userRating, setUserRating] = useState<number | null>(null);
   const [isRatingLoading, setIsRatingLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    return typeof window !== 'undefined' ? window.innerWidth >= 768 : true;
-  });
+  const [searchMounted, setSearchMounted] = useState(() => location.pathname === '/search');
   const [isScrolled, setIsScrolled] = useState(false);
   const [helpSearchQuery, setHelpSearchQuery] = useState('');
   const [isNewsletterSubscribed, setIsNewsletterSubscribed] = useState(() => {
@@ -424,20 +422,18 @@ function AppContent() {
     if (mainCol) mainCol.scrollTop = 0;
     window.scrollTo(0, 0);
 
-    // 2. Frame-delayed reset (for layout thrashing)
+    // Frame-delayed reset only — no timeout (avoids post-navigation flash)
     requestAnimationFrame(() => {
       if (mainCol) mainCol.scrollTop = 0;
       window.scrollTo(0, 0);
     });
-
-    // 3. Timeout reset (for Suspense/lazy remounts)
-    const timeout = setTimeout(() => {
-      if (mainCol) mainCol.scrollTop = 0;
-      window.scrollTo(0, 0);
-    }, 50);
-
-    return () => clearTimeout(timeout);
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    if (location.pathname === '/search') setSearchMounted(true);
+  }, [location.pathname]);
+
+  const isSearchActive = location.pathname === '/search';
 
   const [reportReason, setReportReason] = useState('');
   const [isSubmittingGameRequest, setIsSubmittingGameRequest] = useState(false);
@@ -1520,10 +1516,9 @@ function AppContent() {
     });
   };
 
-  const handleGameClick = async (game: Game) => {
+  const handleGameClick = useCallback(async (game: Game) => {
     Analytics.trackGameOpen(game.id, game.title);
     navigate(`/games/${game.id}`);
-    setIsSidebarOpen(false);
     setActiveTab('game');
     generateRelatedGames(game);
     setPlayHistory(prev => {
@@ -1537,10 +1532,8 @@ function AppContent() {
       type: 'game'
     });
     
-    // Scroll to top for a smooth transition
     scrollToTop();
 
-    // Increment plays in Firestore
     try {
       const gameRef = doc(db, 'games', game.id);
       const gameSnap = await getDoc(gameRef);
@@ -1552,10 +1545,9 @@ function AppContent() {
         console.warn(`Game document ${game.id} does not exist in Firestore.`);
       }
     } catch (error) {
-      // Silently fail or log, don't block gameplay
       console.warn('Failed to increment plays:', error);
     }
-  };
+  }, [navigate, addNotification, generateRelatedGames, scrollToTop]);
 
   const handleSurpriseMe = () => {
     if (games.length === 0) {
@@ -1605,14 +1597,13 @@ function AppContent() {
   };
 
   return (
-    <div className={`h-[100dvh] flex flex-col transition-colors duration-700 font-sans selection:bg-accent selection:text-bg-dark ${isDarkMode ? 'bg-bg-dark text-white' : 'bg-white text-black'}`}>
+    <SidebarProvider>
+    <div className={`h-[100dvh] flex flex-col font-sans selection:bg-accent selection:text-bg-dark ${isDarkMode ? 'bg-bg-dark text-white' : 'bg-white text-black'}`}>
       <div className="flex flex-col h-full">
             {/* Global Background Effects Removed for Performance */}
       <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
         <Sidebar 
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
           isDarkMode={isDarkMode}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
@@ -1631,8 +1622,6 @@ function AppContent() {
         <div className={`flex-1 flex flex-col overflow-hidden`}>
           {/* Header - Redesigned to match PlayDravo style */}
           <Header 
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
             isDarkMode={isDarkMode}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -1672,9 +1661,26 @@ function AppContent() {
             />
           </div>
 
-          <main ref={mainRef} className={`flex-1 overflow-y-auto ${location.pathname === '/search' ? 'p-0' : activeGame ? 'p-0 md:p-5' : 'p-3 md:p-5'} relative`}>
-            <Suspense fallback={<RouteContentSkeleton pathname={location.pathname} isDarkMode={isDarkMode} />}>
-              <Routes>
+          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${isSearchActive ? 'p-0' : activeGame ? 'p-0 md:p-5' : 'p-3 md:p-5'} relative`}>
+            {searchMounted && (
+              <div
+                className={`absolute inset-0 z-[2] overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${
+                  isSearchActive ? '' : 'invisible pointer-events-none'
+                }`}
+                aria-hidden={!isSearchActive}
+              >
+                <SearchPage
+                  isDarkMode={isDarkMode}
+                  t={t}
+                  toggleFavorite={toggleFavorite}
+                  userProfile={userProfile}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                />
+              </div>
+            )}
+            <div className={isSearchActive ? 'hidden' : 'relative min-h-full'}>
+            <Routes>
                 <Route path="/" element={
                   <PageLayout>
                     <HomePage 
@@ -1731,8 +1737,9 @@ function AppContent() {
                     />
                 } />
                 <Route path="/category/:categoryId" element={
-                  <PageLayout>
-                    <CategoryPage 
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                    <PageLayout>
+                      <CategoryPage 
                       isDarkMode={isDarkMode}
                       t={t}
                       games={games}
@@ -1741,8 +1748,10 @@ function AppContent() {
                       toggleFavorite={toggleFavorite}
                     />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/library/*" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <LibraryPage
                       isDarkMode={isDarkMode}
@@ -1755,38 +1764,35 @@ function AppContent() {
                       userProfile={userProfile}
                     />
                   </PageLayout>
-                } />
-                <Route path="/search" element={
-                    <SearchPage
-                      isDarkMode={isDarkMode}
-                      t={t}
-                      toggleFavorite={toggleFavorite}
-                      userProfile={userProfile}
-                      searchQuery={searchQuery}
-                      setSearchQuery={setSearchQuery}
-                    />
+                  </LazyRoute>
                 } />
                 <Route path="/support/:articleId" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <SupportPage
                       isDarkMode={isDarkMode}
                       t={t}
                     />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/support" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <SupportPage
                       isDarkMode={isDarkMode}
                       t={t}
                     />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/admin/bug-reports" element={
                   userProfile?.role === 'admin' ? (
+                    <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <PageLayout>
                       <AdminPanel isDarkMode={isDarkMode} t={t} type="bug-reports" />
                     </PageLayout>
+                    </LazyRoute>
                   ) : (
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
@@ -1799,9 +1805,11 @@ function AppContent() {
                 } />
                 <Route path="/admin/game-requests" element={
                   userProfile?.role === 'admin' ? (
+                    <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <PageLayout>
                       <AdminPanel isDarkMode={isDarkMode} t={t} type="game-requests" />
                     </PageLayout>
+                    </LazyRoute>
                   ) : (
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
@@ -1814,9 +1822,11 @@ function AppContent() {
                 } />
                 <Route path="/admin/support-tickets" element={
                   userProfile?.role === 'admin' ? (
+                    <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <PageLayout>
                       <AdminPanel isDarkMode={isDarkMode} t={t} type="support-tickets" />
                     </PageLayout>
+                    </LazyRoute>
                   ) : (
                     <div className="min-h-screen flex items-center justify-center">
                       <div className="text-center">
@@ -1828,52 +1838,68 @@ function AppContent() {
                   )
                 } />
                 <Route path="/privacy" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <PrivacyPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/terms" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <TermsPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/about" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <AboutPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/status" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <StatusPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/report-bug" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <ReportBugPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/contact" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <ContactPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/submit-game" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <SubmitGamePage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
                 <Route path="/cookies" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <CookiesPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
+                  </LazyRoute>
                 } />
+                <Route path="/search" element={null} />
           </Routes>
-          
-          {/* Universal Footer section on every page */}
-          {location.pathname !== '/search' && !location.pathname.startsWith('/games/') && (
+
+          {!isSearchActive && location.pathname !== '/search' && !location.pathname.startsWith('/games/') && (
             <Footer isDarkMode={isDarkMode} t={t} />
           )}
-          </Suspense>
+            </div>
           </main>
         </div>
       </div>
@@ -2102,7 +2128,8 @@ function AppContent() {
           className: 'sonner-toast'
         }}
       />
-      </div>
     </div>
+    </div>
+    </SidebarProvider>
   );
 }

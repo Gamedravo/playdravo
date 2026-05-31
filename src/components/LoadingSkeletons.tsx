@@ -128,26 +128,32 @@ export const RouteContentSkeleton = memo(function RouteContentSkeleton({
   pathname,
   isDarkMode = true,
 }: SkeletonProps & { pathname: string }) {
-  if (pathname === '/') {
-    return <HomePageSkeleton isDarkMode={isDarkMode} />;
-  }
-  if (pathname.startsWith('/games/')) {
-    return <GamePageSkeleton isDarkMode={isDarkMode} />;
-  }
-  if (pathname.startsWith('/search')) {
-    return (
-      <div className="p-4 space-y-4 animate-in fade-in duration-200">
-        <ShimmerBlock isDarkMode={isDarkMode} className="h-12 w-full max-w-xl rounded-2xl mx-auto" />
-        <GameCardGridSkeleton isDarkMode={isDarkMode} count={14} />
-      </div>
-    );
-  }
-  if (pathname.startsWith('/library') || pathname.startsWith('/category/')) {
-    return (
-      <div className="p-2 md:p-4 animate-in fade-in duration-200">
-        <GameCardGridSkeleton isDarkMode={isDarkMode} count={14} />
-      </div>
-    );
-  }
-  return <SimplePageSkeleton isDarkMode={isDarkMode} />;
+  const inner = (() => {
+    if (pathname === '/') {
+      return <HomePageSkeleton isDarkMode={isDarkMode} />;
+    }
+    if (pathname.startsWith('/games/')) {
+      return <GamePageSkeleton isDarkMode={isDarkMode} />;
+    }
+    if (pathname.startsWith('/search')) {
+      return (
+        <div className="p-4 space-y-4">
+          <ShimmerBlock isDarkMode={isDarkMode} className="h-12 w-full max-w-xl rounded-2xl mx-auto" />
+          <GameCardGridSkeleton isDarkMode={isDarkMode} count={14} />
+        </div>
+      );
+    }
+    if (pathname.startsWith('/library') || pathname.startsWith('/category/')) {
+      return (
+        <div className="p-2 md:p-4">
+          <GameCardGridSkeleton isDarkMode={isDarkMode} count={14} />
+        </div>
+      );
+    }
+    return <SimplePageSkeleton isDarkMode={isDarkMode} />;
+  })();
+
+  return (
+    <div className={`min-h-[60vh] ${isDarkMode ? 'bg-bg-dark' : 'bg-white'}`}>{inner}</div>
+  );
 });

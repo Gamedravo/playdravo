@@ -1,13 +1,12 @@
-import React, { useRef, memo } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Dices, Plus } from 'lucide-react';
+import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Dices } from 'lucide-react';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SidebarIcon } from '../lib/sidebarIcons';
+import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
 
 interface SidebarProps {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: (open: boolean) => void;
   isDarkMode: boolean;
   selectedCategory: string;
   setSelectedCategory: (cat: string) => void;
@@ -20,7 +19,7 @@ interface SidebarProps {
   handleSurpriseMe: () => void;
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: any) => string;
+  t: (key: string) => string;
 }
 
 const categoryKeyMap: Record<string, string> = {
@@ -53,9 +52,12 @@ function categoryUrl(cat: string): string {
   return `/category/${cat.toLowerCase()}`;
 }
 
+const navItemClass = (active: boolean, isDarkMode: boolean) =>
+  `sidebar-nav-item ${active ? 'sidebar-nav-item--active' : ''} ${
+    isDarkMode ? 'sidebar-nav-item--dark' : 'sidebar-nav-item--light'
+  }`;
+
 export const Sidebar = memo(function Sidebar({
-  isSidebarOpen,
-  setIsSidebarOpen,
   isDarkMode,
   selectedCategory,
   setSelectedCategory,
@@ -64,7 +66,6 @@ export const Sidebar = memo(function Sidebar({
   setIsLoginModalOpen,
   logout,
   setIsPreferencesModalOpen,
-  setIsSubmitModalOpen,
   handleSurpriseMe,
   language,
   setLanguage,
@@ -73,15 +74,21 @@ export const Sidebar = memo(function Sidebar({
   const location = useLocation();
   const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const mobileExpanded = isSidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768;
-  const showLabels = mobileExpanded;
+  const isSidebarOpen = useSidebarOpen();
+  const { setOpen } = useSidebar();
+  const isMobileOpen = isSidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768;
 
-  const navItemClass = (active: boolean) =>
-    `sidebar-nav-item ${active ? 'sidebar-nav-item--active' : ''} ${isDarkMode ? 'sidebar-nav-item--dark' : 'sidebar-nav-item--light'}`;
+  useEffect(() => {
+    if (window.innerWidth < 768) setOpen(false);
+  }, [location.pathname, setOpen]);
+
+  const closeMobile = () => {
+    if (window.innerWidth < 768) setOpen(false);
+  };
 
   return (
     <aside
-      className={`sidebar-shell group/sidebar ${isDarkMode ? 'sidebar-shell--dark' : 'sidebar-shell--light'} ${
+      className={`sidebar-shell ${isDarkMode ? 'sidebar-shell--dark' : 'sidebar-shell--light'} ${
         isSidebarOpen ? 'sidebar-shell--open' : 'sidebar-shell--closed'
       }`}
     >
@@ -94,6 +101,7 @@ export const Sidebar = memo(function Sidebar({
               navigate('/');
               setSelectedCategory('All');
               document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              closeMobile();
             }}
             className="sidebar-brand"
             title="Home"
@@ -101,13 +109,15 @@ export const Sidebar = memo(function Sidebar({
             <span className="sidebar-brand-mark">
               <Dices className="w-4 h-4 text-bg-dark" />
             </span>
-            <span className={`sidebar-brand-text ${showLabels ? 'sidebar-brand-text--visible' : ''}`}>
-              Play<span className="text-accent">Dravo</span>
-            </span>
+            {(isSidebarOpen || isMobileOpen) && (
+              <span className="sidebar-brand-text">
+                Play<span className="text-accent">Dravo</span>
+              </span>
+            )}
           </a>
           <button
             type="button"
-            onClick={() => setIsSidebarOpen(false)}
+            onClick={() => setOpen(false)}
             className="sidebar-close md:hidden"
             aria-label="Close menu"
           >
@@ -117,23 +127,25 @@ export const Sidebar = memo(function Sidebar({
 
         <div className="sidebar-body">
           <div className="sidebar-block">
-            <button type="button" onClick={handleSurpriseMe} className="sidebar-cta">
+            <button
+              type="button"
+              onClick={handleSurpriseMe}
+              className="sidebar-cta"
+              data-tooltip={t('randomGames')}
+            >
               <SidebarIcon name="Trending" active />
-              <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                {t('randomGames')}
-              </span>
+              <span className="sidebar-label">{t('randomGames')}</span>
             </button>
           </div>
 
           {categoryGroups.map((group, groupIndex) => (
             <div key={`sidebar-group-${groupIndex}`} className="sidebar-block">
-              {group.title !== 'Main Menu' && (
-                <p className={`sidebar-group-label ${showLabels ? 'sidebar-group-label--visible' : ''}`}>
-                  {group.title}
-                </p>
+              {(isSidebarOpen || isMobileOpen) && group.title !== 'Main Menu' && (
+                <p className="sidebar-group-label">{group.title}</p>
               )}
               <nav className="sidebar-nav" aria-label={group.title}>
                 {group.items.map((cat) => {
+                  const label = t(categoryKeyMap[cat] || cat);
                   const isActive =
                     selectedCategory === cat ||
                     (cat === 'All' && location.pathname === '/') ||
@@ -144,15 +156,14 @@ export const Sidebar = memo(function Sidebar({
                       to={categoryUrl(cat)}
                       onClick={() => {
                         setSelectedCategory(cat === 'All' ? 'All' : cat);
-                        if (window.innerWidth < 768) setIsSidebarOpen(false);
+                        closeMobile();
                       }}
-                      className={navItemClass(isActive)}
-                      title={t(categoryKeyMap[cat] || cat)}
+                      className={navItemClass(isActive, isDarkMode)}
+                      title={label}
+                      data-tooltip={label}
                     >
                       <SidebarIcon name={cat} active={isActive} />
-                      <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                        {t(categoryKeyMap[cat] || cat)}
-                      </span>
+                      <span className="sidebar-label">{label}</span>
                     </Link>
                   );
                 })}
@@ -164,51 +175,47 @@ export const Sidebar = memo(function Sidebar({
             <nav className="sidebar-nav" aria-label="Support">
               <Link
                 to="/support"
-                onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
-                className={navItemClass(location.pathname.startsWith('/support'))}
+                onClick={closeMobile}
+                className={navItemClass(location.pathname.startsWith('/support'), isDarkMode)}
+                data-tooltip={t('helpCenter')}
               >
                 <span className="sidebar-icon">
                   <HelpCircle className="w-[15px] h-[15px]" strokeWidth={1.85} />
                 </span>
-                <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                  {t('helpCenter')}
-                </span>
+                <span className="sidebar-label">{t('helpCenter')}</span>
               </Link>
               <Link
                 to="/terms"
-                onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
-                className={navItemClass(location.pathname === '/terms')}
+                onClick={closeMobile}
+                className={navItemClass(location.pathname === '/terms', isDarkMode)}
+                data-tooltip={t('legal')}
               >
                 <span className="sidebar-icon">
                   <FileText className="w-[15px] h-[15px]" strokeWidth={1.85} />
                 </span>
-                <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                  {t('legal')}
-                </span>
+                <span className="sidebar-label">{t('legal')}</span>
               </Link>
               <Link
                 to="/report-bug"
-                onClick={() => window.innerWidth < 768 && setIsSidebarOpen(false)}
-                className={navItemClass(location.pathname === '/report-bug')}
+                onClick={closeMobile}
+                className={navItemClass(location.pathname === '/report-bug', isDarkMode)}
+                data-tooltip={t('bugReport')}
               >
                 <span className="sidebar-icon">
                   <Bug className="w-[15px] h-[15px]" strokeWidth={1.85} />
                 </span>
-                <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                  {t('bugReport')}
-                </span>
+                <span className="sidebar-label">{t('bugReport')}</span>
               </Link>
               {userProfile?.role === 'admin' && (
                 <Link
                   to="/admin/bug-reports"
-                  className={navItemClass(location.pathname.startsWith('/admin'))}
+                  className={navItemClass(location.pathname.startsWith('/admin'), isDarkMode)}
+                  data-tooltip={t('adminPanel')}
                 >
                   <span className="sidebar-icon">
                     <Settings className="w-[15px] h-[15px]" strokeWidth={1.85} />
                   </span>
-                  <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                    {t('adminPanel')}
-                  </span>
+                  <span className="sidebar-label">{t('adminPanel')}</span>
                 </Link>
               )}
             </nav>
@@ -219,24 +226,23 @@ export const Sidebar = memo(function Sidebar({
               type="button"
               onClick={() => {
                 setIsPreferencesModalOpen(true);
-                if (window.innerWidth < 768) setIsSidebarOpen(false);
+                closeMobile();
               }}
-              className={navItemClass(false)}
+              className={navItemClass(false, isDarkMode)}
+              data-tooltip={t('personalize')}
             >
               <span className="sidebar-icon">
                 <Settings className="w-[15px] h-[15px]" strokeWidth={1.85} />
               </span>
-              <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                {t('personalize')}
-              </span>
+              <span className="sidebar-label">{t('personalize')}</span>
             </button>
             <LanguageSwitcher
               currentLanguage={language}
               setLanguage={setLanguage}
               isDarkMode={isDarkMode}
               align="left"
-              minimal={!showLabels}
-              variant={showLabels ? 'grid' : 'dropdown'}
+              minimal={!isSidebarOpen && !isMobileOpen}
+              variant={isSidebarOpen || isMobileOpen ? 'grid' : 'dropdown'}
             />
           </div>
         </div>
@@ -244,31 +250,34 @@ export const Sidebar = memo(function Sidebar({
         <div className="sidebar-footer">
           {userProfile ? (
             <>
-              <div className={`sidebar-profile ${showLabels ? 'sidebar-profile--visible' : ''}`}>
-                <img
-                  src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`}
-                  alt=""
-                  className="sidebar-profile-avatar"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="sidebar-profile-meta">
-                  <p className="sidebar-profile-name">{userProfile.displayName}</p>
-                  <span className="sidebar-profile-role">{userProfile.role}</span>
+              {(isSidebarOpen || isMobileOpen) && (
+                <div className="sidebar-profile">
+                  <img
+                    src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`}
+                    alt=""
+                    className="sidebar-profile-avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="sidebar-profile-meta">
+                    <p className="sidebar-profile-name">{userProfile.displayName}</p>
+                    <span className="sidebar-profile-role">{userProfile.role}</span>
+                  </div>
                 </div>
-              </div>
-              <button type="button" onClick={logout} className="sidebar-logout">
+              )}
+              <button type="button" onClick={logout} className="sidebar-logout" data-tooltip={t('logout')}>
                 <LogOut className="w-4 h-4" />
-                <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                  {t('logout')}
-                </span>
+                <span className="sidebar-label">{t('logout')}</span>
               </button>
             </>
           ) : (
-            <button type="button" onClick={() => setIsLoginModalOpen(true)} className="sidebar-login">
+            <button
+              type="button"
+              onClick={() => setIsLoginModalOpen(true)}
+              className="sidebar-login"
+              data-tooltip={t('login')}
+            >
               <LogIn className="w-4 h-4" />
-              <span className={showLabels ? 'sidebar-label sidebar-label--visible' : 'sidebar-label'}>
-                {t('login')}
-              </span>
+              <span className="sidebar-label">{t('login')}</span>
             </button>
           )}
         </div>

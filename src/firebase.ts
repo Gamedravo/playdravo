@@ -4,8 +4,6 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   OAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -13,10 +11,10 @@ import {
   signInWithPhoneNumber,
   setPersistence,
   browserLocalPersistence,
-  type AuthProvider,
 } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer, runTransaction, serverTimestamp } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
+import { signInWithOAuthPopup } from './lib/oauthSignIn';
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
@@ -36,28 +34,18 @@ microsoftProvider.addScope('openid');
 
 export const githubProvider = new GithubAuthProvider();
 
-export const appleProvider = new OAuthProvider('apple.com');
-appleProvider.addScope('email');
-appleProvider.addScope('name');
-
-async function signInWithOAuthPopup(provider: AuthProvider) {
+export const signInWithGoogle = async () => {
   await persistencePromise;
-  try {
-    return await signInWithPopup(auth, provider);
-  } catch (error: unknown) {
-    const err = error as { code?: string };
-    if (err.code === 'auth/popup-blocked') {
-      console.warn('Popup blocked, falling back to redirect...');
-      return signInWithRedirect(auth, provider);
-    }
-    throw error;
-  }
-}
-
-export const signInWithGoogle = () => signInWithOAuthPopup(googleProvider);
-export const signInWithMicrosoft = () => signInWithOAuthPopup(microsoftProvider);
-export const signInWithGithub = () => signInWithOAuthPopup(githubProvider);
-export const signInWithApple = () => signInWithOAuthPopup(appleProvider);
+  return signInWithOAuthPopup(auth, googleProvider);
+};
+export const signInWithMicrosoft = async () => {
+  await persistencePromise;
+  return signInWithOAuthPopup(auth, microsoftProvider);
+};
+export const signInWithGithub = async () => {
+  await persistencePromise;
+  return signInWithOAuthPopup(auth, githubProvider);
+};
 
 export const logout = () => signOut(auth);
 
