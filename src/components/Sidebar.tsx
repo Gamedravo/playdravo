@@ -5,6 +5,7 @@ import { PlayDravoMark } from './PlayDravoLogo';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SidebarIcon } from '../lib/sidebarIcons';
+import { SidebarNavLink } from './SidebarNavItem';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
 
 interface SidebarProps {
@@ -151,20 +152,18 @@ export const Sidebar = memo(function Sidebar({
                     (cat === 'All' && location.pathname === '/') ||
                     location.pathname === categoryUrl(cat);
                   return (
-                    <Link
+                    <SidebarNavLink
                       key={`sidebar-${cat}`}
                       to={categoryUrl(cat)}
-                      onClick={() => {
+                      label={label}
+                      cat={cat}
+                      isActive={isActive}
+                      isDarkMode={isDarkMode}
+                      onNavigate={() => {
                         setSelectedCategory(cat === 'All' ? 'All' : cat);
                         closeMobile();
                       }}
-                      className={navItemClass(isActive, isDarkMode)}
-                      title={label}
-                      data-tooltip={label}
-                    >
-                      <SidebarIcon name={cat} active={isActive} />
-                      <span className="sidebar-label">{label}</span>
-                    </Link>
+                    />
                   );
                 })}
               </nav>

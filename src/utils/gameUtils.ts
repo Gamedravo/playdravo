@@ -36,6 +36,17 @@ export function upgradeThumbnailResolution(url: string, size: ThumbnailSize = 'm
   return trimmed;
 }
 
+/** Prefer WebP for onlinegames.io responsive assets. */
+export function preferWebPUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed.includes('onlinegames.io')) return trimmed;
+  if (/\.webp(\?|$)/i.test(trimmed)) return trimmed;
+  if (/\.(jpg|jpeg|png)(\?.*)?$/i.test(trimmed)) {
+    return trimmed.replace(/\.(jpg|jpeg|png)(\?.*)?$/i, '.webp$2');
+  }
+  return trimmed;
+}
+
 /** Use catalog thumbnail URL directly (onlinegames.io dataset). */
 export function resolveGameThumbnail(
   gameId: string,
@@ -44,7 +55,36 @@ export function resolveGameThumbnail(
 ): string {
   const catalog = GAMES.find((g) => g.id === gameId);
   const raw = (catalog?.thumbnail || thumbnail || '').trim();
-  return upgradeThumbnailResolution(raw, size);
+  return preferWebPUrl(upgradeThumbnailResolution(raw, size));
+}
+
+export interface ThumbnailSources {
+  src: string;
+  srcSet?: string;
+  sizes: string;
+}
+
+const CARD_SIZES = '(max-width: 640px) 120px, (max-width: 1024px) 160px, 200px';
+
+/** Responsive src/srcSet for shelf cards and grid tiles. */
+export function buildThumbnailSources(
+  gameId: string,
+  thumbnail?: string,
+  size: ThumbnailSize = 'md'
+): ThumbnailSources {
+  const src = resolveGameThumbnail(gameId, thumbnail, size);
+  const md = resolveGameThumbnail(gameId, thumbnail, 'md');
+  const lg = resolveGameThumbnail(gameId, thumbnail, 'lg');
+
+  if (md === lg) {
+    return { src, sizes: CARD_SIZES };
+  }
+
+  return {
+    src,
+    srcSet: `${md} 200w, ${lg} 400w`,
+    sizes: CARD_SIZES,
+  };
 }
 
 export function parseFirebaseGame(id: string, data: any): Game {

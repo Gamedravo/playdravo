@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -75,9 +75,6 @@ import { Toaster } from 'sonner';
 import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
-import { LoginModal } from './components/LoginModal';
-import { UsernameSetupModal } from './components/UsernameSetupModal';
-import { PreferencesModal } from './components/PreferencesModal';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST } from './games';
 import { parseFirebaseGame } from './utils/gameUtils';
 import { buildRecommendations } from './utils/recommendations';
@@ -115,25 +112,20 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { ProfileDropdown } from './components/ProfileDropdown';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
-import { SupportModal } from './components/modals/SupportModal';
-import { SystemStatusModal } from './components/modals/SystemStatusModal';
-import { LegalModal } from './components/modals/LegalModal';
-import { BugReportModal } from './components/modals/BugReportModal';
-import { GameIssueReportModal } from './components/modals/GameIssueReportModal';
-import { GameRequestModal } from './components/modals/GameRequestModal';
-import { SubmitGameModal } from './components/modals/SubmitGameModal';
-import { SubmitModModal } from './components/modals/SubmitModModal';
 import { HighlightText } from './components/HighlightText';
 import { Language, translations, TranslationKey } from './lib/translations';
-import { GlobalModals } from './components/GlobalModals';
-import { CommandPalette } from './components/CommandPalette';
-import { AIAssistant } from './components/AIAssistant';
+import { LazyRoute } from './components/LazyRoute';
+import { SidebarProvider } from './contexts/SidebarContext';
 
 import { HomePage } from './pages/HomePage';
 import { SearchPage } from './pages/SearchPage';
-import { GamePage } from './pages/GamePage';
-import { LazyRoute } from './components/LazyRoute';
-import { SidebarProvider } from './contexts/SidebarContext';
+import { markRouteVisited } from './lib/routeVisitCache';
+
+const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
+const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
+const CommandPalette = lazy(() => import('./components/CommandPalette').then((m) => ({ default: m.CommandPalette })));
+const PreferencesModal = lazy(() => import('./components/PreferencesModal').then((m) => ({ default: m.PreferencesModal })));
+const AIAssistant = lazy(() => import('./components/AIAssistant').then((m) => ({ default: m.AIAssistant })));
 
 const CategoryPage = lazy(() => import('./pages/CategoryPage').then((module) => ({ default: module.CategoryPage })));
 const AdminPanel = lazy(() => import('./pages/AdminPanel').then((module) => ({ default: module.AdminPanel })));
@@ -431,6 +423,15 @@ function AppContent() {
       window.scrollTo(0, 0);
     });
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    markRouteVisited('/');
+    markRouteVisited('/search');
+  }, []);
+
+  useEffect(() => {
+    markRouteVisited(location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.pathname === '/search') setSearchMounted(true);
@@ -1035,7 +1036,7 @@ function AppContent() {
   const [gameRequests, setGameRequests] = useState<GameRequest[]>([]);
   const [modSearchQuery, setModSearchQuery] = useState('');
   const [modSortBy, setModSortBy] = useState<'downloads' | 'rating' | 'newest'>('downloads');
-  const [displayLimit, setDisplayLimit] = useState(80);
+  const [displayLimit, setDisplayLimit] = useState(28);
 
   const handleGenerateDescriptions = () => {
     appToast.error('AI automatic generations have been disabled for performance.');
@@ -1729,6 +1730,7 @@ function AppContent() {
                   </PageLayout>
                 } />
                 <Route path="/games/:gameId" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <GamePage 
                       isDarkMode={isDarkMode}
                       t={t}
@@ -1738,6 +1740,7 @@ function AppContent() {
                       handleGameClick={handleGameClick}
                       user={user}
                     />
+                  </LazyRoute>
                 } />
                 <Route path="/category/:categoryId" element={
                   <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
@@ -1907,6 +1910,7 @@ function AppContent() {
         </div>
       </div>
 
+        <Suspense fallback={null}>
         <CommandPalette
           isOpen={isCommandPaletteOpen}
           onClose={() => setIsCommandPaletteOpen(false)}
@@ -1921,6 +1925,7 @@ function AppContent() {
           setSelectedCategory={setSelectedCategory}
           categoryKeyMap={categoryKeyMap as any}
         />
+        </Suspense>
 
 
 
@@ -1980,6 +1985,7 @@ function AppContent() {
 
                 <div className={`flex-1 overflow-y-auto scrollbar-hide relative z-10 ${isAIAssistantOpen ? 'flex flex-col p-6' : 'p-8'}`}>
                   {isAIAssistantOpen ? (
+                    <Suspense fallback={<div className="p-8 text-center text-white/40 text-sm">Loading assistant…</div>}>
                     <AIAssistant
                       isOpen={true}
                       setIsOpen={setIsAIAssistantOpen}
@@ -1993,6 +1999,7 @@ function AppContent() {
                       isGeneratingChatSummary={isGeneratingChatSummary}
                       chatSummary={chatSummary}
                     />
+                    </Suspense>
                   ) : (
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -2064,6 +2071,8 @@ function AppContent() {
               </motion.div>
             </div>
 
+        {isPreferencesModalOpen && (
+        <Suspense fallback={null}>
         <PreferencesModal
           isOpen={isPreferencesModalOpen}
           onClose={() => setIsPreferencesModalOpen(false)}
@@ -2083,6 +2092,8 @@ function AppContent() {
           analyzeGamerPersona={analyzeGamerPersona}
           handleGenerateDescriptions={handleGenerateDescriptions}
         />
+        </Suspense>
+        )}
 
         {/* Floating Actions */}
         <div className="fixed bottom-10 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col gap-4">
@@ -2104,6 +2115,7 @@ function AppContent() {
           </AnimatePresence>
         </div>
 
+      <Suspense fallback={null}>
       <GlobalModals
         modalsState={modalsState}
         user={user}
@@ -2115,6 +2127,7 @@ function AppContent() {
         activeGame={activeGame}
         accountSettingsView={accountSettingsView}
       />
+      </Suspense>
 
       <Toaster
         position="top-right"

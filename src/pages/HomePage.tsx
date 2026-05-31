@@ -73,9 +73,10 @@ import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves } from '../utils/recommendations';
 import { buildTagShelves } from '../lib/tagShelves';
 import { buildHomepageCategoryChips } from '../lib/homepageCategories';
-import { buildCuratedHomepageBlocks, pickFeaturedSpotlight } from '../lib/homepageCuration';
+import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from '../lib/homepageCuration';
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
 import { HomePageShelf } from '../components/HomePageShelf';
+import { LazyShelf } from '../components/LazyShelf';
 
 export const HomePage = React.memo(function HomePage({
   isDarkMode,
@@ -210,6 +211,21 @@ export const HomePage = React.memo(function HomePage({
     [filteredGames]
   );
 
+  const denseTrending = React.useMemo(
+    () => densifyShelf(homepageShelves.trending, filteredGames),
+    [homepageShelves.trending, filteredGames]
+  );
+
+  const denseNewArrivals = React.useMemo(
+    () => densifyShelf(newArrivals, filteredGames),
+    [newArrivals, filteredGames]
+  );
+
+  const denseRecommended = React.useMemo(
+    () => densifyShelf(recommendedGames, filteredGames),
+    [recommendedGames, filteredGames]
+  );
+
   const tagShelves = React.useMemo(
     () => buildTagShelves(filteredGames),
     [filteredGames]
@@ -298,6 +314,7 @@ export const HomePage = React.memo(function HomePage({
       {/* Continue Playing — compact horizontal shelf */}
       <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && (
+          <LazyShelf eager minHeight={220}>
           <section className="shelf-section">
             <div className="shelf-header">
               <div className="space-y-0.5">
@@ -364,6 +381,7 @@ export const HomePage = React.memo(function HomePage({
               </div>
             </div>
           </section>
+          </LazyShelf>
         )}
       </SectionErrorBoundary>
 
@@ -371,6 +389,7 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Trending Now">
         {selectedCategory === 'All' && !searchQuery && filteredGames.length > 0 && (
+          <LazyShelf eager minHeight={260}>
           <section className="shelf-section group/shelf">
             <div className="shelf-header">
               <div className="space-y-0.5">
@@ -408,13 +427,14 @@ export const HomePage = React.memo(function HomePage({
             </div>
  
             <div className="shelf-scroll" ref={trendingRef}>
-                {homepageShelves.trending.map((game, index) => (
+                {denseTrending.map((game, index) => (
                   <div key={`trending-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
             </div>
           </section>
+          </LazyShelf>
         )}
       </SectionErrorBoundary>
 
@@ -422,6 +442,7 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
+          <LazyShelf minHeight={180}>
           <section className="shelf-section">
             <div className="shelf-header">
               <div className="space-y-0.5">
@@ -451,15 +472,16 @@ export const HomePage = React.memo(function HomePage({
               ))}
             </div>
           </section>
+          </LazyShelf>
         )}
       </SectionErrorBoundary>
 
       <SectionErrorBoundary sectionName="Curated Shelves">
         {selectedCategory === 'All' &&
           !searchQuery &&
-          curatedBlocks.map((block) => (
+          curatedBlocks.map((block, blockIndex) => (
+            <LazyShelf key={block.id} eager={blockIndex === 0} minHeight={260}>
             <HomePageShelf
-              key={block.id}
               title={block.title}
               subtitle={block.subtitle}
               games={block.games}
@@ -477,20 +499,25 @@ export const HomePage = React.memo(function HomePage({
               }
               viewAllLabel={t('viewAll') || 'View all'}
             />
+            </LazyShelf>
           ))}
       </SectionErrorBoundary>
 
       {/* Recommended */}
 
 <SectionErrorBoundary sectionName="Recommended Games">
-        {selectedCategory === 'All' && !searchQuery && recommendedGames.length > 0 &&
-          renderShelf(t('pickedForYou') || 'Picked for you', t('personalized') || 'For you', recommendedGames, 'rec', recRef, Target)}
+        {selectedCategory === 'All' && !searchQuery && denseRecommended.length > 0 && (
+          <LazyShelf minHeight={260}>
+          {renderShelf(t('pickedForYou') || 'Picked for you', t('personalized') || 'For you', denseRecommended, 'rec', recRef, Target)}
+          </LazyShelf>
+        )}
       </SectionErrorBoundary>
 
       {/* New Arrivals */}
 
 <SectionErrorBoundary sectionName="New Arrivals">
-        {selectedCategory === 'All' && !searchQuery && newArrivals.length > 0 && (
+        {selectedCategory === 'All' && !searchQuery && denseNewArrivals.length > 0 && (
+          <LazyShelf minHeight={260}>
           <section className="mb-3 relative group/shelf">
             <div className="flex items-end justify-between mb-2">
               <div className="space-y-1">
@@ -529,19 +556,21 @@ export const HomePage = React.memo(function HomePage({
             </div>
  
             <div className="shelf-scroll" ref={newArrivalsRef}>
-                {newArrivals.map((game, index) => (
+                {denseNewArrivals.map((game, index) => (
                   <div key={`new-arrival-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}
             </div>
           </section>
+          </LazyShelf>
         )}
       </SectionErrorBoundary>
 
       {/* Game Grid */}
 
       <SectionErrorBoundary sectionName="Game Grid">
+        <LazyShelf minHeight={400}>
         <GameGrid 
           filteredGames={filteredGames}
         selectedCategory={selectedCategory}
@@ -559,6 +588,7 @@ export const HomePage = React.memo(function HomePage({
         favorites={userProfile?.favorites || []}
         toggleFavorite={toggleFavorite}
         t={t}
+        setDisplayLimit={setDisplayLimit}
       />
 
       {displayLimit < filteredGames.length && (
@@ -571,6 +601,7 @@ export const HomePage = React.memo(function HomePage({
           </button>
         </div>
       )}
+        </LazyShelf>
       </SectionErrorBoundary>
 
       {/* Footer wrapped in hidden container */}

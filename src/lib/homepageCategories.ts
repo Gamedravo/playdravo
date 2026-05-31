@@ -45,10 +45,7 @@ export function countGamesForChip(games: Game[], chip: HomepageCategoryChip): nu
 }
 
 export function buildHomepageCategoryChips(games: Game[], minCount = 1) {
-  return HOMEPAGE_CATEGORY_CHIPS.map((chip) => ({
-    ...chip,
-    count: countGamesForChip(games, chip),
-  }))
-    .filter((c) => c.count >= minCount)
-    .sort((a, b) => b.count - a.count);
+  return HOMEPAGE_CATEGORY_CHIPS.filter(
+    (chip) => countGamesForChip(games, chip) >= minCount
+  );
 }

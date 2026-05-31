@@ -14,7 +14,7 @@ import { NotificationDrawer } from './NotificationDropdown';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { useState } from 'react';
+import { useState, memo, useRef } from 'react';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
 
 interface HeaderProps {
@@ -40,7 +40,7 @@ interface HeaderProps {
   setLanguage: (lang: Language) => void;
 }
 
-export function Header({
+export const Header = memo(function Header({
   isDarkMode,
   searchQuery,
   setSearchQuery,
@@ -69,6 +69,7 @@ export function Header({
   const isSearchPage = location.pathname === '/search';
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { unreadCount } = useNotifications();
+  const bellRef = useRef<HTMLButtonElement>(null);
 
   return (
     <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-150 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
@@ -157,6 +158,7 @@ export function Header({
 
             <div className="relative">
               <button
+                ref={bellRef}
                 onClick={() => setIsNotificationsOpen((open) => !open)}
                 aria-label="Notifications"
                 aria-expanded={isNotificationsOpen}
@@ -175,6 +177,7 @@ export function Header({
                 isOpen={isNotificationsOpen}
                 onClose={() => setIsNotificationsOpen(false)}
                 isDarkMode={isDarkMode}
+                anchorRef={bellRef}
               />
             </div>
             
@@ -231,4 +234,4 @@ export function Header({
       </div>
     </header>
   );
-}
+});

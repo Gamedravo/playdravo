@@ -1,10 +1,11 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Search, RotateCcw, Play, Star, Terminal, Filter, Trophy, Flame, Heart, Clock } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
 import { GameThumbnail } from './GameThumbnail';
 import { GameCardSkeleton } from './LoadingSkeletons';
 import { GAMES as STATIC_GAMES } from '../games';
+import { useInViewport } from '../hooks/useInViewport';
 
 interface GameGridProps {
   filteredGames: Game[];
@@ -17,6 +18,7 @@ interface GameGridProps {
   setSelectedTags: (tags: string[] | ((prev: string[]) => string[])) => void;
   TAGS_LIST: string[];
   displayLimit: number;
+  setDisplayLimit?: (limit: number | ((prev: number) => number)) => void;
   handleGameClick: (game: Game) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string) => void;
@@ -60,6 +62,7 @@ export const GameGrid = memo(function GameGrid({
   setSelectedTags,
   TAGS_LIST,
   displayLimit,
+  setDisplayLimit,
   handleGameClick,
   setSearchQuery,
   setSelectedCategory,
@@ -68,6 +71,17 @@ export const GameGrid = memo(function GameGrid({
   t,
   isLoading = false
 }: GameGridProps) {
+  const [sentinelRef, sentinelInView] = useInViewport<HTMLDivElement>({
+    rootMargin: '400px 0px',
+    once: false,
+  });
+
+  useEffect(() => {
+    if (!sentinelInView || !setDisplayLimit) return;
+    if (displayLimit >= filteredGames.length) return;
+    setDisplayLimit((prev) => Math.min(prev + 28, filteredGames.length));
+  }, [sentinelInView, displayLimit, filteredGames.length, setDisplayLimit]);
+
   const handleReset = () => {
     setSearchQuery('');
     setSelectedCategory('All');
@@ -253,6 +267,9 @@ export const GameGrid = memo(function GameGrid({
                 t={t}
               />
             ))}
+            {displayLimit < filteredGames.length && (
+              <div ref={sentinelRef} className="col-span-full h-4" aria-hidden />
+            )}
           </div>
         )}
     </div>

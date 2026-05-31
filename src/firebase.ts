@@ -7,8 +7,6 @@ import {
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
   setPersistence,
   browserLocalPersistence,
 } from 'firebase/auth';
@@ -58,12 +56,6 @@ export const signUpWithEmail = async (email: string, pass: string) => {
   await persistencePromise;
   return createUserWithEmailAndPassword(auth, email, pass);
 };
-
-export const setupRecaptcha = (containerId: string) =>
-  new RecaptchaVerifier(auth, containerId, { size: 'invisible' });
-
-export const signInWithPhone = (phone: string, verifier: RecaptchaVerifier) =>
-  signInWithPhoneNumber(auth, phone, verifier);
 
 export { runTransaction, serverTimestamp };
 

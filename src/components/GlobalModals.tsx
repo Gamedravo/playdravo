@@ -1,18 +1,41 @@
-import React from 'react';
-import { SubmitGameModal } from './modals/SubmitGameModal';
-import { SubmitModModal } from './modals/SubmitModModal';
-import { GameRequestModal } from './modals/GameRequestModal';
-import { AccountSettingsModal } from './AccountSettingsModal';
-import { SupportModal } from './modals/SupportModal';
-import { SystemStatusModal } from './modals/SystemStatusModal';
-import { LegalModal } from './modals/LegalModal';
-import { GameIssueReportModal } from './modals/GameIssueReportModal';
-import { LoginModal } from './LoginModal';
-import { UsernameSetupModal } from './UsernameSetupModal';
-import { BugReportModal } from './modals/BugReportModal';
+import React, { Suspense, lazy } from 'react';
 import { UserProfile, Game } from '../types';
 import { User as FirebaseUser } from 'firebase/auth';
 import { AccountSettingsView } from '../hooks/useModals';
+
+const SubmitGameModal = lazy(() =>
+  import('./modals/SubmitGameModal').then((m) => ({ default: m.SubmitGameModal }))
+);
+const SubmitModModal = lazy(() =>
+  import('./modals/SubmitModModal').then((m) => ({ default: m.SubmitModModal }))
+);
+const GameRequestModal = lazy(() =>
+  import('./modals/GameRequestModal').then((m) => ({ default: m.GameRequestModal }))
+);
+const AccountSettingsModal = lazy(() =>
+  import('./AccountSettingsModal').then((m) => ({ default: m.AccountSettingsModal }))
+);
+const SupportModal = lazy(() =>
+  import('./modals/SupportModal').then((m) => ({ default: m.SupportModal }))
+);
+const SystemStatusModal = lazy(() =>
+  import('./modals/SystemStatusModal').then((m) => ({ default: m.SystemStatusModal }))
+);
+const LegalModal = lazy(() =>
+  import('./modals/LegalModal').then((m) => ({ default: m.LegalModal }))
+);
+const GameIssueReportModal = lazy(() =>
+  import('./modals/GameIssueReportModal').then((m) => ({ default: m.GameIssueReportModal }))
+);
+const LoginModal = lazy(() =>
+  import('./LoginModal').then((m) => ({ default: m.LoginModal }))
+);
+const UsernameSetupModal = lazy(() =>
+  import('./UsernameSetupModal').then((m) => ({ default: m.UsernameSetupModal }))
+);
+const BugReportModal = lazy(() =>
+  import('./modals/BugReportModal').then((m) => ({ default: m.BugReportModal }))
+);
 
 interface GlobalModalsProps {
   modalsState: any;
@@ -24,6 +47,10 @@ interface GlobalModalsProps {
   t: (key: string) => string;
   activeGame: Game | null;
   accountSettingsView: AccountSettingsView;
+}
+
+function ModalSuspense({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={null}>{children}</Suspense>;
 }
 
 export function GlobalModals({
@@ -54,116 +81,140 @@ export function GlobalModals({
   return (
     <>
       {isSubmitModalOpen && (
-        <SubmitGameModal
-          isOpen={isSubmitModalOpen}
-          onClose={() => setIsSubmitModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={user as any}
-        />
+        <ModalSuspense>
+          <SubmitGameModal
+            isOpen={isSubmitModalOpen}
+            onClose={() => setIsSubmitModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            user={user as any}
+          />
+        </ModalSuspense>
       )}
 
       {isSubmitModModalOpen && (
-        <SubmitModModal
-          isOpen={isSubmitModModalOpen}
-          onClose={() => setIsSubmitModModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={user as any}
-          activeGame={activeGame}
-        />
+        <ModalSuspense>
+          <SubmitModModal
+            isOpen={isSubmitModModalOpen}
+            onClose={() => setIsSubmitModModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            user={user as any}
+            activeGame={activeGame}
+          />
+        </ModalSuspense>
       )}
 
       {isGameRequestModalOpen && (
-        <GameRequestModal
-          isOpen={isGameRequestModalOpen}
-          onClose={() => setIsGameRequestModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={user as any}
-        />
+        <ModalSuspense>
+          <GameRequestModal
+            isOpen={isGameRequestModalOpen}
+            onClose={() => setIsGameRequestModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            user={user as any}
+          />
+        </ModalSuspense>
       )}
 
-      <AccountSettingsModal
-        isOpen={isAccountSettingsOpen}
-        onClose={() => setIsAccountSettingsOpen(false)}
-        user={user as any}
-        isDarkMode={isDarkMode}
-        t={t}
-        initialView={accountSettingsView}
-      />
+      {isAccountSettingsOpen && (
+        <ModalSuspense>
+          <AccountSettingsModal
+            isOpen={isAccountSettingsOpen}
+            onClose={() => setIsAccountSettingsOpen(false)}
+            user={user}
+            isDarkMode={isDarkMode}
+            t={t}
+            initialView={accountSettingsView}
+          />
+        </ModalSuspense>
+      )}
 
       {isSupportModalOpen && (
-        <SupportModal
-          isOpen={isSupportModalOpen}
-          onClose={() => setIsSupportModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={user as any}
-        />
+        <ModalSuspense>
+          <SupportModal
+            isOpen={isSupportModalOpen}
+            onClose={() => setIsSupportModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        </ModalSuspense>
       )}
 
       {isStatusModalOpen && (
-        <SystemStatusModal
-          isOpen={isStatusModalOpen}
-          onClose={() => setIsStatusModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-        />
+        <ModalSuspense>
+          <SystemStatusModal
+            isOpen={isStatusModalOpen}
+            onClose={() => setIsStatusModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        </ModalSuspense>
       )}
 
       {isLegalModalOpen && (
-        <LegalModal
-          isOpen={isLegalModalOpen}
-          onClose={() => setIsLegalModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          legalContent={legalContent}
-        />
+        <ModalSuspense>
+          <LegalModal
+            isOpen={isLegalModalOpen}
+            onClose={() => setIsLegalModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            legalContent={legalContent}
+          />
+        </ModalSuspense>
       )}
 
-      {isReportModalOpen && (
-        <GameIssueReportModal
-          isOpen={isReportModalOpen}
-          onClose={() => setIsReportModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={userProfile as any}
-          activeGame={activeGame}
-        />
+      {isReportModalOpen && activeGame && (
+        <ModalSuspense>
+          <GameIssueReportModal
+            isOpen={isReportModalOpen}
+            onClose={() => setIsReportModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            activeGame={activeGame}
+            user={user}
+          />
+        </ModalSuspense>
       )}
 
       {isLoginModalOpen && (
-        <LoginModal
-          isOpen={isLoginModalOpen}
-          onClose={() => setIsLoginModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-        />
+        <ModalSuspense>
+          <LoginModal
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        </ModalSuspense>
       )}
 
-      {isUsernameModalOpen && (
-        <UsernameSetupModal
-          isOpen={isUsernameModalOpen}
-          onClose={() => setIsUsernameModalOpen(false)}
-          userId={user?.uid || ''}
-          isDarkMode={isDarkMode}
-          onComplete={(newUsername) => {
-            if (userProfile) {
-              setUserProfile({ ...userProfile, displayName: newUsername, usernameSet: true });
-            }
-          }}
-        />
+      {isUsernameModalOpen && user && (
+        <ModalSuspense>
+          <UsernameSetupModal
+            isOpen={isUsernameModalOpen}
+            onClose={() => setIsUsernameModalOpen(false)}
+            userId={user.uid}
+            onComplete={(newUsername) => {
+              setUserProfile((prev) =>
+                prev ? { ...prev, displayName: newUsername, username: newUsername } : prev
+              );
+              setIsUsernameModalOpen(false);
+            }}
+            isDarkMode={isDarkMode}
+          />
+        </ModalSuspense>
       )}
 
       {isBugReportModalOpen && (
-        <BugReportModal
-          isOpen={isBugReportModalOpen}
-          onClose={() => setIsBugReportModalOpen(false)}
-          isDarkMode={isDarkMode}
-          t={t}
-          user={userProfile as any}
-        />
+        <ModalSuspense>
+          <BugReportModal
+            isOpen={isBugReportModalOpen}
+            onClose={() => setIsBugReportModalOpen(false)}
+            isDarkMode={isDarkMode}
+            t={t}
+            user={user}
+          />
+        </ModalSuspense>
       )}
     </>
   );

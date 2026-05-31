@@ -6,7 +6,7 @@ import {
 } from 'firebase/auth';
 
 const OAUTH_TIMEOUT_MS = 90_000;
-const POPUP_FOCUS_CANCEL_MS = 600;
+const POPUP_FOCUS_CANCEL_MS = 400;
 
 export class AuthCancelledError extends Error {
   code = 'auth/popup-closed-by-user';
@@ -42,6 +42,7 @@ export async function signInWithOAuthPopup(
   let settled = false;
   let focusTimer: ReturnType<typeof setTimeout> | undefined;
   let onFocusHandler: (() => void) | undefined;
+  let onVisibilityHandler: (() => void) | undefined;
 
   const popupPromise = signInWithPopup(auth, provider);
 
@@ -50,7 +51,7 @@ export async function signInWithOAuthPopup(
   });
 
   const focusCancelPromise = new Promise<never>((_, reject) => {
-    onFocusHandler = () => {
+    const scheduleCancelCheck = () => {
       if (focusTimer) clearTimeout(focusTimer);
       focusTimer = setTimeout(() => {
         if (settled) return;
@@ -60,7 +61,12 @@ export async function signInWithOAuthPopup(
         }
       }, POPUP_FOCUS_CANCEL_MS);
     };
+    onFocusHandler = scheduleCancelCheck;
+    onVisibilityHandler = () => {
+      if (document.visibilityState === 'visible') scheduleCancelCheck();
+    };
     window.addEventListener('focus', onFocusHandler);
+    document.addEventListener('visibilitychange', onVisibilityHandler);
   });
 
   try {
@@ -76,5 +82,6 @@ export async function signInWithOAuthPopup(
   } finally {
     if (focusTimer) clearTimeout(focusTimer);
     if (onFocusHandler) window.removeEventListener('focus', onFocusHandler);
+    if (onVisibilityHandler) document.removeEventListener('visibilitychange', onVisibilityHandler);
   }
 }

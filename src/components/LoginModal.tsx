@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, ShieldCheck, Lock, Key, Smartphone, LogIn } from 'lucide-react';
+import { X, Mail, ShieldCheck, Lock, Key, Smartphone } from 'lucide-react';
 import { PlayDravoMark } from './PlayDravoLogo';
 import {
   signInWithGoogle,
@@ -8,10 +8,18 @@ import {
   signInWithGithub,
   signInWithEmail,
   signUpWithEmail,
-  setupRecaptcha,
-  signInWithPhone,
   auth,
 } from '../firebase';
+import {
+  sendPhoneOtp,
+  verifyPhoneOtp,
+  clearRecaptchaVerifier,
+  prewarmRecaptcha,
+  toE164,
+  isPhoneAuthDebugEnabled,
+  type RecaptchaState,
+  type PhoneAuthState,
+} from '../lib/phoneAuth';
 import { appToast } from '../lib/appToast';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import { handleAuthError } from '../lib/authErrors';
@@ -24,12 +32,6 @@ interface LoginModalProps {
 }
 
 type Tab = 'register' | 'login';
-
-declare global {
-  interface Window {
-    recaptchaVerifier: import('firebase/auth').RecaptchaVerifier | null;
-  }
-}
 
 const OAUTH_HANDLERS: Record<OAuthProviderId, () => ReturnType<typeof signInWithGoogle>> = {
   google: signInWithGoogle,
@@ -48,19 +50,20 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const [confirmationResult, setConfirmationResult] = useState<import('firebase/auth').ConfirmationResult | null>(null);
   const [authMethod, setAuthMethod] = useState<'email' | 'phone' | null>(null);
   const [loadingProvider, setLoadingProvider] = useState<AuthMethodId | null>(null);
+  const [recaptchaState, setRecaptchaState] = useState<RecaptchaState>('idle');
+  const [phoneAuthState, setPhoneAuthState] = useState<PhoneAuthState>('idle');
+  const [normalizedPhone, setNormalizedPhone] = useState('');
+  const [lastFirebaseCode, setLastFirebaseCode] = useState<string | null>(null);
+  const showPhoneDebug = isPhoneAuthDebugEnabled();
 
   const resetPhoneState = useCallback(() => {
     setIsOtpSent(false);
     setConfirmationResult(null);
     setOtp('');
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
-      } catch (e) {
-        console.error('Error clearing recaptcha:', e);
-      }
-    }
+    setPhoneAuthState('idle');
+    setNormalizedPhone('');
+    setLastFirebaseCode(null);
+    setRecaptchaState(clearRecaptchaVerifier());
   }, []);
 
   const resetAuthLoading = useCallback(() => {
@@ -87,6 +90,36 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     };
   }, [isOpen, resetPhoneState]);
 
+  // Pre-warm invisible reCAPTCHA once phone UI + container are mounted
+  useEffect(() => {
+    if (!isOpen || authMethod !== 'phone' || isOtpSent) return;
+    const timer = window.setTimeout(async () => {
+      setRecaptchaState('initializing');
+      const state = await prewarmRecaptcha();
+      setRecaptchaState(state);
+    }, 100);
+    return () => window.clearTimeout(timer);
+  }, [isOpen, authMethod, isOtpSent]);
+
+  useEffect(() => {
+    if (!isOpen || !loadingProvider) return;
+    if (loadingProvider === 'email' || loadingProvider === 'phone') return;
+
+    let safetyTimer: ReturnType<typeof setTimeout> | undefined;
+    const clearStuckLoading = () => {
+      if (safetyTimer) clearTimeout(safetyTimer);
+      safetyTimer = window.setTimeout(() => resetAuthLoading(), 650);
+    };
+
+    window.addEventListener('focus', clearStuckLoading);
+    document.addEventListener('visibilitychange', clearStuckLoading);
+    return () => {
+      if (safetyTimer) clearTimeout(safetyTimer);
+      window.removeEventListener('focus', clearStuckLoading);
+      document.removeEventListener('visibilitychange', clearStuckLoading);
+    };
+  }, [isOpen, loadingProvider, resetAuthLoading]);
+
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
     setAuthMethod(null);
@@ -111,23 +144,30 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     e.preventDefault();
     if (loadingProvider) return;
     setLoadingProvider('phone');
+    setLastFirebaseCode(null);
     try {
       if (!isOtpSent) {
-        if (!window.recaptchaVerifier) {
-          window.recaptchaVerifier = setupRecaptcha('recaptcha-container');
-        }
-        const result = await signInWithPhone(phoneNumber, window.recaptchaVerifier);
-        setConfirmationResult(result);
+        const { confirmation, e164 } = await sendPhoneOtp(phoneNumber, (state, detail) => {
+          setPhoneAuthState(state);
+          if (detail && state === 'otp-sent') setNormalizedPhone(detail);
+          if (detail && state === 'error') setLastFirebaseCode(detail);
+        });
+        setNormalizedPhone(e164);
+        setConfirmationResult(confirmation);
         setIsOtpSent(true);
+        setRecaptchaState('rendered');
         appToast.success('OTP sent to your phone number!');
       } else {
-        await confirmationResult!.confirm(otp);
+        await verifyPhoneOtp(confirmationResult!, otp, setPhoneAuthState);
         appToast.success(t('loginSuccess') || 'Successfully logged in!');
         onClose();
       }
     } catch (error) {
+      const code = (error as { code?: string }).code ?? 'unknown';
+      setLastFirebaseCode(code);
+      setPhoneAuthState('error');
       handleAuthError(error, 'phone', t);
-      resetPhoneState();
+      if (!isOtpSent) resetPhoneState();
     } finally {
       resetAuthLoading();
     }
@@ -406,10 +446,15 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     required
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder={t('phoneNumberPlaceholder') || 'Phone Number (+1...)'}
+                                    placeholder={t('phoneNumberPlaceholder') || 'Phone (+351 9xx xxx xxx)'}
                                     disabled={isOtpSent}
                                     className={`${inputClass} disabled:opacity-50`}
                                   />
+                                  {showPhoneDebug && phoneNumber && !isOtpSent && (
+                                    <p className="mt-1 text-[10px] font-mono text-accent/80 px-1">
+                                      E.164 preview: {toE164(phoneNumber) || '—'}
+                                    </p>
+                                  )}
                                 </div>
                                 {isOtpSent && (
                                   <div className="relative">
@@ -428,7 +473,34 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     />
                                   </div>
                                 )}
-                                <div id="recaptcha-container" />
+                                {/* Invisible reCAPTCHA anchor — must exist before render() */}
+                                <div
+                                  id="recaptcha-container"
+                                  className="min-h-[1px]"
+                                  aria-hidden="true"
+                                />
+                                {showPhoneDebug && (
+                                  <div
+                                    className={`rounded-xl border p-3 text-[10px] font-mono space-y-1 ${
+                                      isDarkMode
+                                        ? 'bg-black/40 border-white/10 text-white/70'
+                                        : 'bg-black/5 border-black/10 text-black/70'
+                                    }`}
+                                  >
+                                    <p className="font-bold text-accent uppercase tracking-wider">
+                                      Phone auth debug
+                                    </p>
+                                    <p>reCAPTCHA: {recaptchaState}</p>
+                                    <p>Phone flow: {phoneAuthState}</p>
+                                    {normalizedPhone && <p>E.164: {normalizedPhone}</p>}
+                                    {lastFirebaseCode && (
+                                      <p className="text-red-400">Last Firebase code: {lastFirebaseCode}</p>
+                                    )}
+                                    <p className="opacity-60">
+                                      Domain: {window.location.hostname} — must be in Firebase Authorized domains
+                                    </p>
+                                  </div>
+                                )}
                                 {isOtpSent && (
                                   <div className="flex justify-end px-1">
                                     <button type="button" onClick={resetPhoneState} className={linkClass}>
