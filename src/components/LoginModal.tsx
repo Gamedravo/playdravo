@@ -8,6 +8,7 @@ import {
   signInWithGithub,
   signInWithEmail,
   signUpWithEmail,
+  resetPassword,
   auth,
 } from '../firebase';
 import {
@@ -408,8 +409,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                           return;
                                         }
                                         try {
-                                          const { sendPasswordResetEmail } = await import('firebase/auth');
-                                          await sendPasswordResetEmail(auth, email);
+                                          await resetPassword(email);
                                           appToast.success('Password reset link sent to your email.');
                                         } catch (error) {
                                           handleAuthError(error, 'email', t);

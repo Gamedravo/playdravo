@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, memo, useMemo } from 'react';
-import { buildThumbnailSources } from '../utils/gameUtils';
+import { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
+import { buildThumbnailSources, buildThumbnailFallbackChain } from '../utils/gameUtils';
 import { useInViewport } from '../hooks/useInViewport';
 
 interface GameThumbnailProps {
@@ -18,6 +18,7 @@ export const GameThumbnail = memo(function GameThumbnail({
   src,
   alt,
   className = 'w-full h-full object-cover object-center',
+  category,
   gameId = '',
   priority = false,
   size = 'md',
@@ -33,55 +34,66 @@ export const GameThumbnail = memo(function GameThumbnail({
     [gameId, src, size]
   );
 
+  const fallbackChain = useMemo(
+    () => buildThumbnailFallbackChain(gameId, src, size, category),
+    [gameId, src, size, category]
+  );
+
   const shouldLoad = priority || inView;
-  const [currentSrc, setCurrentSrc] = useState('');
+  const [candidateIndex, setCandidateIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+
+  const currentSrc = fallbackChain[candidateIndex] ?? fallbackChain[fallbackChain.length - 1] ?? '';
+  const useResponsive = candidateIndex === 0 && Boolean(sources.srcSet);
 
   useEffect(() => {
     if (!shouldLoad) return;
-    setCurrentSrc(sources.src);
+    setCandidateIndex(0);
     setIsLoaded(false);
-    setHasError(false);
-  }, [shouldLoad, sources.src]);
+  }, [shouldLoad, sources.src, fallbackChain.join('|')]);
+
+  const advanceFallback = useCallback(() => {
+    setIsLoaded(false);
+    setCandidateIndex((prev) => {
+      const next = prev + 1;
+      return next < fallbackChain.length ? next : prev;
+    });
+  }, [fallbackChain.length]);
 
   const handleError = () => {
-    setHasError(true);
-    setIsLoaded(false);
+    if (candidateIndex < fallbackChain.length - 1) {
+      advanceFallback();
+    } else {
+      setIsLoaded(true);
+    }
   };
 
   const imgRefCallback = (img: HTMLImageElement | null) => {
     imgRef.current = img;
     if (img?.complete && img.naturalWidth > 0) {
       setIsLoaded(true);
-      setHasError(false);
     }
   };
 
-  const showImage = Boolean(currentSrc) && !hasError && shouldLoad;
+  const showImage = Boolean(currentSrc) && shouldLoad;
 
   return (
     <div ref={containerRef} className="relative overflow-hidden w-full h-full bg-[#0a0a12]">
-      {!isLoaded && (shouldLoad || priority) && (
+      {!isLoaded && shouldLoad && (
         <div
           className="absolute inset-0 z-[1] bg-gradient-to-br from-white/[0.04] via-white/[0.02] to-transparent animate-pulse"
           aria-hidden
         />
       )}
 
-      {hasError && (
-        <div className="absolute inset-0 z-[2] flex items-end p-2 bg-gradient-to-t from-black/90 via-black/50 to-[#12121e]">
-          <span className="text-[10px] font-semibold text-white/70 line-clamp-2">{alt}</span>
-        </div>
-      )}
-
       {showImage && (
         <img
+          key={currentSrc}
           ref={imgRefCallback}
           src={currentSrc}
-          srcSet={sources.srcSet}
-          sizes={sources.sizes}
+          srcSet={useResponsive ? sources.srcSet : undefined}
+          sizes={useResponsive ? sources.sizes : undefined}
           alt={alt}
           className={`${className} absolute inset-0 w-full h-full transition-opacity duration-150 z-[3] ${
             isLoaded ? 'opacity-100' : 'opacity-0'
@@ -95,7 +107,6 @@ export const GameThumbnail = memo(function GameThumbnail({
           onLoad={() => {
             if (imgRef.current && imgRef.current.naturalWidth > 0) {
               setIsLoaded(true);
-              setHasError(false);
             } else {
               handleError();
             }

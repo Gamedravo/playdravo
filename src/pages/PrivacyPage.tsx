@@ -174,7 +174,8 @@ export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Compliance & Legal Contact</h2>
             </div>
             <p>
-              We align with General Data Protection Regulations (GDPR) and California Consumer Privacy Act (CCPA) standards. If you have any inquiries regarding this document, require information erasure, or wish to audit your statistics files, you may submit a certified request via our Support panel or email legal@playdravo.com directly.
+              We align with General Data Protection Regulations (GDPR) and California Consumer Privacy Act (CCPA) standards. If you have any inquiries regarding this document, require information erasure, or wish to audit your statistics files, you may submit a certified request via our Support panel or email{' '}
+              <a href="mailto:support@gamedravo.com" className="text-accent hover:underline font-semibold">support@gamedravo.com</a> directly.
             </p>
           </section>
         </motion.div>

@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-05-31T18:19:35.412Z",
+  "totalGames": 268,
+  "workingThumbnails": 268,
+  "brokenThumbnails": 0,
+  "missingThumbnails": 0,
+  "workingEmbeds": 268,
+  "brokenEmbeds": 0,
+  "brokenThumbSamples": [],
+  "brokenEmbedSamples": [],
+  "additionalGamesVerified": {
+    "slope": true,
+    "wordle": true,
+    "tetris-cube": true,
+    "flappy-bird": true,
+    "clicker-heroes": true,
+    "mr-mine": true,
+    "poker-quest": true,
+    "grindcraft": true,
+    "fray-fight": true
+  }
+}

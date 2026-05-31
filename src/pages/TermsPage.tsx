@@ -178,6 +178,17 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               These Terms of Service and your use of PlayDravo are governed by and construed in accordance with the internal system laws, without regard to conflict of law rules. Any legal dispute, claim, or arbitration arising from compliance issues shall be resolved via dedicated mutual consultations or submitted to authorized arbitration forums.
             </p>
           </section>
+
+          <section className="space-y-4">
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-accent text-bg-dark font-extrabold text-xs flex items-center justify-center">6</span>
+              <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Contact</h2>
+            </div>
+            <p>
+              For questions about these Terms, contact{' '}
+              <a href="mailto:support@gamedravo.com" className="text-accent hover:underline font-semibold">support@gamedravo.com</a>.
+            </p>
+          </section>
         </motion.div>
       </div>
     </div>

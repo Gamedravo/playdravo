@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { ArrowLeft, BookOpen, Wrench, ShieldCheck, MessageCircle, Home, ChevronRight, Mail, Send, Check } from 'lucide-react';
 import { appToast } from '../lib/appToast';
+import { SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
 
 interface SupportPageProps {
   isDarkMode: boolean;
@@ -240,7 +241,10 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
                     <Mail className="w-6 h-6 text-accent" />
                   </div>
                   <h2 className="text-2xl font-bold tracking-tight">Open a Support Ticket</h2>
-                  <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>Our compliance team resolves active tickets within standard 24 hour windows.</p>
+                  <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
+                    Our compliance team resolves active tickets within standard 24 hour windows. You can also email{' '}
+                    <a href={supportMailto('Support Request')} className="text-accent hover:underline font-semibold">{SUPPORT_EMAIL}</a> directly.
+                  </p>
                 </div>
 
                 {ticketSent ? (

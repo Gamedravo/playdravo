@@ -14,9 +14,10 @@ interface NotificationDrawerProps {
   anchorRef: React.RefObject<HTMLElement | null>;
 }
 
-const PANEL_W = 288;
-const GAME_MAX_ITEMS = 3;
-const DEFAULT_MAX_ITEMS = 12;
+const PANEL_W = 320;
+const HEADER_OFFSET = 56;
+const GAME_MAX_ITEMS = 2;
+const DEFAULT_MAX_ITEMS = 10;
 
 function formatTimeAgo(isoString: string) {
   try {
@@ -45,30 +46,25 @@ function getNotificationIcon(type: string) {
 }
 
 function useAnchorPosition(anchorRef: React.RefObject<HTMLElement | null>, isOpen: boolean) {
-  const [pos, setPos] = useState({ top: 56, right: 12, width: PANEL_W });
+  const [pos, setPos] = useState({ top: HEADER_OFFSET, right: 0, width: PANEL_W });
 
   useEffect(() => {
-    if (!isOpen || !anchorRef.current) return;
+    if (!isOpen) return;
 
     const update = () => {
-      const rect = anchorRef.current!.getBoundingClientRect();
       const isMobile = window.innerWidth < 768;
-      const width = isMobile ? Math.min(PANEL_W, window.innerWidth - 16) : PANEL_W;
+      const width = isMobile ? Math.min(window.innerWidth, PANEL_W) : PANEL_W;
       setPos({
-        top: rect.bottom + 6,
-        right: Math.max(8, window.innerWidth - rect.right),
-        width,
+        top: HEADER_OFFSET,
+        right: isMobile ? 0 : 0,
+        width: isMobile ? window.innerWidth : width,
       });
     };
 
     update();
     window.addEventListener('resize', update, { passive: true });
-    window.addEventListener('scroll', update, { passive: true, capture: true });
-    return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
-    };
-  }, [anchorRef, isOpen]);
+    return () => window.removeEventListener('resize', update);
+  }, [isOpen]);
 
   return pos;
 }
@@ -130,25 +126,33 @@ export const NotificationDrawer = memo(function NotificationDrawer({
   ];
 
   const maxH = isGameRoute
-    ? 'min(220px, calc(100dvh - 120px))'
-    : 'min(380px, calc(100dvh - 80px))';
+    ? 'calc(100dvh - 56px)'
+    : 'calc(100dvh - 56px)';
 
   return createPortal(
-    <div
+    <>
+      <button
+        type="button"
+        aria-label="Close notifications"
+        className="fixed inset-0 z-[119] bg-black/40 backdrop-blur-[1px]"
+        onClick={onClose}
+      />
+      <div
       ref={panelRef}
       id="header-notification-panel"
       role="dialog"
       aria-modal="false"
       aria-label="Notifications"
-      className={`notification-popover fixed z-[120] flex flex-col rounded-xl border shadow-lg overflow-hidden ${
+      className={`notification-popover fixed z-[120] flex flex-col border-l shadow-2xl overflow-hidden ${
         isDarkMode
-          ? 'bg-[#14141c] text-white border-white/[0.08] shadow-black/40'
-          : 'bg-white text-black border-black/[0.08] shadow-black/10'
+          ? 'bg-[#14141c] text-white border-white/[0.08] shadow-black/50'
+          : 'bg-white text-black border-black/[0.08] shadow-black/15'
       }`}
       style={{
         top: pos.top,
         right: pos.right,
         width: pos.width,
+        height: maxH,
         maxHeight: maxH,
       }}
     >
@@ -288,7 +292,8 @@ export const NotificationDrawer = memo(function NotificationDrawer({
           </p>
         )}
       </div>
-    </div>,
+    </div>
+    </>,
     document.body
   );
 });

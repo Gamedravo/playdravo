@@ -1,5 +1,6 @@
 import { Game } from '../types';
 import { GAMES } from '../games';
+import { getCategoryFallbackThumbnail } from './thumbnailFallback';
 
 /** Verified onlinegames.io catalog entries only. */
 export function isCatalogGame(game: Pick<Game, 'id' | 'sourceId' | 'authorUid'>): boolean {
@@ -36,14 +37,14 @@ export function upgradeThumbnailResolution(url: string, size: ThumbnailSize = 'm
   return trimmed;
 }
 
-/** Prefer WebP for onlinegames.io responsive assets. */
+/**
+ * Keep WebP only when the catalog URL is already WebP.
+ * Do not rewrite JPG/PNG → WebP: most onlinegames.io posts only host JPG (WebP returns 403).
+ */
 export function preferWebPUrl(url: string): string {
   const trimmed = url.trim();
   if (!trimmed.includes('onlinegames.io')) return trimmed;
   if (/\.webp(\?|$)/i.test(trimmed)) return trimmed;
-  if (/\.(jpg|jpeg|png)(\?.*)?$/i.test(trimmed)) {
-    return trimmed.replace(/\.(jpg|jpeg|png)(\?.*)?$/i, '.webp$2');
-  }
   return trimmed;
 }
 
@@ -85,6 +86,24 @@ export function buildThumbnailSources(
     srcSet: `${md} 200w, ${lg} 400w`,
     sizes: CARD_SIZES,
   };
+}
+
+/** Ordered candidates for <img> onError fallback (deduped). */
+export function buildThumbnailFallbackChain(
+  gameId: string,
+  thumbnail?: string,
+  size: ThumbnailSize = 'md',
+  category?: string
+): string[] {
+  const catalog = GAMES.find((g) => g.id === gameId);
+  const raw = (catalog?.thumbnail || thumbnail || '').trim();
+  const chain: string[] = [
+    resolveGameThumbnail(gameId, thumbnail, size),
+    upgradeThumbnailResolution(raw, size),
+    raw,
+    getCategoryFallbackThumbnail(category || catalog?.category),
+  ];
+  return [...new Set(chain.filter(Boolean))];
 }
 
 export function parseFirebaseGame(id: string, data: any): Game {

@@ -120,6 +120,8 @@ import { SidebarProvider } from './contexts/SidebarContext';
 import { HomePage } from './pages/HomePage';
 import { SearchPage } from './pages/SearchPage';
 import { markRouteVisited } from './lib/routeVisitCache';
+import { isAdminEmail } from './lib/brandContact';
+import { devLog } from './lib/devLog';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
@@ -572,7 +574,7 @@ function AppContent() {
 
     // Main auth listener
     unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log("onAuthStateChanged triggered. User:", firebaseUser?.uid);
+      devLog('onAuthStateChanged triggered. User:', firebaseUser?.uid);
       setUser(firebaseUser);
       clearTimeout(authTimeout);
       
@@ -585,7 +587,7 @@ function AppContent() {
           if (userDoc.exists()) {
             const profile = userDoc.data() as UserProfile;
             // Force admin role for the designated email
-            if (firebaseUser.email === 'ssimarpreet271@gmail.com') {
+            if (isAdminEmail(firebaseUser.email)) {
               profile.role = 'admin';
             }
             setUserProfile(profile);
@@ -601,13 +603,13 @@ function AppContent() {
               setGamerPersona(profile.gamerPersona);
             }
           } else {
-            console.log("Creating new profile for user:", firebaseUser.uid);
+            devLog('Creating new profile for user:', firebaseUser.uid);
             const newProfile: UserProfile = {
               uid: firebaseUser.uid,
               displayName: firebaseUser.displayName || 'Anonymous',
               email: firebaseUser.email || '',
               photoURL: firebaseUser.photoURL || '',
-              role: firebaseUser.email === 'ssimarpreet271@gmail.com' ? 'admin' : 'user',
+              role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
               favorites: [],
               xp: 0,
               createdAt: new Date().toISOString()
@@ -625,7 +627,7 @@ function AppContent() {
             displayName: firebaseUser.displayName || 'Anonymous',
             email: firebaseUser.email || '',
             photoURL: firebaseUser.photoURL || '',
-            role: firebaseUser.email === 'ssimarpreet271@gmail.com' ? 'admin' : 'user',
+            role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
             favorites: [],
             xp: 0,
             createdAt: new Date().toISOString()
@@ -726,7 +728,7 @@ function AppContent() {
     let isMounted = true;
     
     const initDatabase = async () => {
-      console.log("[Admin init] Starting one-time database verification...");
+      devLog('[Admin init] Starting one-time database verification...');
       
       try {
         // 1. Verify/Populate games
@@ -738,7 +740,7 @@ function AppContent() {
         const missingGames = STATIC_GAMES.filter(g => !existingGamesIds.has(g.id));
         
         if (missingGames.length > 0) {
-          console.log(`[Admin init] Found ${missingGames.length} missing games. Populating...`);
+          devLog(`[Admin init] Found ${missingGames.length} missing games. Populating...`);
           const batch_size = 5;
           for (let i = 0; i < missingGames.length; i += batch_size) {
             if (!isMounted) return;
@@ -755,7 +757,7 @@ function AppContent() {
               };
               await setDoc(doc(db, 'games', game.id), gameData);
             }));
-            console.log(`[Admin init] Populated missing games batch ${Math.floor(i / batch_size) + 1}`);
+            devLog(`[Admin init] Populated missing games batch ${Math.floor(i / batch_size) + 1}`);
           }
         }
         
@@ -765,7 +767,7 @@ function AppContent() {
         if (!isMounted) return;
         
         if (reqSnapshot.empty) {
-          console.log("[Admin init] gameRequests collection is empty. Populating with sample request...");
+          devLog('[Admin init] gameRequests collection is empty. Populating with sample request...');
           await addDoc(reqColRef, {
             userId: 'system',
             gameName: 'Grand Theft Auto VI',
@@ -782,7 +784,7 @@ function AppContent() {
         if (!isMounted) return;
         
         if (chatSnapshot.empty) {
-          console.log("[Admin init] chat collection is empty. Populating with welcome message...");
+          devLog('[Admin init] chat collection is empty. Populating with welcome message...');
           await addDoc(chatColRef, {
             uid: 'system',
             displayName: 'PlayDravo AI',
@@ -791,7 +793,7 @@ function AppContent() {
           });
         }
         
-        console.log("[Admin init] One-time database verification complete.");
+        devLog('[Admin init] One-time database verification complete.');
       } catch (err) {
         console.error("[Admin init] Failed during database initialization:", err);
       }
@@ -807,11 +809,8 @@ function AppContent() {
   // Real-time Games Listener
   useEffect(() => {
     const q = query(collection(db, 'games'), orderBy('plays', 'desc'));
-    console.log("Setting up games listener...");
-    
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
-      console.log(`Received ${gamesData.length} games from Firestore`);
       
       // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
       const gamesMap = new Map(STATIC_GAMES.map((g) => [g.id, { ...g }]));

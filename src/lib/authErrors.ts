@@ -1,6 +1,7 @@
 import { toast } from 'sonner';
 import { isAuthCancelError } from './oauthSignIn';
 import { isPhoneAuthDebugEnabled, phoneAuthLog } from './phoneAuth';
+import { SUPPORT_EMAIL } from './brandContact';
 
 const PROVIDER_LABELS: Record<string, string> = {
   google: 'Google',
@@ -128,5 +129,8 @@ export function handleAuthError(
     return;
   }
 
-  toast.error(err.message || t?.('loginError') || 'Authentication failed.');
+  toast.error(err.message || t?.('loginError') || 'Authentication failed.', {
+    description: `Need help? Contact ${SUPPORT_EMAIL}`,
+    duration: 7000,
+  });
 }

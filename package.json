@@ -17,7 +17,8 @@
     "health:games:apply": "tsx scripts/game-health-check.ts --apply",
     "audit:mobile": "tsx scripts/audit-mobile-gameplay.ts",
     "audit:thumbnails": "tsx scripts/audit-thumbnails.ts",
-    "audit:thumbnails:apply": "tsx scripts/audit-thumbnails.ts -- --apply"
+    "audit:thumbnails:apply": "tsx scripts/audit-thumbnails.ts -- --apply",
+    "audit:production": "node scripts/production-health-audit.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.46.0",

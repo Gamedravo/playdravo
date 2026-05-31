@@ -302,7 +302,7 @@
   }
 
   .category-chip {
-    @apply flex flex-col items-center justify-center gap-1.5 h-[72px] w-full rounded-xl border active:scale-[0.98] cursor-pointer;
+    @apply flex flex-col items-center justify-center gap-1.5 h-[72px] min-h-[72px] w-full rounded-xl border active:scale-[0.98] cursor-pointer;
   }
 
   .category-chip--dark {
@@ -318,7 +318,7 @@
   }
 
   .category-chip-label {
-    @apply text-[10px] font-semibold tracking-tight text-center leading-tight px-1 line-clamp-2;
+    @apply text-[10px] font-semibold tracking-tight text-center leading-tight px-1 line-clamp-2 min-h-[2.5em] flex items-center justify-center w-full;
   }
 
   /* —— Sidebar —— */
@@ -403,7 +403,7 @@
   }
 
   .sidebar-nav-item {
-    @apply flex items-center gap-2 px-1.5 py-1.5 rounded-lg relative min-h-[34px];
+    @apply flex items-center gap-2 px-1.5 py-1.5 rounded-lg relative min-h-[34px] transition-none;
   }
 
   .sidebar-nav-item--dark {
@@ -572,7 +572,7 @@
   }
 
   .shelf-card {
-    @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] shrink-0 snap-start;
+    @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] xl:w-[128px] 2xl:w-[136px] shrink-0 snap-start;
   }
 }
 

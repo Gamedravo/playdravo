@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { ArrowLeft, Home, ChevronRight, Bug, Send, Check, Monitor, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
 
 interface ReportBugPageProps {
   isDarkMode: boolean;
@@ -89,7 +90,8 @@ export function ReportBugPage({ isDarkMode, t }: ReportBugPageProps) {
             Report a Bug
           </h1>
           <p className={`text-sm leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-            Encountered a gameplay freeze, broken UI layout, or incorrect system calculations? Send us a description so we can isolate and deploy hotfixes fast.
+            Encountered a gameplay freeze, broken UI layout, or incorrect system calculations? Submit a report below or email{' '}
+            <a href={supportMailto('Bug Report')} className="text-accent hover:underline font-semibold">{SUPPORT_EMAIL}</a> directly.
           </p>
         </div>
 

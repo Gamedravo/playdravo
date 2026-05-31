@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Shield, HelpCircle, FileText, Mail, Heart, Sparkles, ExternalLink, Activity, Bug } from 'lucide-react';
+import { Activity, Bug } from 'lucide-react';
 import { PlayDravoLogo } from './PlayDravoLogo';
+import { SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
 
 interface FooterProps {
   isDarkMode: boolean;
@@ -152,9 +153,17 @@ export function Footer({ isDarkMode, t }: FooterProps) {
         isDarkMode ? 'border-white/5 bg-black/20' : 'border-black/5 bg-black/[0.01]'
       }`}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className={`text-[11px] font-medium text-center md:text-left ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-            &copy; {currentYear} PlayDravo Gaming Hub. All rights reserved. 
-            All games run sandboxed under compliant license configurations.
+          <div className={`text-[11px] font-medium text-center md:text-left space-y-1 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+            <p>
+              &copy; {currentYear} PlayDravo Gaming Hub. All rights reserved.
+              All games run sandboxed under compliant license configurations.
+            </p>
+            <p>
+              Support:{' '}
+              <a href={supportMailto()} className="text-accent hover:underline font-semibold">
+                {SUPPORT_EMAIL}
+              </a>
+            </p>
           </div>
         </div>
       </div>

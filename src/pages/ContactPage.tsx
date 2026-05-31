@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { ArrowLeft, Home, ChevronRight, Mail, Send, Check, Phone, ShieldCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { PARTNERS_EMAIL, SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
 
 interface ContactPageProps {
   isDarkMode: boolean;
@@ -94,8 +95,8 @@ export function ContactPage({ isDarkMode, t }: ContactPageProps) {
                 <Mail className="w-5 h-5 text-indigo-400 shrink-0 mt-1" />
                 <div className="space-y-1">
                   <span className={`text-[10px] font-bold block ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>DIRECT EMAIL</span>
-                  <a href="mailto:support@playdravo.com" className="hover:underline text-xs font-semibold text-accent block">support@playdravo.com</a>
-                  <a href="mailto:partners@playdravo.com" className="hover:underline text-xs font-semibold text-indigo-400 block">partners@playdravo.com</a>
+                  <a href={supportMailto()} className="hover:underline text-xs font-semibold text-accent block">{SUPPORT_EMAIL}</a>
+                  <a href={`mailto:${PARTNERS_EMAIL}`} className="hover:underline text-xs font-semibold text-indigo-400 block">{PARTNERS_EMAIL}</a>
                 </div>
               </div>
 

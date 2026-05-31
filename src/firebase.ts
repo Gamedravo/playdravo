@@ -9,10 +9,13 @@ import {
   createUserWithEmailAndPassword,
   setPersistence,
   browserLocalPersistence,
+  sendPasswordResetEmail,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { getFirestore, doc, getDocFromServer, runTransaction, serverTimestamp } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 import { signInWithOAuthPopup } from './lib/oauthSignIn';
+import { getAuthActionCodeSettings } from './lib/authEmailConfig';
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
@@ -56,6 +59,18 @@ export const signUpWithEmail = async (email: string, pass: string) => {
   await persistencePromise;
   return createUserWithEmailAndPassword(auth, email, pass);
 };
+
+/** Password reset with @gamedravo.com action URL settings. */
+export async function resetPassword(email: string) {
+  await persistencePromise;
+  return sendPasswordResetEmail(auth, email, getAuthActionCodeSettings('/'));
+}
+
+/** Email verification with @gamedravo.com action URL settings. */
+export async function verifyUserEmail() {
+  if (!auth.currentUser) throw new Error('No signed-in user');
+  return sendEmailVerification(auth.currentUser, getAuthActionCodeSettings('/'));
+}
 
 export { runTransaction, serverTimestamp };
 

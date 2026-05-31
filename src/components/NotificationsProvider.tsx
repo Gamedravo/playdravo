@@ -51,26 +51,10 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       const initial: AppNotification[] = [
         {
           id: 'welcome',
-          title: 'Welcome to PlayDravo! 🚀',
-          description: 'Browse 60+ high-quality HTML5 games! Log in to save your progress, select gamer personas, and earn achievements.',
+          title: 'Welcome to PlayDravo',
+          description: 'Browse 260+ HTML5 games. Log in to save favorites and track achievements.',
           type: 'system',
           timestamp: new Date().toISOString(),
-          read: false
-        },
-        {
-          id: 'xp-tip',
-          title: 'Double XP Weekend is Live! 🎉',
-          description: 'Ready to level up? Every game you play this weekend awards DOUBLE XP. Earn experience to customize your gamer profile.',
-          type: 'achievement',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          read: false
-        },
-        {
-          id: 'new-games',
-          title: 'New Games Added! 🎮',
-          description: 'Check out the latest additions in New Arrivals. Fresh titles are added regularly to keep things exciting.',
-          type: 'game',
-          timestamp: new Date(Date.now() - 7200000).toISOString(),
           read: false
         }
       ];
@@ -102,11 +86,10 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     const showToast = options?.toast !== false;
-    if (!showToast || notif.type === 'game') return;
+    if (!showToast || isToastGameMode()) return;
+    if (notif.type === 'game') return;
 
-    if (isToastGameMode()) {
-      appToast.game(newNotif.title, newNotif.description);
-    } else if (notif.type === 'achievement') {
+    if (notif.type === 'achievement') {
       appToast.success(newNotif.title, { description: newNotif.description });
     } else {
       appToast.message(newNotif.title, { description: newNotif.description });
