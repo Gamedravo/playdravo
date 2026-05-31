@@ -4,6 +4,7 @@ import {
   type ConfirmationResult,
 } from 'firebase/auth';
 import { auth } from '../firebase';
+import { logFirebaseAuthContext, verifyAuthorizedDomain } from './phoneAuthDiagnostics';
 
 const RECAPTCHA_CONTAINER_ID = 'recaptcha-container';
 const DEFAULT_COUNTRY_CODE = '351'; // Portugal (+351)
@@ -59,13 +60,45 @@ export function logFirebasePhoneError(error: unknown): string {
   const err = error as { code?: string; message?: string; name?: string };
   const code = err.code ?? 'unknown';
   const message = err.message ?? String(error);
-  console.error('[PlayDravo Phone Auth · firebase] signInWithPhoneNumber failed', {
+  console.error('[PlayDravo Phone Auth · firebase] Error', {
     code,
     message,
     name: err.name,
   });
-  phoneAuthLog('firebase', `Error code: ${code}`, { message });
+  if (isPhoneAuthDebugEnabled()) {
+    console.log('[PlayDravo Phone Auth] Firebase Error Code:', code);
+    console.log('[PlayDravo Phone Auth] Firebase Error Message:', message);
+  }
+  phoneAuthLog('firebase', 'Firebase Error Code', { code, message });
   return code;
+}
+
+/** Body-level mount — must NOT live inside overflow:hidden modals. */
+export function ensureRecaptchaContainer(): HTMLElement {
+  let el = document.getElementById(RECAPTCHA_CONTAINER_ID);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = RECAPTCHA_CONTAINER_ID;
+    el.setAttribute('aria-hidden', 'true');
+    Object.assign(el.style, {
+      position: 'fixed',
+      bottom: '0',
+      left: '0',
+      width: '1px',
+      height: '1px',
+      overflow: 'visible',
+      opacity: '0',
+      pointerEvents: 'none',
+      zIndex: '9999',
+    });
+    document.body.appendChild(el);
+    phoneAuthLog('recaptcha', 'Created body-level reCAPTCHA container');
+  }
+  return el;
+}
+
+export function assertRecaptchaContainer(): HTMLElement {
+  return ensureRecaptchaContainer();
 }
 
 /**
@@ -90,12 +123,10 @@ export function toE164(raw: string, defaultCountryCode = DEFAULT_COUNTRY_CODE): 
     return `+${normalized}`;
   }
 
-  // Portuguese mobile: 9xxxxxxxx (9 digits)
   if (/^9\d{8}$/.test(normalized)) {
     return `+${defaultCountryCode}${normalized}`;
   }
 
-  // US/CA 10-digit
   if (/^\d{10}$/.test(normalized)) {
     return `+1${normalized}`;
   }
@@ -107,18 +138,6 @@ export function toE164(raw: string, defaultCountryCode = DEFAULT_COUNTRY_CODE): 
   return normalized.startsWith('+') ? normalized : `+${normalized}`;
 }
 
-export function assertRecaptchaContainer(): HTMLElement {
-  const el = document.getElementById(RECAPTCHA_CONTAINER_ID);
-  if (!el) {
-    phoneAuthLog('recaptcha', 'Container missing from DOM', { id: RECAPTCHA_CONTAINER_ID });
-    throw Object.assign(new Error('reCAPTCHA container not found in DOM.'), {
-      code: 'auth/recaptcha-container-missing',
-    });
-  }
-  return el;
-}
-
-/** Clears the singleton verifier. Safe to call multiple times. */
 export function clearRecaptchaVerifier(): RecaptchaState {
   if (!window.recaptchaVerifier) {
     phoneAuthLog('recaptcha', 'clear() skipped — no instance');
@@ -135,12 +154,8 @@ export function clearRecaptchaVerifier(): RecaptchaState {
   return 'cleared';
 }
 
-/**
- * Returns the single app-wide RecaptchaVerifier.
- * Calls render() before signInWithPhoneNumber (required by Firebase).
- */
 export async function getRecaptchaVerifier(): Promise<RecaptchaVerifier> {
-  assertRecaptchaContainer();
+  const container = ensureRecaptchaContainer();
 
   if (window.recaptchaVerifier) {
     phoneAuthLog('recaptcha', 'Reusing existing singleton instance');
@@ -148,8 +163,9 @@ export async function getRecaptchaVerifier(): Promise<RecaptchaVerifier> {
   }
 
   phoneAuthLog('recaptcha', 'Creating new RecaptchaVerifier (invisible)');
+  console.log('[PlayDravo Phone Auth] reCAPTCHA Initialized');
 
-  const verifier = new RecaptchaVerifier(auth, RECAPTCHA_CONTAINER_ID, {
+  const verifier = new RecaptchaVerifier(auth, container, {
     size: 'invisible',
     callback: () => {
       phoneAuthLog('recaptcha', 'Invisible challenge callback fired');
@@ -168,6 +184,7 @@ export async function getRecaptchaVerifier(): Promise<RecaptchaVerifier> {
     phoneAuthLog('recaptcha', 'render() succeeded', { widgetId });
     return verifier;
   } catch (error) {
+    console.log('[PlayDravo Phone Auth] reCAPTCHA Initialization Failed');
     logFirebasePhoneError(error);
     clearRecaptchaVerifier();
     throw error;
@@ -178,9 +195,16 @@ export async function sendPhoneOtp(
   rawPhone: string,
   onState?: (state: PhoneAuthState, detail?: string) => void
 ): Promise<{ confirmation: ConfirmationResult; e164: string }> {
+  console.log('[PlayDravo Phone Auth] Phone Auth Started');
+  logFirebaseAuthContext();
+
+  const domainCheck = await verifyAuthorizedDomain();
+  if (!domainCheck.ok) {
+    phoneAuthLog('firebase', 'Domain not authorized', domainCheck);
+  }
+
   onState?.('normalizing');
   const e164 = toE164(rawPhone);
-
   phoneAuthLog('phone', 'Normalized to E.164', { raw: rawPhone, e164 });
 
   if (!/^\+\d{8,15}$/.test(e164)) {
@@ -193,17 +217,27 @@ export async function sendPhoneOtp(
   }
 
   onState?.('sending-otp');
-  await getRecaptchaVerifier();
+
+  try {
+    await getRecaptchaVerifier();
+  } catch (error) {
+    onState?.('error', (error as { code?: string }).code ?? 'recaptcha-failed');
+    throw error;
+  }
 
   phoneAuthLog('phone', 'Calling signInWithPhoneNumber', { e164 });
+  console.log('[PlayDravo Phone Auth] OTP Request Sent', { e164 });
 
   try {
     const confirmation = await signInWithPhoneNumber(auth, e164, window.recaptchaVerifier!);
+    console.log('[PlayDravo Phone Auth] OTP Request Sent — success');
     phoneAuthLog('phone', 'signInWithPhoneNumber succeeded — OTP dispatched');
     onState?.('otp-sent', e164);
     return { confirmation, e164 };
   } catch (error) {
+    console.log('[PlayDravo Phone Auth] OTP Request Failed');
     logFirebasePhoneError(error);
+    clearRecaptchaVerifier();
     onState?.('error', (error as { code?: string }).code);
     throw error;
   }
@@ -227,13 +261,13 @@ export async function verifyPhoneOtp(
   }
 }
 
-/** Pre-warm reCAPTCHA when user opens phone sign-in (optional, reduces submit latency). */
 export async function prewarmRecaptcha(): Promise<RecaptchaState> {
   try {
-    assertRecaptchaContainer();
+    ensureRecaptchaContainer();
     await getRecaptchaVerifier();
     return 'rendered';
-  } catch {
+  } catch (error) {
+    logFirebasePhoneError(error);
     return 'render-failed';
   }
 }

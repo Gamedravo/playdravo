@@ -1,6 +1,8 @@
 import { toast } from 'sonner';
+import { auth } from '../firebase';
 import { isAuthCancelError } from './oauthSignIn';
 import { isPhoneAuthDebugEnabled, phoneAuthLog } from './phoneAuth';
+import { formatPhoneAuthErrorHint } from './phoneAuthDiagnostics';
 import { SUPPORT_EMAIL } from './brandContact';
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -11,42 +13,22 @@ const PROVIDER_LABELS: Record<string, string> = {
   email: 'Email',
 };
 
-const PHONE_ERROR_MESSAGES: Record<string, { title: string; description?: string }> = {
-  'auth/invalid-phone-number': {
-    title: 'Invalid phone number.',
-    description: 'Use international format, e.g. +351912345678.',
-  },
-  'auth/missing-phone-number': {
-    title: 'Phone number is required.',
-  },
-  'auth/captcha-check-failed': {
-    title: 'reCAPTCHA verification failed.',
-    description: 'Refresh the page and try again. Ensure gamedravo.com is in Firebase Authorized domains.',
-  },
-  'auth/quota-exceeded': {
-    title: 'SMS quota exceeded.',
-    description: 'Try again later or use a Firebase test phone number during QA.',
-  },
-  'auth/too-many-requests': {
-    title: 'Too many attempts.',
-    description: 'Wait a few minutes before requesting another code.',
-  },
-  'auth/invalid-verification-code': {
-    title: 'Invalid verification code.',
-    description: 'Check the SMS code and try again.',
-  },
-  'auth/code-expired': {
-    title: 'Verification code expired.',
-    description: 'Request a new OTP.',
-  },
-  'auth/recaptcha-container-missing': {
-    title: 'reCAPTCHA could not load.',
-    description: 'Close and reopen the login modal, then try phone sign-in again.',
-  },
-  'auth/operation-not-allowed': {
-    title: 'Phone sign-in is not enabled.',
-    description: 'Enable Phone provider in Firebase Console → Authentication → Sign-in method.',
-  },
+/** Short titles only — description always includes Firebase code + message for phone. */
+const PHONE_ERROR_TITLES: Record<string, string> = {
+  'auth/invalid-phone-number': 'Invalid phone number',
+  'auth/missing-phone-number': 'Phone number is required',
+  'auth/captcha-check-failed': 'reCAPTCHA verification failed',
+  'auth/quota-exceeded': 'SMS quota exceeded',
+  'auth/too-many-requests': 'Too many attempts',
+  'auth/invalid-verification-code': 'Invalid verification code',
+  'auth/code-expired': 'Verification code expired',
+  'auth/recaptcha-container-missing': 'reCAPTCHA could not load',
+  'auth/operation-not-allowed': 'Phone sign-in blocked',
+  'auth/invalid-app-credential': 'Invalid app credential',
+  'auth/configuration-not-found': 'Auth configuration not found',
+  'auth/unauthorized-continue-uri': 'Unauthorized continue URL',
+  'auth/missing-client-identifier': 'reCAPTCHA not ready',
+  'auth/unauthorized-domain': 'Unauthorized domain',
 };
 
 export function handleAuthError(
@@ -55,33 +37,33 @@ export function handleAuthError(
   t?: (key: string) => string
 ): void {
   const err = error as { code?: string; message?: string };
+  const code = err.code ?? 'unknown';
+  const message = err.message ?? String(error);
   const label = provider ? PROVIDER_LABELS[provider] ?? provider : 'Authentication';
+  const projectId = auth.app.options.projectId ?? 'unknown';
 
   if (provider === 'phone') {
-    phoneAuthLog('firebase', `handleAuthError: ${err.code ?? 'no-code'}`, {
-      message: err.message,
-    });
+    phoneAuthLog('firebase', `handleAuthError: ${code}`, { message });
+
+    const title = PHONE_ERROR_TITLES[code] ?? `Phone auth failed (${code})`;
+    const hint = formatPhoneAuthErrorHint(code, projectId);
+    const description = [code !== 'unknown' ? `${code}: ${message}` : message, hint]
+      .filter(Boolean)
+      .join('\n\n');
+
+    toast.error(title, { description, duration: 9000 });
+    return;
   }
 
-  const phoneMsg = err.code ? PHONE_ERROR_MESSAGES[err.code] : undefined;
-  if (provider === 'phone' && phoneMsg) {
-    toast.error(phoneMsg.title, {
-      description: phoneMsg.description,
+  if (code === 'auth/operation-not-allowed') {
+    toast.error(`${label} login is not enabled.`, {
+      description: `${code}: ${message}\n\nEnable this provider in Firebase Console (Authentication → Sign-in method).`,
       duration: 7000,
     });
     return;
   }
 
-  if (err.code === 'auth/operation-not-allowed') {
-    toast.error(`${label} login is not enabled.`, {
-      description:
-        'Please enable this provider in Firebase Console (Authentication > Sign-in method).',
-      duration: 6000,
-    });
-    return;
-  }
-
-  if (err.code === 'auth/popup-blocked') {
+  if (code === 'auth/popup-blocked') {
     toast.error('Popup blocked by browser.', {
       description: 'Please allow popups or open the app in a new tab to log in.',
       duration: 6000,
@@ -89,17 +71,17 @@ export function handleAuthError(
     return;
   }
 
-  if (err.code === 'auth/unauthorized-domain') {
+  if (code === 'auth/unauthorized-domain') {
     toast.error('Unauthorized domain.', {
       description: isPhoneAuthDebugEnabled()
-        ? `Add ${window.location.hostname} to Firebase Console → Authentication → Settings → Authorized domains (include gamedravo.com).`
-        : 'Please add this URL to your Firebase Authorized Domains.',
+        ? `${code}: ${message}\n\nAdd ${window.location.hostname} to Firebase Authorized domains (include gamedravo.com). Project: ${projectId}`
+        : `${code}: ${message}`,
       duration: 6000,
     });
     return;
   }
 
-  if (err.code === 'auth/web-storage-unsupported' || err.message?.includes('cookie')) {
+  if (code === 'auth/web-storage-unsupported' || message?.includes('cookie')) {
     toast.error('Cookies Blocked', {
       description:
         'Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.',
@@ -112,25 +94,17 @@ export function handleAuthError(
     return;
   }
 
-  if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+  if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
     return;
   }
 
-  if (err.code === 'auth/account-exists-with-different-credential') {
+  if (code === 'auth/account-exists-with-different-credential') {
     toast.error('An account already exists with this email using a different sign-in method.');
     return;
   }
 
-  if (provider === 'phone' && err.code) {
-    toast.error(`Phone auth failed (${err.code})`, {
-      description: err.message,
-      duration: 8000,
-    });
-    return;
-  }
-
-  toast.error(err.message || t?.('loginError') || 'Authentication failed.', {
-    description: `Need help? Contact ${SUPPORT_EMAIL}`,
+  toast.error(message || t?.('loginError') || 'Authentication failed.', {
+    description: code !== 'unknown' ? `${code}\n\nNeed help? Contact ${SUPPORT_EMAIL}` : `Need help? Contact ${SUPPORT_EMAIL}`,
     duration: 7000,
   });
 }

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import type { Game } from '../types';
-import { GameplayPreview } from './GameplayPreview';
+import { GameThumbnail } from './GameThumbnail';
 import { getPreviewMediaCandidates } from '../lib/gamePreviewMedia';
 import { getActiveHoverPreviewId, subscribeHoverPreview } from '../lib/hoverPreviewSession';
 
@@ -25,8 +25,19 @@ export function GameCardHoverPreview({ game, gameId, active, isDarkMode }: GameC
       setCandidateIndex(0);
       return;
     }
+
+    console.log(game.title);
+    console.log(game.previewVideoUrl);
+    console.log(game.thumbnail);
+
     return subscribeHoverPreview((id) => setSessionActive(id === gameId));
-  }, [active, gameId]);
+  }, [active, gameId, game.title, game.previewVideoUrl, game.thumbnail]);
+
+  useEffect(() => {
+    if (!active) return;
+
+    console.log('[Preview]', game.title, current.url, current.kind);
+  }, [active, game.title, current.url, current.kind]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -99,21 +110,34 @@ export function GameCardHoverPreview({ game, gameId, active, isDarkMode }: GameC
           className="w-full h-full object-cover"
           loading="lazy"
           decoding="async"
+          referrerPolicy="no-referrer"
           onError={() => setCandidateIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
         />
       </motion.div>
     );
   }
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={fade}
-      className="absolute inset-0 z-10 overflow-hidden pointer-events-none"
-    >
-      <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} />
-    </motion.div>
-  );
+  if (current.kind === 'thumbnail') {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={fade}
+        className="absolute inset-0 z-10 overflow-hidden pointer-events-none"
+      >
+        <GameThumbnail
+          src={game.thumbnail}
+          alt={game.title}
+          category={game.category}
+          title={game.title}
+          gameId={game.id}
+          priority
+          className="w-full h-full object-cover object-center scale-[1.04]"
+        />
+      </motion.div>
+    );
+  }
+
+  return null;
 }

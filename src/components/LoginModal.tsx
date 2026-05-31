@@ -24,6 +24,8 @@ import {
 import { appToast } from '../lib/appToast';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import { handleAuthError } from '../lib/authErrors';
+import { PhoneRecaptchaPortal } from './PhoneRecaptchaPortal';
+import { logFirebaseAuthContext } from '../lib/phoneAuthDiagnostics';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -55,6 +57,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const [phoneAuthState, setPhoneAuthState] = useState<PhoneAuthState>('idle');
   const [normalizedPhone, setNormalizedPhone] = useState('');
   const [lastFirebaseCode, setLastFirebaseCode] = useState<string | null>(null);
+  const [firebaseProjectId, setFirebaseProjectId] = useState('');
   const showPhoneDebug = isPhoneAuthDebugEnabled();
 
   const resetPhoneState = useCallback(() => {
@@ -94,11 +97,13 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   // Pre-warm invisible reCAPTCHA once phone UI + container are mounted
   useEffect(() => {
     if (!isOpen || authMethod !== 'phone' || isOtpSent) return;
+    const ctx = logFirebaseAuthContext();
+    setFirebaseProjectId(ctx.projectId);
     const timer = window.setTimeout(async () => {
       setRecaptchaState('initializing');
       const state = await prewarmRecaptcha();
       setRecaptchaState(state);
-    }, 100);
+    }, 150);
     return () => window.clearTimeout(timer);
   }, [isOpen, authMethod, isOtpSent]);
 
@@ -212,7 +217,9 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const dividerBg = isDarkMode ? 'bg-bg-dark text-white/20' : 'bg-white text-black/20';
 
   return (
-    <AnimatePresence initial={false}>
+    <>
+      <PhoneRecaptchaPortal active={isOpen && authMethod === 'phone'} />
+      <AnimatePresence initial={false}>
       {isOpen && (
         <div className="fixed inset-0 z-[2000] flex">
           <motion.div
@@ -473,12 +480,6 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     />
                                   </div>
                                 )}
-                                {/* Invisible reCAPTCHA anchor — must exist before render() */}
-                                <div
-                                  id="recaptcha-container"
-                                  className="min-h-[1px]"
-                                  aria-hidden="true"
-                                />
                                 {showPhoneDebug && (
                                   <div
                                     className={`rounded-xl border p-3 text-[10px] font-mono space-y-1 ${
@@ -490,6 +491,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     <p className="font-bold text-accent uppercase tracking-wider">
                                       Phone auth debug
                                     </p>
+                                    <p>Project: {firebaseProjectId || '—'}</p>
                                     <p>reCAPTCHA: {recaptchaState}</p>
                                     <p>Phone flow: {phoneAuthState}</p>
                                     {normalizedPhone && <p>E.164: {normalizedPhone}</p>}
@@ -497,7 +499,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                       <p className="text-red-400">Last Firebase code: {lastFirebaseCode}</p>
                                     )}
                                     <p className="opacity-60">
-                                      Domain: {window.location.hostname} — must be in Firebase Authorized domains
+                                      Domain: {window.location.hostname}
                                     </p>
                                   </div>
                                 )}
@@ -510,14 +512,19 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                 )}
                                 <button
                                   type="submit"
-                                  disabled={Boolean(loadingProvider)}
+                                  disabled={
+                                    Boolean(loadingProvider) ||
+                                    (!isOtpSent && recaptchaState === 'render-failed')
+                                  }
                                   className={submitClass}
                                 >
                                   {loadingProvider === 'phone'
                                     ? t('processing')
                                     : isOtpSent
                                       ? t('verifyOTP') || 'Verify OTP'
-                                      : t('sendOTP') || 'Send OTP'}
+                                      : recaptchaState === 'render-failed'
+                                        ? 'reCAPTCHA failed — retry'
+                                        : t('sendOTP') || 'Send OTP'}
                                 </button>
                               </form>
                             )}
@@ -548,5 +555,6 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         </div>
       )}
     </AnimatePresence>
+    </>
   );
 }

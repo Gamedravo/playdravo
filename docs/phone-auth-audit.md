@@ -94,6 +94,27 @@ Current runtime hostname is logged in the phone auth debug panel.
 
 Also enable **Phone** provider: Authentication → Sign-in method → Phone → Enable.
 
+### SMS region policy (common cause of `auth/operation-not-allowed`)
+
+If Phone is enabled but users in Portugal (+351) still see **"Phone sign-in is not enabled"**, the real cause is often **SMS region policy**:
+
+Firebase Console → **Authentication** → **Settings** → **SMS region policy**
+
+- Allow **Portugal (PT)** or use **Allow all regions** for production
+- Without Blaze billing, production SMS to real numbers will also fail
+
+---
+
+## Production fix (May 31, 2026)
+
+1. **reCAPTCHA container moved to `document.body`** via `PhoneRecaptchaPortal` — was clipped inside `overflow-hidden` login modal
+2. **Firebase project logged** on every phone OTP attempt (`Firebase Project ID`, `Auth Domain`)
+3. **Errors show actual `error.code` + `error.message`** instead of generic "not enabled"
+4. **Runtime authorized-domain check** via Identity Toolkit API
+5. **Diagnostic logs** (always on OTP start): Phone Auth Started, reCAPTCHA Initialized, OTP Request Sent/Failed
+
+Enable verbose debug: `localStorage.setItem('playdravo_phone_auth_debug', '1')`
+
 ---
 
 ## Test phone setup (item 9)
@@ -144,7 +165,7 @@ localStorage.setItem('playdravo_phone_auth_debug', '1');
 | `auth/quota-exceeded` | SMS limit | Use test numbers or upgrade plan |
 | `auth/too-many-requests` | Rate limited | Wait, use test numbers |
 | `auth/unauthorized-domain` | Domain not whitelisted | Add `gamedravo.com` in Console |
-| `auth/operation-not-allowed` | Phone provider disabled | Enable Phone in Console |
+| `auth/operation-not-allowed` | Phone provider disabled **OR SMS region blocked** | Enable Phone in Console; allow PT (+351) in **SMS region policy**; upgrade to Blaze |
 | `auth/invalid-verification-code` | Wrong OTP | Re-enter code |
 | `auth/code-expired` | OTP expired | Resend OTP |
 
