@@ -1,13 +1,12 @@
 import { 
   Menu, 
   Search, 
-  Zap, 
-  Command, 
   Plus, 
   LogIn,
   ChevronDown,
   Bell,
 } from 'lucide-react';
+import { HeaderBrand } from './HeaderBrand';
 import { UserProfile, Language } from '../types';
 import { User as FirebaseUser } from 'firebase/auth';
 import { useNotifications } from './NotificationsProvider';
@@ -80,38 +79,24 @@ export function Header({
             onClick={toggleSidebar}
             aria-label="Toggle menu"
             aria-expanded={isSidebarOpen}
-            className={`p-2.5 rounded-xl transition-all border flex items-center justify-center hover:scale-105 active:scale-95 ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white hover:text-accent' : 'bg-black/5 border-black/10 hover:bg-black/10 text-black hover:text-accent'}`}
+            className={`p-2.5 rounded-xl transition-colors border flex items-center justify-center ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white hover:text-accent' : 'bg-black/5 border-black/10 hover:bg-black/10 text-black hover:text-accent'}`}
             title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
           >
             <Menu className="w-5 h-5" />
           </button>
           
-          <a 
-            href="/"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
+          <HeaderBrand
+            onHome={() => {
               if (setSelectedCategory) setSelectedCategory('All');
               if (setSearchQuery) setSearchQuery('');
-              const main = document.querySelector('main');
-              if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
-            className="flex items-center cursor-pointer group shrink-0 transition-[opacity,max-width] duration-100 ease-out origin-left gap-2.5 md:opacity-100 md:max-w-[200px] md:mr-4 md:peer-hover/sidebar:opacity-0 md:peer-hover/sidebar:max-w-0 md:peer-hover/sidebar:pointer-events-none md:peer-hover/sidebar:mr-0 overflow-hidden"
-            title="Home"
-          >
-            <div className="w-8 h-8 md:w-9 md:h-9 bg-accent rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(var(--accent-rgb),0.4)] group-hover:rotate-6 transition-transform duration-100">
-              <Zap className="w-4 h-4 md:w-5 md:h-5 text-bg-dark fill-current" />
-            </div>
-            <span className="font-bold tracking-tight text-xl md:text-2xl transition-all duration-200 group-hover:opacity-80 hidden sm:block">
-              Play<span className="text-accent">Dravo</span>
-            </span>
-          </a>
+          />
         </div>
 
         {/* Search Bar - Desktop/Tablet */}
         {!isSearchPage && (
           <div className="hidden md:flex flex-1 min-w-[120px] max-w-xl relative group ml-4 mr-4">
-            <div className={`relative flex items-center w-full h-11 rounded-xl transition-all duration-300 border ${
+            <div className={`relative flex items-center w-full h-11 rounded-xl transition-colors duration-150 border ${
               isDarkMode 
                 ? 'bg-black/40 border-white/10 hover:border-white/20 group-focus-within:border-accent group-focus-within:bg-black/60 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]' 
                 : 'bg-black/5 border-black/10 hover:border-black/20 group-focus-within:border-accent group-focus-within:bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]'
@@ -137,7 +122,7 @@ export function Header({
           <div className="flex md:hidden justify-end px-2 ml-auto">
             <Link
               to="/search"
-              className={`p-2.5 rounded-full transition-all ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}
+              className={`p-2.5 rounded-full transition-colors ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}
             >
               <Search className={`w-4 h-4 ${isDarkMode ? 'text-white/60' : 'text-black/60'}`} />
             </Link>
@@ -164,7 +149,7 @@ export function Header({
               <button 
                 onClick={() => setIsSubmitModalOpen(true)}
                 aria-label="Submit a game"
-                className={`hidden md:flex p-2 sm:p-3 rounded-2xl transition-all group bg-accent text-bg-dark hover:scale-110 active:scale-95`}
+                className="hidden md:flex p-2 sm:p-3 rounded-2xl transition-colors bg-accent text-bg-dark"
               >
                 <Plus className="w-4 h-4 sm:w-5 h-5" />
               </button>
@@ -196,7 +181,7 @@ export function Header({
             {!user ? (
               <button 
                 onClick={() => setIsLoginModalOpen(true)}
-                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-all hover:scale-105 active:scale-95"
+                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-colors"
               >
                 <LogIn className="w-3.5 h-3.5 sm:w-4 h-4" />
                 <span className="hidden sm:inline">{t('login')}</span>
@@ -208,7 +193,7 @@ export function Header({
                   aria-label="User Profile"
                   aria-expanded={isProfileDropdownOpen}
                   aria-haspopup="true"
-                  className={`flex items-center gap-2 p-1 pr-2 sm:pr-3 rounded-2xl transition-all hover:scale-105 active:scale-95 ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'} ${isProfileDropdownOpen ? 'ring-2 ring-accent' : ''}`}
+                  className={`flex items-center gap-2 p-1 pr-2 sm:pr-3 rounded-2xl transition-colors ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'} ${isProfileDropdownOpen ? 'ring-2 ring-accent' : ''}`}
                 >
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden border border-accent/20">
                     <img 
@@ -221,7 +206,7 @@ export function Header({
                   <span className="hidden sm:inline text-xs font-semibold max-w-[60px] sm:max-w-[100px] truncate">
                     {userProfile?.displayName || 'User'}
                   </span>
-                  <ChevronDown className={`hidden sm:block w-3 h-3 transition-transform duration-300 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`hidden sm:block w-3 h-3 transition-transform duration-150 ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 <div className="hidden md:block">

@@ -41,7 +41,7 @@ import {
 import { Game } from '../types';
 import { SEO } from '../components/SEO';
 import { GameCard } from '../components/GameCard';
-import { toast } from 'sonner';
+import { appToast } from '../lib/appToast';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GameThumbnail } from '../components/GameThumbnail';
@@ -229,7 +229,7 @@ export const GamePage: React.FC<GamePageProps> = ({
     }));
 
     // Toast reward feedback
-    toast.success(`Achievement Unlocked: ${acName}`, {
+    appToast.success(`Achievement Unlocked: ${acName}`, {
       icon: <Award className="w-5 h-5 text-amber-500 animate-bounce" />,
       style: {
         background: isDarkMode ? '#1a1a1a' : '#ffffff',
@@ -357,7 +357,7 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success(t('linkCopied'));
+    appToast.success(t('linkCopied'));
   };
 
   const disablePseudoFullScreen = () => {
@@ -436,7 +436,7 @@ export const GamePage: React.FC<GamePageProps> = ({
     document.body.style.overscrollBehavior = 'none';
     document.body.style.userSelect = 'none';
     (document.body.style as any).webkitUserSelect = 'none';
-    toast.info("Entering theater mode (native fullscreen not supported on this device)");
+    appToast.info("Entering theater mode (native fullscreen not supported on this device)");
   };
 
   return (
@@ -674,7 +674,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={disablePseudoFullScreen}
-                            className="p-2 sm:p-2.5 bg-black/40 hover:bg-black/60 text-white rounded-full border border-white/10 backdrop-blur-md transition-all shadow-md"
+                            className="p-2 sm:p-2.5 bg-black/55 hover:bg-black/70 text-white rounded-full border border-white/10 transition-colors shadow-sm"
                           >
                             <ArrowLeft className="w-5 h-5" />
                           </motion.button>
@@ -694,7 +694,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => setReloadKey(prev => prev + 1)}
-                            className="p-2 sm:p-2.5 bg-black/40 hover:bg-black/60 text-white rounded-full border border-white/10 backdrop-blur-md transition-all shadow-md"
+                            className="p-2 sm:p-2.5 bg-black/55 hover:bg-black/70 text-white rounded-full border border-white/10 transition-colors shadow-sm"
                           >
                             <RefreshCw className="w-5 h-5" />
                           </motion.button>
@@ -707,7 +707,7 @@ export const GamePage: React.FC<GamePageProps> = ({
             </div>
 
             {/* Action Bar */}
-            <div className={`p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-500 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark/95 backdrop-blur-xl border-white/5' : 'bg-white/95 backdrop-blur-xl border-black/5'} w-full`}>
+            <div className={`p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-colors duration-150 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark border-white/5' : 'bg-white border-black/5'} w-full`}>
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
                   <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
@@ -779,7 +779,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                     { id: 'embed', icon: Code, onClick: () => {
                       const embedCode = `<iframe src="${window.location.origin}/games/${game.id}" width="800" height="600" frameborder="0" scrolling="no" allowfullscreen></iframe>`;
                       navigator.clipboard.writeText(embedCode);
-                      toast.success('Embed code copied to clipboard!');
+                      appToast.success('Embed code copied to clipboard!');
                       Analytics.trackShare(game.id);
                     } },
                     { id: 'new-tab', icon: ExternalLink, onClick: () => {

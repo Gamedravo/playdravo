@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, BookOpen, Wrench, ShieldCheck, MessageCircle, Home, ChevronRight, Zap, Mail, Send, Check } from 'lucide-react';
-import { toast } from 'sonner';
+import { PageBrandMark } from '../components/PageBrandMark';
+import { ArrowLeft, BookOpen, Wrench, ShieldCheck, MessageCircle, Home, ChevronRight, Mail, Send, Check } from 'lucide-react';
+import { appToast } from '../lib/appToast';
 
 interface SupportPageProps {
   isDarkMode: boolean;
@@ -91,14 +92,14 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error('Please fill in all required fields.');
+      appToast.error('Please fill in all required fields.');
       return;
     }
     setTicketLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
     setTicketLoading(false);
     setTicketSent(true);
-    toast.success('Your support request has been queued successfully!');
+    appToast.success('Your support request has been queued successfully!');
   };
 
   return (
@@ -138,14 +139,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
             </div>
           </div>
           
-          <Link to="/" className="flex items-center gap-2.5 group self-start sm:self-auto">
-            <div className="w-8 h-8 rounded-xl bg-accent text-bg-dark flex items-center justify-center group-hover:rotate-12 transition-transform shadow-md duration-300">
-              <Zap className="w-4 h-4 text-indigo-950 fill-current" />
-            </div>
-            <span className="font-extrabold text-sm tracking-wide">
-              Play<span className="text-accent">Dravo</span>
-            </span>
-          </Link>
+          <PageBrandMark />
         </div>
 
         {article ? (

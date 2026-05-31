@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Check, Dices, ShieldAlert } from 'lucide-react';
+import { X, Check, ShieldAlert } from 'lucide-react';
+import { PlayDravoMark } from './PlayDravoLogo';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { toast } from 'sonner';
@@ -90,7 +91,7 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
               isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'
             }`}
           >
-            <Dices className="h-5 w-5" />
+            <PlayDravoMark size={20} />
           </button>
         </div>
 

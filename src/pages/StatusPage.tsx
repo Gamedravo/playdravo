@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Home, ChevronRight, Zap, Activity, CheckCircle2, AlertTriangle, ShieldCheck, Gamepad2, Server, RefreshCw } from 'lucide-react';
+import { PageBrandMark } from '../components/PageBrandMark';
+import { ArrowLeft, Home, ChevronRight, Activity, CheckCircle2, AlertTriangle, ShieldCheck, Gamepad2, Server, RefreshCw } from 'lucide-react';
 
 interface StatusPageProps {
   isDarkMode: boolean;
@@ -96,14 +97,7 @@ export function StatusPage({ isDarkMode, t }: StatusPageProps) {
             </div>
           </div>
           
-          <Link to="/" className="flex items-center gap-2.5 group self-start sm:self-auto">
-            <div className="w-8 h-8 rounded-xl bg-accent text-bg-dark flex items-center justify-center group-hover:rotate-12 transition-transform shadow-md duration-300">
-              <Zap className="w-4 h-4 text-indigo-950 fill-current" />
-            </div>
-            <span className="font-extrabold text-sm tracking-wide">
-              Play<span className="text-accent">Dravo</span>
-            </span>
-          </Link>
+          <PageBrandMark />
         </div>
 
         {/* Global Summary Panel */}

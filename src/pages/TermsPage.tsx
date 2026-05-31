@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { FileCode, Scale, UserCheck, ShieldAlert, CheckCircle2, Home, ChevronRight, ArrowLeft, Zap } from 'lucide-react';
+import { PageBrandMark } from '../components/PageBrandMark';
+import { FileCode, Scale, UserCheck, ShieldAlert, CheckCircle2, Home, ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface TermsPageProps {
   isDarkMode: boolean;
@@ -59,14 +60,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
             </div>
           </div>
           
-          <Link to="/" className="flex items-center gap-2.5 group self-start sm:self-auto">
-            <div className="w-8 h-8 rounded-xl bg-accent text-bg-dark flex items-center justify-center group-hover:rotate-12 transition-transform shadow-md duration-300">
-              <Zap className="w-4 h-4 text-indigo-950 fill-current" />
-            </div>
-            <span className="font-extrabold text-sm tracking-wide">
-              Play<span className="text-accent">Dravo</span>
-            </span>
-          </Link>
+          <PageBrandMark />
         </div>
 
         {/* Header Block */}

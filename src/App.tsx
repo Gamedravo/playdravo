@@ -71,7 +71,9 @@ import { GameThumbnail } from './components/GameThumbnail';
 import { Footer } from './components/Footer';
 import { useModals } from './hooks/useModals';
 
-import { Toaster, toast } from 'sonner';
+import { Toaster } from 'sonner';
+import { appToast } from './lib/appToast';
+import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
 import { LoginModal } from './components/LoginModal';
 import { UsernameSetupModal } from './components/UsernameSetupModal';
@@ -277,6 +279,7 @@ export default function App() {
   return (
     <HelmetProvider>
       <Router>
+        <ToastGameModeSync />
         <ErrorBoundary>
           <NotificationsProvider>
               <AppContent />
@@ -549,17 +552,17 @@ function AppContent() {
     // Monitor for redirect results
     const redirectPromise = getRedirectResult(auth).then((result) => {
       if (result?.user) {
-        toast.success(t('loginSuccess') || 'Successfully logged in!');
+        appToast.success(t('loginSuccess') || 'Successfully logged in!');
       }
     }).catch((error) => {
       console.error("Redirect login error:", error);
       if (error.code === 'auth/unauthorized-domain') {
-        toast.error('Unauthorized domain.', {
+        appToast.error('Unauthorized domain.', {
           description: "Please add this URL to your Firebase Authorized Domains.",
           duration: 6000
         });
       } else if (error.code === 'auth/web-storage-unsupported' || error.message.includes('cookie')) {
-        toast.error('Cookies Blocked', {
+        appToast.error('Cookies Blocked', {
           description: "Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.",
           duration: 8000
         });
@@ -651,9 +654,9 @@ function AppContent() {
         
         // Let user settle in, then trigger the recommendation toast with login access
         const timer = setTimeout(() => {
-          toast("Sign in for a better experience! 🔑", {
+          appToast.message("Sign in for a better experience! 🔑", {
             description: "Log in or sign up to save your game scores, track achievements, and personalize your gaming experience!",
-            duration: 9000,
+            duration: 7500,
             action: {
               label: "Log In Now",
               onClick: () => {
@@ -661,7 +664,7 @@ function AppContent() {
               }
             }
           });
-        }, 1500);
+        }, 800);
         return () => clearTimeout(timer);
       }
     }
@@ -685,7 +688,7 @@ function AppContent() {
         });
 
         if (newLevel > currentLevel) {
-          toast.success(`Level Up! You are now level ${newLevel} 🎉`, {
+          appToast.success(`Level Up! You are now level ${newLevel} 🎉`, {
             icon: '🎊',
             style: {
               background: isDarkMode ? '#1a1a1a' : '#ffffff',
@@ -1035,7 +1038,7 @@ function AppContent() {
   const [displayLimit, setDisplayLimit] = useState(80);
 
   const handleGenerateDescriptions = () => {
-    toast.error('AI automatic generations have been disabled for performance.');
+    appToast.error('AI automatic generations have been disabled for performance.');
   };
 
   const toggleFavorite = async (gameId: string) => {
@@ -1053,7 +1056,7 @@ function AppContent() {
     const targetGame = games.find(g => g.id === gameId);
     if (targetGame) {
       if (isAdding) {
-        toast.success(`Added ${targetGame.title} to Favorites`, {
+        appToast.success(`Added ${targetGame.title} to Favorites`, {
           icon: '❤️',
           style: {
             background: isDarkMode ? '#1a1a1a' : '#ffffff',
@@ -1106,7 +1109,7 @@ function AppContent() {
     // Cooldown check (5 seconds)
     const now = Date.now();
     if (now - lastAIChatTime.current < 5000) {
-      toast.error("Neural processing cooling down. Please wait a moment.");
+      appToast.error("Neural processing cooling down. Please wait a moment.");
       return;
     }
 
@@ -1201,7 +1204,7 @@ function AppContent() {
       console.error("AI Error:", error);
       const errorMessage = error.message || "Connection lost. Game Assistant connection interrupted.";
       setAIChatMessages([...newMessages, { role: 'model', text: errorMessage }]);
-      toast.error(errorMessage);
+      appToast.error(errorMessage);
     } finally {
       setIsAITyping(false);
     }
@@ -1254,11 +1257,11 @@ function AppContent() {
         preferredCategories: categories
       });
       setUserProfile(prev => prev ? { ...prev, preferredCategories: categories } : null);
-      toast.success(t('userPreferencesUpdated'));
+      appToast.success(t('userPreferencesUpdated'));
       generateRecommendations();
     } catch (error) {
       console.error("Error updating preferences:", error);
-      toast.error(t('failedToUpdateUserPreferences'));
+      appToast.error(t('failedToUpdateUserPreferences'));
     }
   };
 
@@ -1289,7 +1292,7 @@ function AppContent() {
 
   const analyzeGamerPersona = async () => {
     if (!user || (!userProfile?.favorites?.length && !playHistory.length)) {
-      toast.error(t('addGamesToFavorites'));
+      appToast.error(t('addGamesToFavorites'));
       return;
     }
     setIsAnalyzingPersona(true);
@@ -1332,10 +1335,10 @@ function AppContent() {
       await updateDoc(userRef, { gamerPersona: persona });
       setGamerPersona(persona);
       setUserProfile(prev => prev ? { ...prev, gamerPersona: persona } : null);
-      toast.success(t('aiPersonaUpdated') || "Persona analyzed successfully!");
+      appToast.success(t('aiPersonaUpdated') || "Persona analyzed successfully!");
     } catch (error) {
       console.error("Persona Update Error:", error);
-      toast.error("Failed to update persona.");
+      appToast.error("Failed to update persona.");
     } finally {
       setIsAnalyzingPersona(false);
     }
@@ -1500,7 +1503,7 @@ function AppContent() {
     if (!canClaimBonus) return;
     setDailyBonus(prev => prev + 500);
     setCanClaimBonus(false);
-    toast.success(t('dailyBonusActivated'), {
+    appToast.success(t('dailyBonusActivated'), {
       icon: <Sparkles className="w-4 h-4 text-accent" />,
       className: "bg-bg-dark border-accent/50 text-white font-bold italic",
     });
@@ -1510,7 +1513,7 @@ function AppContent() {
 
   const togglePremium = () => {
     setIsPremium(!isPremium);
-    toast.info(isPremium ? t('adsRestored') : t('adsEliminated'), {
+    appToast.info(isPremium ? t('adsRestored') : t('adsEliminated'), {
       icon: <ShieldCheck className="w-4 h-4 text-accent" />,
       className: "bg-bg-dark border-accent/50 text-white font-bold italic",
     });
@@ -1551,7 +1554,7 @@ function AppContent() {
 
   const handleSurpriseMe = () => {
     if (games.length === 0) {
-      toast.info(t('scanningForGames'));
+      appToast.info(t('scanningForGames'));
       return;
     }
     const randomGame = games[Math.floor(Math.random() * games.length)];
@@ -1583,14 +1586,14 @@ function AppContent() {
 
   const handleVote = async (requestId: string, currentVotes: number) => {
     if (!user) {
-      toast.error(t('authRequiredForVoting'));
+      appToast.error(t('authRequiredForVoting'));
       return;
     }
     try {
       await updateDoc(doc(db, 'gameRequests', requestId), {
         votes: increment(1)
       });
-      toast.success(t('voteRecorded'));
+      appToast.success(t('voteRecorded'));
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, `gameRequests/${requestId}`);
     }
@@ -1721,7 +1724,7 @@ function AppContent() {
                       setIsLegalModalOpen={setIsLegalModalOpen}
                       setLegalContent={setLegalContent}
                       t={t}
-                      toast={toast}
+                      toast={appToast}
                     />
                   </PageLayout>
                 } />
@@ -2113,19 +2116,26 @@ function AppContent() {
         accountSettingsView={accountSettingsView}
       />
 
-      <Toaster 
-        position="bottom-right" 
+      <Toaster
+        position="top-right"
+        visibleToasts={2}
+        expand={false}
+        closeButton
+        offset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
+        mobileOffset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
         toastOptions={{
+          duration: 7500,
+          unstyled: false,
           style: {
             background: '#0a0a0a',
             border: '1px solid rgba(255,255,255,0.1)',
             color: '#fff',
-            borderRadius: '1rem',
-            fontSize: '12px',
+            borderRadius: '0.75rem',
+            fontSize: '13px',
             fontFamily: 'Inter, sans-serif',
-            fontWeight: '600'
+            fontWeight: '600',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
           },
-          className: 'sonner-toast'
         }}
       />
     </div>

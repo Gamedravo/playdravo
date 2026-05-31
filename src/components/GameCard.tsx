@@ -41,7 +41,7 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer',
 };
 
-const HOVER_DELAY_MS = 150;
+const HOVER_DELAY_MS = 80;
 
 export const GameCard = memo(function GameCard({
   game,
@@ -103,14 +103,14 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-all duration-300 ease-out will-change-transform ${
+        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[border-color,box-shadow] duration-150 ease-out ${
           isDarkMode
-            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_16px_40px_rgba(157,92,255,0.35)] group-hover:border-accent/60'
-            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_16px_32px_rgba(157,92,255,0.2)] group-hover:border-accent/50'
-        } group-hover:-translate-y-1 group-hover:ring-1 group-hover:ring-accent/40 active:scale-[0.99]`}
+            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_8px_24px_rgba(157,92,255,0.25)] group-hover:border-accent/50'
+            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.15)] group-hover:border-accent/40'
+        } group-hover:ring-1 group-hover:ring-accent/30 active:scale-[0.99]`}
       >
         <div
-          className={`absolute inset-0 overflow-hidden transition-opacity duration-300 ${
+          className={`absolute inset-0 overflow-hidden transition-opacity duration-150 ${
             showPreview && hoverSupported ? 'opacity-0' : 'opacity-100'
           }`}
         >
@@ -120,7 +120,7 @@ export const GameCard = memo(function GameCard({
             category={game.category}
             title={game.title}
             gameId={game.id}
-            className="w-full h-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.06]"
+            className="w-full h-full object-cover object-center transition-transform duration-150 ease-out group-hover:scale-[1.04]"
           />
         </div>
 
@@ -137,10 +137,10 @@ export const GameCard = memo(function GameCard({
           </AnimatePresence>
         )}
 
-        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none" />
 
-        <div className="absolute inset-0 z-[6] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-          <div className="w-12 h-12 rounded-full bg-accent/90 text-bg-dark flex items-center justify-center shadow-[0_0_24px_rgba(157,92,255,0.6)] scale-90 group-hover:scale-100 transition-transform duration-300">
+        <div className="absolute inset-0 z-[6] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
+          <div className="w-11 h-11 rounded-full bg-accent/90 text-bg-dark flex items-center justify-center shadow-[0_0_16px_rgba(157,92,255,0.45)]">
             <Play className="w-5 h-5 fill-current ml-0.5" />
           </div>
         </div>

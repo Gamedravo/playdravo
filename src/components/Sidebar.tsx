@@ -1,6 +1,7 @@
 import { memo, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Dices } from 'lucide-react';
+import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn } from 'lucide-react';
+import { PlayDravoMark } from './PlayDravoLogo';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SidebarIcon } from '../lib/sidebarIcons';
@@ -103,18 +104,17 @@ export const Sidebar = memo(function Sidebar({
               document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
               closeMobile();
             }}
-            className="sidebar-brand"
+            className="sidebar-brand max-md:hidden"
             title="Home"
           >
-            <span className="sidebar-brand-mark">
-              <Dices className="w-4 h-4 text-bg-dark" />
-            </span>
-            {(isSidebarOpen || isMobileOpen) && (
+            <PlayDravoMark size={32} />
+            {isSidebarOpen && (
               <span className="sidebar-brand-text">
                 Play<span className="text-accent">Dravo</span>
               </span>
             )}
           </a>
+          <span className="md:hidden flex-1" aria-hidden />
           <button
             type="button"
             onClick={() => setOpen(false)}

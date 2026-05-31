@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { toast } from 'sonner';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { appToast, isToastGameMode } from '../lib/appToast';
 
 export interface AppNotification {
   id: string;
@@ -16,7 +16,7 @@ export interface AppNotification {
 interface NotificationsContextType {
   notifications: AppNotification[];
   unreadCount: number;
-  addNotification: (notification: Omit<AppNotification, 'id' | 'timestamp' | 'read'>) => void;
+  addNotification: (notification: Omit<AppNotification, 'id' | 'timestamp' | 'read'>, options?: { toast?: boolean }) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   clearNotification: (id: string) => void;
@@ -29,32 +29,25 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [userId, setUserId] = useState<string>('guest');
 
-  // Track the logged-in status of the user to isolate local storage keys
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId('guest');
-      }
+      setUserId(user ? user.uid : 'guest');
     });
     return unsubscribe;
   }, []);
 
   const getStorageKey = useCallback(() => `playdravo_notifications_${userId}`, [userId]);
 
-  // Load notifications from local storage on user swap
   useEffect(() => {
     const key = getStorageKey();
     const stored = localStorage.getItem(key);
     if (stored) {
       try {
         setNotifications(JSON.parse(stored));
-      } catch (e) {
+      } catch {
         setNotifications([]);
       }
     } else {
-      // Default initial welcome notifications
       const initial: AppNotification[] = [
         {
           id: 'welcome',
@@ -86,14 +79,15 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userId, getStorageKey]);
 
-  // Synchronize state back to local storage
-  const saveNotifications = useCallback((updated: AppNotification[]) => {
+  const persist = useCallback((updated: AppNotification[]) => {
     setNotifications(updated);
     localStorage.setItem(getStorageKey(), JSON.stringify(updated));
   }, [getStorageKey]);
 
-  // Add a brand-new notification with sound and toast notification
-  const addNotification = useCallback((notif: Omit<AppNotification, 'id' | 'timestamp' | 'read'>) => {
+  const addNotification = useCallback((
+    notif: Omit<AppNotification, 'id' | 'timestamp' | 'read'>,
+    options?: { toast?: boolean }
+  ) => {
     const newNotif: AppNotification = {
       ...notif,
       id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -101,46 +95,66 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       read: false
     };
 
-    saveNotifications([newNotif, ...notifications].slice(0, 50)); // Cap at 50 to maintain fast performance
-
-    // Trigger in-app toast notification with responsive style matching PlayDravo accent
-    toast(newNotif.title, {
-      description: newNotif.description,
-      duration: 4000
+    setNotifications((prev) => {
+      const updated = [newNotif, ...prev].slice(0, 50);
+      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
+      return updated;
     });
-  }, [notifications, saveNotifications]);
+
+    const showToast = options?.toast !== false;
+    if (!showToast || notif.type === 'game') return;
+
+    if (isToastGameMode()) {
+      appToast.game(newNotif.title, newNotif.description);
+    } else if (notif.type === 'achievement') {
+      appToast.success(newNotif.title, { description: newNotif.description });
+    } else {
+      appToast.message(newNotif.title, { description: newNotif.description });
+    }
+  }, [getStorageKey]);
 
   const markAsRead = useCallback((id: string) => {
-    const updated = notifications.map(n => n.id === id ? { ...n, read: true } : n);
-    saveNotifications(updated);
-  }, [notifications, saveNotifications]);
+    setNotifications((prev) => {
+      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
+      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
+      return updated;
+    });
+  }, [getStorageKey]);
 
   const markAllAsRead = useCallback(() => {
-    const updated = notifications.map(n => ({ ...n, read: true }));
-    saveNotifications(updated);
-  }, [notifications, saveNotifications]);
+    setNotifications((prev) => {
+      const updated = prev.map(n => ({ ...n, read: true }));
+      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
+      return updated;
+    });
+  }, [getStorageKey]);
 
   const clearNotification = useCallback((id: string) => {
-    const updated = notifications.filter(n => n.id !== id);
-    saveNotifications(updated);
-  }, [notifications, saveNotifications]);
+    setNotifications((prev) => {
+      const updated = prev.filter(n => n.id !== id);
+      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
+      return updated;
+    });
+  }, [getStorageKey]);
 
   const clearAll = useCallback(() => {
-    saveNotifications([]);
-  }, [saveNotifications]);
+    persist([]);
+  }, [persist]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
+
+  const value = useMemo(() => ({
+    notifications,
+    unreadCount,
+    addNotification,
+    markAsRead,
+    markAllAsRead,
+    clearNotification,
+    clearAll
+  }), [notifications, unreadCount, addNotification, markAsRead, markAllAsRead, clearNotification, clearAll]);
 
   return (
-    <NotificationsContext.Provider value={{
-      notifications,
-      unreadCount,
-      addNotification,
-      markAsRead,
-      markAllAsRead,
-      clearNotification,
-      clearAll
-    }}>
+    <NotificationsContext.Provider value={value}>
       {children}
     </NotificationsContext.Provider>
   );

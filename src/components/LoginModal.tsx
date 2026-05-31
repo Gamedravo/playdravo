@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, ShieldCheck, Rocket, Lock, Key, Smartphone, LogIn } from 'lucide-react';
+import { X, Mail, ShieldCheck, Lock, Key, Smartphone, LogIn } from 'lucide-react';
+import { PlayDravoMark } from './PlayDravoLogo';
 import {
   signInWithGoogle,
   signInWithMicrosoft,
@@ -11,7 +12,7 @@ import {
   signInWithPhone,
   auth,
 } from '../firebase';
-import { toast } from 'sonner';
+import { appToast } from '../lib/appToast';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import { handleAuthError } from '../lib/authErrors';
 
@@ -98,7 +99,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     try {
       await OAUTH_HANDLERS[provider]();
       onClose();
-      toast.success(t('loginSuccess') || 'Successfully logged in!');
+      appToast.success(t('loginSuccess') || 'Successfully logged in!');
     } catch (error) {
       handleAuthError(error, provider, t);
     } finally {
@@ -118,10 +119,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         const result = await signInWithPhone(phoneNumber, window.recaptchaVerifier);
         setConfirmationResult(result);
         setIsOtpSent(true);
-        toast.success('OTP sent to your phone number!');
+        appToast.success('OTP sent to your phone number!');
       } else {
         await confirmationResult!.confirm(otp);
-        toast.success(t('loginSuccess') || 'Successfully logged in!');
+        appToast.success(t('loginSuccess') || 'Successfully logged in!');
         onClose();
       }
     } catch (error) {
@@ -135,7 +136,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (activeTab === 'register' && password !== confirmPassword) {
-      toast.error('Passwords do not match.');
+      appToast.error('Passwords do not match.');
       return;
     }
 
@@ -143,10 +144,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
       setLoadingProvider('email');
       if (activeTab === 'register') {
         await signUpWithEmail(email, password);
-        toast.success('Account created successfully! Welcome to the arena.');
+        appToast.success('Account created successfully! Welcome to the arena.');
       } else {
         await signInWithEmail(email, password);
-        toast.success(t('loginSuccess') || 'Successfully logged in!');
+        appToast.success(t('loginSuccess') || 'Successfully logged in!');
       }
       onClose();
     } catch (error) {
@@ -179,27 +180,23 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1900]"
+            className="fixed inset-0 bg-black/70 z-[1900]"
           />
           <div className="relative z-[2000] w-full h-full" onClick={onClose}>
             <div className="min-h-[100dvh] flex items-center justify-center p-4">
               <motion.div
                 key="login-modal-container"
                 onClick={(e) => e.stopPropagation()}
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.15 }}
                 className={`relative w-full max-w-lg max-h-[95dvh] flex flex-col border rounded-[2rem] shadow-2xl overflow-hidden m-auto ${
                   isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'
                 }`}
               >
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-                    className="absolute -top-24 -right-24 w-64 h-64 bg-accent rounded-full blur-[80px]"
-                  />
+                <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+                  <div className="absolute -top-24 -right-24 w-64 h-64 bg-accent/10 rounded-full" />
                   <div
                     className={`absolute inset-0 opacity-[0.03] ${
                       isDarkMode
@@ -214,10 +211,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                     e.stopPropagation();
                     onClose();
                   }}
-                  className={`absolute top-4 right-4 md:top-5 md:right-5 z-[60] w-9 h-9 rounded-xl border flex items-center justify-center transition-all hover:scale-110 active:scale-95 ${
+                  className={`absolute top-4 right-4 md:top-5 md:right-5 z-[60] w-9 h-9 rounded-xl border flex items-center justify-center transition-colors ${
                     isDarkMode
-                      ? 'bg-black/50 backdrop-blur-md border-white/10 hover:bg-white/10 text-white'
-                      : 'bg-white/80 backdrop-blur-md border-black/10 hover:bg-black/10 text-black'
+                      ? 'bg-black/50 border-white/10 hover:bg-white/10 text-white'
+                      : 'bg-white/90 border-black/10 hover:bg-black/10 text-black'
                   }`}
                 >
                   <X className="w-4 h-4" />
@@ -267,12 +264,8 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                         className="space-y-4 md:space-y-5"
                       >
                         <div className="text-center mb-1 md:mb-2">
-                          <div className="w-9 h-9 md:w-11 md:h-11 bg-accent/10 rounded-2xl flex items-center justify-center border border-accent/20 mx-auto mb-2">
-                            {activeTab === 'register' ? (
-                              <Rocket className="w-4 h-4 md:w-5 md:h-5 text-accent" />
-                            ) : (
-                              <LogIn className="w-4 h-4 md:w-5 md:h-5 text-accent" />
-                            )}
+                          <div className="mx-auto mb-2 flex justify-center">
+                            <PlayDravoMark size={40} />
                           </div>
                           <h3 className="text-base md:text-lg font-bold tracking-tight">
                             {activeTab === 'register' ? (
@@ -371,13 +364,13 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                       type="button"
                                       onClick={async () => {
                                         if (!email) {
-                                          toast.error('Please enter your email address first.');
+                                          appToast.error('Please enter your email address first.');
                                           return;
                                         }
                                         try {
                                           const { sendPasswordResetEmail } = await import('firebase/auth');
                                           await sendPasswordResetEmail(auth, email);
-                                          toast.success('Password reset link sent to your email.');
+                                          appToast.success('Password reset link sent to your email.');
                                         } catch (error) {
                                           handleAuthError(error, 'email', t);
                                         }

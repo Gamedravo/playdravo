@@ -1,6 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Gamepad2, Shield, HelpCircle, FileText, Mail, Heart, Sparkles, ExternalLink, Activity, Bug } from 'lucide-react';
+import { Shield, HelpCircle, FileText, Mail, Heart, Sparkles, ExternalLink, Activity, Bug } from 'lucide-react';
+import { PlayDravoLogo } from './PlayDravoLogo';
 
 interface FooterProps {
   isDarkMode: boolean;
@@ -35,7 +35,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
   };
 
   return (
-    <footer className={`mt-8 border-t transition-all duration-300 relative overflow-hidden rounded-2xl mb-4 ${
+    <footer className={`mt-8 border-t transition-colors relative overflow-hidden rounded-2xl mb-4 ${
       isDarkMode 
         ? 'bg-gradient-to-b from-[#111122]/80 to-[#0e0e1a]/95 border-white/5 text-white/70' 
         : 'bg-gradient-to-b from-slate-50/80 to-slate-100/95 border-black/5 text-black/70'
@@ -47,15 +47,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
       <div className="max-w-6xl mx-auto px-6 py-12 md:py-16 relative z-10 grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12">
         {/* Brand Column */}
         <div className="col-span-2 md:col-span-4 space-y-6">
-          <Link to="/" className="inline-flex items-center gap-3 group">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-accent to-pink-500 text-bg-dark shadow-lg shadow-accent/20 group-hover:scale-105 transition-transform duration-300">
-              <Gamepad2 className="w-5 h-5 text-indigo-950" />
-            </div>
-            <div>
-              <span className="text-lg font-black tracking-wider uppercase text-accent font-sans">PlayDravo</span>
-              <span className={`block text-[9px] font-bold tracking-widest uppercase ${isDarkMode ? 'text-white/30' : 'text-black/30'}`}>Web Gaming Hub</span>
-            </div>
-          </Link>
+          <PlayDravoLogo size="sm" showWordmark href="/" className="group" />
           <p className={`text-xs leading-relaxed max-w-sm ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
             PlayDravo is an instant-access web gaming portal curating premier, lightweight, and hardware-optimized HTML5 game configurations for cross-platform desktop & mobile play.
           </p>
