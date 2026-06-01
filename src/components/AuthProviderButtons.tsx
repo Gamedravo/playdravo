@@ -1,15 +1,14 @@
 import { Loader2 } from 'lucide-react';
 import { AUTH_PROVIDER_CARDS, type AuthProviderId } from '../lib/authProviders';
 
-export type OAuthProviderId = Exclude<AuthProviderId, 'phone' | 'email'>;
+export type OAuthProviderId = Exclude<AuthProviderId, 'email'>;
 export type AuthMethodId = AuthProviderId;
 
 interface AuthProviderButtonsProps {
   isDarkMode: boolean;
   loadingProvider: AuthMethodId | null;
-  activeMethod: 'email' | 'phone' | null;
+  activeMethod: 'email' | null;
   onOAuth: (provider: OAuthProviderId) => void;
-  onPhone: () => void;
   onEmail: () => void;
 }
 
@@ -20,7 +19,6 @@ export function AuthProviderButtons({
   loadingProvider,
   activeMethod,
   onOAuth,
-  onPhone,
   onEmail,
 }: AuthProviderButtonsProps) {
   const cardBase = isDarkMode
@@ -33,8 +31,7 @@ export function AuthProviderButtons({
 
   const handleClick = (id: AuthMethodId) => {
     if (loadingProvider) return;
-    if (id === 'phone') onPhone();
-    else if (id === 'email') onEmail();
+    if (id === 'email') onEmail();
     else onOAuth(id);
   };
 
@@ -43,7 +40,6 @@ export function AuthProviderButtons({
       {PROVIDERS.map(({ id, label, icon }) => {
         const isLoading = loadingProvider === id;
         const isActive =
-          (id === 'phone' && activeMethod === 'phone') ||
           (id === 'email' && activeMethod === 'email');
         const disabled = Boolean(loadingProvider && !isLoading);
 

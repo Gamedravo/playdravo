@@ -27,7 +27,7 @@ interface HeaderProps {
   logout: () => void;
   setIsCommandPaletteOpen: (open: boolean) => void;
   setIsSubmitModalOpen: (open: boolean) => void;
-  openAccountSettings: (view?: 'main' | 'email' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
+  openAccountSettings: (view?: 'main' | 'email' | 'password' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
   setIsUsernameModalOpen: (open: boolean) => void;
   setIsHelpCenterOpen: (open: boolean) => void;
   isProfileDropdownOpen: boolean;
@@ -232,6 +232,25 @@ export const Header = memo(function Header({
           </div>
         </div>
       </div>
+
+      {user?.email && !user.emailVerified && (
+        <div className={`${isDarkMode ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-yellow-50 border-yellow-200'} border-t`}>
+          <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-2 flex items-center justify-between gap-3">
+            <p className={`text-[11px] font-semibold ${isDarkMode ? 'text-yellow-200/90' : 'text-yellow-900'}`}>
+              Your email is not verified. Verify it to unlock sensitive account actions.
+            </p>
+            <button
+              type="button"
+              onClick={() => openAccountSettings('main')}
+              className={`text-[11px] font-bold underline underline-offset-4 ${
+                isDarkMode ? 'text-yellow-200 hover:text-yellow-100' : 'text-yellow-900 hover:text-yellow-800'
+              }`}
+            >
+              Resend verification
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 });

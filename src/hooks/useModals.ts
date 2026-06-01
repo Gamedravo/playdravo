@@ -1,6 +1,13 @@
 import { useState } from 'react';
 
-export type AccountSettingsView = 'main' | 'email' | 'logout-all' | 'delete' | 'notifications' | 'privacy';
+export type AccountSettingsView =
+  | 'main'
+  | 'email'
+  | 'password'
+  | 'logout-all'
+  | 'delete'
+  | 'notifications'
+  | 'privacy';
 
 export function useModals() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, ShieldCheck, Lock, Key, Smartphone } from 'lucide-react';
+import { X, Mail, ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import { PlayDravoMark } from './PlayDravoLogo';
 import {
   signInWithGoogle,
@@ -9,23 +9,12 @@ import {
   signInWithEmail,
   signUpWithEmail,
   resetPassword,
+  verifyUserEmail,
   auth,
 } from '../firebase';
-import {
-  sendPhoneOtp,
-  verifyPhoneOtp,
-  clearRecaptchaVerifier,
-  prewarmRecaptcha,
-  toE164,
-  isPhoneAuthDebugEnabled,
-  type RecaptchaState,
-  type PhoneAuthState,
-} from '../lib/phoneAuth';
 import { appToast } from '../lib/appToast';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import { handleAuthError } from '../lib/authErrors';
-import { PhoneRecaptchaPortal } from './PhoneRecaptchaPortal';
-import { logFirebaseAuthContext } from '../lib/phoneAuthDiagnostics';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -47,27 +36,17 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
-  const [isOtpSent, setIsOtpSent] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState<import('firebase/auth').ConfirmationResult | null>(null);
-  const [authMethod, setAuthMethod] = useState<'email' | 'phone' | null>(null);
+  const [authMethod, setAuthMethod] = useState<'email' | null>(null);
   const [loadingProvider, setLoadingProvider] = useState<AuthMethodId | null>(null);
-  const [recaptchaState, setRecaptchaState] = useState<RecaptchaState>('idle');
-  const [phoneAuthState, setPhoneAuthState] = useState<PhoneAuthState>('idle');
-  const [normalizedPhone, setNormalizedPhone] = useState('');
-  const [lastFirebaseCode, setLastFirebaseCode] = useState<string | null>(null);
-  const [firebaseProjectId, setFirebaseProjectId] = useState('');
-  const showPhoneDebug = isPhoneAuthDebugEnabled();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
-  const resetPhoneState = useCallback(() => {
-    setIsOtpSent(false);
-    setConfirmationResult(null);
-    setOtp('');
-    setPhoneAuthState('idle');
-    setNormalizedPhone('');
-    setLastFirebaseCode(null);
-    setRecaptchaState(clearRecaptchaVerifier());
+  const resetAuthMethodState = useCallback(() => {
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   }, []);
 
   const resetAuthLoading = useCallback(() => {
@@ -82,9 +61,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     } else {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
-      resetPhoneState();
+      resetAuthMethodState();
       setAuthMethod(null);
       setLoadingProvider(null);
+      setIsSendingReset(false);
     }
     return () => {
       window.setTimeout(() => {
@@ -92,35 +72,22 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         document.body.style.paddingRight = '';
       }, 280);
     };
-  }, [isOpen, resetPhoneState]);
-
-  // Pre-warm invisible reCAPTCHA once phone UI + container are mounted
-  useEffect(() => {
-    if (!isOpen || authMethod !== 'phone' || isOtpSent) return;
-    const ctx = logFirebaseAuthContext();
-    setFirebaseProjectId(ctx.projectId);
-    const timer = window.setTimeout(async () => {
-      setRecaptchaState('initializing');
-      const state = await prewarmRecaptcha();
-      setRecaptchaState(state);
-    }, 150);
-    return () => window.clearTimeout(timer);
-  }, [isOpen, authMethod, isOtpSent]);
+  }, [isOpen, resetAuthMethodState]);
 
   useEffect(() => {
     if (!isOpen || !loadingProvider) return;
-    if (loadingProvider === 'email' || loadingProvider === 'phone') return;
+    if (loadingProvider === 'email') return;
 
-    let safetyTimer: ReturnType<typeof setTimeout> | undefined;
+    let safetyTimer: number | undefined;
     const clearStuckLoading = () => {
-      if (safetyTimer) clearTimeout(safetyTimer);
+      if (safetyTimer) window.clearTimeout(safetyTimer);
       safetyTimer = window.setTimeout(() => resetAuthLoading(), 650);
     };
 
     window.addEventListener('focus', clearStuckLoading);
     document.addEventListener('visibilitychange', clearStuckLoading);
     return () => {
-      if (safetyTimer) clearTimeout(safetyTimer);
+      if (safetyTimer) window.clearTimeout(safetyTimer);
       window.removeEventListener('focus', clearStuckLoading);
       document.removeEventListener('visibilitychange', clearStuckLoading);
     };
@@ -129,7 +96,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
     setAuthMethod(null);
-    resetPhoneState();
+    resetAuthMethodState();
   };
 
   const handleOAuthLogin = async (provider: OAuthProviderId) => {
@@ -146,41 +113,31 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     }
   };
 
-  const handlePhoneAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (loadingProvider) return;
-    setLoadingProvider('phone');
-    setLastFirebaseCode(null);
-    try {
-      if (!isOtpSent) {
-        const { confirmation, e164 } = await sendPhoneOtp(phoneNumber, (state, detail) => {
-          setPhoneAuthState(state);
-          if (detail && state === 'otp-sent') setNormalizedPhone(detail);
-          if (detail && state === 'error') setLastFirebaseCode(detail);
-        });
-        setNormalizedPhone(e164);
-        setConfirmationResult(confirmation);
-        setIsOtpSent(true);
-        setRecaptchaState('rendered');
-        appToast.success('OTP sent to your phone number!');
-      } else {
-        await verifyPhoneOtp(confirmationResult!, otp, setPhoneAuthState);
-        appToast.success(t('loginSuccess') || 'Successfully logged in!');
-        onClose();
-      }
-    } catch (error) {
-      const code = (error as { code?: string }).code ?? 'unknown';
-      setLastFirebaseCode(code);
-      setPhoneAuthState('error');
-      handleAuthError(error, 'phone', t);
-      if (!isOtpSent) resetPhoneState();
-    } finally {
-      resetAuthLoading();
-    }
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  const passwordStrengthScore = (value: string) => {
+    const v = value ?? '';
+    let score = 0;
+    if (v.length >= 8) score += 1;
+    if (v.length >= 12) score += 1;
+    if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score += 1;
+    if (/\d/.test(v)) score += 1;
+    if (/[^A-Za-z0-9]/.test(v)) score += 1;
+    return Math.min(4, score);
   };
+
+  const strength = passwordStrengthScore(password);
+  const strengthLabel = ['Weak', 'Fair', 'Good', 'Strong', 'Strong'][strength] ?? 'Weak';
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loadingProvider) return;
+
+    if (!isValidEmail(email)) {
+      appToast.error('Please enter a valid email address.');
+      return;
+    }
+
     if (activeTab === 'register' && password !== confirmPassword) {
       appToast.error('Passwords do not match.');
       return;
@@ -189,8 +146,19 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     try {
       setLoadingProvider('email');
       if (activeTab === 'register') {
+        if (password.length < 8) {
+          appToast.error('Password must be at least 8 characters.');
+          setLoadingProvider(null);
+          return;
+        }
         await signUpWithEmail(email, password);
-        appToast.success('Account created successfully! Welcome to the arena.');
+        try {
+          await verifyUserEmail();
+          appToast.success('Account created! We sent you a verification email.');
+        } catch (verifyErr) {
+          handleAuthError(verifyErr, 'email', t);
+          appToast.success('Account created successfully!');
+        }
       } else {
         await signInWithEmail(email, password);
         appToast.success(t('loginSuccess') || 'Successfully logged in!');
@@ -217,9 +185,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const dividerBg = isDarkMode ? 'bg-bg-dark text-white/20' : 'bg-white text-black/20';
 
   return (
-    <>
-      <PhoneRecaptchaPortal active={isOpen && authMethod === 'phone'} />
-      <AnimatePresence initial={false}>
+    <AnimatePresence initial={false}>
       {isOpen && (
         <div className="fixed inset-0 z-[2000] flex">
           <motion.div
@@ -331,10 +297,6 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                           loadingProvider={loadingProvider}
                           activeMethod={authMethod}
                           onOAuth={handleOAuthLogin}
-                          onPhone={() => {
-                            setAuthMethod('phone');
-                            resetPhoneState();
-                          }}
                           onEmail={() => setAuthMethod('email')}
                         />
 
@@ -348,12 +310,12 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                               </div>
                               <div className="relative flex justify-center text-[8px] font-bold uppercase tracking-[0.3em]">
                                 <span className={`px-4 ${dividerBg}`}>
-                                  {authMethod === 'email' ? 'Email sign-in' : 'Phone sign-in'}
+                                  Email sign-in
                                 </span>
                               </div>
                             </div>
 
-                            {authMethod === 'email' ? (
+                            {authMethod === 'email' && (
                               <form onSubmit={handleEmailAuth} className="space-y-3 md:space-y-4">
                                 <div className="relative">
                                   <Mail
@@ -377,7 +339,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     }`}
                                   />
                                   <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -388,43 +350,92 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     }
                                     className={inputClass}
                                   />
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowPassword((v) => !v)}
+                                    className={`absolute right-3.5 top-1/2 -translate-y-1/2 p-1 ${
+                                      isDarkMode ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'
+                                    }`}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                  >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                  </button>
                                 </div>
                                 {activeTab === 'register' && (
-                                  <div className="relative">
-                                    <ShieldCheck
-                                      className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                                        isDarkMode ? 'text-white/20' : 'text-black/20'
-                                      }`}
-                                    />
-                                    <input
-                                      type="password"
-                                      required
-                                      value={confirmPassword}
-                                      onChange={(e) => setConfirmPassword(e.target.value)}
-                                      placeholder={t('confirmPasswordPlaceholder')}
-                                      className={inputClass}
-                                    />
-                                  </div>
+                                  <>
+                                    <div className="px-1">
+                                      <div className="flex items-center justify-between mb-1">
+                                        <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+                                          Password strength
+                                        </span>
+                                        <span className={`text-[10px] font-bold ${strength >= 3 ? 'text-green-500' : strength >= 2 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                          {strengthLabel}
+                                        </span>
+                                      </div>
+                                      <div className={`h-1.5 w-full rounded-full overflow-hidden ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`}>
+                                        <div
+                                          className={`h-full rounded-full transition-all duration-150 ${
+                                            strength >= 3 ? 'bg-green-500' : strength >= 2 ? 'bg-yellow-500' : 'bg-red-500'
+                                          }`}
+                                          style={{ width: `${(Math.max(1, strength) / 4) * 100}%` }}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="relative">
+                                      <ShieldCheck
+                                        className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${
+                                          isDarkMode ? 'text-white/20' : 'text-black/20'
+                                        }`}
+                                      />
+                                      <input
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        required
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder={t('confirmPasswordPlaceholder')}
+                                        className={inputClass}
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword((v) => !v)}
+                                        className={`absolute right-3.5 top-1/2 -translate-y-1/2 p-1 ${
+                                          isDarkMode ? 'text-white/40 hover:text-white/70' : 'text-black/40 hover:text-black/70'
+                                        }`}
+                                        aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                                      >
+                                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                      </button>
+                                    </div>
+                                  </>
                                 )}
                                 {activeTab === 'login' && (
                                   <div className="flex justify-end px-1">
                                     <button
                                       type="button"
                                       onClick={async () => {
+                                        if (isSendingReset) return;
                                         if (!email) {
                                           appToast.error('Please enter your email address first.');
                                           return;
                                         }
+                                        if (!isValidEmail(email)) {
+                                          appToast.error('Please enter a valid email address first.');
+                                          return;
+                                        }
                                         try {
+                                          setIsSendingReset(true);
                                           await resetPassword(email);
                                           appToast.success('Password reset link sent to your email.');
                                         } catch (error) {
                                           handleAuthError(error, 'email', t);
+                                        } finally {
+                                          setIsSendingReset(false);
                                         }
                                       }}
                                       className={linkClass}
                                     >
-                                      Forgot Password?
+                                      {isSendingReset ? 'Sending…' : 'Forgot Password?'}
                                     </button>
                                   </div>
                                 )}
@@ -438,93 +449,6 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                                     : activeTab === 'register'
                                       ? t('createAccount')
                                       : t('signIn')}
-                                </button>
-                              </form>
-                            ) : (
-                              <form onSubmit={handlePhoneAuth} className="space-y-3 md:space-y-4">
-                                <div className="relative">
-                                  <Smartphone
-                                    className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                                      isDarkMode ? 'text-white/20' : 'text-black/20'
-                                    }`}
-                                  />
-                                  <input
-                                    type="tel"
-                                    required
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder={t('phoneNumberPlaceholder') || 'Phone (+351 9xx xxx xxx)'}
-                                    disabled={isOtpSent}
-                                    className={`${inputClass} disabled:opacity-50`}
-                                  />
-                                  {showPhoneDebug && phoneNumber && !isOtpSent && (
-                                    <p className="mt-1 text-[10px] font-mono text-accent/80 px-1">
-                                      E.164 preview: {toE164(phoneNumber) || '—'}
-                                    </p>
-                                  )}
-                                </div>
-                                {isOtpSent && (
-                                  <div className="relative">
-                                    <Key
-                                      className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                                        isDarkMode ? 'text-white/20' : 'text-black/20'
-                                      }`}
-                                    />
-                                    <input
-                                      type="text"
-                                      required
-                                      value={otp}
-                                      onChange={(e) => setOtp(e.target.value)}
-                                      placeholder={t('verificationCodePlaceholder') || 'Verification Code'}
-                                      className={inputClass}
-                                    />
-                                  </div>
-                                )}
-                                {showPhoneDebug && (
-                                  <div
-                                    className={`rounded-xl border p-3 text-[10px] font-mono space-y-1 ${
-                                      isDarkMode
-                                        ? 'bg-black/40 border-white/10 text-white/70'
-                                        : 'bg-black/5 border-black/10 text-black/70'
-                                    }`}
-                                  >
-                                    <p className="font-bold text-accent uppercase tracking-wider">
-                                      Phone auth debug
-                                    </p>
-                                    <p>Project: {firebaseProjectId || '—'}</p>
-                                    <p>reCAPTCHA: {recaptchaState}</p>
-                                    <p>Phone flow: {phoneAuthState}</p>
-                                    {normalizedPhone && <p>E.164: {normalizedPhone}</p>}
-                                    {lastFirebaseCode && (
-                                      <p className="text-red-400">Last Firebase code: {lastFirebaseCode}</p>
-                                    )}
-                                    <p className="opacity-60">
-                                      Domain: {window.location.hostname}
-                                    </p>
-                                  </div>
-                                )}
-                                {isOtpSent && (
-                                  <div className="flex justify-end px-1">
-                                    <button type="button" onClick={resetPhoneState} className={linkClass}>
-                                      {t('changeNumber') || 'Change Number'}
-                                    </button>
-                                  </div>
-                                )}
-                                <button
-                                  type="submit"
-                                  disabled={
-                                    Boolean(loadingProvider) ||
-                                    (!isOtpSent && recaptchaState === 'render-failed')
-                                  }
-                                  className={submitClass}
-                                >
-                                  {loadingProvider === 'phone'
-                                    ? t('processing')
-                                    : isOtpSent
-                                      ? t('verifyOTP') || 'Verify OTP'
-                                      : recaptchaState === 'render-failed'
-                                        ? 'reCAPTCHA failed — retry'
-                                        : t('sendOTP') || 'Send OTP'}
                                 </button>
                               </form>
                             )}
@@ -555,6 +479,5 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         </div>
       )}
     </AnimatePresence>
-    </>
   );
 }

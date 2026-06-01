@@ -15,7 +15,7 @@ interface NotificationDrawerProps {
 }
 
 const PANEL_W = 320;
-const HEADER_OFFSET = 56;
+const HEADER_OFFSET_FALLBACK = 56;
 const GAME_MAX_ITEMS = 2;
 const DEFAULT_MAX_ITEMS = 10;
 
@@ -46,16 +46,18 @@ function getNotificationIcon(type: string) {
 }
 
 function useAnchorPosition(anchorRef: React.RefObject<HTMLElement | null>, isOpen: boolean) {
-  const [pos, setPos] = useState({ top: HEADER_OFFSET, right: 0, width: PANEL_W });
+  const [pos, setPos] = useState({ top: HEADER_OFFSET_FALLBACK, right: 0, width: PANEL_W });
 
   useEffect(() => {
     if (!isOpen) return;
 
     const update = () => {
+      const headerEl = document.querySelector('header');
+      const headerBottom = headerEl?.getBoundingClientRect().bottom ?? HEADER_OFFSET_FALLBACK;
       const isMobile = window.innerWidth < 768;
       const width = isMobile ? Math.min(window.innerWidth, PANEL_W) : PANEL_W;
       setPos({
-        top: HEADER_OFFSET,
+        top: Math.max(Math.round(headerBottom), HEADER_OFFSET_FALLBACK),
         right: isMobile ? 0 : 0,
         width: isMobile ? window.innerWidth : width,
       });
@@ -63,7 +65,11 @@ function useAnchorPosition(anchorRef: React.RefObject<HTMLElement | null>, isOpe
 
     update();
     window.addEventListener('resize', update, { passive: true });
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener('scroll', update, { passive: true });
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update);
+    };
   }, [isOpen]);
 
   return pos;
@@ -125,9 +131,7 @@ export const NotificationDrawer = memo(function NotificationDrawer({
     { id: 'activity' as const, label: 'Activity' },
   ];
 
-  const maxH = isGameRoute
-    ? 'calc(100dvh - 56px)'
-    : 'calc(100dvh - 56px)';
+  const panelHeight = `calc(100dvh - ${pos.top}px)`;
 
   return createPortal(
     <>
@@ -152,8 +156,8 @@ export const NotificationDrawer = memo(function NotificationDrawer({
         top: pos.top,
         right: pos.right,
         width: pos.width,
-        height: maxH,
-        maxHeight: maxH,
+        height: panelHeight,
+        maxHeight: panelHeight,
       }}
     >
       <div

@@ -19,14 +19,14 @@
 - **Removed redirect fallback** — popup-only OAuth; errors surface immediately
 - **Race detection:** popup promise vs 90s timeout vs window `focus` return (600ms debounce, uid unchanged → cancel)
 - **`AuthCancelledError`** + `isAuthCancelError()` for all benign cancel codes
-- **LoginModal:** `resetAuthLoading()` in every `finally`; clears on modal close; phone/email paths fixed
+- **LoginModal:** `resetAuthLoading()` in every `finally`; clears on modal close; email flow fixed
 
 ### Before → After
 | Scenario | Before | After |
 |----------|--------|-------|
 | Close Google popup | Spinner forever | Spinner clears in **<600ms** |
 | Cancel Microsoft login | Frozen modal | Returns to provider list |
-| Dismiss phone reCAPTCHA | Stuck loading | Loading cleared in `finally` |
+| Dismiss auth modal / cancel flow | Stuck loading | Loading cleared in `finally` |
 
 ---
 
@@ -125,7 +125,7 @@ Confirmed removed from Firebase, auth providers, login modal, and error labels.
 | `src/contexts/SidebarContext.tsx` | **New** — isolated sidebar state |
 | `src/firebase.ts` | OAuth via `oauthSignIn`; no redirect |
 | `src/lib/authErrors.ts` | `isAuthCancelError` handling |
-| `src/components/LoginModal.tsx` | Loading reset; phone flow fix |
+| `src/components/LoginModal.tsx` | Loading reset; auth flow fix |
 | `src/components/Sidebar.tsx` | Context + route auto-close |
 | `src/components/Header.tsx` | Context toggle |
 | `src/components/NotificationDropdown.tsx` | Viewport-fixed drawer |
@@ -138,7 +138,7 @@ Confirmed removed from Firebase, auth providers, login modal, and error labels.
 
 - [ ] Click Google → close popup → spinner stops, modal usable
 - [ ] Repeat for Microsoft, GitHub
-- [ ] Start phone login → dismiss reCAPTCHA → no stuck state
+- [ ] Open auth modal → cancel/close → no stuck state
 - [ ] Toggle sidebar on desktop → instant, no page jank
 - [ ] Open notifications → right drawer, 85vh, slides from right
 - [ ] Search → open game → browser back → search appears instantly with prior state

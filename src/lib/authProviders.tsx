@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { Mail, Smartphone } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
-export type AuthProviderId = 'google' | 'microsoft' | 'github' | 'phone' | 'email';
+export type AuthProviderId = 'google' | 'microsoft' | 'github' | 'email';
 
 export interface AuthProviderConfig {
   id: AuthProviderId;
@@ -44,11 +44,10 @@ export const AUTH_PROVIDER_CARDS: AuthProviderConfig[] = [
   { id: 'google', label: 'Continue with Google', icon: <GoogleIcon /> },
   { id: 'microsoft', label: 'Continue with Microsoft', icon: <MicrosoftIcon /> },
   { id: 'github', label: 'Continue with GitHub', icon: <GitHubIcon /> },
-  { id: 'phone', label: 'Continue with Phone', icon: <Smartphone className="w-5 h-5" /> },
   { id: 'email', label: 'Continue with Email', icon: <Mail className="w-5 h-5" /> },
 ];
 
-export const OAUTH_PROVIDER_LABELS: Record<Exclude<AuthProviderId, 'phone' | 'email'>, string> = {
+export const OAUTH_PROVIDER_LABELS: Record<Exclude<AuthProviderId, 'email'>, string> = {
   google: 'Google',
   microsoft: 'Microsoft',
   github: 'GitHub',

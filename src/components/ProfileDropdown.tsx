@@ -25,7 +25,7 @@ interface ProfileDropdownProps {
   userProfile: UserProfile | null;
   isDarkMode: boolean;
   logout: () => void;
-  openAccountSettings: (view?: 'main' | 'email' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
+  openAccountSettings: (view?: 'main' | 'email' | 'password' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
   setIsUsernameModalOpen: (open: boolean) => void;
   setIsHelpCenterOpen: (open: boolean) => void;
   setSelectedCategory?: (category: string) => void;
