@@ -20,24 +20,17 @@ export const HeaderBrand = memo(function HeaderBrand({ onHome }: HeaderBrandProp
     document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
+  // On mobile, sidebar is always an overlay, so always show brand in header
+  // On desktop, only show brand when sidebar is collapsed (sidebar owns brand when open)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const shouldShowBrand = isMobile || !sidebarOpen;
+
   return (
-    <>
-      {/* Mobile: always show brand (sidebar is overlay) */}
-      <PlayDravoLogo
-        size="sm"
-        showWordmark
-        onClick={goHome}
-        className="md:hidden"
-      />
-      {/* Desktop: brand only when sidebar collapsed — sidebar owns brand when open */}
-      {!sidebarOpen && (
-        <PlayDravoLogo
-          size="sm"
-          showWordmark
-          onClick={goHome}
-          className="hidden md:inline-flex"
-        />
-      )}
-    </>
+    <PlayDravoLogo
+      size="sm"
+      showWordmark
+      onClick={goHome}
+      className={shouldShowBrand ? '' : 'hidden'}
+    />
   );
 });

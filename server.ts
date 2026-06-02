@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
@@ -188,14 +189,31 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+
+    // Force canonical host in production (non-www -> www).
+    app.use((req, res, next) => {
+      const host = String(req.headers.host || '').toLowerCase();
+      if (host === 'gamedravo.com' || host.startsWith('gamedravo.com:')) {
+        const target = `https://www.gamedravo.com${req.originalUrl || '/'}`;
+        return res.redirect(301, target);
+      }
+      return next();
+    });
+
     // Ensure correct content-types for SEO-critical static files (avoid SPA fallback).
     app.get('/sitemap.xml', (_req, res) => {
       res.type('application/xml');
-      res.sendFile(path.join(distPath, 'sitemap.xml'));
+      const distFile = path.join(distPath, 'sitemap.xml');
+      const publicFile = path.join(process.cwd(), 'public', 'sitemap.xml');
+      const filePath = fs.existsSync(distFile) ? distFile : publicFile;
+      return res.sendFile(filePath);
     });
     app.get('/robots.txt', (_req, res) => {
       res.type('text/plain');
-      res.sendFile(path.join(distPath, 'robots.txt'));
+      const distFile = path.join(distPath, 'robots.txt');
+      const publicFile = path.join(process.cwd(), 'public', 'robots.txt');
+      const filePath = fs.existsSync(distFile) ? distFile : publicFile;
+      return res.sendFile(filePath);
     });
     app.use(express.static(distPath));
     app.get('*', (req, res) => {

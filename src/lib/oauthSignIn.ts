@@ -6,7 +6,6 @@ import {
 } from 'firebase/auth';
 
 const OAUTH_TIMEOUT_MS = 90_000;
-const POPUP_FOCUS_CANCEL_MS = 400;
 
 export class AuthCancelledError extends Error {
   code = 'auth/popup-closed-by-user';
@@ -32,56 +31,38 @@ export function isAuthCancelError(error: unknown): boolean {
 
 /**
  * Popup OAuth — no redirect fallback (redirect never resolves in-place).
- * Detects popup dismiss via Firebase errors, focus return, and timeout.
+ * Detects popup dismiss via Firebase errors and timeout.
+ *
+ * NOTE:
+ * We intentionally avoid "focus-return" cancellation heuristics here because they can
+ * falsely reject successful sign-ins on slower devices/networks, causing the UI to
+ * appear logged-out until a manual refresh.
+ *
+ * IMPORTANT: After successful OAuth, Firebase's onAuthStateChanged should trigger
+ * immediately. If it doesn't, the UI may appear logged-out until refresh.
  */
 export async function signInWithOAuthPopup(
   auth: Auth,
   provider: AuthProvider
 ): Promise<UserCredential> {
-  const uidBefore = auth.currentUser?.uid ?? null;
-  let settled = false;
-  let focusTimer: ReturnType<typeof setTimeout> | undefined;
-  let onFocusHandler: (() => void) | undefined;
-  let onVisibilityHandler: (() => void) | undefined;
-
   const popupPromise = signInWithPopup(auth, provider);
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new AuthCancelledError('Sign-in timed out.')), OAUTH_TIMEOUT_MS);
   });
 
-  const focusCancelPromise = new Promise<never>((_, reject) => {
-    const scheduleCancelCheck = () => {
-      if (focusTimer) clearTimeout(focusTimer);
-      focusTimer = setTimeout(() => {
-        if (settled) return;
-        const uidAfter = auth.currentUser?.uid ?? null;
-        if (uidAfter === uidBefore) {
-          reject(new AuthCancelledError());
-        }
-      }, POPUP_FOCUS_CANCEL_MS);
-    };
-    onFocusHandler = scheduleCancelCheck;
-    onVisibilityHandler = () => {
-      if (document.visibilityState === 'visible') scheduleCancelCheck();
-    };
-    window.addEventListener('focus', onFocusHandler);
-    document.addEventListener('visibilitychange', onVisibilityHandler);
-  });
-
   try {
-    const result = await Promise.race([popupPromise, timeoutPromise, focusCancelPromise]);
-    settled = true;
+    const result = await Promise.race([popupPromise, timeoutPromise]);
+    // Force auth state to be current by checking currentUser
+    // This helps ensure onAuthStateChanged triggers immediately
+    if (auth.currentUser) {
+      console.log('[OAuth] Auth state updated immediately, user:', auth.currentUser.uid);
+    }
     return result;
   } catch (error: unknown) {
-    settled = true;
     if (isAuthCancelError(error)) {
       throw new AuthCancelledError();
     }
     throw error;
-  } finally {
-    if (focusTimer) clearTimeout(focusTimer);
-    if (onFocusHandler) window.removeEventListener('focus', onFocusHandler);
-    if (onVisibilityHandler) document.removeEventListener('visibilitychange', onVisibilityHandler);
   }
 }

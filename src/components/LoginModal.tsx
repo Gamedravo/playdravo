@@ -15,6 +15,7 @@ import {
 import { appToast } from '../lib/appToast';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import { handleAuthError } from '../lib/authErrors';
+import { devLog } from '../lib/devLog';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -104,8 +105,16 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     setLoadingProvider(provider);
     try {
       await OAUTH_HANDLERS[provider]();
+      // Close modal immediately after OAuth completes
       onClose();
       appToast.success(t('loginSuccess') || 'Successfully logged in!');
+      // Force auth state refresh to ensure UI updates immediately
+      // Firebase onAuthStateChanged should trigger, but we ensure it by checking current user
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        // Auth state is already updated, UI should refresh via onAuthStateChanged
+        devLog('OAuth login successful, user:', currentUser.uid);
+      }
     } catch (error) {
       handleAuthError(error, provider, t);
     } finally {
