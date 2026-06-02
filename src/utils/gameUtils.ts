@@ -1,5 +1,6 @@
 import { Game } from '../types';
 import { GAMES } from '../games';
+import { inferAdsInjectedFromUrl } from '../lib/adsInjection';
 import { getCategoryFallbackThumbnail } from './thumbnailFallback';
 
 /** Verified onlinegames.io catalog entries only. */
@@ -107,6 +108,7 @@ export function buildThumbnailFallbackChain(
 }
 
 export function parseFirebaseGame(id: string, data: any): Game {
+  const url = GAMES.find((g) => g.id === id)?.url || data.url || '';
   return {
     id,
     title: data.title || 'Unknown Game',
@@ -131,8 +133,9 @@ export function parseFirebaseGame(id: string, data: any): Game {
     authorUid: data.authorUid || 'system',
     mods: Array.isArray(data.mods) ? data.mods : [],
     ...data,
-    url: GAMES.find((g) => g.id === id)?.url || data.url || '',
+    url,
     thumbnail: resolveGameThumbnail(id, data.thumbnail),
+    adsInjected: typeof data.adsInjected === 'boolean' ? data.adsInjected : inferAdsInjectedFromUrl(url),
     mobileOptimization:
       GAMES.find((g) => g.id === id)?.mobileOptimization ||
       data.mobileOptimization ||

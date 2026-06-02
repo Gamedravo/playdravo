@@ -1,0 +1,2596 @@
+{
+  "generatedAt": "2026-06-02T20:32:20.563Z",
+  "total": 259,
+  "rows": [
+    {
+      "id": "golf-bit",
+      "title": "Golf Bit",
+      "url": "https://cloud.onlinegames.io/games/2026/construct/328/golf-bit/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "love-tester",
+      "title": "Love Tester",
+      "url": "https://www.onlinegames.io/games/2021/3/love-tester/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stack-fire-ball",
+      "title": "Stack Fire Ball",
+      "url": "https://www.onlinegames.io/games/2021/unity/stack-fire-ball/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "drift-king",
+      "title": "Drift King",
+      "url": "https://www.onlinegames.io/games/2024/unity/drift-king/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "highway-traffic",
+      "title": "Highway Traffic",
+      "url": "https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cs-online",
+      "title": "CS Online",
+      "url": "https://www.onlinegames.io/games/2023/unity2/cs-online/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stickman-parkour",
+      "title": "Stickman Parkour",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stickman-gta-city",
+      "title": "Stickman GTA City",
+      "url": "https://cloud.onlinegames.io/games/2024/unity3/stickman-gta-city/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "masked-special-forces",
+      "title": "Masked Special Forces",
+      "url": "https://www.onlinegames.io/games/2022/unity2/masked-special-forces/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "checkout-frenzy",
+      "title": "Checkout Frenzy",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/checkout-frenzy/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "madalin-stunt-cars-pro",
+      "title": "Madalin Stunt Cars Pro",
+      "url": "https://www.onlinegames.io/games/2023/unity/madalin-stunt-cars-pro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "velocity-rush",
+      "title": "Velocity Rush",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/velocity-rush/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dublix",
+      "title": "Dublix",
+      "url": "https://cloud.onlinegames.io/games/2025/unity4/dublix/game-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "escape-car",
+      "title": "Escape Car",
+      "url": "https://cloud.onlinegames.io/games/2025/unity2/escape-car/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "get-on-top",
+      "title": "Get On Top",
+      "url": "https://www.onlinegames.io/games/2024/code/6/get-on-top/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "capybara-clicker-pro",
+      "title": "Capybara Clicker Pro",
+      "url": "https://www.onlinegames.io/games/2023/q2/capybara-clicker-pro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "real-flight-simulator",
+      "title": "Real Flight Simulator",
+      "url": "https://cloud.onlinegames.io/games/2023/unity2/real-flight-simulator/index.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "snaker-io",
+      "title": "Snaker io",
+      "url": "https://cloud.onlinegames.io/games/2026/more/snaker-io/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "edys-car-simulator",
+      "title": "Edys Car Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity/edys-car-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "drift-hunters-pro",
+      "title": "Drift Hunters Pro",
+      "url": "https://www.onlinegames.io/games/2023/unity/drift-hunters-pro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "basket-hoop",
+      "title": "Basket Hoop",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/311/basket-hoop/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "highway-cars",
+      "title": "Highway Cars",
+      "url": "https://www.onlinegames.io/games/2023/construct/211/highway-cars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fps-strike",
+      "title": "FPS Strike",
+      "url": "https://cloud.onlinegames.io/games/2024/unity2/fps-strike/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "burnout-city",
+      "title": "Burnout City",
+      "url": "https://cloud.onlinegames.io/games/2024/unity/burnout-city/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "basketball-io",
+      "title": "Basketball io",
+      "url": "https://www.onlinegames.io/games/2022/unity3/basketball-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "drunken-duel",
+      "title": "Drunken Duel",
+      "url": "https://www.onlinegames.io/games/2024/code/2/drunken-duel/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cube-worlds",
+      "title": "Cube Worlds",
+      "url": "https://cloud.onlinegames.io/games/2025/html/cube-worlds/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "99-nights-in-the-forest",
+      "title": "99 Nights in the Forest",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/99-nights-in-the-forest-survival/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fast-food-rush",
+      "title": "Fast Food Rush",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/fast-food-rush/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "love-tester-story",
+      "title": "Love Tester Story",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/225/love-tester-story/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stickman-destruction",
+      "title": "Stickman Destruction",
+      "url": "https://www.onlinegames.io/games/2021/unity3/stickman-destruction/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "warstrike",
+      "title": "WarStrike",
+      "url": "https://cloud.onlinegames.io/games/2024/unity3/warstrike/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "masked-forces-zombie-survival",
+      "title": "Masked Forces Zombie Survival",
+      "url": "https://www.onlinegames.io/games/2021/unity3/masked-forces-zombie-survival/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cat-simulator",
+      "title": "Cat Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity4/cat-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "super-car-driving",
+      "title": "Super Car Driving",
+      "url": "https://cloud.onlinegames.io/games/2024/unity2/super-car-driving/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-strike-force",
+      "title": "Crazy Strike Force",
+      "url": "https://www.onlinegames.io/games/2023/unity/crazy-strike-force/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "highway-racer-pro",
+      "title": "Highway Racer Pro",
+      "url": "https://www.onlinegames.io/games/2024/unity/highway-racer-pro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "armedforces-io",
+      "title": "ArmedForces.io",
+      "url": "https://www.onlinegames.io/games/2021/unity3/armedforces-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "car-football",
+      "title": "Car Football",
+      "url": "https://www.onlinegames.io/games/2023/construct/198/car-football/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cake-match-puzzle",
+      "title": "Cake Match Puzzle",
+      "url": "https://cloud.onlinegames.io/games/2024/unity3/cake-match-puzzle/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "pixelmon-town",
+      "title": "Pixelmon Town",
+      "url": "https://cloud.onlinegames.io/games/2025/html/pixelmon-town/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "legendary-sniper",
+      "title": "Legendary Sniper",
+      "url": "https://www.onlinegames.io/games/2021/unity3/legendary-sniper/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "geometry-vector",
+      "title": "Geometry Vector",
+      "url": "https://cloud.onlinegames.io/games/2026/construct/329/geometry-vector/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "poop-clicker",
+      "title": "Poop Clicker",
+      "url": "https://www.onlinegames.io/games/2024/construct/292/poop-clicker/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cubecraft-survival",
+      "title": "CubeCraft Survival",
+      "url": "https://cloud.onlinegames.io/games/2025/unity4/cubecraft-survival/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "drift-rider",
+      "title": "Drift Rider",
+      "url": "https://www.onlinegames.io/games/2023/unity3/drift-rider/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "chess-freezenova",
+      "title": "Chess FreezeNova",
+      "url": "https://cloud.onlinegames.io/games/2025/unity3/chess/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "block-blast",
+      "title": "Block Blast",
+      "url": "https://cloud.onlinegames.io/games/2024/unity3/block-blast/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mob-city",
+      "title": "Mob City",
+      "url": "https://www.onlinegames.io/games/2021/unity3/mob-city/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "geometry-dash-freezenova",
+      "title": "Geometry Dash FreezeNova",
+      "url": "https://www.onlinegames.io/games/2023/q2/geometry-dash-freezenova/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "8-ball-pool-billiard",
+      "title": "8 Ball Pool Billiard",
+      "url": "https://www.onlinegames.io/games/2022/unity3/8-ball-pool-billiard/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kick-the-dummy",
+      "title": "Kick The Dummy",
+      "url": "https://www.onlinegames.io/games/2022/construct/153/kick-the-dummy/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-drifter",
+      "title": "Crazy Drifter",
+      "url": "https://www.onlinegames.io/games/2022/unity3/crazy-drifter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "wasteland-shooters",
+      "title": "Wasteland Shooters",
+      "url": "https://www.onlinegames.io/games/2021/unity2/wasteland-shooters/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "backflip-challenge",
+      "title": "Backflip Challenge",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/backflip-challenge/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "city-stunts",
+      "title": "City Stunts",
+      "url": "https://www.onlinegames.io/games/2023/unity3/city-stunts/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-cattle-3d",
+      "title": "Crazy Cattle 3D",
+      "url": "https://cloud.onlinegames.io/games/2025/unity3/crazy-cattle-3d/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "urban-sniper",
+      "title": "Urban Sniper",
+      "url": "https://www.onlinegames.io/games/2022/unity2/urban-sniper/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "burnout-drift-hunter",
+      "title": "Burnout Drift Hunter",
+      "url": "https://www.onlinegames.io/games/2022/unity4/burnout-drift-hunter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "egg-car-racing",
+      "title": "Egg Car Racing",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/289/egg-car-racing/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "nuts-and-bolts-puzzle",
+      "title": "Nuts and Bolts Puzzle",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/nuts-and-bolts-puzzle/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-parking-fury",
+      "title": "Crazy Parking Fury",
+      "url": "https://www.onlinegames.io/games/2022/unity3/crazy-parking-fury/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "four-colors",
+      "title": "Four Colors",
+      "url": "https://www.onlinegames.io/games/2023/code/four-colors/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "taxi-simulator",
+      "title": "Taxi Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity/taxi-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "head-soccer-2022",
+      "title": "Head Soccer 2022",
+      "url": "https://www.onlinegames.io/games/2023/construct/280/head-soccer-2022/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "troll-level",
+      "title": "Troll Level",
+      "url": "https://cloud.onlinegames.io/games/2024/unity2/troll-level/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "alien-sky-invasion",
+      "title": "Alien Sky Invasion",
+      "url": "https://www.onlinegames.io/games/2021/unity3/alien-sky-invasion/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mini-cars-racing",
+      "title": "Mini Cars Racing",
+      "url": "https://cloud.onlinegames.io/games/2021/unity/mini-cars-racing/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fast-food-manager",
+      "title": "Fast Food Manager",
+      "url": "https://cloud.onlinegames.io/games/2025/unity4/fast-food-manager/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fall-brainrots",
+      "title": "Fall Brainrots",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/fall-brainrots/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dark-ninja-hanjo",
+      "title": "Dark Ninja Hanjo",
+      "url": "https://www.onlinegames.io/games/2023/unity/dark-ninja-hanjo/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "airplane-racer",
+      "title": "Airplane Racer",
+      "url": "https://www.onlinegames.io/games/2022/unity/airplane-racer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "drift-fury",
+      "title": "Drift Fury",
+      "url": "https://www.onlinegames.io/games/2023/unity/drift-fury/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "five-nights-at-poppy",
+      "title": "Five Nights at Poppy",
+      "url": "https://cloud.onlinegames.io/games/2025/unity2/five-nights-at-poppy/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-truck-mountain-climb",
+      "title": "Monster Truck Mountain Climb",
+      "url": "https://cloud.onlinegames.io/games/2021/2/monster-truck-mountain-climb/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "tile-match",
+      "title": "Tile Match",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/tile-match/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "police-traffic",
+      "title": "Police Traffic",
+      "url": "https://www.onlinegames.io/games/2021/unity/police-traffic/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "rome-simulator",
+      "title": "Rome Simulator",
+      "url": "https://www.onlinegames.io/games/2021/unity/rome-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "survival-island",
+      "title": "Survival Island",
+      "url": "https://cloud.onlinegames.io/games/2024/unity2/survival-island/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "rooftop-duel",
+      "title": "Rooftop Duel",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/213/rooftop-duel/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fort-drifter",
+      "title": "Fort Drifter",
+      "url": "https://www.onlinegames.io/games/2022/unity3/fort-drifter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "deer-hunter",
+      "title": "Deer Hunter",
+      "url": "https://www.onlinegames.io/games/2021/1/deer-hunter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "2-player-crazy-racer",
+      "title": "2 Player Crazy Racer",
+      "url": "https://www.onlinegames.io/games/2022/unity3/2-player-crazy-racer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "atv-highway-traffic",
+      "title": "ATV Highway Traffic",
+      "url": "https://www.onlinegames.io/games/2021/unity/atv-highway-traffic/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "futuristic-racer",
+      "title": "Futuristic Racer",
+      "url": "https://cloud.onlinegames.io/games/2021/2/futuristic-racer/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cookie-clicker-pro",
+      "title": "Cookie Clicker Pro",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/cookie-clicker-pro/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "bandits-multiplayer-pvp",
+      "title": "Bandits Multiplayer PvP",
+      "url": "https://www.onlinegames.io/games/2021/unity2/bandits-multiplayer-pvp/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fnf-funk-3d",
+      "title": "FNF Funk 3D",
+      "url": "https://www.onlinegames.io/games/2022/unity/fnf-funk-3d/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "subway-idle-3d",
+      "title": "Subway Idle 3D",
+      "url": "https://www.onlinegames.io/games/2022/unity4/subway-idle-3d/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "army-combat",
+      "title": "Army Combat",
+      "url": "https://www.onlinegames.io/games/2021/unity/army-combat/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stunt-simulator-2",
+      "title": "Stunt Simulator 2",
+      "url": "https://www.onlinegames.io/games/2021/unity3/stunt-simulator-2/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "basketball-slam-dunk",
+      "title": "Basketball Slam Dunk",
+      "url": "https://www.onlinegames.io/games/2021/unity2/basketball-slam-dunk/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "poly-racing-cars",
+      "title": "Poly Racing Cars",
+      "url": "https://cloud.onlinegames.io/games/2022/unity3/poly-racing-cars/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "motorbike-stunt-simulator",
+      "title": "Motorbike Stunt Simulator",
+      "url": "https://cloud.onlinegames.io/games/2021/unity/motorbike-stunt-simulator/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "offroad-rally",
+      "title": "Offroad Rally",
+      "url": "https://www.onlinegames.io/games/2023/unity2/offroad-rally/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "speedrun-parkour",
+      "title": "Speedrun Parkour",
+      "url": "https://www.onlinegames.io/games/2022/construct/145/speedrun-parkour/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "nova-craft",
+      "title": "Nova Craft",
+      "url": "https://cloud.onlinegames.io/games/2024/more2/nova-craft/index.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "among-impostor",
+      "title": "Among Impostor",
+      "url": "https://www.onlinegames.io/games/2023/construct/234/among-impostor/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "solitaire-adventure",
+      "title": "Solitaire Adventure",
+      "url": "https://www.onlinegames.io/games/2022/unity4/solitaire-adventure/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "jungle-mart",
+      "title": "Jungle Mart",
+      "url": "https://cloud.onlinegames.io/games/2026/construct/339/jungle-mart/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "sniper-elite",
+      "title": "Sniper Elite",
+      "url": "https://www.onlinegames.io/games/2021/1/sniper-elite/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "limousine-simulator",
+      "title": "Limousine Simulator",
+      "url": "https://www.onlinegames.io/games/2021/4/limousine-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "supercars-drift",
+      "title": "Supercars Drift",
+      "url": "https://www.onlinegames.io/games/2023/unity3/supercars-drift/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "jeep-driver",
+      "title": "Jeep Driver",
+      "url": "https://cloud.onlinegames.io/games/2021/1/jeep-driver/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "survival-karts",
+      "title": "Survival Karts",
+      "url": "https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "snake-football",
+      "title": "Snake Football",
+      "url": "https://www.onlinegames.io/games/2023/construct/200/snake-football/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fun-party-makeup",
+      "title": "Fun Party Makeup",
+      "url": "https://www.onlinegames.io/games/2021/4/fun-party-makeup/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "spartahoppers",
+      "title": "SpartaHoppers",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/227/spartahoppers/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "tiny-crash-fighters",
+      "title": "Tiny Crash Fighters",
+      "url": "https://www.onlinegames.io/games/2023/construct/285/tiny-crash-fighters/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "agent-smith",
+      "title": "Agent Smith",
+      "url": "https://www.onlinegames.io/games/2021/unity/agent-smith/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "wedding-beauty-salon",
+      "title": "Wedding Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/2/wedding-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "survival-craft",
+      "title": "Survival Craft",
+      "url": "https://www.onlinegames.io/games/2022/unity/survival-craft/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "car-wash",
+      "title": "Car Wash",
+      "url": "https://www.onlinegames.io/games/2023/unity2/car-wash/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "city-police-cars",
+      "title": "City Police Cars",
+      "url": "https://cloud.onlinegames.io/games/2021/2/city-police-cars/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "state-io-wars",
+      "title": "State io Wars",
+      "url": "https://www.onlinegames.io/games/2024/construct/233/state-io-wars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "pixel-driver",
+      "title": "Pixel Driver",
+      "url": "https://cloud.onlinegames.io/games/2021/unity3/pixel-driver/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "gta-simulator",
+      "title": "GTA Simulator",
+      "url": "https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "football-king",
+      "title": "Football King",
+      "url": "https://www.onlinegames.io/games/2024/construct/226/football-king/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "galactic-sniper",
+      "title": "Galactic Sniper",
+      "url": "https://www.onlinegames.io/games/2021/2/galactic-sniper/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mech-shooter",
+      "title": "Mech Shooter",
+      "url": "https://www.onlinegames.io/games/2022/unity/mech-shooter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "super-mini-racing",
+      "title": "Super Mini Racing",
+      "url": "https://www.onlinegames.io/games/2022/unity4/super-mini-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "perfect-first-date",
+      "title": "Perfect First Date",
+      "url": "https://www.onlinegames.io/games/2021/3/perfect-first-date/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "julie-beauty-salon",
+      "title": "Julie Beauty Salon",
+      "url": "https://cloud.onlinegames.io/games/2021/1/julie-beauty-salon/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hover-racer-pro",
+      "title": "Hover Racer Pro",
+      "url": "https://www.onlinegames.io/games/2021/unity/hover-racer-pro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hero-rush-tower-defense",
+      "title": "Hero Rush Tower Defense",
+      "url": "https://www.onlinegames.io/games/2023/unity/hero-rush-tower-defense/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "romantic-secret-kiss",
+      "title": "Romantic Secret Kiss",
+      "url": "https://www.onlinegames.io/games/2021/3/romantic-secret-kiss/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "archer-hero",
+      "title": "Archer Hero",
+      "url": "https://www.onlinegames.io/games/2023/unity/archer-hero/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "train-racing",
+      "title": "Train Racing",
+      "url": "https://www.onlinegames.io/games/2022/construct/120/train-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stick-guys-defense",
+      "title": "Stick Guys Defense",
+      "url": "https://www.onlinegames.io/games/2022/unity3/stick-guys-defense/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mahjong",
+      "title": "Mahjong",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/mahjong/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "evil-santa",
+      "title": "Evil Santa",
+      "url": "https://www.onlinegames.io/games/2021/1/evil-santa/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crown-defense",
+      "title": "Crown Defense",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/337/crown-defense/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "xmas-cookie-clicker",
+      "title": "Xmas Cookie Clicker",
+      "url": "https://www.onlinegames.io/games/2023/construct/288/xmas-cookie-clicker/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "fire-and-water",
+      "title": "Fire and Water",
+      "url": "https://www.onlinegames.io/games/2023/construct/179/fire-and-water/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hero-dragon-power",
+      "title": "Hero Dragon Power",
+      "url": "https://www.onlinegames.io/games/2023/unity/hero-dragon-power/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "skibidi-toilet-io",
+      "title": "Skibidi Toilet io",
+      "url": "https://www.onlinegames.io/games/2023/construct/242/skibidi-toilet-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "zombie-sniper",
+      "title": "Zombie Sniper",
+      "url": "https://www.onlinegames.io/games/2022/construct/116/zombie-sniper/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "farming-island",
+      "title": "Farming Island",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/farming-island/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "jacks-village",
+      "title": "Jacks Village",
+      "url": "https://www.onlinegames.io/games/2021/unity/jacks-village/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "idle-dev-startup",
+      "title": "Idle Dev Startup",
+      "url": "https://www.onlinegames.io/games/2023/unity3/idle-dev-startup/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "ultimate-moto",
+      "title": "Ultimate Moto",
+      "url": "https://cloud.onlinegames.io/games/2021/2/ultimate-moto/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "find-it",
+      "title": "Find It",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/find-it/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dont-fall-io",
+      "title": "Dont Fall io",
+      "url": "https://www.onlinegames.io/games/2021/unity/dont-fall-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mini-shooters",
+      "title": "Mini Shooters",
+      "url": "https://www.onlinegames.io/games/2021/5/mini-shooters/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "battle-royale-simulator",
+      "title": "Battle Royale Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity3/battle-royale-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "american-touchdown",
+      "title": "American Touchdown",
+      "url": "https://www.onlinegames.io/games/2021/unity3/american-touchdown/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "pinball-simulator",
+      "title": "Pinball Simulator",
+      "url": "https://www.onlinegames.io/games/2021/unity2/pinball-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "jeep-racing",
+      "title": "Jeep Racing",
+      "url": "https://www.onlinegames.io/games/2023/freezenova.com/jeep-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "steal-brainrot-heist",
+      "title": "Steal Brainrot Heist",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/steal-brainrot-heist/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "tank-arena",
+      "title": "Tank Arena",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/293/tank-arena/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "princess-influencer-salon",
+      "title": "Princess Influencer Salon",
+      "url": "https://www.onlinegames.io/games/2021/3/princess-influencer-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-moto-racing",
+      "title": "Crazy Moto Racing",
+      "url": "https://cloud.onlinegames.io/games/2022/unity3/crazy-moto-racing/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "war-simulator",
+      "title": "War Simulator",
+      "url": "https://www.onlinegames.io/games/2021/unity2/war-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "blocky-parkour-ninja",
+      "title": "Blocky Parkour Ninja",
+      "url": "https://www.onlinegames.io/games/2022/construct/156/blocky-parkour-ninja/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "pets-beauty-salon",
+      "title": "Pets Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/2/pets-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "first-day-of-school",
+      "title": "First Day of School",
+      "url": "https://www.onlinegames.io/games/2021/3/first-day-of-school/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "moto-trials",
+      "title": "Moto Trials",
+      "url": "https://www.onlinegames.io/games/2021/unity/moto-trials/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hill-climb-cars",
+      "title": "Hill Climb Cars",
+      "url": "https://www.onlinegames.io/games/2021/3/hill-climb-cars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kick-the-pirate",
+      "title": "Kick the Pirate",
+      "url": "https://cloud.onlinegames.io/games/2022/construct/92/kick-the-pirate/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cobraz-io-classic",
+      "title": "CobraZ.io Classic",
+      "url": "https://www.onlinegames.io/games/2022/unity/cobraz-io-classic/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "draw-here",
+      "title": "Draw Here",
+      "url": "https://www.onlinegames.io/games/2021/unity2/draw-here/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-car-arena",
+      "title": "Crazy Car Arena",
+      "url": "https://www.onlinegames.io/games/2022/unity3/crazy-car-arena/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mad-doctor",
+      "title": "Mad Doctor",
+      "url": "https://www.onlinegames.io/games/2021/4/mad-doctor/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "darkness-survivors",
+      "title": "Darkness Survivors",
+      "url": "https://www.onlinegames.io/games/2024/q2/darkness-survivors/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-hill-climb",
+      "title": "Crazy Hill Climb",
+      "url": "https://www.onlinegames.io/games/2023/construct/209/crazy-hill-climb/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "guerrillas-io",
+      "title": "Guerrillas io",
+      "url": "https://www.onlinegames.io/games/2023/unity2/guerrillas-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "head-soccer-football",
+      "title": "Head Soccer Football",
+      "url": "https://www.onlinegames.io/games/2022/unity/head-soccer-football/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kingdom-attack",
+      "title": "Kingdom Attack",
+      "url": "https://www.onlinegames.io/games/2021/unity3/kingdom-attack/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "baby-beauty-salon",
+      "title": "Baby Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/2/baby-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kick-the-zombie",
+      "title": "Kick the Zombie",
+      "url": "https://www.onlinegames.io/games/2021/2/kick-the-zombie/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "global-guesser",
+      "title": "Global Guesser",
+      "url": "https://cloud.onlinegames.io/games/2025/html/global-guesser/index-og.html#/",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-truck-booster",
+      "title": "Monster Truck Booster",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/223/monster-truck-booster/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "blocky-blast",
+      "title": "Blocky Blast",
+      "url": "https://www.onlinegames.io/games/2022/unity3/blocky-blast/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kings-io",
+      "title": "Kings io",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/208/kings-io/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mafia-getaway-cars",
+      "title": "Mafia Getaway Cars",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/298/mafia-getaway-cars/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "zombie-road",
+      "title": "Zombie Road",
+      "url": "https://www.onlinegames.io/games/2021/unity2/zombie-road/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "skateboard-marathon",
+      "title": "Skateboard Marathon",
+      "url": "https://www.onlinegames.io/games/2022/unity3/skateboard-marathon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dockyard-tank-parking",
+      "title": "Dockyard Tank Parking",
+      "url": "https://www.onlinegames.io/games/2021/unity/dockyard-tank-parking/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kingdom-battle-3d",
+      "title": "Kingdom Battle 3D",
+      "url": "https://cloud.onlinegames.io/games/2025/unity2/kingdom-battle-3d/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "pyramid-solitaire",
+      "title": "Pyramid Solitaire",
+      "url": "https://cloud.onlinegames.io/games/2025/html/solitaire/index-og.html#pyramid",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "rescue-helicopter",
+      "title": "Rescue Helicopter",
+      "url": "https://www.onlinegames.io/games/2021/2/rescue-helicopter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "racing-cars",
+      "title": "Racing Cars",
+      "url": "https://www.onlinegames.io/games/2021/1/racing-cars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "sweet-sugar-match",
+      "title": "Sweet Sugar Match",
+      "url": "https://www.onlinegames.io/games/2022/unity/sweet-sugar-match/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kawaii-shooter",
+      "title": "Kawaii Shooter",
+      "url": "https://cloud.onlinegames.io/games/2024/unity/kawaii-shooter/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "army-driver",
+      "title": "Army Driver",
+      "url": "https://www.onlinegames.io/games/2022/construct/63/army-driver/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "idle-restaurant",
+      "title": "Idle Restaurant",
+      "url": "https://www.onlinegames.io/games/2023/unity2/idle-restaurant/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "egg-helix",
+      "title": "Egg Helix",
+      "url": "https://www.onlinegames.io/games/2022/unity2/egg-helix/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "geometry-rash",
+      "title": "Geometry Rash",
+      "url": "https://www.onlinegames.io/games/2023/construct/279/geometry-rash/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "storm-city-mafia",
+      "title": "Storm City Mafia",
+      "url": "https://www.onlinegames.io/games/2022/unity/storm-city-mafia/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "the-farmer",
+      "title": "The Farmer",
+      "url": "https://www.onlinegames.io/games/2022/unity/the-farmer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-truck-racing",
+      "title": "Monster Truck Racing",
+      "url": "https://www.onlinegames.io/games/2021/1/monster-truck-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "formula-1-driver",
+      "title": "Formula 1 Driver",
+      "url": "https://www.onlinegames.io/games/2022/construct/133/formula-1-driver/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "run-freezenova",
+      "title": "Run FreezeNova",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/run-3/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "stunt-rider",
+      "title": "Stunt Rider",
+      "url": "https://www.onlinegames.io/games/2024/unity/stunt-rider/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "nova-clicker",
+      "title": "Nova Clicker",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/314/nova-clicker/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "kick-the-alien",
+      "title": "Kick the Alien",
+      "url": "https://cloud.onlinegames.io/games/2021/4/kick-the-alien/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cool-brainrot-clicker",
+      "title": "Cool Brainrot Clicker",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/335/cool-brainrot-clicker/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "draw-the-car-path",
+      "title": "Draw the Car Path",
+      "url": "https://cloud.onlinegames.io/games/2021/4/draw-the-car-path/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-karts",
+      "title": "Crazy Karts",
+      "url": "https://www.onlinegames.io/games/2024/unity/crazy-karts/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "davo",
+      "title": "Davo",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/302/davo/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-survivors",
+      "title": "Monster Survivors",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "solitaire",
+      "title": "Solitaire",
+      "url": "https://cloud.onlinegames.io/games/2025/html/solitaire/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-stickman-physics",
+      "title": "Crazy Stickman Physics",
+      "url": "https://www.onlinegames.io/games/2023/construct/185/crazy-stickman-physics/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "geometry-escape",
+      "title": "Geometry Escape",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/299/geometry-escape/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "apocalypse-truck",
+      "title": "Apocalypse Truck",
+      "url": "https://cloud.onlinegames.io/games/2021/1/apocalypse-truck/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "f1-drift-racer",
+      "title": "F1 Drift Racer",
+      "url": "https://www.onlinegames.io/games/2022/construct/134/f1-drift-racer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "neon-racer",
+      "title": "Neon Racer",
+      "url": "https://www.onlinegames.io/games/2021/4/neon-racer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "legends-arena",
+      "title": "Legends Arena",
+      "url": "https://www.onlinegames.io/games/2023/unity2/legends-arena/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "soul-essence-adventure",
+      "title": "Soul Essence Adventure",
+      "url": "https://www.onlinegames.io/games/2022/unity2/soul-essence-adventure/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "tank-racing",
+      "title": "Tank Racing",
+      "url": "https://www.onlinegames.io/games/2022/construct/151/tank-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "bus-subway-runner",
+      "title": "Bus Subway Runner",
+      "url": "https://www.onlinegames.io/games/2022/unity/bus-subway-runner/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "highway-racer-2",
+      "title": "Highway Racer 2",
+      "url": "https://www.onlinegames.io/games/2022/unity2/highway-racer-2/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dinosaur-game",
+      "title": "Dinosaur Game",
+      "url": "https://www.onlinegames.io/games/2023/q2/dinosaur-game/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "voxel-world",
+      "title": "Voxel World",
+      "url": "https://cloud.onlinegames.io/games/2025/unity/voxel-world/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "age-of-battle",
+      "title": "Age Of Battle",
+      "url": "https://cloud.onlinegames.io/games/2026/unity/age-of-battle/game.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "draw-the-truck-bridge",
+      "title": "Draw the Truck Bridge",
+      "url": "https://www.onlinegames.io/games/2022/construct/149/draw-the-truck-bridge/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "draw-the-bridge",
+      "title": "Draw The Bridge",
+      "url": "https://www.onlinegames.io/games/2021/4/draw-the-bridge/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "zombie-war-defense",
+      "title": "Zombie War Defense",
+      "url": "https://www.onlinegames.io/games/2022/unity/zombie-war-defense/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "princesses-prom-night",
+      "title": "Princesses Prom Night",
+      "url": "https://www.onlinegames.io/games/2021/3/princesses-prom-night/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "paradise-girls",
+      "title": "Paradise Girls",
+      "url": "https://www.onlinegames.io/games/2021/4/paradise-girls/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "galactic-driver",
+      "title": "Galactic Driver",
+      "url": "https://www.onlinegames.io/games/2022/construct/65/galactic-driver/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "jul-moto-racing",
+      "title": "Jul Moto Racing",
+      "url": "https://cloud.onlinegames.io/games/2022/construct/122/jul-moto-racing/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "police-chase-drifter",
+      "title": "Police Chase Drifter",
+      "url": "https://www.onlinegames.io/games/2021/3/police-chase-drifter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "basketball-king",
+      "title": "Basketball King",
+      "url": "https://cloud.onlinegames.io/games/2024/construct/316/basketball-king/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "nova-billiard",
+      "title": "Nova Billiard",
+      "url": "https://www.onlinegames.io/games/2021/unity2/nova-billiard/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "motorbike-traffic",
+      "title": "Motorbike Traffic",
+      "url": "https://www.onlinegames.io/games/2021/unity/motorbike-traffic/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "paw-clicker",
+      "title": "Paw Clicker",
+      "url": "https://cloud.onlinegames.io/games/2025/construct/331/paw-clicker/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "2048",
+      "title": "2048",
+      "url": "https://cloud.onlinegames.io/games/2025/html/2048/index.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "cross-the-road",
+      "title": "Cross the Road",
+      "url": "https://www.onlinegames.io/games/2023/unity/cross-the-road/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "shortcut-race",
+      "title": "Shortcut Race",
+      "url": "https://www.onlinegames.io/games/2023/construct/237/shortcut-race/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "princess-beauty-salon",
+      "title": "Princess Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/1/princess-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "powerslide-kart-simulator",
+      "title": "Powerslide Kart Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity3/powerslide-kart-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-truck-race-arena",
+      "title": "Monster Truck Race Arena",
+      "url": "https://cloud.onlinegames.io/games/2021/3/monster-truck-race-arena/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "truck-racing",
+      "title": "Truck Racing",
+      "url": "https://www.onlinegames.io/games/2022/construct/144/truck-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "treasure-hunter",
+      "title": "Treasure Hunter",
+      "url": "https://www.onlinegames.io/games/2022/construct/164/treasure-hunter/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hook-wars",
+      "title": "Hook Wars",
+      "url": "https://www.onlinegames.io/games/2023/unity3/hook-wars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "owl-and-rabbit-fashion",
+      "title": "Owl and Rabbit Fashion",
+      "url": "https://www.onlinegames.io/games/2021/2/owl-and-rabbit-fashion/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "secret-sniper-agent",
+      "title": "Secret Sniper Agent",
+      "url": "https://www.onlinegames.io/games/2022/construct/129/secret-sniper-agent/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "snake",
+      "title": "Snake",
+      "url": "https://cloud.onlinegames.io/games/2024/phaser/snake/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "speed-drift-racing",
+      "title": "Speed Drift Racing",
+      "url": "https://www.onlinegames.io/games/2022/construct/124/speed-drift-racing/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "monster-truck-city-parking",
+      "title": "Monster Truck City Parking",
+      "url": "https://www.onlinegames.io/games/2021/unity/monster-truck-city-parking/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "head-basketball",
+      "title": "Head Basketball",
+      "url": "https://www.onlinegames.io/games/2022/unity/head-basketball/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "war-of-ships-io",
+      "title": "War of Ships io",
+      "url": "https://www.onlinegames.io/games/2022/unity3/war-of-ships-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "unicorn-beauty-salon",
+      "title": "Unicorn Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/1/unicorn-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "tractor-farming-simulator",
+      "title": "Tractor Farming Simulator",
+      "url": "https://www.onlinegames.io/games/2022/unity/tractor-farming-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "highway-moto",
+      "title": "Highway Moto",
+      "url": "https://cloud.onlinegames.io/games/2024/unity/highway-moto/index-og.html",
+      "domain": "cloud.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "trains-io",
+      "title": "Trains io",
+      "url": "https://www.onlinegames.io/games/2023/construct/235/trains-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "snake-wars",
+      "title": "Snake Wars",
+      "url": "https://www.onlinegames.io/games/2024/unity/snake-wars/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "witch-beauty-salon",
+      "title": "Witch Beauty Salon",
+      "url": "https://www.onlinegames.io/games/2021/2/witch-beauty-salon/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "mr-space-bullet",
+      "title": "Mr Space Bullet",
+      "url": "https://www.onlinegames.io/games/2021/4/mr-space-bullet/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "hover-racer",
+      "title": "Hover Racer",
+      "url": "https://www.onlinegames.io/games/2021/unity3/hover-racer/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "draw-the-bird-path",
+      "title": "Draw the Bird Path",
+      "url": "https://www.onlinegames.io/games/2022/construct/147/draw-the-bird-path/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "run-3-space",
+      "title": "Run 3 Space",
+      "url": "https://www.onlinegames.io/games/2023/construct/192/run-3-space/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "racing-cars-2",
+      "title": "Racing Cars 2",
+      "url": "https://www.onlinegames.io/games/2021/4/racing-cars-2/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "toonz-io",
+      "title": "ToonZ io",
+      "url": "https://www.onlinegames.io/games/2021/unity3/toonz-io/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "squid-race-simulator",
+      "title": "Squid Race Simulator",
+      "url": "https://www.onlinegames.io/games/2021/unity3/squid-race-simulator/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "dino-chaos-idle",
+      "title": "Dino Chaos Idle",
+      "url": "https://www.onlinegames.io/games/2023/unity3/dino-chaos-idle/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "funny-shooter-bro",
+      "title": "Funny Shooter Bro",
+      "url": "https://www.onlinegames.io/games/2024/unity/funny-shooter-bro/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    },
+    {
+      "id": "crazy-ball-adventures",
+      "title": "Crazy Ball Adventures",
+      "url": "https://www.onlinegames.io/games/2021/unity2/crazy-ball-adventures/index.html",
+      "domain": "www.onlinegames.io",
+      "heuristicFlag": true,
+      "keywordHits": [],
+      "adsInjected": true,
+      "notes": ""
+    }
+  ]
+}

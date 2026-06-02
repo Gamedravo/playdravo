@@ -122,6 +122,7 @@ import { SearchPage } from './pages/SearchPage';
 import { markRouteVisited } from './lib/routeVisitCache';
 import { isAdminEmail } from './lib/brandContact';
 import { devLog } from './lib/devLog';
+import { withAdsInjectedFlag } from './lib/adsInjection';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
@@ -344,7 +345,8 @@ function AppContent() {
     localStorage.setItem('language', language);
   }, [language]);
 
-  const [games, setGames] = useState<Game[]>(STATIC_GAMES);
+  const staticGames = useMemo(() => STATIC_GAMES.map((g) => withAdsInjectedFlag(g)), []);
+  const [games, setGames] = useState<Game[]>(staticGames);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -360,7 +362,7 @@ function AppContent() {
     if (cat !== 'All') {
       Analytics.trackCategoryVisit(cat);
     }
-  }, []);
+  }, [staticGames]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGame, setActiveGame] = useState<Game | null>(null);
@@ -429,7 +431,7 @@ function AppContent() {
   useEffect(() => {
     markRouteVisited('/');
     markRouteVisited('/search');
-  }, []);
+  }, [staticGames]);
 
   useEffect(() => {
     markRouteVisited(location.pathname);
@@ -543,6 +545,7 @@ function AppContent() {
   useEffect(() => {
     // Combined auth initialization
     let unsubscribeAuth: (() => void) | undefined;
+    let cancelled = false;
     
     // Safety timeout for auth initialization
     const authTimeout = setTimeout(() => {
@@ -551,60 +554,84 @@ function AppContent() {
         setIsAuthReady(true);
       }
     }, 12000); // 12 second safety net
+    (async () => {
+      // Ensure persistence is set BEFORE we install listeners so popup OAuth updates the UI immediately.
+      await persistencePromise.catch(() => undefined);
+      if (cancelled) return;
 
-    // Monitor for redirect results
-    const redirectPromise = getRedirectResult(auth).then((result) => {
-      if (result?.user) {
-        appToast.success(t('loginSuccess') || 'Successfully logged in!');
-      }
-    }).catch((error) => {
-      console.error("Redirect login error:", error);
-      if (error.code === 'auth/unauthorized-domain') {
-        appToast.error('Unauthorized domain.', {
-          description: "Please add this URL to your Firebase Authorized Domains.",
-          duration: 6000
+      // Monitor for redirect results
+      getRedirectResult(auth)
+        .then((result) => {
+          if (result?.user) {
+            appToast.success(t('loginSuccess') || 'Successfully logged in!');
+          }
+        })
+        .catch((error) => {
+          console.error("Redirect login error:", error);
+          if (error.code === 'auth/unauthorized-domain') {
+            appToast.error('Unauthorized domain.', {
+              description: "Please add this URL to your Firebase Authorized Domains.",
+              duration: 6000
+            });
+          } else if (error.code === 'auth/web-storage-unsupported' || error.message.includes('cookie')) {
+            appToast.error('Cookies Blocked', {
+              description: "Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.",
+              duration: 8000
+            });
+          }
         });
-      } else if (error.code === 'auth/web-storage-unsupported' || error.message.includes('cookie')) {
-        appToast.error('Cookies Blocked', {
-          description: "Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.",
-          duration: 8000
-        });
-      }
-    });
 
-    // Main auth listener
-    unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
-      devLog('onAuthStateChanged triggered. User:', firebaseUser?.uid);
-      setUser(firebaseUser);
-      clearTimeout(authTimeout);
-      
-      if (firebaseUser) {
-        // Fetch or create user profile
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        try {
-          const userDoc = await getDoc(userDocRef);
-          
-          if (userDoc.exists()) {
-            const profile = userDoc.data() as UserProfile;
-            // Force admin role for the designated email
-            if (isAdminEmail(firebaseUser.email)) {
-              profile.role = 'admin';
-            }
-            setUserProfile(profile);
-            if (!profile.usernameSet) {
+      // Main auth listener
+      unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+        devLog('onAuthStateChanged triggered. User:', firebaseUser?.uid);
+        setUser(firebaseUser);
+        clearTimeout(authTimeout);
+        
+        if (firebaseUser) {
+          // Fetch or create user profile
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          try {
+            const userDoc = await getDoc(userDocRef);
+            
+            if (userDoc.exists()) {
+              const profile = userDoc.data() as UserProfile;
+              // Force admin role for the designated email
+              if (isAdminEmail(firebaseUser.email)) {
+                profile.role = 'admin';
+              }
+              setUserProfile(profile);
+              if (!profile.usernameSet) {
+                setIsUsernameModalOpen(true);
+              }
+              if (profile.accentColor) setAccentColor(profile.accentColor);
+              if (profile.isDarkMode !== undefined) setIsDarkMode(profile.isDarkMode);
+              if (profile.favorites) setFavorites([...new Set(profile.favorites)]);
+              if (profile.playHistory) setPlayHistory([...new Set(profile.playHistory)]);
+              if (profile.preferredCategories) setPreferredCategories(profile.preferredCategories);
+              if (profile.gamerPersona) {
+                setGamerPersona(profile.gamerPersona);
+              }
+            } else {
+              devLog('Creating new profile for user:', firebaseUser.uid);
+              const newProfile: UserProfile = {
+                uid: firebaseUser.uid,
+                displayName: firebaseUser.displayName || 'Anonymous',
+                email: firebaseUser.email || '',
+                photoURL: firebaseUser.photoURL || '',
+                role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
+                favorites: [],
+                xp: 0,
+                createdAt: new Date().toISOString()
+              };
+              await setDoc(userDocRef, newProfile);
+              setUserProfile(newProfile);
               setIsUsernameModalOpen(true);
             }
-            if (profile.accentColor) setAccentColor(profile.accentColor);
-            if (profile.isDarkMode !== undefined) setIsDarkMode(profile.isDarkMode);
-            if (profile.favorites) setFavorites([...new Set(profile.favorites)]);
-            if (profile.playHistory) setPlayHistory([...new Set(profile.playHistory)]);
-            if (profile.preferredCategories) setPreferredCategories(profile.preferredCategories);
-            if (profile.gamerPersona) {
-              setGamerPersona(profile.gamerPersona);
-            }
-          } else {
-            devLog('Creating new profile for user:', firebaseUser.uid);
-            const newProfile: UserProfile = {
+          } catch (error: any) {
+            console.error("Error fetching or creating user profile:", error);
+            handleFirestoreError(error, OperationType.WRITE, `users/${firebaseUser.uid}`);
+            // Fallback so the user is still logged in locally even if Firestore fails
+            setUserProfile({
               uid: firebaseUser.uid,
               displayName: firebaseUser.displayName || 'Anonymous',
               email: firebaseUser.email || '',
@@ -613,36 +640,20 @@ function AppContent() {
               favorites: [],
               xp: 0,
               createdAt: new Date().toISOString()
-            };
-            await setDoc(userDocRef, newProfile);
-            setUserProfile(newProfile);
-            setIsUsernameModalOpen(true);
+            });
+          } finally {
+            setIsAuthReady(true);
           }
-        } catch (error: any) {
-          console.error("Error fetching or creating user profile:", error);
-          handleFirestoreError(error, OperationType.WRITE, `users/${firebaseUser.uid}`);
-          // Fallback so the user is still logged in locally even if Firestore fails
-          setUserProfile({
-            uid: firebaseUser.uid,
-            displayName: firebaseUser.displayName || 'Anonymous',
-            email: firebaseUser.email || '',
-            photoURL: firebaseUser.photoURL || '',
-            role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
-            favorites: [],
-            xp: 0,
-            createdAt: new Date().toISOString()
-          });
-        } finally {
+        } else {
+          setUserProfile(null);
+          setGamerPersona(null);
           setIsAuthReady(true);
         }
-      } else {
-        setUserProfile(null);
-        setGamerPersona(null);
-        setIsAuthReady(true);
-      }
-    });
+      });
+    })();
 
     return () => {
+      cancelled = true;
       if (unsubscribeAuth) unsubscribeAuth();
       clearTimeout(authTimeout);
     };
@@ -813,7 +824,7 @@ function AppContent() {
       const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
       
       // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
-      const gamesMap = new Map(STATIC_GAMES.map((g) => [g.id, { ...g }]));
+      const gamesMap = new Map(staticGames.map((g) => [g.id, { ...g }]));
       gamesData.forEach((game) => {
         const catalog = gamesMap.get(game.id);
         if (!catalog) return;
@@ -830,10 +841,10 @@ function AppContent() {
       console.error("Games listener failed:", error);
       handleFirestoreError(error, OperationType.LIST, 'games');
       // Fallback to static games on error
-      setGames(STATIC_GAMES);
+      setGames(staticGames);
     });
     return () => unsubscribe();
-  }, []);
+  }, [staticGames]);
 
   // Real-time New Arrivals Listener
   useEffect(() => {
@@ -844,7 +855,7 @@ function AppContent() {
     );
     const unsubscribe = onSnapshot(q, () => {
       setNewArrivals(
-        [...STATIC_GAMES]
+        [...staticGames]
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 12)
       );
@@ -852,7 +863,7 @@ function AppContent() {
       handleFirestoreError(error, OperationType.LIST, 'games');
     });
     return () => unsubscribe();
-  }, []);
+  }, [staticGames]);
 
   // Real-time Mods Listener for Active Game
   useEffect(() => {
@@ -1444,6 +1455,12 @@ function AppContent() {
       }
       return { game, score };
     }).filter(({ game, score }) => {
+      // Exclude known ad-injecting embeds from discovery surfaces to protect UX.
+      // Still allow direct search + user-specific lists (Favorites / History).
+      const allowAdHeavy =
+        !game.adsInjected || Boolean(query) || selectedCategory === 'Favorites' || selectedCategory === 'History';
+      if (!allowAdHeavy) return false;
+
       const matchesCategory = selectedCategory === 'All' || selectedCategory === 'Trending'
         ? true 
         : selectedCategory === 'Favorites' 
@@ -1497,7 +1514,7 @@ function AppContent() {
       .slice(0, 20);
   }, [playHistory, games]);
 
-  const featuredGame = games[0] || STATIC_GAMES[0];
+  const featuredGame = games.find((g) => !g.adsInjected) || staticGames[0];
 
   const handleClaimBonus = () => {
     if (!canClaimBonus) return;

@@ -188,6 +188,15 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+    // Ensure correct content-types for SEO-critical static files (avoid SPA fallback).
+    app.get('/sitemap.xml', (_req, res) => {
+      res.type('application/xml');
+      res.sendFile(path.join(distPath, 'sitemap.xml'));
+    });
+    app.get('/robots.txt', (_req, res) => {
+      res.type('text/plain');
+      res.sendFile(path.join(distPath, 'robots.txt'));
+    });
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));

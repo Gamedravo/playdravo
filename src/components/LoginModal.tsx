@@ -194,7 +194,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/70 z-[1900]"
+            className="fixed inset-0 bg-black/90 z-[1900]"
           />
           <div className="relative z-[2000] w-full h-full" onClick={onClose}>
             <div className="min-h-[100dvh] flex items-center justify-center p-4">

@@ -45,6 +45,7 @@ import { appToast } from '../lib/appToast';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GameThumbnail } from '../components/GameThumbnail';
+import { GamePreviewPlayer } from '../components/GamePreviewPlayer';
 import { Analytics } from '../lib/analytics';
 
 const safeFormatDate = (createdAt: any) => {
@@ -157,6 +158,16 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   // Check embed compatibility
   useEffect(() => {
+    // Hard-block ad-injecting embeds (they hurt UX and can violate ad policies).
+    if (game?.adsInjected) {
+      setEmbedStatus({
+        checked: true,
+        embeddable: false,
+        reason: 'Blocked: this embed source injects third‑party ads.',
+      });
+      return;
+    }
+
     if (game?.url && !embedStatus.checked) {
       const checkEmbed = async () => {
         try {
@@ -184,7 +195,7 @@ export const GamePage: React.FC<GamePageProps> = ({
       };
       checkEmbed();
     }
-  }, [game?.url, embedStatus.checked]);
+  }, [game?.url, game?.adsInjected, embedStatus.checked]);
 
   // Monitor loading timeout
   useEffect(() => {
@@ -446,7 +457,19 @@ export const GamePage: React.FC<GamePageProps> = ({
         description={`Play ${game.title} online for free. ${game.description?.substring(0, 100) || 'Play instantly in your browser.'} Best games on PlayDravo.`}
         keywords={`${game.title}, play ${game.title}, free ${game.category} game, PlayDravo`}
         image={game.thumbnail}
-        url={window.location.href}
+        canonicalUrl={`${window.location.origin}/games/${game.id}`}
+        url={`${window.location.origin}/games/${game.id}`}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'VideoGame',
+          name: game.title,
+          description: game.description || `Play ${game.title} online for free on PlayDravo.`,
+          url: `${window.location.origin}/games/${game.id}`,
+          image: game.thumbnail,
+          genre: game.category,
+          operatingSystem: 'Web',
+          applicationCategory: 'Game',
+        }}
       />
 
       <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-3 md:py-4">
@@ -517,6 +540,11 @@ export const GamePage: React.FC<GamePageProps> = ({
                         const isMobile = window.innerWidth < 1024;
                         if (isMobile && game.mobileOptimization === 'desktop-only' && !showMobileWarning) {
                           setShowMobileWarning(true);
+                          return;
+                        }
+                        if (game.adsInjected) {
+                          appToast.info('This game contains third-party ads. Opening in standalone mode.');
+                          window.open(game.url, '_blank');
                           return;
                         }
                         setIsPlaying(true);
@@ -921,6 +949,7 @@ export const GamePage: React.FC<GamePageProps> = ({
 
                 <section>
                   <h3 className="text-lg font-bold tracking-tight mb-4">Screenshots & Media</h3>
+                  <GamePreviewPlayer game={game} className="mb-4" />
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {[1, 2, 3].map((num) => (
                       <div key={num} className={`aspect-video rounded-xl overflow-hidden border ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>

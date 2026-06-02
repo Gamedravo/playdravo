@@ -49,6 +49,9 @@ export interface Game {
   /** Hover preview GIF fallback when no MP4 */
   previewGifUrl?: string;
 
+  /** True when the embed source is known to inject intrusive third-party ads. */
+  adsInjected?: boolean;
+
   // Authenticity & Quality Control metrics
   sourceId?: string;
   validationState?: 'Verified Working' | 'Needs Review' | 'Unavailable';

@@ -297,6 +297,12 @@ export const HomePage = React.memo(function HomePage({
         description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
         keywords="free online games, play games online, browser games, 2048, hextris, slope, tetris"
         url={window.location.href}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'PlayDravo',
+          url: window.location.origin,
+        }}
       />
 
       <SectionErrorBoundary sectionName="Featured Spotlight">

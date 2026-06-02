@@ -26,18 +26,8 @@ export function GameCardHoverPreview({ game, gameId, active, isDarkMode }: GameC
       return;
     }
 
-    console.log(game.title);
-    console.log(game.previewVideoUrl);
-    console.log(game.thumbnail);
-
     return subscribeHoverPreview((id) => setSessionActive(id === gameId));
   }, [active, gameId, game.title, game.previewVideoUrl, game.thumbnail]);
-
-  useEffect(() => {
-    if (!active) return;
-
-    console.log('[Preview]', game.title, current.url, current.kind);
-  }, [active, game.title, current.url, current.kind]);
 
   useEffect(() => {
     const video = videoRef.current;
