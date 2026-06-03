@@ -1,6 +1,6 @@
 # Ads Injection Report
 
-Generated: 2026-06-02T20:32:20.564Z
+Generated: 2026-06-03T14:34:02.302Z
 
 Mode: heuristic-only
 
