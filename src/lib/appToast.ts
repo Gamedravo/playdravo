@@ -45,7 +45,8 @@ function baseOptions(overrides?: ExternalToast): ExternalToast {
   const isMobile = window.innerWidth < 768;
 
   return {
-    duration: gameMode ? 4000 : (isMobile ? 5000 : 7500),
+    duration: gameMode ? 3000 : (isMobile ? 4000 : 7500),
+    position: gameMode ? 'bottom-center' : (isMobile ? 'top-center' : 'top-right'),
     classNames: {
       toast: gameMode ? 'app-toast app-toast--game' : (isMobile ? 'app-toast app-toast--mobile' : 'app-toast'),
       title: gameMode ? 'app-toast-title app-toast-title--game' : (isMobile ? 'app-toast-title app-toast-title--mobile' : 'app-toast-title'),
@@ -68,13 +69,30 @@ export const appToast = {
   error(title: string, overrides?: ExternalToast) {
     enqueueToast(() => sonnerToast.error(title, baseOptions({ duration: 8000, ...overrides })));
   },
+  /** Compact achievement toast - positioned at bottom during gameplay to avoid covering content */
+  achievement(title: string, xp?: number, overrides?: ExternalToast) {
+    enqueueToast(() =>
+      sonnerToast(title, baseOptions({
+        duration: 3500,
+        position: 'bottom-center',
+        classNames: {
+          toast: 'app-toast app-toast--achievement',
+          title: 'app-toast-title app-toast-title--achievement',
+          description: 'app-toast-desc app-toast-desc--achievement',
+        },
+        description: xp ? `+${xp} XP` : undefined,
+        ...overrides,
+      }))
+    );
+  },
   /** Drop low-priority toasts while playing */
   game(title: string, description?: string) {
     if (gameMode && QUEUE.length > 2) return;
     enqueueToast(() =>
       sonnerToast(title, baseOptions({
         description,
-        duration: 4500,
+        duration: 3000,
+        position: 'bottom-center',
         classNames: {
           toast: 'app-toast app-toast--game',
           title: 'app-toast-title app-toast-title--game',

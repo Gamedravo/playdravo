@@ -7,10 +7,13 @@ export interface HomepageCategoryChip {
   slug: string;
   matchers: RegExp[];
   bg: string;
+  /** If true, match against game.mobileOptimization instead of tags/title/category */
+  mobileFilter?: boolean;
 }
 
 /** Browse chips — matched against tags, category, and title. */
 export const HOMEPAGE_CATEGORY_CHIPS: HomepageCategoryChip[] = [
+  { id: 'mobile', title: 'Mobile Games', icon: '📱', slug: 'mobile', matchers: [], bg: 'from-cyan-500/10 to-blue-500/5 hover:border-cyan-500/30', mobileFilter: true },
   { id: 'action', title: 'Action', icon: '⚔️', slug: 'action', matchers: [/\baction\b/i], bg: 'from-rose-500/10 to-red-500/5 hover:border-rose-500/30' },
   { id: 'shooter', title: 'Shooter', icon: '🎯', slug: 'shooter', matchers: [/\bshooting\b/i, /\bfps\b/i, /\bfirst person shooter\b/i, /\bsniper\b/i, /\bgun\b/i], bg: 'from-orange-500/10 to-red-500/5 hover:border-orange-500/30' },
   { id: 'racing', title: 'Racing', icon: '🏎️', slug: 'racing', matchers: [/\bracing\b/i, /\bdrift\b/i, /\bendless runner\b/i], bg: 'from-amber-500/10 to-orange-500/5 hover:border-amber-500/30' },
@@ -41,6 +44,9 @@ function haystack(game: Game): string {
 }
 
 export function countGamesForChip(games: Game[], chip: HomepageCategoryChip): number {
+  if (chip.mobileFilter) {
+    return games.filter((g) => g.mobileOptimization === 'touch-friendly' || g.mobileOptimization === 'responsive').length;
+  }
   return games.filter((g) => chip.matchers.some((m) => m.test(haystack(g)))).length;
 }
 
@@ -48,4 +54,18 @@ export function buildHomepageCategoryChips(games: Game[], minCount = 1) {
   return HOMEPAGE_CATEGORY_CHIPS.filter(
     (chip) => countGamesForChip(games, chip) >= minCount
   );
+}
+
+/** Get mobile-optimized games for "Best On Mobile" shelf */
+export function getMobileOptimizedGames(games: Game[]): Game[] {
+  return games
+    .filter((g) => g.mobileOptimization === 'touch-friendly' || g.mobileOptimization === 'responsive')
+    .sort((a, b) => {
+      // Prioritize touch-friendly over responsive
+      const aPriority = a.mobileOptimization === 'touch-friendly' ? 1 : 0;
+      const bPriority = b.mobileOptimization === 'touch-friendly' ? 1 : 0;
+      if (bPriority !== aPriority) return bPriority - aPriority;
+      // Then sort by rating * plays for overall quality
+      return (b.rating * b.plays) - (a.rating * a.plays);
+    });
 }

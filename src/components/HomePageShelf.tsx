@@ -1,9 +1,9 @@
 import { memo, RefObject } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Smartphone } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
 
-export type ShelfVariant = 'standard' | 'accent' | 'compact';
+export type ShelfVariant = 'standard' | 'accent' | 'compact' | 'mobile';
 
 interface HomePageShelfProps {
   title: string;
@@ -49,7 +49,10 @@ export const HomePageShelf = memo(function HomePageShelf({
     <section className={`shelf-section shelf-section--${variant} group/shelf`}>
       <div className="shelf-header shelf-header--premium">
         <div className="shelf-header-copy">
-          <p className="shelf-header-subtitle">{subtitle}</p>
+          <p className={`shelf-header-subtitle ${variant === 'mobile' ? 'flex items-center gap-1.5' : ''}`}>
+            {variant === 'mobile' && <Smartphone className="w-3 h-3" />}
+            {subtitle}
+          </p>
           <h3 className="shelf-header-title">{title}</h3>
         </div>
         <div className="shelf-header-actions">

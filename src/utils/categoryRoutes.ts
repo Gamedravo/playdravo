@@ -61,6 +61,8 @@ export function getCategoryDisplayName(slug: string, fallbackGames: Game[]): str
       return 'Top Rated';
     case 'recommended':
       return 'Recommended';
+    case 'mobile':
+      return 'Mobile';
     default: {
       const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
       if (chip) return chip.title;
@@ -142,9 +144,26 @@ export function filterGamesForCategorySlug(
         .slice(0, 24);
     }
 
+    case 'mobile': {
+      // Mobile-optimized games
+      return games
+        .filter((g) => g.mobileOptimization === 'touch-friendly' || g.mobileOptimization === 'responsive')
+        .sort((a, b) => {
+          // Prioritize touch-friendly over responsive
+          const aPriority = a.mobileOptimization === 'touch-friendly' ? 1 : 0;
+          const bPriority = b.mobileOptimization === 'touch-friendly' ? 1 : 0;
+          if (bPriority !== aPriority) return bPriority - aPriority;
+          return (b.rating * b.plays) - (a.rating * a.plays);
+        });
+    }
+
     default: {
       const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
       if (chip) {
+        // Handle mobile filter chips separately
+        if (chip.mobileFilter) {
+          return games.filter((g) => g.mobileOptimization === 'touch-friendly' || g.mobileOptimization === 'responsive');
+        }
         return games.filter((g) => chip.matchers.some((m) => m.test(gameHaystack(g))));
       }
       const label = SLUG_TO_LABEL[lower];
