@@ -122,7 +122,7 @@ import { SearchPage } from './pages/SearchPage';
 import { markRouteVisited } from './lib/routeVisitCache';
 import { isAdminEmail } from './lib/brandContact';
 import { devLog } from './lib/devLog';
-import { withAdsInjectedFlag } from './lib/adsInjection';
+import { withSafetyMetadata } from './lib/adsInjection';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
@@ -176,7 +176,9 @@ const categoryKeyMap: Record<string, keyof typeof translations['en']> = {
   'Favorites': 'favorites',
   'Recommended': 'recommended',
   'History': 'history',
-  'Trending': 'trending'
+  'Trending': 'trending',
+  'Mobile Games': 'mobileGames',
+  'Best On Mobile': 'bestOnMobile'
 };
 
 // Error Boundary Component
@@ -345,7 +347,7 @@ function AppContent() {
     localStorage.setItem('language', language);
   }, [language]);
 
-  const staticGames = useMemo(() => STATIC_GAMES.map((g) => withAdsInjectedFlag(g)), []);
+  const staticGames = useMemo(() => STATIC_GAMES.map((g) => withSafetyMetadata(g)), []);
   const [games, setGames] = useState<Game[]>(staticGames);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -363,7 +365,6 @@ function AppContent() {
       Analytics.trackCategoryVisit(cat);
     }
   }, [staticGames]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGame, setActiveGame] = useState<Game | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -519,16 +520,21 @@ function AppContent() {
 
   const categoryGroups = useMemo(() => {
     const mainMenu = ['All', 'Favorites', 'Recommended', 'History', 'Trending'];
+    const mobile = ['Mobile Games', 'Best On Mobile'];
     const multiplayer = ['Multiplayer', '2 Player', '3 Player', '4 Player'];
     
-    // Any category not in mainMenu or multiplayer goes into general Categories
-    const allKnown = [...mainMenu, ...multiplayer];
+    // Any category not in mainMenu, mobile, or multiplayer goes into general Categories
+    const allKnown = [...mainMenu, ...mobile, ...multiplayer];
     const gameCategories = CATEGORIES.filter(c => !allKnown.includes(c)).sort();
 
     return [
       {
         title: 'Main Menu',
         items: mainMenu.filter(cat => CATEGORIES.includes(cat))
+      },
+      {
+        title: 'Mobile',
+        items: mobile.filter(cat => CATEGORIES.includes(cat))
       },
       {
         title: 'Categories',
@@ -1432,7 +1438,7 @@ function AppContent() {
 
   useEffect(() => {
     setDisplayLimit(48);
-  }, [selectedCategory, searchQuery, sortBy, selectedTags]);
+  }, [selectedCategory, searchQuery, sortBy]);
 
   const filteredGames = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -1455,12 +1461,6 @@ function AppContent() {
       }
       return { game, score };
     }).filter(({ game, score }) => {
-      // Exclude known ad-injecting embeds from discovery surfaces to protect UX.
-      // Still allow direct search + user-specific lists (Favorites / History).
-      const allowAdHeavy =
-        !game.adsInjected || Boolean(query) || selectedCategory === 'Favorites' || selectedCategory === 'History';
-      if (!allowAdHeavy) return false;
-
       const matchesCategory = selectedCategory === 'All' || selectedCategory === 'Trending'
         ? true 
         : selectedCategory === 'Favorites' 
@@ -1473,16 +1473,9 @@ function AppContent() {
                 ? (game.mods && game.mods.length > 0)
                 : game.category === selectedCategory;
       
-      const matchesTags = selectedTags.length === 0 
-        ? true 
-        : selectedTags.some(tag => {
-            const gameTags = game.tags || [game.category];
-            return gameTags.some(gameTag => gameTag?.toLowerCase() === tag.toLowerCase());
-          });
-
       const matchesSearch = !query ? true : score > 0;
       
-      return matchesCategory && matchesTags && matchesSearch;
+      return matchesCategory && matchesSearch;
     });
 
     return filteredWithScores.sort((a, b) => {
@@ -1501,7 +1494,7 @@ function AppContent() {
       if (sortBy === 'title') return ga.title.localeCompare(gb.title);
       return 0;
     }).map(item => item.game);
-  }, [selectedCategory, selectedTags, searchQuery, sortBy, games, favorites, playHistory, recommendedGames]);
+  }, [selectedCategory, searchQuery, sortBy, games, favorites, playHistory, recommendedGames]);
 
   const displayedGames = useMemo(() => {
     return filteredGames.slice(0, displayLimit);
@@ -1692,6 +1685,7 @@ function AppContent() {
                 <SearchPage
                   isDarkMode={isDarkMode}
                   t={t}
+                  games={games}
                   toggleFavorite={toggleFavorite}
                   userProfile={userProfile}
                   searchQuery={searchQuery}
@@ -1720,9 +1714,6 @@ function AppContent() {
                       filteredGames={filteredGames}
                       sortBy={sortBy}
                       setSortBy={setSortBy as (sort: "title" | "plays" | "rating") => void}
-                      selectedTags={selectedTags}
-                      setSelectedTags={setSelectedTags}
-                      TAGS_LIST={TAGS_LIST}
                       displayLimit={displayLimit}
                       setDisplayLimit={setDisplayLimit}
                       handleGameClick={handleGameClick}

@@ -56,6 +56,8 @@ export const translations = {
     card: "Card",
     board: "Board",
     indie: "Indie",
+    mobileGames: "Mobile Games",
+    bestOnMobile: "Best On Mobile",
     loadMore: "Load More Games",
     trendingNow: "Trending Now",
     games: "Games",

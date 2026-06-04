@@ -42,12 +42,14 @@ function baseOptions(overrides?: ExternalToast): ExternalToast {
   }
   lastToastAt = now;
 
+  const isMobile = window.innerWidth < 768;
+
   return {
-    duration: gameMode ? 5000 : 7500,
+    duration: gameMode ? 4000 : (isMobile ? 5000 : 7500),
     classNames: {
-      toast: gameMode ? 'app-toast app-toast--game' : 'app-toast',
-      title: gameMode ? 'app-toast-title app-toast-title--game' : 'app-toast-title',
-      description: gameMode ? 'app-toast-desc app-toast-desc--game' : 'app-toast-desc',
+      toast: gameMode ? 'app-toast app-toast--game' : (isMobile ? 'app-toast app-toast--mobile' : 'app-toast'),
+      title: gameMode ? 'app-toast-title app-toast-title--game' : (isMobile ? 'app-toast-title app-toast-title--mobile' : 'app-toast-title'),
+      description: gameMode ? 'app-toast-desc app-toast-desc--game' : (isMobile ? 'app-toast-desc app-toast-desc--mobile' : 'app-toast-desc'),
     },
     ...overrides,
   };

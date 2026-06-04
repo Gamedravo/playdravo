@@ -8,7 +8,7 @@ interface HeaderBrandProps {
   onHome?: () => void;
 }
 
-/** Single brand instance: mobile always; desktop only when sidebar collapsed. */
+/** Single brand instance: show in Header only when Sidebar is closed. */
 export const HeaderBrand = memo(function HeaderBrand({ onHome }: HeaderBrandProps) {
   const navigate = useNavigate();
   const sidebarOpen = useSidebarOpen();
@@ -20,10 +20,8 @@ export const HeaderBrand = memo(function HeaderBrand({ onHome }: HeaderBrandProp
     document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
-  // On mobile, sidebar is always an overlay, so always show brand in header
-  // On desktop, only show brand when sidebar is collapsed (sidebar owns brand when open)
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const shouldShowBrand = isMobile || !sidebarOpen;
+  // Avoid duplicate logos: when the sidebar is open, it owns the brand area.
+  const shouldShowBrand = !sidebarOpen;
 
   return (
     <PlayDravoLogo

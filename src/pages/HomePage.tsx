@@ -45,9 +45,6 @@ interface HomePageProps {
   filteredGames: Game[];
   sortBy: "title" | "plays" | "rating" | "latest";
   setSortBy: (sort: "title" | "plays" | "rating" | "latest") => void;
-  selectedTags: string[];
-  setSelectedTags: (tags: string[]) => void;
-  TAGS_LIST: string[];
   displayLimit: number;
   setDisplayLimit: (limit: number | ((prev: number) => number)) => void;
   handleGameClick: (game: Game) => void;
@@ -71,7 +68,6 @@ interface HomePageProps {
 
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves } from '../utils/recommendations';
-import { buildTagShelves } from '../lib/tagShelves';
 import { buildHomepageCategoryChips } from '../lib/homepageCategories';
 import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from '../lib/homepageCuration';
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
@@ -95,9 +91,6 @@ export const HomePage = React.memo(function HomePage({
   filteredGames,
   sortBy,
   setSortBy,
-  selectedTags,
-  setSelectedTags,
-  TAGS_LIST,
   displayLimit,
   setDisplayLimit,
   handleGameClick,
@@ -226,14 +219,9 @@ export const HomePage = React.memo(function HomePage({
     [recommendedGames, filteredGames]
   );
 
-  const tagShelves = React.useMemo(
-    () => buildTagShelves(filteredGames),
-    [filteredGames]
-  );
-
   const curatedBlocks = React.useMemo(
-    () => buildCuratedHomepageBlocks(homepageShelves, tagShelves, filteredGames, 4),
-    [homepageShelves, tagShelves, filteredGames]
+    () => buildCuratedHomepageBlocks(homepageShelves, {}, filteredGames, 4),
+    [homepageShelves, filteredGames]
   );
 
   const featuredSpotlight = React.useMemo(
@@ -584,9 +572,6 @@ export const HomePage = React.memo(function HomePage({
         isDarkMode={isDarkMode}
         sortBy={sortBy}
         setSortBy={setSortBy}
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        TAGS_LIST={TAGS_LIST}
         displayLimit={displayLimit}
         handleGameClick={handleGameClick}
         setSearchQuery={setSearchQuery}

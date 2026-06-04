@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-06-03T18:39:24.460Z",
+  "totals": {
+    "catalog": 268,
+    "visible": 268,
+    "disabled": 1,
+    "invalid": 0
+  },
+  "categories": [
+    {
+      "category": "Racing",
+      "count": 83,
+      "categoryPath": "/category/racing"
+    },
+    {
+      "category": "Action",
+      "count": 48,
+      "categoryPath": "/category/action"
+    },
+    {
+      "category": "Arcade",
+      "count": 25,
+      "categoryPath": "/category/arcade"
+    },
+    {
+      "category": "Adventure",
+      "count": 23,
+      "categoryPath": "/category/adventure"
+    },
+    {
+      "category": "Simulator",
+      "count": 22,
+      "categoryPath": "/category/simulator"
+    },
+    {
+      "category": "Casual",
+      "count": 21,
+      "categoryPath": "/category/casual"
+    },
+    {
+      "category": "Puzzle",
+      "count": 20,
+      "categoryPath": "/category/puzzle"
+    },
+    {
+      "category": "Sports",
+      "count": 10,
+      "categoryPath": "/category/sports"
+    },
+    {
+      "category": "Multiplayer",
+      "count": 10,
+      "categoryPath": "/category/multiplayer"
+    },
+    {
+      "category": "Strategy",
+      "count": 6,
+      "categoryPath": "/category/strategy"
+    }
+  ],
+  "disabledGames": [
+    {
+      "id": "slope",
+      "title": "Slope",
+      "category": "Racing",
+      "url": "https://y8.com/embed/slope",
+      "adsInjected": false,
+      "popupRisk": true,
+      "redirectRisk": true
+    }
+  ],
+  "invalidGames": [],
+  "notes": {
+    "unreachableByCategory": 0
+  }
+}

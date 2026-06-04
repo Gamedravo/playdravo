@@ -47,6 +47,7 @@ import { db } from '../firebase';
 import { GameThumbnail } from '../components/GameThumbnail';
 import { GamePreviewPlayer } from '../components/GamePreviewPlayer';
 import { Analytics } from '../lib/analytics';
+import { getCategoryPath } from '../utils/categoryRoutes';
 
 const safeFormatDate = (createdAt: any) => {
   try {
@@ -158,12 +159,13 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   // Check embed compatibility
   useEffect(() => {
-    // Hard-block ad-injecting embeds (they hurt UX and can violate ad policies).
-    if (game?.adsInjected) {
+    // Hard-block risky embeds (ads/popups/redirects) from running inside PlayDravo.
+    // These sources can open popups or navigate away from the portal.
+    if (game?.adsInjected || game?.popupRisk || game?.redirectRisk) {
       setEmbedStatus({
         checked: true,
         embeddable: false,
-        reason: 'Blocked: this embed source injects third‑party ads.',
+        reason: 'Blocked: this game source is flagged as unsafe (ads/popups/redirects).',
       });
       return;
     }
@@ -477,7 +479,7 @@ export const GamePage: React.FC<GamePageProps> = ({
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-3 md:mb-4 opacity-70">
           <Link to="/" className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">Home</Link>
           <ChevronRight className="w-3 h-3" aria-hidden="true" />
-          <Link to={`/category/${game.category.toLowerCase()}`} className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">{game.category}</Link>
+          <Link to={getCategoryPath(game.category)} className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">{game.category}</Link>
           <ChevronRight className="w-3 h-3" aria-hidden="true" />
           <span className="text-accent truncate flex-1" aria-current="page">{game.title}</span>
         </nav>
@@ -509,20 +511,20 @@ export const GamePage: React.FC<GamePageProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     className="relative z-10 text-center px-4 sm:px-6 w-full max-w-2xl mx-auto flex flex-col items-center justify-center h-full"
                   >
-                    <div className="mb-4 sm:mb-6 lg:mb-8 relative shrink-0">
-                      <div className="w-16 h-16 sm:w-32 sm:h-32 md:w-48 md:h-48 rounded-3xl sm:rounded-[1.5rem] lg:rounded-[2.5rem] overflow-hidden border-4 border-white/20 shadow-2xl mx-auto">
+                    <div className="mb-2 sm:mb-4 lg:mb-6 relative shrink-0">
+                      <div className="w-12 h-12 sm:w-24 sm:h-24 md:w-40 md:h-40 rounded-2xl sm:rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl mx-auto">
                         <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover shadow-lg" />
                       </div>
-                      <div className="absolute -bottom-3 sm:-bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1 bg-accent text-bg-dark text-[8px] sm:text-xs font-semibold tracking-tight uppercase rounded-full shadow-md whitespace-nowrap">
+                      <div className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 px-2 sm:px-3 py-0.5 bg-accent text-bg-dark text-[7px] sm:text-[10px] font-semibold tracking-tight uppercase rounded-full shadow-md whitespace-nowrap">
                         {game.category}
                       </div>
                     </div>
 
-                    <h1 className="text-xl sm:text-2xl md:text-5xl font-bold tracking-tighter text-white mb-4 sm:mb-6 lg:mb-8 drop-shadow-2xl line-clamp-2">
+                    <h1 className="text-lg sm:text-xl md:text-4xl font-bold tracking-tighter text-white mb-2 sm:mb-4 lg:mb-6 drop-shadow-2xl line-clamp-2">
                       {game.title}
                     </h1>
 
-                    <div className="flex flex-wrap items-center justify-center gap-2 mb-6 opacity-90">
+                    <div className="hidden sm:flex flex-wrap items-center justify-center gap-2 mb-4 opacity-90">
                       <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur border border-green-500/30 text-green-400 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide shadow-sm">
                         <ShieldCheck className="w-3.5 h-3.5" />
                         Verified for Browser
@@ -542,9 +544,8 @@ export const GamePage: React.FC<GamePageProps> = ({
                           setShowMobileWarning(true);
                           return;
                         }
-                        if (game.adsInjected) {
-                          appToast.info('This game contains third-party ads. Opening in standalone mode.');
-                          window.open(game.url, '_blank');
+                        if (game.adsInjected || game.popupRisk || game.redirectRisk) {
+                          appToast.error('This game is temporarily disabled due to safety risks.');
                           return;
                         }
                         setIsPlaying(true);
@@ -553,7 +554,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                           detail: { amount: 50, reason: `Played ${game.title}` } 
                         }));
                       }}
-                      className="group relative px-6 py-3 sm:px-12 sm:py-5 bg-accent hover:bg-accent/90 text-white rounded-2xl font-bold text-sm sm:text-base overflow-hidden shrink-0 shadow-lg"
+                      className="group relative px-5 py-2.5 sm:px-10 sm:py-4 bg-accent hover:bg-accent/90 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base overflow-hidden shrink-0 shadow-lg"
                     >
                       <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                       <div className="flex items-center gap-2 sm:gap-3">
@@ -562,7 +563,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       </div>
                     </motion.button>
                     
-                    <div className="text-[10px] text-white/50 tracking-wide pt-1">
+                    <div className="hidden sm:block text-[10px] text-white/50 tracking-wide pt-1">
                       Works on Chrome, Safari, Edge, Firefox, iOS, & Android
                     </div>
                   </motion.div>
@@ -580,18 +581,12 @@ export const GamePage: React.FC<GamePageProps> = ({
                           {!embedStatus.embeddable ? (
                             <div className="space-y-4">
                               <span className="text-sm font-semibold text-red-400 block leading-relaxed">
-                                This game cannot run in embedded mode.
+                                This game is disabled for safety (ads/popups/redirects).
                               </span>
                               <span className="text-[10px] text-white/50 block uppercase tracking-wider mb-2">
-                                Launch safe-mode required
+                                Disabled on PlayDravo
                               </span>
                               <div className="flex justify-center gap-3 pt-2">
-                                <button 
-                                  onClick={() => window.open(game.url, '_blank')}
-                                  className="px-5 py-2.5 bg-accent hover:bg-accent/90 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)] rounded-xl text-[11px] font-bold uppercase transition focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
-                                >
-                                  Open in Standalone Window
-                                </button>
                                 <button 
                                   onClick={() => {
                                     setIsPlaying(false);
@@ -625,12 +620,6 @@ export const GamePage: React.FC<GamePageProps> = ({
                                   Retry
                                 </button>
                                 <button 
-                                  onClick={() => window.open(game.url, '_blank')}
-                                  className="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-xl text-[10px] font-bold uppercase transition"
-                                >
-                                  Open Standalone
-                                </button>
-                                <button 
                                   onClick={() => {
                                     setIsPlaying(false);
                                     if (isPseudoFullScreen) {
@@ -654,10 +643,12 @@ export const GamePage: React.FC<GamePageProps> = ({
                       ref={iframeRef}
                       src={game.url}
                       className={`w-full border-0 touch-auto touch-manipulation transition-opacity duration-700 ${iframeLoaded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${isPseudoFullScreen ? 'h-[100dvh]' : 'h-full min-h-[240px]'}`}
+                      sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
                       allow="autoplay; fullscreen; gamepad; keyboard *"
                       allowFullScreen
                       title={game.title}
                       scrolling="no"
+                      referrerPolicy="no-referrer"
                       onLoad={() => setIframeLoaded(true)}
                       onError={(e) => {
                         console.warn('Iframe error event trigged', e);
@@ -737,12 +728,12 @@ export const GamePage: React.FC<GamePageProps> = ({
             {/* Action Bar */}
             <div className={`p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-colors duration-150 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark border-white/5' : 'bg-white border-black/5'} w-full`}>
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
+                <div className="hidden sm:block w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
                   <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h1 className={`text-xl sm:text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                    <h1 className={`text-lg sm:text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
                       {game.title}
                     </h1>
                     {(game.isHot || game.isTop) && (
@@ -761,7 +752,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       {(typeof game.rating === 'number' ? game.rating : Number(game.rating || 0)).toFixed(1)}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="hidden sm:flex flex-wrap gap-2 mt-2">
                     {game.fullscreenSupport && (
                       <span className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${isDarkMode ? 'bg-white/10 text-white' : 'bg-black/10 text-black'}`}>
                         <Maximize2 className="w-3 h-3" /> Fullscreen
@@ -811,6 +802,10 @@ export const GamePage: React.FC<GamePageProps> = ({
                       Analytics.trackShare(game.id);
                     } },
                     { id: 'new-tab', icon: ExternalLink, onClick: () => {
+                      if (game.adsInjected || game.popupRisk || game.redirectRisk) {
+                        appToast.error('This game is disabled due to safety risks.');
+                        return;
+                      }
                       Analytics.trackGameOpen(game.id, game.title);
                       window.open(game.url, '_blank');
                     } },
@@ -1088,7 +1083,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   <div className="w-1.5 h-6 bg-accent rounded-full" />
                   {t('playersAlsoLiked') || 'Players Also Liked'}
                 </h2>
-                <Link to={`/category/${game.category.toLowerCase()}`} className="text-xs font-semibold tracking-tight uppercase text-accent hover:underline">
+                <Link to={getCategoryPath(game.category)} className="text-xs font-semibold tracking-tight uppercase text-accent hover:underline">
                   {t('moreFrom' + game.category) || `More from ${game.category}`}
                 </Link>
               </div>

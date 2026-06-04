@@ -1,12 +1,13 @@
 import { memo, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn } from 'lucide-react';
-import { PlayDravoMark } from './PlayDravoLogo';
+import { PlayDravoLogo } from './PlayDravoLogo';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SidebarIcon } from '../lib/sidebarIcons';
 import { SidebarNavLink } from './SidebarNavItem';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
+import { getCategoryPath } from '../utils/categoryRoutes';
 
 interface SidebarProps {
   isDarkMode: boolean;
@@ -30,6 +31,8 @@ const categoryKeyMap: Record<string, string> = {
   Recommended: 'recommended',
   History: 'history',
   Trending: 'trending',
+  'Mobile Games': 'mobileGames',
+  'Best On Mobile': 'bestOnMobile',
   Mods: 'mods',
   Action: 'action',
   Adventure: 'adventure',
@@ -46,13 +49,6 @@ const categoryKeyMap: Record<string, string> = {
   '3 Player': 'threePlayer',
   '4 Player': 'fourPlayer',
 };
-
-function categoryUrl(cat: string): string {
-  if (cat === 'All') return '/';
-  if (cat === 'Favorites') return '/library/favorites';
-  if (cat === 'History') return '/library/history';
-  return `/category/${cat.toLowerCase()}`;
-}
 
 const navItemClass = (active: boolean, isDarkMode: boolean) =>
   `sidebar-nav-item ${active ? 'sidebar-nav-item--active' : ''} ${
@@ -96,8 +92,9 @@ export const Sidebar = memo(function Sidebar({
     >
       <div ref={scrollerRef} className="sidebar-scroll">
         <div className="sidebar-brand-row">
-          <a
-            href="/"
+          <PlayDravoLogo
+            size="sm"
+            showWordmark
             onClick={(e) => {
               e.preventDefault();
               navigate('/');
@@ -105,16 +102,8 @@ export const Sidebar = memo(function Sidebar({
               document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
               closeMobile();
             }}
-            className="sidebar-brand flex"
-            title="Home"
-          >
-            <PlayDravoMark size={32} />
-            {(isSidebarOpen || isMobileOpen) && (
-              <span className="sidebar-brand-text">
-                Play<span className="text-accent">Dravo</span>
-              </span>
-            )}
-          </a>
+            className="sidebar-brand"
+          />
           <span className="flex-1" aria-hidden />
           <button
             type="button"
@@ -150,11 +139,11 @@ export const Sidebar = memo(function Sidebar({
                   const isActive =
                     selectedCategory === cat ||
                     (cat === 'All' && location.pathname === '/') ||
-                    location.pathname === categoryUrl(cat);
+                    location.pathname === getCategoryPath(cat);
                   return (
                     <SidebarNavLink
                       key={`sidebar-${cat}`}
-                      to={categoryUrl(cat)}
+                      to={getCategoryPath(cat)}
                       label={label}
                       cat={cat}
                       isActive={isActive}

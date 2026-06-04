@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Search, ArrowLeft, Brain, Zap, Sparkles, Flame, Users, Star, History, TrendingUp, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Game } from '../types';
-import { GAMES as STATIC_GAMES } from '../games';
 import { GameCard } from '../components/GameCard';
 import { GameThumbnail } from '../components/GameThumbnail';
 import { Analytics } from '../lib/analytics';
@@ -11,6 +10,7 @@ import { Analytics } from '../lib/analytics';
 interface SearchPageProps {
   isDarkMode: boolean;
   t: (key: string) => string;
+  games: Game[];
   toggleFavorite: (gameId: string) => void;
   userProfile: any;
   searchQuery: string;
@@ -20,6 +20,7 @@ interface SearchPageProps {
 export const SearchPage: React.FC<SearchPageProps> = React.memo(({ 
   isDarkMode, 
   t, 
+  games,
   toggleFavorite, 
   userProfile,
   searchQuery,
@@ -53,7 +54,7 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = STATIC_GAMES.filter(game => 
+    const filtered = games.filter(game => 
       game.title.toLowerCase().includes(query) || 
       game.category.toLowerCase().includes(query) ||
       (game.tags && game.tags.some(tag => tag.toLowerCase().includes(query)))
@@ -340,7 +341,7 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                       {t('popularGames') || 'We recommend playing'}
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
-                      {STATIC_GAMES.sort((a, b) => b.plays - a.plays).slice(0, 4).map((game) => (
+                      {games.slice().sort((a, b) => b.plays - a.plays).slice(0, 4).map((game) => (
                         <div 
                           key={`rec-empty-${game.id}`}
                           onClick={() => navigate(`/games/${game.id}`)}

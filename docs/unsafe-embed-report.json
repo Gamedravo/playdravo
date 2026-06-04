@@ -1,0 +1,5105 @@
+{
+  "generatedAt": "2026-06-03T18:39:33.648Z",
+  "totals": {
+    "catalog": 268,
+    "safe": 267,
+    "adInjected": 0,
+    "popupRisk": 1,
+    "redirectRisk": 1,
+    "normalizedUrlChanges": 70
+  },
+  "rows": [
+    {
+      "id": "golf-bit",
+      "title": "Golf Bit",
+      "category": "Sports",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/construct/328/golf-bit/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/construct/328/golf-bit/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "love-tester",
+      "title": "Love Tester",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/love-tester/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/love-tester/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stack-fire-ball",
+      "title": "Stack Fire Ball",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/stack-fire-ball/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/stack-fire-ball/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "drift-king",
+      "title": "Drift King",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/drift-king/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/drift-king/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "highway-traffic",
+      "title": "Highway Traffic",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/highway-traffic/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cs-online",
+      "title": "CS Online",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/cs-online/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/cs-online/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stickman-parkour",
+      "title": "Stickman Parkour",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/219/stickman-parkour/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stickman-gta-city",
+      "title": "Stickman GTA City",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity3/stickman-gta-city/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity3/stickman-gta-city/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "masked-special-forces",
+      "title": "Masked Special Forces",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity2/masked-special-forces/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity2/masked-special-forces/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "checkout-frenzy",
+      "title": "Checkout Frenzy",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/checkout-frenzy/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/checkout-frenzy/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "madalin-stunt-cars-pro",
+      "title": "Madalin Stunt Cars Pro",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/madalin-stunt-cars-pro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/madalin-stunt-cars-pro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "velocity-rush",
+      "title": "Velocity Rush",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/velocity-rush/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/velocity-rush/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dublix",
+      "title": "Dublix",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity4/dublix/game-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity4/dublix/game.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "escape-car",
+      "title": "Escape Car",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity2/escape-car/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity2/escape-car/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "get-on-top",
+      "title": "Get On Top",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/code/6/get-on-top/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/code/6/get-on-top/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "capybara-clicker-pro",
+      "title": "Capybara Clicker Pro",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/q2/capybara-clicker-pro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/q2/capybara-clicker-pro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "real-flight-simulator",
+      "title": "Real Flight Simulator",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2023/unity2/real-flight-simulator/index.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2023/unity2/real-flight-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "snaker-io",
+      "title": "Snaker io",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/more/snaker-io/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/more/snaker-io/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "edys-car-simulator",
+      "title": "Edys Car Simulator",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/edys-car-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/edys-car-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "drift-hunters-pro",
+      "title": "Drift Hunters Pro",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/drift-hunters-pro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/drift-hunters-pro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "basket-hoop",
+      "title": "Basket Hoop",
+      "category": "Sports",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/311/basket-hoop/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/311/basket-hoop/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "highway-cars",
+      "title": "Highway Cars",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/211/highway-cars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/211/highway-cars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fps-strike",
+      "title": "FPS Strike",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity2/fps-strike/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity2/fps-strike/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "burnout-city",
+      "title": "Burnout City",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity/burnout-city/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity/burnout-city/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "basketball-io",
+      "title": "Basketball io",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/basketball-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/basketball-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "drunken-duel",
+      "title": "Drunken Duel",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/code/2/drunken-duel/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/code/2/drunken-duel/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cube-worlds",
+      "title": "Cube Worlds",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/cube-worlds/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/cube-worlds/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "99-nights-in-the-forest",
+      "title": "99 Nights in the Forest",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/99-nights-in-the-forest-survival/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/99-nights-in-the-forest-survival/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fast-food-rush",
+      "title": "Fast Food Rush",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/fast-food-rush/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/fast-food-rush/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "love-tester-story",
+      "title": "Love Tester Story",
+      "category": "Casual",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/225/love-tester-story/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/225/love-tester-story/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stickman-destruction",
+      "title": "Stickman Destruction",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/stickman-destruction/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/stickman-destruction/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "warstrike",
+      "title": "WarStrike",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity3/warstrike/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity3/warstrike/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "masked-forces-zombie-survival",
+      "title": "Masked Forces Zombie Survival",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/masked-forces-zombie-survival/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/masked-forces-zombie-survival/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cat-simulator",
+      "title": "Cat Simulator",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity4/cat-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity4/cat-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "super-car-driving",
+      "title": "Super Car Driving",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity2/super-car-driving/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity2/super-car-driving/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-strike-force",
+      "title": "Crazy Strike Force",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/crazy-strike-force/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/crazy-strike-force/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "highway-racer-pro",
+      "title": "Highway Racer Pro",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/highway-racer-pro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/highway-racer-pro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "armedforces-io",
+      "title": "ArmedForces.io",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/armedforces-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/armedforces-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "car-football",
+      "title": "Car Football",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/198/car-football/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/198/car-football/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cake-match-puzzle",
+      "title": "Cake Match Puzzle",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity3/cake-match-puzzle/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity3/cake-match-puzzle/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "pixelmon-town",
+      "title": "Pixelmon Town",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/pixelmon-town/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/pixelmon-town/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "legendary-sniper",
+      "title": "Legendary Sniper",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/legendary-sniper/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/legendary-sniper/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "geometry-vector",
+      "title": "Geometry Vector",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/construct/329/geometry-vector/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/construct/329/geometry-vector/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "poop-clicker",
+      "title": "Poop Clicker",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/construct/292/poop-clicker/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/construct/292/poop-clicker/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cubecraft-survival",
+      "title": "CubeCraft Survival",
+      "category": "Strategy",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity4/cubecraft-survival/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity4/cubecraft-survival/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "drift-rider",
+      "title": "Drift Rider",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/drift-rider/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/drift-rider/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "chess-freezenova",
+      "title": "Chess FreezeNova",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity3/chess/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity3/chess/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "block-blast",
+      "title": "Block Blast",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity3/block-blast/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity3/block-blast/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mob-city",
+      "title": "Mob City",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/mob-city/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/mob-city/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "geometry-dash-freezenova",
+      "title": "Geometry Dash FreezeNova",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/q2/geometry-dash-freezenova/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/q2/geometry-dash-freezenova/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "8-ball-pool-billiard",
+      "title": "8 Ball Pool Billiard",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/8-ball-pool-billiard/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/8-ball-pool-billiard/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kick-the-dummy",
+      "title": "Kick The Dummy",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/153/kick-the-dummy/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/153/kick-the-dummy/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-drifter",
+      "title": "Crazy Drifter",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-drifter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-drifter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "wasteland-shooters",
+      "title": "Wasteland Shooters",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/wasteland-shooters/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/wasteland-shooters/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "backflip-challenge",
+      "title": "Backflip Challenge",
+      "category": "Sports",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/backflip-challenge/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/backflip-challenge/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "city-stunts",
+      "title": "City Stunts",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/city-stunts/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/city-stunts/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-cattle-3d",
+      "title": "Crazy Cattle 3D",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity3/crazy-cattle-3d/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity3/crazy-cattle-3d/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "urban-sniper",
+      "title": "Urban Sniper",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity2/urban-sniper/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity2/urban-sniper/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "burnout-drift-hunter",
+      "title": "Burnout Drift Hunter",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity4/burnout-drift-hunter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity4/burnout-drift-hunter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "egg-car-racing",
+      "title": "Egg Car Racing",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/289/egg-car-racing/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/289/egg-car-racing/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "nuts-and-bolts-puzzle",
+      "title": "Nuts and Bolts Puzzle",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/nuts-and-bolts-puzzle/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/nuts-and-bolts-puzzle/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-parking-fury",
+      "title": "Crazy Parking Fury",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-parking-fury/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-parking-fury/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "four-colors",
+      "title": "Four Colors",
+      "category": "Strategy",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/code/four-colors/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/code/four-colors/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "taxi-simulator",
+      "title": "Taxi Simulator",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/taxi-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/taxi-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "head-soccer-2022",
+      "title": "Head Soccer 2022",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/280/head-soccer-2022/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/280/head-soccer-2022/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "troll-level",
+      "title": "Troll Level",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity2/troll-level/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity2/troll-level/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "alien-sky-invasion",
+      "title": "Alien Sky Invasion",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/alien-sky-invasion/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/alien-sky-invasion/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mini-cars-racing",
+      "title": "Mini Cars Racing",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/unity/mini-cars-racing/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/unity/mini-cars-racing/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fast-food-manager",
+      "title": "Fast Food Manager",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity4/fast-food-manager/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity4/fast-food-manager/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fall-brainrots",
+      "title": "Fall Brainrots",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/fall-brainrots/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/fall-brainrots/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dark-ninja-hanjo",
+      "title": "Dark Ninja Hanjo",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/dark-ninja-hanjo/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/dark-ninja-hanjo/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "airplane-racer",
+      "title": "Airplane Racer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/airplane-racer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/airplane-racer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "drift-fury",
+      "title": "Drift Fury",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/drift-fury/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/drift-fury/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "five-nights-at-poppy",
+      "title": "Five Nights at Poppy",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity2/five-nights-at-poppy/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity2/five-nights-at-poppy/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-truck-mountain-climb",
+      "title": "Monster Truck Mountain Climb",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/2/monster-truck-mountain-climb/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/2/monster-truck-mountain-climb/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tile-match",
+      "title": "Tile Match",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/tile-match/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/tile-match/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "police-traffic",
+      "title": "Police Traffic",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/police-traffic/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/police-traffic/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "rome-simulator",
+      "title": "Rome Simulator",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/rome-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/rome-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "survival-island",
+      "title": "Survival Island",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity2/survival-island/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity2/survival-island/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "rooftop-duel",
+      "title": "Rooftop Duel",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/213/rooftop-duel/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/213/rooftop-duel/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fort-drifter",
+      "title": "Fort Drifter",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/fort-drifter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/fort-drifter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "deer-hunter",
+      "title": "Deer Hunter",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/deer-hunter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/deer-hunter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "2-player-crazy-racer",
+      "title": "2 Player Crazy Racer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/2-player-crazy-racer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/2-player-crazy-racer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "atv-highway-traffic",
+      "title": "ATV Highway Traffic",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/atv-highway-traffic/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/atv-highway-traffic/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "futuristic-racer",
+      "title": "Futuristic Racer",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/2/futuristic-racer/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/2/futuristic-racer/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cookie-clicker-pro",
+      "title": "Cookie Clicker Pro",
+      "category": "Casual",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/cookie-clicker-pro/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/cookie-clicker-pro/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "bandits-multiplayer-pvp",
+      "title": "Bandits Multiplayer PvP",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/bandits-multiplayer-pvp/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/bandits-multiplayer-pvp/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fnf-funk-3d",
+      "title": "FNF Funk 3D",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/fnf-funk-3d/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/fnf-funk-3d/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "subway-idle-3d",
+      "title": "Subway Idle 3D",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity4/subway-idle-3d/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity4/subway-idle-3d/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "army-combat",
+      "title": "Army Combat",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/army-combat/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/army-combat/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stunt-simulator-2",
+      "title": "Stunt Simulator 2",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/stunt-simulator-2/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/stunt-simulator-2/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "basketball-slam-dunk",
+      "title": "Basketball Slam Dunk",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/basketball-slam-dunk/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/basketball-slam-dunk/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "poly-racing-cars",
+      "title": "Poly Racing Cars",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2022/unity3/poly-racing-cars/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2022/unity3/poly-racing-cars/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "motorbike-stunt-simulator",
+      "title": "Motorbike Stunt Simulator",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/unity/motorbike-stunt-simulator/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/unity/motorbike-stunt-simulator/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "offroad-rally",
+      "title": "Offroad Rally",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/offroad-rally/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/offroad-rally/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "speedrun-parkour",
+      "title": "Speedrun Parkour",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/145/speedrun-parkour/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/145/speedrun-parkour/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "nova-craft",
+      "title": "Nova Craft",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/more2/nova-craft/index.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/more2/nova-craft/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "among-impostor",
+      "title": "Among Impostor",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/234/among-impostor/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/234/among-impostor/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "solitaire-adventure",
+      "title": "Solitaire Adventure",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity4/solitaire-adventure/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity4/solitaire-adventure/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "jungle-mart",
+      "title": "Jungle Mart",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/construct/339/jungle-mart/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/construct/339/jungle-mart/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "sniper-elite",
+      "title": "Sniper Elite",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/sniper-elite/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/sniper-elite/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "limousine-simulator",
+      "title": "Limousine Simulator",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/limousine-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/limousine-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "supercars-drift",
+      "title": "Supercars Drift",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/supercars-drift/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/supercars-drift/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "jeep-driver",
+      "title": "Jeep Driver",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/1/jeep-driver/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/1/jeep-driver/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "survival-karts",
+      "title": "Survival Karts",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity3/survival-karts/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "snake-football",
+      "title": "Snake Football",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/200/snake-football/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/200/snake-football/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fun-party-makeup",
+      "title": "Fun Party Makeup",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/fun-party-makeup/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/fun-party-makeup/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "spartahoppers",
+      "title": "SpartaHoppers",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/227/spartahoppers/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/227/spartahoppers/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tiny-crash-fighters",
+      "title": "Tiny Crash Fighters",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/285/tiny-crash-fighters/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/285/tiny-crash-fighters/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "agent-smith",
+      "title": "Agent Smith",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/agent-smith/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/agent-smith/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "wedding-beauty-salon",
+      "title": "Wedding Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/wedding-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/wedding-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "survival-craft",
+      "title": "Survival Craft",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/survival-craft/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/survival-craft/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "car-wash",
+      "title": "Car Wash",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/car-wash/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/car-wash/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "city-police-cars",
+      "title": "City Police Cars",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/2/city-police-cars/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/2/city-police-cars/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "state-io-wars",
+      "title": "State io Wars",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/construct/233/state-io-wars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/construct/233/state-io-wars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "pixel-driver",
+      "title": "Pixel Driver",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/unity3/pixel-driver/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/unity3/pixel-driver/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "gta-simulator",
+      "title": "GTA Simulator",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/gta-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "football-king",
+      "title": "Football King",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/construct/226/football-king/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/construct/226/football-king/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "galactic-sniper",
+      "title": "Galactic Sniper",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/galactic-sniper/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/galactic-sniper/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mech-shooter",
+      "title": "Mech Shooter",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/mech-shooter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/mech-shooter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "super-mini-racing",
+      "title": "Super Mini Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity4/super-mini-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity4/super-mini-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "perfect-first-date",
+      "title": "Perfect First Date",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/perfect-first-date/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/perfect-first-date/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "julie-beauty-salon",
+      "title": "Julie Beauty Salon",
+      "category": "Casual",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/1/julie-beauty-salon/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/1/julie-beauty-salon/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hover-racer-pro",
+      "title": "Hover Racer Pro",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/hover-racer-pro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/hover-racer-pro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hero-rush-tower-defense",
+      "title": "Hero Rush Tower Defense",
+      "category": "Strategy",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/hero-rush-tower-defense/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/hero-rush-tower-defense/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "romantic-secret-kiss",
+      "title": "Romantic Secret Kiss",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/romantic-secret-kiss/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/romantic-secret-kiss/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "archer-hero",
+      "title": "Archer Hero",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/archer-hero/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/archer-hero/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "train-racing",
+      "title": "Train Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/120/train-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/120/train-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stick-guys-defense",
+      "title": "Stick Guys Defense",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/stick-guys-defense/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/stick-guys-defense/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mahjong",
+      "title": "Mahjong",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/mahjong/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/mahjong/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "evil-santa",
+      "title": "Evil Santa",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/evil-santa/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/evil-santa/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crown-defense",
+      "title": "Crown Defense",
+      "category": "Strategy",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/337/crown-defense/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/337/crown-defense/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "xmas-cookie-clicker",
+      "title": "Xmas Cookie Clicker",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/288/xmas-cookie-clicker/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/288/xmas-cookie-clicker/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fire-and-water",
+      "title": "Fire and Water",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/179/fire-and-water/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/179/fire-and-water/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hero-dragon-power",
+      "title": "Hero Dragon Power",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/hero-dragon-power/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/hero-dragon-power/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "skibidi-toilet-io",
+      "title": "Skibidi Toilet io",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/242/skibidi-toilet-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/242/skibidi-toilet-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "zombie-sniper",
+      "title": "Zombie Sniper",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/116/zombie-sniper/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/116/zombie-sniper/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "farming-island",
+      "title": "Farming Island",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/farming-island/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/farming-island/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "jacks-village",
+      "title": "Jacks Village",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/jacks-village/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/jacks-village/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "idle-dev-startup",
+      "title": "Idle Dev Startup",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/idle-dev-startup/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/idle-dev-startup/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "ultimate-moto",
+      "title": "Ultimate Moto",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/2/ultimate-moto/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/2/ultimate-moto/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "find-it",
+      "title": "Find It",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/find-it/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/find-it/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dont-fall-io",
+      "title": "Dont Fall io",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/dont-fall-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/dont-fall-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mini-shooters",
+      "title": "Mini Shooters",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/5/mini-shooters/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/5/mini-shooters/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "battle-royale-simulator",
+      "title": "Battle Royale Simulator",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/battle-royale-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/battle-royale-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "american-touchdown",
+      "title": "American Touchdown",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/american-touchdown/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/american-touchdown/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "pinball-simulator",
+      "title": "Pinball Simulator",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/pinball-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/pinball-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "jeep-racing",
+      "title": "Jeep Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/freezenova.com/jeep-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/freezenova.com/jeep-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "steal-brainrot-heist",
+      "title": "Steal Brainrot Heist",
+      "category": "Multiplayer",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/steal-brainrot-heist/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/steal-brainrot-heist/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tank-arena",
+      "title": "Tank Arena",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/293/tank-arena/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/293/tank-arena/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "princess-influencer-salon",
+      "title": "Princess Influencer Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/princess-influencer-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/princess-influencer-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-moto-racing",
+      "title": "Crazy Moto Racing",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2022/unity3/crazy-moto-racing/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2022/unity3/crazy-moto-racing/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "war-simulator",
+      "title": "War Simulator",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/war-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/war-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "blocky-parkour-ninja",
+      "title": "Blocky Parkour Ninja",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/156/blocky-parkour-ninja/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/156/blocky-parkour-ninja/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "pets-beauty-salon",
+      "title": "Pets Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/pets-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/pets-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "first-day-of-school",
+      "title": "First Day of School",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/first-day-of-school/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/first-day-of-school/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "moto-trials",
+      "title": "Moto Trials",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/moto-trials/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/moto-trials/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hill-climb-cars",
+      "title": "Hill Climb Cars",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/hill-climb-cars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/hill-climb-cars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kick-the-pirate",
+      "title": "Kick the Pirate",
+      "category": "Casual",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2022/construct/92/kick-the-pirate/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2022/construct/92/kick-the-pirate/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cobraz-io-classic",
+      "title": "CobraZ.io Classic",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/cobraz-io-classic/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/cobraz-io-classic/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "draw-here",
+      "title": "Draw Here",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/draw-here/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/draw-here/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-car-arena",
+      "title": "Crazy Car Arena",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-car-arena/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/crazy-car-arena/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mad-doctor",
+      "title": "Mad Doctor",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/mad-doctor/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/mad-doctor/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "darkness-survivors",
+      "title": "Darkness Survivors",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/q2/darkness-survivors/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/q2/darkness-survivors/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-hill-climb",
+      "title": "Crazy Hill Climb",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/209/crazy-hill-climb/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/209/crazy-hill-climb/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "guerrillas-io",
+      "title": "Guerrillas io",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/guerrillas-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/guerrillas-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "head-soccer-football",
+      "title": "Head Soccer Football",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/head-soccer-football/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/head-soccer-football/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kingdom-attack",
+      "title": "Kingdom Attack",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/kingdom-attack/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/kingdom-attack/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "baby-beauty-salon",
+      "title": "Baby Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/baby-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/baby-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kick-the-zombie",
+      "title": "Kick the Zombie",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/kick-the-zombie/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/kick-the-zombie/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "global-guesser",
+      "title": "Global Guesser",
+      "category": "Multiplayer",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/global-guesser/index-og.html#/",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/global-guesser/index.html#/",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-truck-booster",
+      "title": "Monster Truck Booster",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/223/monster-truck-booster/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/223/monster-truck-booster/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "blocky-blast",
+      "title": "Blocky Blast",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/blocky-blast/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/blocky-blast/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kings-io",
+      "title": "Kings io",
+      "category": "Multiplayer",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/208/kings-io/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/208/kings-io/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mafia-getaway-cars",
+      "title": "Mafia Getaway Cars",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/298/mafia-getaway-cars/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/298/mafia-getaway-cars/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "zombie-road",
+      "title": "Zombie Road",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/zombie-road/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/zombie-road/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "skateboard-marathon",
+      "title": "Skateboard Marathon",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/skateboard-marathon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/skateboard-marathon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dockyard-tank-parking",
+      "title": "Dockyard Tank Parking",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/dockyard-tank-parking/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/dockyard-tank-parking/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kingdom-battle-3d",
+      "title": "Kingdom Battle 3D",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity2/kingdom-battle-3d/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity2/kingdom-battle-3d/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "pyramid-solitaire",
+      "title": "Pyramid Solitaire",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/solitaire/index-og.html#pyramid",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/solitaire/index.html#pyramid",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "rescue-helicopter",
+      "title": "Rescue Helicopter",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/rescue-helicopter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/rescue-helicopter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "racing-cars",
+      "title": "Racing Cars",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/racing-cars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/racing-cars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "sweet-sugar-match",
+      "title": "Sweet Sugar Match",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/sweet-sugar-match/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/sweet-sugar-match/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kawaii-shooter",
+      "title": "Kawaii Shooter",
+      "category": "Action",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity/kawaii-shooter/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity/kawaii-shooter/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "army-driver",
+      "title": "Army Driver",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/63/army-driver/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/63/army-driver/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "idle-restaurant",
+      "title": "Idle Restaurant",
+      "category": "Simulator",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/idle-restaurant/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/idle-restaurant/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "egg-helix",
+      "title": "Egg Helix",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity2/egg-helix/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity2/egg-helix/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "geometry-rash",
+      "title": "Geometry Rash",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/279/geometry-rash/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/279/geometry-rash/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "storm-city-mafia",
+      "title": "Storm City Mafia",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/storm-city-mafia/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/storm-city-mafia/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "the-farmer",
+      "title": "The Farmer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/the-farmer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/the-farmer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-truck-racing",
+      "title": "Monster Truck Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/monster-truck-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/monster-truck-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "formula-1-driver",
+      "title": "Formula 1 Driver",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/133/formula-1-driver/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/133/formula-1-driver/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "run-freezenova",
+      "title": "Run FreezeNova",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/run-3/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/run-3/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "stunt-rider",
+      "title": "Stunt Rider",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/stunt-rider/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/stunt-rider/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "nova-clicker",
+      "title": "Nova Clicker",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/314/nova-clicker/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/314/nova-clicker/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "kick-the-alien",
+      "title": "Kick the Alien",
+      "category": "Casual",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/4/kick-the-alien/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/4/kick-the-alien/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cool-brainrot-clicker",
+      "title": "Cool Brainrot Clicker",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/335/cool-brainrot-clicker/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/335/cool-brainrot-clicker/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "draw-the-car-path",
+      "title": "Draw the Car Path",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/4/draw-the-car-path/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/4/draw-the-car-path/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-karts",
+      "title": "Crazy Karts",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/crazy-karts/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/crazy-karts/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "davo",
+      "title": "Davo",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/302/davo/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/302/davo/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-survivors",
+      "title": "Monster Survivors",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/monster-survivors/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "solitaire",
+      "title": "Solitaire",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/solitaire/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/solitaire/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-stickman-physics",
+      "title": "Crazy Stickman Physics",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/185/crazy-stickman-physics/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/185/crazy-stickman-physics/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "geometry-escape",
+      "title": "Geometry Escape",
+      "category": "Adventure",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/299/geometry-escape/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/299/geometry-escape/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "apocalypse-truck",
+      "title": "Apocalypse Truck",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/1/apocalypse-truck/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/1/apocalypse-truck/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "f1-drift-racer",
+      "title": "F1 Drift Racer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/134/f1-drift-racer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/134/f1-drift-racer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "neon-racer",
+      "title": "Neon Racer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/neon-racer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/neon-racer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "legends-arena",
+      "title": "Legends Arena",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity2/legends-arena/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity2/legends-arena/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "soul-essence-adventure",
+      "title": "Soul Essence Adventure",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity2/soul-essence-adventure/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity2/soul-essence-adventure/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tank-racing",
+      "title": "Tank Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/151/tank-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/151/tank-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "bus-subway-runner",
+      "title": "Bus Subway Runner",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/bus-subway-runner/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/bus-subway-runner/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "highway-racer-2",
+      "title": "Highway Racer 2",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity2/highway-racer-2/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity2/highway-racer-2/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dinosaur-game",
+      "title": "Dinosaur Game",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/q2/dinosaur-game/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/q2/dinosaur-game/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "voxel-world",
+      "title": "Voxel World",
+      "category": "Simulator",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/unity/voxel-world/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/unity/voxel-world/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "age-of-battle",
+      "title": "Age Of Battle",
+      "category": "Strategy",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2026/unity/age-of-battle/game.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2026/unity/age-of-battle/game.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "draw-the-truck-bridge",
+      "title": "Draw the Truck Bridge",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/149/draw-the-truck-bridge/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/149/draw-the-truck-bridge/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "draw-the-bridge",
+      "title": "Draw The Bridge",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/draw-the-bridge/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/draw-the-bridge/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "zombie-war-defense",
+      "title": "Zombie War Defense",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/zombie-war-defense/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/zombie-war-defense/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "princesses-prom-night",
+      "title": "Princesses Prom Night",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/princesses-prom-night/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/princesses-prom-night/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "paradise-girls",
+      "title": "Paradise Girls",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/paradise-girls/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/paradise-girls/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "galactic-driver",
+      "title": "Galactic Driver",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/65/galactic-driver/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/65/galactic-driver/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "jul-moto-racing",
+      "title": "Jul Moto Racing",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2022/construct/122/jul-moto-racing/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2022/construct/122/jul-moto-racing/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "police-chase-drifter",
+      "title": "Police Chase Drifter",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/3/police-chase-drifter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/3/police-chase-drifter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "basketball-king",
+      "title": "Basketball King",
+      "category": "Multiplayer",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/construct/316/basketball-king/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/construct/316/basketball-king/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "nova-billiard",
+      "title": "Nova Billiard",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/nova-billiard/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/nova-billiard/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "motorbike-traffic",
+      "title": "Motorbike Traffic",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/motorbike-traffic/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/motorbike-traffic/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "paw-clicker",
+      "title": "Paw Clicker",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/construct/331/paw-clicker/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/construct/331/paw-clicker/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "2048",
+      "title": "2048",
+      "category": "Puzzle",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2025/html/2048/index.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2025/html/2048/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "cross-the-road",
+      "title": "Cross the Road",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity/cross-the-road/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity/cross-the-road/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "shortcut-race",
+      "title": "Shortcut Race",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/237/shortcut-race/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/237/shortcut-race/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "princess-beauty-salon",
+      "title": "Princess Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/princess-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/princess-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "powerslide-kart-simulator",
+      "title": "Powerslide Kart Simulator",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/powerslide-kart-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/powerslide-kart-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-truck-race-arena",
+      "title": "Monster Truck Race Arena",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2021/3/monster-truck-race-arena/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2021/3/monster-truck-race-arena/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "truck-racing",
+      "title": "Truck Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/144/truck-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/144/truck-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "treasure-hunter",
+      "title": "Treasure Hunter",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/164/treasure-hunter/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/164/treasure-hunter/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hook-wars",
+      "title": "Hook Wars",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/hook-wars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/hook-wars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "owl-and-rabbit-fashion",
+      "title": "Owl and Rabbit Fashion",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/owl-and-rabbit-fashion/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/owl-and-rabbit-fashion/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "secret-sniper-agent",
+      "title": "Secret Sniper Agent",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/129/secret-sniper-agent/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/129/secret-sniper-agent/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "snake",
+      "title": "Snake",
+      "category": "Arcade",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/phaser/snake/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/phaser/snake/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "speed-drift-racing",
+      "title": "Speed Drift Racing",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/124/speed-drift-racing/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/124/speed-drift-racing/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "monster-truck-city-parking",
+      "title": "Monster Truck City Parking",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity/monster-truck-city-parking/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity/monster-truck-city-parking/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "head-basketball",
+      "title": "Head Basketball",
+      "category": "Sports",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/head-basketball/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/head-basketball/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "war-of-ships-io",
+      "title": "War of Ships io",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity3/war-of-ships-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity3/war-of-ships-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "unicorn-beauty-salon",
+      "title": "Unicorn Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/1/unicorn-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/1/unicorn-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tractor-farming-simulator",
+      "title": "Tractor Farming Simulator",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/unity/tractor-farming-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/unity/tractor-farming-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "highway-moto",
+      "title": "Highway Moto",
+      "category": "Racing",
+      "domain": "cloud.onlinegames.io",
+      "originalUrl": "https://cloud.onlinegames.io/games/2024/unity/highway-moto/index-og.html",
+      "normalizedUrl": "https://cloud.onlinegames.io/games/2024/unity/highway-moto/index.html",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": true,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "trains-io",
+      "title": "Trains io",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/235/trains-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/235/trains-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "snake-wars",
+      "title": "Snake Wars",
+      "category": "Multiplayer",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/snake-wars/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/snake-wars/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "witch-beauty-salon",
+      "title": "Witch Beauty Salon",
+      "category": "Casual",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/2/witch-beauty-salon/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/2/witch-beauty-salon/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mr-space-bullet",
+      "title": "Mr Space Bullet",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/mr-space-bullet/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/mr-space-bullet/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "hover-racer",
+      "title": "Hover Racer",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/hover-racer/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/hover-racer/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "draw-the-bird-path",
+      "title": "Draw the Bird Path",
+      "category": "Puzzle",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2022/construct/147/draw-the-bird-path/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2022/construct/147/draw-the-bird-path/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "run-3-space",
+      "title": "Run 3 Space",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/construct/192/run-3-space/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/construct/192/run-3-space/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "racing-cars-2",
+      "title": "Racing Cars 2",
+      "category": "Racing",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/4/racing-cars-2/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/4/racing-cars-2/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "toonz-io",
+      "title": "ToonZ io",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/toonz-io/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/toonz-io/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "squid-race-simulator",
+      "title": "Squid Race Simulator",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity3/squid-race-simulator/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity3/squid-race-simulator/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "dino-chaos-idle",
+      "title": "Dino Chaos Idle",
+      "category": "Arcade",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2023/unity3/dino-chaos-idle/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2023/unity3/dino-chaos-idle/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "funny-shooter-bro",
+      "title": "Funny Shooter Bro",
+      "category": "Action",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2024/unity/funny-shooter-bro/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2024/unity/funny-shooter-bro/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "crazy-ball-adventures",
+      "title": "Crazy Ball Adventures",
+      "category": "Adventure",
+      "domain": "onlinegames.io",
+      "originalUrl": "https://www.onlinegames.io/games/2021/unity2/crazy-ball-adventures/index.html",
+      "normalizedUrl": "https://www.onlinegames.io/games/2021/unity2/crazy-ball-adventures/index.html",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "slope",
+      "title": "Slope",
+      "category": "Racing",
+      "domain": "y8.com",
+      "originalUrl": "https://y8.com/embed/slope",
+      "normalizedUrl": "https://y8.com/embed/slope",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": true,
+        "redirectRisk": true
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": true,
+        "redirectRisk": true
+      }
+    },
+    {
+      "id": "wordle",
+      "title": "Wordle",
+      "category": "Puzzle",
+      "domain": "cdn.bubbleshooter.net",
+      "originalUrl": "https://cdn.bubbleshooter.net/games/wordle/",
+      "normalizedUrl": "https://cdn.bubbleshooter.net/games/wordle/",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "tetris-cube",
+      "title": "Tetris Cube",
+      "category": "Puzzle",
+      "domain": "cdn.bubbleshooter.net",
+      "originalUrl": "https://cdn.bubbleshooter.net/games/tetris-cube/",
+      "normalizedUrl": "https://cdn.bubbleshooter.net/games/tetris-cube/",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "flappy-bird",
+      "title": "Flappy Bird",
+      "category": "Arcade",
+      "domain": "funhtml5games.com",
+      "originalUrl": "https://funhtml5games.com?embed=flappy",
+      "normalizedUrl": "https://funhtml5games.com/?embed=flappy",
+      "urlChanged": true,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "clicker-heroes",
+      "title": "Clicker Heroes",
+      "category": "Casual",
+      "domain": "cdn.clickerheroes.com",
+      "originalUrl": "https://cdn.clickerheroes.com/gamebuild/index.php",
+      "normalizedUrl": "https://cdn.clickerheroes.com/gamebuild/index.php",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "mr-mine",
+      "title": "Mr.Mine",
+      "category": "Simulator",
+      "domain": "mrmine.com",
+      "originalUrl": "https://mrmine.com/game/",
+      "normalizedUrl": "https://mrmine.com/game/",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "poker-quest",
+      "title": "Poker Quest",
+      "category": "Strategy",
+      "domain": "playsaurus.com",
+      "originalUrl": "https://playsaurus.com/kongPokerQuest63/",
+      "normalizedUrl": "https://playsaurus.com/kongPokerQuest63/",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "grindcraft",
+      "title": "Grindcraft",
+      "category": "Simulator",
+      "domain": "grindcraft.com",
+      "originalUrl": "https://grindcraft.com/game.php",
+      "normalizedUrl": "https://grindcraft.com/game.php",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    },
+    {
+      "id": "fray-fight",
+      "title": "Fray Fight",
+      "category": "Action",
+      "domain": "frayfight.com",
+      "originalUrl": "https://frayfight.com/game/",
+      "normalizedUrl": "https://frayfight.com/game/",
+      "urlChanged": false,
+      "original": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      },
+      "normalized": {
+        "adsInjected": false,
+        "popupRisk": false,
+        "redirectRisk": false
+      }
+    }
+  ]
+}

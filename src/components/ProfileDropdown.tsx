@@ -12,7 +12,6 @@ import {
   ChevronRight, 
   CheckCircle2,
   HelpCircle,
-  Mail,
   X
 } from 'lucide-react';
 import { UserProfile } from '../types';
@@ -266,18 +265,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                 </div>
               </div>
 
-              {/* Footer Section */}
-              <div className={`mt-auto p-6 border-t flex items-center justify-center ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-black/5 bg-black/5'}`}>
-                <button 
-                  onClick={() => { setIsHelpCenterOpen(true); onClose(); }}
-                  className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-all ${
-                    isDarkMode ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'
-                  }`}
-                >
-                  <Mail className="w-3 h-3" />
-                  {t('contactUs') || 'Contact us'}
-                </button>
-              </div>
+              {/* Footer Section intentionally removed: keep contact/support links on Footer/Contact/Support pages only. */}
             </div>
           </motion.div>
         )}

@@ -9,6 +9,8 @@ export const CATEGORY_LIST = [
   "Recommended",
   "History",
   "Trending",
+  "Mobile Games",
+  "Best On Mobile",
   "Mods",
   "Action",
   "Adventure",

@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react';
-import { Search, RotateCcw, Play, Star, Terminal, Filter, Trophy, Flame, Heart, Clock } from 'lucide-react';
+import { Search, RotateCcw, Play, Star, Terminal, Trophy, Flame, Heart, Clock } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
 import { GameThumbnail } from './GameThumbnail';
@@ -14,9 +14,6 @@ interface GameGridProps {
   isDarkMode: boolean;
   sortBy: 'title' | 'plays' | 'rating' | 'latest';
   setSortBy: (sort: 'title' | 'plays' | 'rating' | 'latest') => void;
-  selectedTags: string[];
-  setSelectedTags: (tags: string[] | ((prev: string[]) => string[])) => void;
-  TAGS_LIST: string[];
   displayLimit: number;
   setDisplayLimit?: (limit: number | ((prev: number) => number)) => void;
   handleGameClick: (game: Game) => void;
@@ -58,9 +55,6 @@ export const GameGrid = memo(function GameGrid({
   isDarkMode,
   sortBy,
   setSortBy,
-  selectedTags,
-  setSelectedTags,
-  TAGS_LIST,
   displayLimit,
   setDisplayLimit,
   handleGameClick,
@@ -85,7 +79,6 @@ export const GameGrid = memo(function GameGrid({
   const handleReset = () => {
     setSearchQuery('');
     setSelectedCategory('All');
-    setSelectedTags([]);
   };
 
   return (
@@ -126,42 +119,6 @@ export const GameGrid = memo(function GameGrid({
                     ))}
                   </div>
               </div>
-            )}
-          </div>
-
-          {/* Tag Filters */}
-          <div className="flex flex-wrap gap-2 items-center">
-            <div className={`flex items-center gap-2 mr-2 px-3 py-1.5 rounded-lg border ${isDarkMode ? 'bg-white/10 border-white/20 text-white/70' : 'bg-black/10 border-black/20 text-black/70'}`}>
-              <Filter className="w-3 h-3" />
-              <span className="text-xs font-medium tracking-tight">{t('tags')}</span>
-            </div>
-            {TAGS_LIST.slice(0, 15).map((tag, idx) => {
-              const isSelected = selectedTags.includes(tag);
-              return (
-                <button
-                  key={`tag-filter-${tag}-${idx}`}
-                  onClick={() => {
-                    setSelectedTags(prev => 
-                      isSelected ? prev.filter(t => t !== tag) : [...prev, tag]
-                    );
-                  }}
-                  className={`px-4 py-2 rounded-xl text-xs font-medium tracking-tight transition-all duration-200 border ${
-                    isSelected 
-                      ? 'bg-accent text-white border-accent shadow-sm' 
-                      : `hover:border-accent/40 ${isDarkMode ? 'bg-white/10 border-white/10 text-white/60 hover:text-white' : 'bg-black/10 border-black/10 text-black/60 hover:text-black'}`
-                  }`}
-                >
-                  {tag}
-                </button>
-              );
-            })}
-            {selectedTags.length > 0 && (
-              <button
-                onClick={() => setSelectedTags([])}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all duration-300 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white`}
-              >
-                {t('clearAll')}
-              </button>
             )}
           </div>
         </div>
@@ -229,18 +186,11 @@ export const GameGrid = memo(function GameGrid({
               className="col-span-full py-32 text-center"
             >
               <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-black/5 border-black/5'}`}>
-                {selectedTags.length > 0 ? (
-                  <Filter className={`w-10 h-10 ${isDarkMode ? 'text-white/10' : 'text-black/10'}`} />
-                ) : (
-                  <Search className={`w-10 h-10 ${isDarkMode ? 'text-white/10' : 'text-black/10'}`} />
-                )}
+                <Search className={`w-10 h-10 ${isDarkMode ? 'text-white/10' : 'text-black/10'}`} />
               </div>
               <h3 className={`text-xl md:text-2xl font-bold tracking-tight mb-2 md:mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('noGamesFound')}</h3>
               <p className={`text-sm max-w-md mx-auto leading-relaxed ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                {selectedTags.length > 0 
-                  ? t('noResultsWithTags').replace('{tags}', selectedTags.join(', '))
-                  : t('noResultsMessage').replace('{query}', searchQuery || 'none').replace('{category}', t(categoryKeyMap[selectedCategory] || selectedCategory))
-                }
+                {t('noResultsMessage').replace('{query}', searchQuery || 'none').replace('{category}', t(categoryKeyMap[selectedCategory] || selectedCategory))}
               </p>
               <button 
                 onClick={handleReset}

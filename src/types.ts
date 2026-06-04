@@ -51,6 +51,10 @@ export interface Game {
 
   /** True when the embed source is known to inject intrusive third-party ads. */
   adsInjected?: boolean;
+  /** True when the embed source is known/suspected to open popups (window.open, new tabs). */
+  popupRisk?: boolean;
+  /** True when the embed source is known/suspected to trigger external redirects. */
+  redirectRisk?: boolean;
 
   // Authenticity & Quality Control metrics
   sourceId?: string;

@@ -22,7 +22,7 @@ export function LazyRoute({ children, pathname, isDarkMode }: LazyRouteProps) {
     <Suspense
       fallback={
         isRevisit ? (
-          <div className={`min-h-0 ${bg}`} aria-hidden />
+          <div className={`min-h-screen ${bg}`} aria-hidden />
         ) : (
           <div className={`min-h-[32vh] ${bg}`}>
             <RouteContentSkeleton pathname={pathname} isDarkMode={isDarkMode} />
