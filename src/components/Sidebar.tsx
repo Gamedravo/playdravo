@@ -45,6 +45,7 @@ const categoryKeyMap: Record<string, string> = {
   Sports: 'sports',
   Strategy: 'strategy',
   Multiplayer: 'multiplayer',
+  '1 Player': 'onePlayer',
   '2 Player': 'twoPlayer',
   '3 Player': 'threePlayer',
   '4 Player': 'fourPlayer',

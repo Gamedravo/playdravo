@@ -521,7 +521,7 @@ function AppContent() {
   const categoryGroups = useMemo(() => {
     const mainMenu = ['All', 'Favorites', 'Recommended', 'History', 'Trending'];
     const mobile = ['Mobile Games', 'Best On Mobile'];
-    const multiplayer = ['Multiplayer', '2 Player', '3 Player', '4 Player'];
+    const multiplayer = ['Multiplayer', '1 Player', '2 Player', '3 Player', '4 Player'];
     
     // Any category not in mainMenu, mobile, or multiplayer goes into general Categories
     const allKnown = [...mainMenu, ...mobile, ...multiplayer];

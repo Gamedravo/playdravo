@@ -14,6 +14,7 @@ const ROUTE_OVERRIDES: Record<string, string> = {
 
 /** URL slug → canonical category label (genres with spaces) */
 const SLUG_TO_LABEL: Record<string, string> = {
+  '1-player': '1 Player',
   '2-player': '2 Player',
   '3-player': '3 Player',
   '4-player': '4 Player',
@@ -21,6 +22,7 @@ const SLUG_TO_LABEL: Record<string, string> = {
 
 /** Canonical label → URL slug */
 const LABEL_TO_SLUG: Record<string, string> = {
+  '1 Player': '1-player',
   '2 Player': '2-player',
   '3 Player': '3-player',
   '4 Player': '4-player',

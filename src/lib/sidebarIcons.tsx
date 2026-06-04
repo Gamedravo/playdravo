@@ -16,6 +16,7 @@ import {
   Brain,
   Users,
   UserPlus,
+  User,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -36,6 +37,7 @@ const SIDEBAR_ICON_MAP: Record<string, LucideIcon> = {
   Sports: Trophy,
   Strategy: Brain,
   Multiplayer: Users,
+  '1 Player': User,
   '2 Player': UserPlus,
   '3 Player': Users,
   '4 Player': Users,
