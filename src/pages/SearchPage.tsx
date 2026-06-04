@@ -6,6 +6,7 @@ import { Game } from '../types';
 import { GameCard } from '../components/GameCard';
 import { GameThumbnail } from '../components/GameThumbnail';
 import { Analytics } from '../lib/analytics';
+import { SEO } from '../components/SEO';
 
 interface SearchPageProps {
   isDarkMode: boolean;
@@ -111,6 +112,13 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
 
   return (
     <div className="w-full">
+      <SEO
+        title="Search Games - PlayDravo"
+        description="Search through hundreds of free online games on PlayDravo. Find action, puzzle, racing, multiplayer and more games to play instantly in your browser."
+        keywords="search games, find games, PlayDravo search, online games, browser games"
+        url="https://www.gamedravo.com/search"
+        canonicalUrl="https://www.gamedravo.com/search"
+      />
       {/* Sticky Search Bar */}
       <div className={`sticky top-0 z-50 p-3 md:p-8 border-b transition-colors duration-300 ${isDarkMode ? 'border-white/5 bg-bg-dark/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'border-black/5 bg-white/80 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
         <div className="flex items-center gap-3 md:gap-4 max-w-4xl mx-auto">

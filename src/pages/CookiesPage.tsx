@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { ShieldCheck, Flame, Info, Eye, FileText, CheckCircle, Home, ChevronRight, ArrowLeft } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 interface CookiesPageProps {
   isDarkMode: boolean;
@@ -11,6 +12,7 @@ interface CookiesPageProps {
 
 export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
   const lastUpdated = "May 31, 2026";
+  const canonicalUrl = 'https://www.gamedravo.com/cookies';
 
   const pillars = [
     {
@@ -32,6 +34,26 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title="Cookie Policy - PlayDravo"
+        description="Learn about how PlayDravo uses cookies and local storage. Understand our cookie policy for essential functionality, preferences, and security."
+        keywords="cookie policy, cookies, local storage, PlayDravo privacy, browser storage"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Cookie Policy - PlayDravo',
+          description: 'Cookie Policy for PlayDravo gaming platform',
+          url: canonicalUrl,
+          dateModified: '2026-05-31',
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
         <div className={`p-4 md:p-6 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 ${
