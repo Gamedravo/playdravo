@@ -893,6 +893,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                 </div>
               </div>
             </div>
+            </div>
 
             {/* Game Details */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 mt-2">
