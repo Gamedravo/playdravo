@@ -105,18 +105,17 @@ export const Sidebar = memo(function Sidebar({
               document.querySelector('main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
               closeMobile();
             }}
-            // Force-hide brand row on mobile to avoid duplicate branding with the Header.
-            className="sidebar-brand hidden md:flex"
+            className="sidebar-brand flex"
             title="Home"
           >
             <PlayDravoMark size={32} />
-            {isSidebarOpen && (
+            {(isSidebarOpen || isMobileOpen) && (
               <span className="sidebar-brand-text">
                 Play<span className="text-accent">Dravo</span>
               </span>
             )}
           </a>
-          <span className="md:hidden flex-1" aria-hidden />
+          <span className="flex-1" aria-hidden />
           <button
             type="button"
             onClick={() => setOpen(false)}
