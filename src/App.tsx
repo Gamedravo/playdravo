@@ -1675,13 +1675,15 @@ function AppContent() {
           </div>
 
           <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${isSearchActive ? 'p-0' : activeGame ? 'p-0 md:p-5' : 'p-3 md:p-5'} relative`}>
-            {searchMounted && (
-              <div
-                className={`absolute inset-0 z-[2] overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${
-                  isSearchActive ? '' : 'invisible pointer-events-none'
-                }`}
-                aria-hidden={!isSearchActive}
-              >
+            {/* Search overlay - always mounted after first visit, visibility controlled via CSS for instant transitions */}
+            <div
+              className={`absolute inset-0 z-[2] overflow-y-auto transition-[visibility,opacity] duration-150 ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${
+                isSearchActive ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
+              }`}
+              aria-hidden={!isSearchActive}
+              style={{ willChange: isSearchActive ? 'auto' : 'visibility, opacity' }}
+            >
+              {searchMounted && (
                 <SearchPage
                   isDarkMode={isDarkMode}
                   t={t}
@@ -1691,9 +1693,10 @@ function AppContent() {
                   searchQuery={searchQuery}
                   setSearchQuery={setSearchQuery}
                 />
-              </div>
-            )}
-            <div className={isSearchActive ? 'hidden' : 'relative min-h-full'}>
+              )}
+            </div>
+            {/* Main content - hidden via CSS when search is active to prevent layout recalc */}
+            <div className={isSearchActive ? 'invisible h-0 overflow-hidden' : 'relative min-h-full'}>
             <Routes>
                 <Route path="/" element={
                   <PageLayout>

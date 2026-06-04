@@ -26,6 +26,8 @@ const LABEL_TO_SLUG: Record<string, string> = {
   '4 Player': '4-player',
   Recommended: 'recommended',
   Trending: 'trending',
+  'Mobile Games': 'mobile-games',
+  'Best On Mobile': 'best-on-mobile',
 };
 
 export type CategorySlug =
@@ -61,6 +63,9 @@ export function getCategoryDisplayName(slug: string, fallbackGames: Game[]): str
       return 'Top Rated';
     case 'recommended':
       return 'Recommended';
+    case 'mobile-games':
+    case 'best-on-mobile':
+      return 'Mobile Games';
     default: {
       const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
       if (chip) return chip.title;
@@ -140,6 +145,28 @@ export function filterGamesForCategorySlug(
         .filter((g) => (g.rating ?? 0) >= 4)
         .sort((a, b) => b.plays - a.plays)
         .slice(0, 24);
+    }
+
+    case 'mobile-games':
+    case 'best-on-mobile': {
+      // Filter games optimized for mobile
+      return [...games]
+        .filter((g) => 
+          g.mobileOptimization === 'touch-friendly' || 
+          g.mobileOptimization === 'responsive' ||
+          (g.tags ?? []).some((t) => /\bmobile\b/i.test(t)) ||
+          (g.tags ?? []).some((t) => /\btouch\b/i.test(t))
+        )
+        .sort((a, b) => {
+          // Prioritize touch-friendly, then responsive, then by plays
+          const mobileScore = (g: Game) => 
+            g.mobileOptimization === 'touch-friendly' ? 3 : 
+            g.mobileOptimization === 'responsive' ? 2 : 1;
+          const scoreA = mobileScore(a);
+          const scoreB = mobileScore(b);
+          if (scoreA !== scoreB) return scoreB - scoreA;
+          return b.plays - a.plays;
+        });
     }
 
     default: {

@@ -21,6 +21,7 @@ import {
   Github,
   Check,
   ArrowRight,
+  Smartphone,
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
 import { GameGrid } from '../components/GameGrid';
@@ -161,6 +162,7 @@ export const HomePage = React.memo(function HomePage({
   const recRef = React.useRef<HTMLDivElement>(null);
   const trendingRef = React.useRef<HTMLDivElement>(null);
   const recentRef = React.useRef<HTMLDivElement>(null);
+  const mobileGamesRef = React.useRef<HTMLDivElement>(null);
 
   useHorizontalScroll(categoriesRef);
   useHorizontalScroll(newArrivalsRef);
@@ -168,6 +170,7 @@ export const HomePage = React.memo(function HomePage({
   useHorizontalScroll(recRef);
   useHorizontalScroll(trendingRef);
   useHorizontalScroll(recentRef);
+  useHorizontalScroll(mobileGamesRef);
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -207,6 +210,11 @@ export const HomePage = React.memo(function HomePage({
   const denseTrending = React.useMemo(
     () => densifyShelf(homepageShelves.trending, filteredGames),
     [homepageShelves.trending, filteredGames]
+  );
+
+  const denseMobileFriendly = React.useMemo(
+    () => densifyShelf(homepageShelves.mobileFriendly, filteredGames),
+    [homepageShelves.mobileFriendly, filteredGames]
   );
 
   const denseNewArrivals = React.useMemo(
@@ -423,6 +431,58 @@ export const HomePage = React.memo(function HomePage({
             <div className="shelf-scroll" ref={trendingRef}>
                 {denseTrending.map((game, index) => (
                   <div key={`trending-${game.id}-${index}`} className="shelf-card">
+                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
+                  </div>
+                ))}
+            </div>
+          </section>
+          </LazyShelf>
+        )}
+      </SectionErrorBoundary>
+
+      {/* Best On Mobile - Mobile-optimized games shelf */}
+      <SectionErrorBoundary sectionName="Best On Mobile">
+        {selectedCategory === 'All' && !searchQuery && denseMobileFriendly.length >= 6 && (
+          <LazyShelf minHeight={260}>
+          <section className="shelf-section group/shelf">
+            <div className="shelf-header">
+              <div className="space-y-0.5">
+                <div className="section-eyebrow">
+                  <Smartphone className="w-3.5 h-3.5" />
+                  <span>{t('mobileGames') || 'Mobile'}</span>
+                </div>
+                <h3 className="section-title">{t('bestOnMobile') || 'Best On Mobile'}</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
+                  <button 
+                    onClick={() => handleScroll(mobileGamesRef, 'left')}
+                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button 
+                    onClick={() => handleScroll(mobileGamesRef, 'right')}
+                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <button 
+                  onClick={() => {
+                    navigate('/category/mobile-games');
+                  }}
+                  className={`flex items-center gap-2 text-[10px] font-semibold tracking-wide hover:text-accent transition-colors group ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}
+                >
+                  {t('viewAll') || 'View All'}
+                  <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+ 
+            <div className="shelf-scroll" ref={mobileGamesRef}>
+                {denseMobileFriendly.map((game, index) => (
+                  <div key={`mobile-${game.id}-${index}`} className="shelf-card">
                     <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
                   </div>
                 ))}

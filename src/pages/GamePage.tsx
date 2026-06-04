@@ -1020,25 +1020,8 @@ export const GamePage: React.FC<GamePageProps> = ({
                       </div>
                     ))}
                   </div>
-
-                  {game.tags && game.tags.length > 0 && (
-                    <div className="mt-6 pt-6 border-t border-white/10">
-                      <div className="flex items-center gap-2 mb-4 opacity-70">
-                        <Tag className="w-4 h-4" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Tags</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {game.tags.map(tag => (
-                          <span key={tag} className={`px-2.5 py-1 text-[10px] font-semibold tracking-wide rounded-lg border ${isDarkMode ? 'bg-white/5 border-white/10 text-white/80' : 'bg-black/5 border-black/10 text-black/80'}`}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
-            </div>
 
             {/* Game Milestones & Badges Tray */}
             <section className="space-y-6 pt-6">
