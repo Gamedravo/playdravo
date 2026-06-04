@@ -283,13 +283,30 @@ export const HomePage = React.memo(function HomePage({
       <SEO 
         title="Play Best Online Games Free" 
         description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
-        keywords="free online games, play games online, browser games, 2048, hextris, slope, tetris"
-        url={window.location.href}
+        keywords="free online games, play games online, browser games, HTML5 games, instant play games, PlayDravo"
+        image="https://www.gamedravo.com/logo.svg"
+        url="https://www.gamedravo.com/"
+        canonicalUrl="https://www.gamedravo.com/"
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           name: 'PlayDravo',
-          url: window.location.origin,
+          url: 'https://www.gamedravo.com',
+          description: 'Play the best online games for free. Discover action, puzzle, arcade, and multiplayer games instantly in your browser.',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: {
+              '@type': 'EntryPoint',
+              urlTemplate: 'https://www.gamedravo.com/search?q={search_term_string}'
+            },
+            'query-input': 'required name=search_term_string'
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com',
+            logo: 'https://www.gamedravo.com/logo.svg'
+          }
         }}
       />
 

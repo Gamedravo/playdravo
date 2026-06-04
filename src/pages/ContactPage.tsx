@@ -5,6 +5,7 @@ import { PageBrandMark } from '../components/PageBrandMark';
 import { ArrowLeft, Home, ChevronRight, Mail, Send, Check, Phone, ShieldCheck, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { PARTNERS_EMAIL, SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
+import { SEO } from '../components/SEO';
 
 interface ContactPageProps {
   isDarkMode: boolean;
@@ -13,6 +14,7 @@ interface ContactPageProps {
 
 export function ContactPage({ isDarkMode, t }: ContactPageProps) {
   const navigate = useNavigate();
+  const canonicalUrl = 'https://www.gamedravo.com/contact';
   const [formSent, setFormSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -38,6 +40,25 @@ export function ContactPage({ isDarkMode, t }: ContactPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title="Contact Us - PlayDravo"
+        description="Contact PlayDravo support team. Get help with account issues, partnerships, DMCA requests, or general inquiries about our free online games platform."
+        keywords="contact, support, PlayDravo contact, help, partnerships, DMCA"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: 'Contact PlayDravo',
+          description: 'Contact page for PlayDravo gaming platform',
+          url: canonicalUrl,
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         
         {/* Navigation Breadcrumbs Header */}

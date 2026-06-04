@@ -69,12 +69,30 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
     }
   }, [categoryId]);
 
+  const canonicalUrl = `https://www.gamedravo.com/category/${categoryId || 'all'}`;
+
   return (
     <div className="min-h-screen">
       <SEO 
         title={`Play ${categoryName} Games Online Free – PlayDravo`}
-        description={`Discover the best ${categoryName} games on PlayDravo. Play for free instantly in your browser.`}
-        keywords={`${categoryName} games, play ${categoryName} games, free online ${categoryName} games`}
+        description={`Discover the best ${categoryName} games on PlayDravo. Play for free instantly in your browser. Browse ${categoryGames.length} ${categoryName} games.`}
+        keywords={`${categoryName} games, play ${categoryName} games, free online ${categoryName} games, browser games`}
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        image="https://www.gamedravo.com/logo.svg"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: `${categoryName} Games - PlayDravo`,
+          description: `Discover the best ${categoryName} games on PlayDravo. Play for free instantly in your browser.`,
+          url: canonicalUrl,
+          numberOfItems: categoryGames.length,
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8">

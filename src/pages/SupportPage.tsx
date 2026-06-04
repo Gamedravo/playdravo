@@ -5,6 +5,7 @@ import { PageBrandMark } from '../components/PageBrandMark';
 import { ArrowLeft, BookOpen, Wrench, ShieldCheck, MessageCircle, Home, ChevronRight, Mail, Send, Check } from 'lucide-react';
 import { appToast } from '../lib/appToast';
 import { SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
+import { SEO } from '../components/SEO';
 
 interface SupportPageProps {
   isDarkMode: boolean;
@@ -14,6 +15,9 @@ interface SupportPageProps {
 export function SupportPage({ isDarkMode, t }: SupportPageProps) {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
+  const canonicalUrl = articleId 
+    ? `https://www.gamedravo.com/support/${articleId}` 
+    : 'https://www.gamedravo.com/support';
 
   // Support ticket form state
   const [ticketSent, setTicketSent] = useState(false);
@@ -105,6 +109,25 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title={article ? `${article.title} - Support | PlayDravo` : 'Support & Help Center - PlayDravo'}
+        description={article ? `Get help with ${article.title.toLowerCase()} on PlayDravo. Find answers and solutions for your gaming experience.` : 'Get help and support for PlayDravo. Browse our FAQ, troubleshooting guides, and contact our support team.'}
+        keywords="support, help center, FAQ, PlayDravo support, gaming help, troubleshooting"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          name: 'PlayDravo Support Center',
+          description: 'Help and support resources for PlayDravo gaming platform',
+          url: canonicalUrl,
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
         
         {/* Navigation Breadcrumbs Header */}

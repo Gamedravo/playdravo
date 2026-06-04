@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { Gamepad2, Sparkles, Zap, Trophy, Shield, Users, Home, ChevronRight, ArrowLeft } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 interface AboutPageProps {
   isDarkMode: boolean;
@@ -10,6 +11,7 @@ interface AboutPageProps {
 }
 
 export function AboutPage({ isDarkMode, t }: AboutPageProps) {
+  const canonicalUrl = 'https://www.gamedravo.com/about';
   const stats = [
     { label: "Curated Games", value: "60+" },
     { label: "Monthly Players", value: "150K+" },
@@ -42,6 +44,26 @@ export function AboutPage({ isDarkMode, t }: AboutPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title="About Us - PlayDravo | Free Online Games Platform"
+        description="Learn about PlayDravo, the ultimate web gaming destination. Play 60+ curated HTML5 games instantly in your browser with zero downloads required."
+        keywords="about PlayDravo, online games platform, free browser games, HTML5 games, instant play games"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: 'About PlayDravo',
+          description: 'PlayDravo is a cutting-edge web portal for instant gaming access with 60+ curated HTML5 web games.',
+          url: canonicalUrl,
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com',
+            logo: 'https://www.gamedravo.com/logo.svg'
+          }
+        }}
+      />
       <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
         <div className={`p-4 md:p-6 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 ${

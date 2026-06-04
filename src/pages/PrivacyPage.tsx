@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { ShieldAlert, Fingerprint, Lock, Eye, FileText, CheckCircle, Home, ChevronRight, ArrowLeft } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 interface PrivacyPageProps {
   isDarkMode: boolean;
@@ -11,6 +12,7 @@ interface PrivacyPageProps {
 
 export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
   const lastUpdated = "May 31, 2026";
+  const canonicalUrl = 'https://www.gamedravo.com/privacy';
 
   const pillars = [
     {
@@ -32,6 +34,26 @@ export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title="Privacy Policy - PlayDravo"
+        description="Read PlayDravo's Privacy Policy. Learn how we collect, use, and protect your personal information while you enjoy free online games."
+        keywords="privacy policy, data protection, PlayDravo privacy, gaming privacy"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Privacy Policy - PlayDravo',
+          description: 'Privacy Policy for PlayDravo gaming platform',
+          url: canonicalUrl,
+          dateModified: '2026-05-31',
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
         <div className={`p-4 md:p-6 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 ${

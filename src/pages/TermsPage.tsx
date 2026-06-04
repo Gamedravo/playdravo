@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
 import { FileCode, Scale, UserCheck, ShieldAlert, CheckCircle2, Home, ChevronRight, ArrowLeft } from 'lucide-react';
+import { SEO } from '../components/SEO';
 
 interface TermsPageProps {
   isDarkMode: boolean;
@@ -11,6 +12,7 @@ interface TermsPageProps {
 
 export function TermsPage({ isDarkMode, t }: TermsPageProps) {
   const lastUpdated = "May 31, 2026";
+  const canonicalUrl = 'https://www.gamedravo.com/terms';
 
   const headers = [
     {
@@ -32,6 +34,26 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
+      <SEO
+        title="Terms of Service - PlayDravo"
+        description="Read PlayDravo's Terms of Service. Understand your rights and responsibilities when using our free online gaming platform."
+        keywords="terms of service, user agreement, PlayDravo terms, gaming terms"
+        url={canonicalUrl}
+        canonicalUrl={canonicalUrl}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Terms of Service - PlayDravo',
+          description: 'Terms of Service for PlayDravo gaming platform',
+          url: canonicalUrl,
+          dateModified: '2026-05-31',
+          publisher: {
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: 'https://www.gamedravo.com'
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
         <div className={`p-4 md:p-6 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 ${
