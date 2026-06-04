@@ -220,7 +220,7 @@ export const HomePage = React.memo(function HomePage({
   );
 
   const curatedBlocks = React.useMemo(
-    () => buildCuratedHomepageBlocks(homepageShelves, {}, filteredGames, 4),
+    () => buildCuratedHomepageBlocks(homepageShelves, [], filteredGames, 4),
     [homepageShelves, filteredGames]
   );
 
