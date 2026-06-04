@@ -281,16 +281,35 @@ export const HomePage = React.memo(function HomePage({
   return (
     <div className="space-y-1 px-1 md:px-2 pb-3">
       <SEO 
-        title="Play Best Online Games Free" 
-        description="Play the best online games for free on PlayDravo. Discover a wide variety of action, puzzle, arcade, and multiplayer games instantly in your browser."
-        keywords="free online games, play games online, browser games, 2048, hextris, slope, tetris"
-        url={window.location.href}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: 'PlayDravo',
-          url: window.location.origin,
-        }}
+        title="Play Best Online Games Free – No Download"
+        description="Play 500+ free online games instantly on PlayDravo. Action, puzzle, arcade, multiplayer, adventure & more — no download, no sign-up required. Play in your browser now."
+        keywords="free online games, play games online, browser games, no download games, instant play, action games, puzzle games, multiplayer games"
+        canonicalUrl={`${window.location.origin}/`}
+        url={`${window.location.origin}/`}
+
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'PlayDravo',
+            url: window.location.origin,
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: `${window.location.origin}/search?q={search_term_string}`,
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'PlayDravo',
+            url: window.location.origin,
+            description: 'Free online games platform with 500+ browser games.',
+          },
+        ]}
       />
 
       <SectionErrorBoundary sectionName="Featured Spotlight">
