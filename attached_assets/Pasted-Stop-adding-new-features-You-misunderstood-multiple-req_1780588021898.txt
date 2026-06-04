@@ -1,0 +1,180 @@
+Stop adding new features.
+
+You misunderstood multiple requirements.
+
+Do NOT add:
+
+* Dark mode
+* Light mode toggle
+* Notification redesign
+* Particle effects
+* Animated popups
+* Floating cards
+* Progress bars
+
+Focus on the actual issues below.
+
+==================================================
+
+1. REMOVE ALL GAMEPLAY NOTIFICATIONS
+   ==================================================
+
+Remove:
+
+* Achievement unlocked notifications
+* Game started notifications
+* Login reminder popups while browsing
+* Gameplay toast notifications
+
+Goal:
+
+No interruptions while browsing or playing.
+
+==================================================
+2. FIX EMPTY CATEGORIES
+=======================
+
+Audit and fix:
+
+* 1 Player
+* 2 Player
+* 3 Player
+* 4 Player
+* Multiplayer
+* Mobile Games
+* Best On Mobile
+
+Current issue:
+
+Some categories show no games even though games exist.
+
+Verify category counts.
+
+==================================================
+3. REMOVE SCREENSHOTS & MEDIA SECTIONS
+======================================
+
+On game pages remove:
+
+* Screenshots
+* Media galleries
+* Screenshot sections
+* Media sections
+
+Keep pages focused on gameplay.
+
+==================================================
+4. AUDIT GAME PROVIDERS
+=======================
+
+Current issue:
+
+Many embedded games display:
+
+* Ads
+* Popups
+* Redirects
+* External websites
+
+Requirements:
+
+Identify every provider causing:
+
+* Ads inside gameplay
+* New tabs
+* Redirects
+* External branding
+
+Generate provider report.
+
+==================================================
+5. REMOVE REDIRECTING GAMES
+===========================
+
+If a game:
+
+* Redirects users away from PlayDravo
+* Opens new tabs
+* Forces ads
+
+Then:
+
+* Remove it
+  OR
+* Replace it with a safe source
+
+Goal:
+
+Users stay on PlayDravo.
+
+==================================================
+6. GAME LIBRARY EXPANSION
+=========================
+
+Add more games.
+
+Requirements:
+
+* Verified working
+* Working thumbnails
+* Working embeds
+* Working categories
+* Mobile-friendly preferred
+
+Do NOT add fake entries.
+
+Quality over quantity.
+
+==================================================
+7. PREVIEW SYSTEM
+=================
+
+Verify game previews actually work.
+
+When hovering a game card:
+
+* Preview should start.
+* Similar to YouTube hover previews.
+
+If previews are broken:
+
+* Fix them.
+
+If previews are missing:
+
+* Implement fallback behavior.
+
+==================================================
+8. MOBILE POLISH
+================
+
+Improve:
+
+* Mobile category layout
+* Mobile game pages
+* Mobile navigation
+
+Remove unnecessary clutter.
+
+==================================================
+FINAL
+=====
+
+Do not redesign notifications.
+
+Do not add new visual effects.
+
+Do not add dark mode.
+
+Fix the existing problems first.
+
+Run build.
+
+Provide:
+
+* Files changed
+* Categories fixed
+* Providers removed
+* Games added
+* Build result
+* Remaining issues

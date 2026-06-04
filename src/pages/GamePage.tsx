@@ -45,7 +45,6 @@ import { appToast } from '../lib/appToast';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { GameThumbnail } from '../components/GameThumbnail';
-import { GamePreviewPlayer } from '../components/GamePreviewPlayer';
 import { Analytics } from '../lib/analytics';
 import { getCategoryPath } from '../utils/categoryRoutes';
 
@@ -84,44 +83,6 @@ interface GamePageProps {
   user: any;
 }
 
-// Category Specific screenshots pool
-const getCategoryScreenshots = (category: string, index: number, originalThumbnail: string): string => {
-  const screenshotPools: Record<string, string[]> = {
-    'Puzzle': [
-      'https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?w=600&auto=format&fit=crop&q=60'
-    ],
-    'Casual': [
-      'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1527689368864-3a821dbccc34?w=600&auto=format&fit=crop&q=60'
-    ],
-    'Action': [
-      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1552824722-ddac13f58e21?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=600&auto=format&fit=crop&q=60'
-    ],
-    'Adventure': [
-      'https://images.unsplash.com/photo-1552824801-03524a627f97?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=600&auto=format&fit=crop&q=60'
-    ],
-    'Sports': [
-      'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&auto=format&fit=crop&q=60'
-    ],
-    'Arcade': [
-      'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1566241477600-ac026ad43874?w=600&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1531525645387-7f14be1bdbbd?w=600&auto=format&fit=crop&q=60'
-    ]
-  };
-
-  const pool = screenshotPools[category] || screenshotPools['Casual'];
-  return pool[index % pool.length] || originalThumbnail;
-};
 
 export const GamePage: React.FC<GamePageProps> = ({ 
   isDarkMode, 
@@ -1024,24 +985,6 @@ export const GamePage: React.FC<GamePageProps> = ({
                   )}
                 </section>
 
-                <hr className={`border-t ${isDarkMode ? 'border-white/10' : 'border-black/10'}`} />
-
-                <section>
-                  <h3 className="text-lg font-bold tracking-tight mb-4">Screenshots & Media</h3>
-                  <GamePreviewPlayer game={game} className="mb-4" />
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {[1, 2, 3].map((num) => (
-                      <div key={num} className={`aspect-video rounded-xl overflow-hidden border ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-                        <GameThumbnail 
-                          src={getCategoryScreenshots(game.category, num, game.thumbnail)} 
-                          alt={`Screenshot ${num}`} 
-                          category={game.category}
-                          className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity hover:scale-105 duration-300" 
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </section>
               </div>
 
               <div className="space-y-6 lg:border-l lg:pl-10 lg:ml-2">

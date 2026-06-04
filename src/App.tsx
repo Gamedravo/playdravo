@@ -291,7 +291,7 @@ export default function App() {
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { addNotification } = useNotifications();
+  useNotifications();
   const [language, setLanguage] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
     return (saved as Language) || 'en';
@@ -665,30 +665,6 @@ function AppContent() {
     };
   }, [t]);
 
-  // Alert guest users to sign in for a better experience on startup
-  useEffect(() => {
-    if (isAuthReady && !user) {
-      const hasShownPrompt = sessionStorage.getItem('playdravo_guest_prompt_shown');
-      if (!hasShownPrompt) {
-        sessionStorage.setItem('playdravo_guest_prompt_shown', 'true');
-        
-        // Let user settle in, then trigger the recommendation toast with login access
-        const timer = setTimeout(() => {
-          appToast.message("Sign in for a better experience! 🔑", {
-            description: "Log in or sign up to save your game scores, track achievements, and personalize your gaming experience!",
-            duration: 7500,
-            action: {
-              label: "Log In Now",
-              onClick: () => {
-                setIsLoginModalOpen(true);
-              }
-            }
-          });
-        }, 800);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [isAuthReady, user, setIsLoginModalOpen]);
 
   // Global XP Listener
   useEffect(() => {
@@ -701,27 +677,6 @@ function AppContent() {
         
         setUserProfile({ ...userProfile, xp: newXp, level: newLevel });
         
-        addNotification({
-          title: `XP Gained! 📈`,
-          description: `You earned +${amount} XP: "${reason || 'Playing Games'}".`,
-          type: 'achievement'
-        });
-
-        if (newLevel > currentLevel) {
-          appToast.success(`Level Up! You are now level ${newLevel} 🎉`, {
-            icon: '🎊',
-            style: {
-              background: isDarkMode ? '#1a1a1a' : '#ffffff',
-              color: isDarkMode ? '#ffffff' : '#000000',
-              border: '1px solid rgba(139, 92, 246, 0.4)'
-            }
-          });
-          addNotification({
-            title: `Level Up! Level ${newLevel} 🎉`,
-            description: `Awesome! You have advanced to Level ${newLevel}. Keep scaling the leaderboards!`,
-            type: 'achievement'
-          });
-        }
         
         try {
           await updateDoc(doc(db, 'users', user.uid), {
@@ -1075,26 +1030,6 @@ function AppContent() {
       if (isAdding) {
         appToast.success(`Added ${targetGame.title} to Favorites`, {
           icon: '❤️',
-          style: {
-            background: isDarkMode ? '#1a1a1a' : '#ffffff',
-            color: isDarkMode ? '#ffffff' : '#000000',
-            border: '1px solid rgba(255, 0, 0, 0.2)'
-          }
-        });
-        addNotification({
-          title: 'Added to Collection ❤️',
-          description: `You favorited "${targetGame.title}". It has been successfully added to your dynamic library quick-panel.`,
-          type: 'social'
-        });
-        // Reward user for building their collection
-        window.dispatchEvent(new CustomEvent('add-xp', { 
-          detail: { amount: 20, reason: `Favorited ${targetGame.title}` } 
-        }));
-      } else {
-        addNotification({
-          title: 'Removed from Collection 🗑️',
-          description: `You removed "${targetGame.title}" from your Favorites collection.`,
-          type: 'social'
         });
       }
     }
@@ -1539,12 +1474,6 @@ function AppContent() {
       return [game.id, ...filtered].slice(0, 20);
     });
     
-    addNotification({
-      title: 'Game Starting! 🎮',
-      description: `You launched "${game.title}". Play, achieve goals, and scale the ranks.`,
-      type: 'game'
-    });
-    
     scrollToTop();
 
     try {
@@ -1560,7 +1489,7 @@ function AppContent() {
     } catch (error) {
       console.warn('Failed to increment plays:', error);
     }
-  }, [navigate, addNotification, generateRelatedGames, scrollToTop]);
+  }, [navigate, generateRelatedGames, scrollToTop]);
 
   const handleSurpriseMe = () => {
     if (games.length === 0) {

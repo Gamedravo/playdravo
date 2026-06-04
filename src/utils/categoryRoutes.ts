@@ -177,7 +177,8 @@ export function filterGamesForCategorySlug(
       return games.filter(
         (g) =>
           g.category.toLowerCase() === match.toLowerCase() ||
-          g.category.toLowerCase().replace(/\s+/g, '-') === lower
+          g.category.toLowerCase().replace(/\s+/g, '-') === lower ||
+          (g.tags ?? []).some((t) => t.toLowerCase() === match.toLowerCase())
       );
     }
   }
