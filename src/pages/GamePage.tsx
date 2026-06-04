@@ -448,9 +448,9 @@ export const GamePage: React.FC<GamePageProps> = ({
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
       <SEO 
-        title={`${game.title} - Free Online Game | PlayDravo`}
-        description={`Play ${game.title} online for free. ${game.description?.substring(0, 100) || 'Play instantly in your browser.'} Best games on PlayDravo.`}
-        keywords={`${game.title}, play ${game.title}, free ${game.category} game, PlayDravo`}
+        title={`${game.title} – Free Online ${game.category} Game | PlayDravo`}
+        description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on PlayDravo.`}`}
+        keywords={`${game.title}, play ${game.title} online, free ${game.category} game, ${game.category} games, browser games, PlayDravo${game.tags ? ', ' + game.tags.slice(0, 5).join(', ') : ''}`}
         image={game.thumbnail}
         canonicalUrl={`${window.location.origin}/games/${game.id}`}
         url={`${window.location.origin}/games/${game.id}`}
@@ -462,8 +462,27 @@ export const GamePage: React.FC<GamePageProps> = ({
           url: `${window.location.origin}/games/${game.id}`,
           image: game.thumbnail,
           genre: game.category,
-          operatingSystem: 'Web',
+          operatingSystem: 'Web Browser',
           applicationCategory: 'Game',
+          gamePlatform: 'Web Browser',
+          playMode: 'SinglePlayer',
+          ...(game.rating && game.ratingCount ? {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: game.rating.toFixed(1),
+              ratingCount: game.ratingCount,
+              bestRating: '5',
+              worstRating: '1',
+            },
+          } : {}),
+          breadcrumb: {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: window.location.origin },
+              { '@type': 'ListItem', position: 2, name: `${game.category} Games`, item: `${window.location.origin}/category/${game.category.toLowerCase().replace(/\s+/g, '-')}` },
+              { '@type': 'ListItem', position: 3, name: game.title, item: `${window.location.origin}/games/${game.id}` },
+            ],
+          },
         }}
       />
 
