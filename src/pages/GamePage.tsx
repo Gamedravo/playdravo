@@ -241,15 +241,8 @@ export const GamePage: React.FC<GamePageProps> = ({
       detail: { amount: points, reason: `Achievement: ${acName}` } 
     }));
 
-    // Toast reward feedback
-    appToast.success(`Achievement Unlocked: ${acName}`, {
-      icon: <Award className="w-5 h-5 text-amber-500 animate-bounce" />,
-      style: {
-        background: isDarkMode ? '#1a1a1a' : '#ffffff',
-        color: isDarkMode ? '#ffffff' : '#000000',
-        border: '1px solid rgba(245, 158, 11, 0.4)'
-      }
-    });
+    // Toast reward feedback - compact, bottom-positioned
+    appToast.achievement(`${acName}`, points);
   };
 
   const getGameAchievements = (gameTitle: string) => [
@@ -497,7 +490,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   : 'relative bg-black transition-all duration-300 aspect-[4/3] md:aspect-video w-full'
               }`}>
               {!isPlaying && !isPseudoFullScreen ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-3 sm:p-4">
                   <GameThumbnail 
                     src={game.thumbnail} 
                     alt={game.title} 
@@ -506,30 +499,90 @@ export const GamePage: React.FC<GamePageProps> = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   
+                  {/* Mobile: Compact instant-play layout */}
+                  <div className="relative z-10 w-full h-full flex flex-col lg:hidden">
+                    {/* Top: Minimal info bar */}
+                    <div className="flex items-center justify-between px-2 pt-2 pb-1">
+                      <span className="px-2 py-0.5 bg-accent/90 text-white text-[8px] font-bold tracking-tight uppercase rounded-md">
+                        {game.category}
+                      </span>
+                      <div className="flex items-center gap-1.5 text-white/70">
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <span className="text-[10px] font-semibold">{(typeof game.rating === 'number' ? game.rating : Number(game.rating || 0)).toFixed(1)}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Center: Large play button area */}
+                    <div className="flex-1 flex flex-col items-center justify-center gap-3">
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          const isMobile = window.innerWidth < 1024;
+                          if (isMobile && game.mobileOptimization === 'desktop-only' && !showMobileWarning) {
+                            setShowMobileWarning(true);
+                            return;
+                          }
+                          if (game.adsInjected || game.popupRisk || game.redirectRisk) {
+                            appToast.error('This game is temporarily disabled due to safety risks.');
+                            return;
+                          }
+                          setIsPlaying(true);
+                          window.dispatchEvent(new CustomEvent('add-xp', { 
+                            detail: { amount: 50, reason: `Played ${game.title}` } 
+                          }));
+                        }}
+                        className="w-20 h-20 rounded-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center shadow-xl shadow-accent/30"
+                      >
+                        <Play className="w-10 h-10 fill-current ml-1" />
+                      </motion.button>
+                      <span className="text-[11px] text-white/60 font-medium">Tap to play</span>
+                    </div>
+                    
+                    {/* Bottom: Game title */}
+                    <div className="px-3 pb-3 text-center">
+                      <h1 className="text-lg font-bold tracking-tight text-white line-clamp-1 mb-1">
+                        {game.title}
+                      </h1>
+                      <div className="flex items-center justify-center gap-3 text-[10px] text-white/50">
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          {Number(game.plays || 0).toLocaleString()}
+                        </span>
+                        {game.mobileOptimization === 'touch-friendly' && (
+                          <span className="flex items-center gap-1 text-green-400">
+                            <Smartphone className="w-3 h-3" />
+                            Mobile Ready
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop: Full hero layout */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative z-10 text-center px-4 sm:px-6 w-full max-w-2xl mx-auto flex flex-col items-center justify-center h-full"
+                    className="hidden lg:flex relative z-10 text-center px-4 sm:px-6 w-full max-w-2xl mx-auto flex-col items-center justify-center h-full"
                   >
-                    <div className="mb-2 sm:mb-4 lg:mb-6 relative shrink-0">
-                      <div className="w-12 h-12 sm:w-24 sm:h-24 md:w-40 md:h-40 rounded-2xl sm:rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl mx-auto">
+                    <div className="mb-4 lg:mb-6 relative shrink-0">
+                      <div className="w-32 h-32 md:w-40 md:h-40 rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl mx-auto">
                         <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover shadow-lg" />
                       </div>
-                      <div className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 px-2 sm:px-3 py-0.5 bg-accent text-bg-dark text-[7px] sm:text-[10px] font-semibold tracking-tight uppercase rounded-full shadow-md whitespace-nowrap">
+                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-accent text-bg-dark text-[10px] font-semibold tracking-tight uppercase rounded-full shadow-md whitespace-nowrap">
                         {game.category}
                       </div>
                     </div>
 
-                    <h1 className="text-lg sm:text-xl md:text-4xl font-bold tracking-tighter text-white mb-2 sm:mb-4 lg:mb-6 drop-shadow-2xl line-clamp-2">
+                    <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-white mb-4 lg:mb-6 drop-shadow-2xl line-clamp-2">
                       {game.title}
                     </h1>
 
-                    <div className="hidden sm:flex flex-wrap items-center justify-center gap-2 mb-4 opacity-90">
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur border border-green-500/30 text-green-400 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide shadow-sm">
+                    <div className="flex flex-wrap items-center justify-center gap-2 mb-4 opacity-90">
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur border border-green-500/30 text-green-400 rounded-full text-xs font-semibold tracking-wide shadow-sm">
                         <ShieldCheck className="w-3.5 h-3.5" />
                         Verified for Browser
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur border border-white/10 text-white/80 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide shadow-sm">
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-black/40 backdrop-blur border border-white/10 text-white/80 rounded-full text-xs font-semibold tracking-wide shadow-sm">
                         <LayoutGrid className="w-3.5 h-3.5 opacity-70" />
                         Safe Launch
                       </div>
@@ -539,31 +592,25 @@ export const GamePage: React.FC<GamePageProps> = ({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        const isMobile = window.innerWidth < 1024;
-                        if (isMobile && game.mobileOptimization === 'desktop-only' && !showMobileWarning) {
-                          setShowMobileWarning(true);
-                          return;
-                        }
                         if (game.adsInjected || game.popupRisk || game.redirectRisk) {
                           appToast.error('This game is temporarily disabled due to safety risks.');
                           return;
                         }
                         setIsPlaying(true);
-
                         window.dispatchEvent(new CustomEvent('add-xp', { 
                           detail: { amount: 50, reason: `Played ${game.title}` } 
                         }));
                       }}
-                      className="group relative px-5 py-2.5 sm:px-10 sm:py-4 bg-accent hover:bg-accent/90 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base overflow-hidden shrink-0 shadow-lg"
+                      className="group relative px-10 py-4 bg-accent hover:bg-accent/90 text-white rounded-2xl font-bold text-base overflow-hidden shrink-0 shadow-lg"
                     >
                       <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                      <div className="flex items-center gap-3">
+                        <Play className="w-5 h-5 fill-current" />
                         {t('playNow')}
                       </div>
                     </motion.button>
                     
-                    <div className="hidden sm:block text-[10px] text-white/50 tracking-wide pt-1">
+                    <div className="text-[10px] text-white/50 tracking-wide pt-1">
                       Works on Chrome, Safari, Edge, Firefox, iOS, & Android
                     </div>
                   </motion.div>
@@ -725,15 +772,28 @@ export const GamePage: React.FC<GamePageProps> = ({
               )}
             </div>
 
-            {/* Action Bar */}
-            <div className={`p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 transition-colors duration-150 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark border-white/5' : 'bg-white border-black/5'} w-full`}>
-              <div className="flex items-center gap-4">
-                <div className="hidden sm:block w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
+            {/* Action Bar - Compact on Mobile */}
+            <div className={`p-3 sm:p-6 flex items-center justify-between gap-3 sm:gap-6 transition-colors duration-150 z-40 relative border-t ${isDarkMode ? 'bg-bg-dark border-white/5' : 'bg-white border-black/5'} w-full`}>
+              {/* Mobile: Minimal info */}
+              <div className="flex lg:hidden items-center gap-2 min-w-0 flex-1">
+                <div className={`text-sm font-bold truncate ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  {game.title}
+                </div>
+                {(game.isHot || game.isTop) && (
+                  <div className="px-1.5 py-0.5 bg-accent/20 text-accent text-[7px] font-semibold tracking-wide rounded shrink-0">
+                    {game.isHot ? 'HOT' : 'TOP'}
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop: Full info */}
+              <div className="hidden lg:flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-lg shrink-0">
                   <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h1 className={`text-lg sm:text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                    <h1 className={`text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
                       {game.title}
                     </h1>
                     {(game.isHot || game.isTop) && (
@@ -752,7 +812,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       {(typeof game.rating === 'number' ? game.rating : Number(game.rating || 0)).toFixed(1)}
                     </span>
                   </div>
-                  <div className="hidden sm:flex flex-wrap gap-2 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {game.fullscreenSupport && (
                       <span className={`flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${isDarkMode ? 'bg-white/10 text-white' : 'bg-black/10 text-black'}`}>
                         <Maximize2 className="w-3 h-3" /> Fullscreen
@@ -770,8 +830,10 @@ export const GamePage: React.FC<GamePageProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-center">
-                <div className={`flex items-center gap-1 p-1 rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-black/5 border-black/5'}`}>
+              {/* Action buttons - compact row on mobile */}
+              <div className="flex items-center gap-1.5 sm:gap-3">
+                {/* Like/Dislike - hidden on small mobile */}
+                <div className={`hidden sm:flex items-center gap-1 p-1 rounded-2xl border ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-black/5 border-black/5'}`}>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -791,16 +853,18 @@ export const GamePage: React.FC<GamePageProps> = ({
                   </motion.button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* Core actions - always visible */}
+                <div className="flex items-center gap-1 sm:gap-2">
                   {[
-                    { id: 'favorite', icon: Heart, onClick: handleToggleFavorite, active: isFavorite, color: 'text-red-500' },
-                    { id: 'share', icon: Share2, onClick: handleShare },
+                    { id: 'favorite', icon: Heart, onClick: handleToggleFavorite, active: isFavorite, color: 'text-red-500', mobileVisible: true },
+                    { id: 'share', icon: Share2, onClick: handleShare, mobileVisible: true },
+                    { id: 'fullscreen', icon: Maximize2, onClick: toggleFullScreen, mobileVisible: true },
                     { id: 'embed', icon: Code, onClick: () => {
                       const embedCode = `<iframe src="${window.location.origin}/games/${game.id}" width="800" height="600" frameborder="0" scrolling="no" allowfullscreen></iframe>`;
                       navigator.clipboard.writeText(embedCode);
                       appToast.success('Embed code copied to clipboard!');
                       Analytics.trackShare(game.id);
-                    } },
+                    }, mobileVisible: false },
                     { id: 'new-tab', icon: ExternalLink, onClick: () => {
                       if (game.adsInjected || game.popupRisk || game.redirectRisk) {
                         appToast.error('This game is disabled due to safety risks.');
@@ -808,15 +872,16 @@ export const GamePage: React.FC<GamePageProps> = ({
                       }
                       Analytics.trackGameOpen(game.id, game.title);
                       window.open(game.url, '_blank');
-                    } },
-                    { id: 'fullscreen', icon: Maximize2, onClick: toggleFullScreen }
-                  ].map((action, i) => (
+                    }, mobileVisible: false },
+                  ].map((action) => (
                     <motion.button
-                      key={`game-action-${action.id}-${i}`}
-                      whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 5 : -5 }}
+                      key={`game-action-${action.id}`}
+                      whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={action.onClick}
-                      className={`p-3 rounded-2xl border transition-all ${
+                      className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl border transition-all ${
+                        action.mobileVisible === false ? 'hidden sm:flex' : 'flex'
+                      } ${
                         action.active 
                           ? 'bg-accent border-accent text-white shadow-sm' 
                           : isDarkMode ? 'bg-white/5 border-white/5 hover:border-white/20 text-white/60 hover:text-white' : 'bg-black/5 border-black/5 hover:border-black/20 text-black/60 hover:text-black'
@@ -827,7 +892,6 @@ export const GamePage: React.FC<GamePageProps> = ({
                   ))}
                 </div>
               </div>
-            </div>
             </div>
 
             {/* Game Details */}

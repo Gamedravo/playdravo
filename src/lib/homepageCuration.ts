@@ -1,12 +1,13 @@
 import { Game } from '../types';
 import { buildTagShelves } from './tagShelves';
+import { getMobileOptimizedGames } from './homepageCategories';
 
 export interface CuratedShelfBlock {
   id: string;
   title: string;
   subtitle: string;
   games: Game[];
-  variant: 'standard' | 'accent';
+  variant: 'standard' | 'accent' | 'mobile';
   viewAllSlug?: string;
 }
 
@@ -110,6 +111,12 @@ export function buildCuratedHomepageBlocks(
     shelves.categoryShelves[name] ?? [];
 
   push('top-rated', 'Top rated', 'Community favorites', shelves.topRated ?? [], 'accent', 'top-rated');
+
+  // Mobile-optimized games shelf - shows early on mobile devices
+  const mobileGames = getMobileOptimizedGames(allGames);
+  if (mobileGames.length >= SHELF_MIN_GAMES) {
+    push('best-on-mobile', 'Best on Mobile', 'Touch-optimized games', mobileGames, 'mobile', 'mobile');
+  }
 
   push(
     'action',
