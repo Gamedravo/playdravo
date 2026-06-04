@@ -2137,24 +2137,27 @@ function AppContent() {
       </Suspense>
 
       <Toaster
-        position="top-right"
-        visibleToasts={2}
+        position="bottom-center"
+        visibleToasts={1}
         expand={false}
-        closeButton
-        offset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
-        mobileOffset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
+        closeButton={false}
+        offset={{ bottom: 'max(16px, env(safe-area-inset-bottom, 0px))' }}
         toastOptions={{
-          duration: 7500,
+          duration: 4000,
           unstyled: false,
+          className: 'app-toast-mobile',
           style: {
-            background: '#0a0a0a',
+            background: 'rgba(10, 10, 10, 0.95)',
+            backdropFilter: 'blur(12px)',
             border: '1px solid rgba(255,255,255,0.1)',
             color: '#fff',
-            borderRadius: '0.75rem',
-            fontSize: '13px',
+            borderRadius: '1rem',
+            fontSize: '12px',
             fontFamily: 'Inter, sans-serif',
             fontWeight: '600',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            padding: '10px 14px',
+            maxWidth: 'min(320px, calc(100vw - 32px))',
           },
         }}
       />
