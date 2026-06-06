@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn } from 'lucide-react';
+import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Sparkles } from 'lucide-react';
 import { PlayDravoLogo } from './PlayDravoLogo';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -117,7 +117,23 @@ export const Sidebar = memo(function Sidebar({
         </div>
 
         <div className="sidebar-body">
-          <div className="sidebar-block">
+          <div className="sidebar-block sidebar-top-actions">
+            <button
+              type="button"
+              onClick={() => {
+                setIsPreferencesModalOpen(true);
+                closeMobile();
+              }}
+              className="sidebar-personalize"
+              data-tooltip={t('personalize')}
+            >
+              <span className="sidebar-personalize-glow" aria-hidden />
+              <span className="sidebar-icon sidebar-personalize-icon">
+                <Sparkles className="w-[15px] h-[15px]" strokeWidth={2.1} />
+              </span>
+              <span className="sidebar-label">{t('personalize')}</span>
+            </button>
+
             <button
               type="button"
               onClick={handleSurpriseMe}
@@ -211,20 +227,6 @@ export const Sidebar = memo(function Sidebar({
           </div>
 
           <div className="sidebar-block sidebar-block--divider">
-            <button
-              type="button"
-              onClick={() => {
-                setIsPreferencesModalOpen(true);
-                closeMobile();
-              }}
-              className={navItemClass(false, isDarkMode)}
-              data-tooltip={t('personalize')}
-            >
-              <span className="sidebar-icon">
-                <Settings className="w-[15px] h-[15px]" strokeWidth={1.85} />
-              </span>
-              <span className="sidebar-label">{t('personalize')}</span>
-            </button>
             <LanguageSwitcher
               currentLanguage={language}
               setLanguage={setLanguage}

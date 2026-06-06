@@ -606,6 +606,10 @@
     @apply space-y-0.5;
   }
 
+  .sidebar-top-actions {
+    @apply pb-1.5;
+  }
+
   .sidebar-block--divider {
     @apply pt-1.5 border-t border-white/[0.06];
   }
@@ -671,6 +675,7 @@
   @media (min-width: 768px) {
     .sidebar-shell--closed .sidebar-nav-item:hover::after,
     .sidebar-shell--closed .sidebar-cta:hover::after,
+    .sidebar-shell--closed .sidebar-personalize:hover::after,
     .sidebar-shell--closed .sidebar-logout:hover::after,
     .sidebar-shell--closed .sidebar-login:hover::after {
       content: attr(data-tooltip);
@@ -690,6 +695,7 @@
 
     .sidebar-shell--closed.sidebar-shell--dark .sidebar-nav-item:hover::after,
     .sidebar-shell--closed.sidebar-shell--dark .sidebar-cta:hover::after,
+    .sidebar-shell--closed.sidebar-shell--dark .sidebar-personalize:hover::after,
     .sidebar-shell--closed.sidebar-shell--dark .sidebar-logout:hover::after,
     .sidebar-shell--closed.sidebar-shell--dark .sidebar-login:hover::after {
       background: #1a1a24;
@@ -699,6 +705,7 @@
 
     .sidebar-shell--closed.sidebar-shell--light .sidebar-nav-item:hover::after,
     .sidebar-shell--closed.sidebar-shell--light .sidebar-cta:hover::after,
+    .sidebar-shell--closed.sidebar-shell--light .sidebar-personalize:hover::after,
     .sidebar-shell--closed.sidebar-shell--light .sidebar-logout:hover::after,
     .sidebar-shell--closed.sidebar-shell--light .sidebar-login:hover::after {
       background: #fff;
@@ -707,12 +714,48 @@
     }
   }
 
+  .sidebar-personalize {
+    @apply relative flex min-h-[38px] w-full items-center gap-2 overflow-hidden rounded-xl border border-accent/35 px-1.5 py-1.5 text-accent shadow-[0_0_24px_rgba(157,92,255,0.12)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/70 hover:bg-accent/15 hover:text-white active:translate-y-0;
+    background:
+      linear-gradient(135deg, rgba(157, 92, 255, 0.18), rgba(0, 216, 255, 0.08)),
+      rgba(255, 255, 255, 0.035);
+  }
+
+  .sidebar-personalize::before {
+    content: '';
+    @apply pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 opacity-70;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-18deg);
+    transition: transform 0.55s ease;
+  }
+
+  .sidebar-personalize:hover::before {
+    transform: translateX(290%) skewX(-18deg);
+  }
+
+  .sidebar-personalize-glow {
+    @apply pointer-events-none absolute -right-4 -top-5 h-12 w-12 rounded-full bg-accent/30 blur-xl;
+  }
+
+  .sidebar-personalize-icon {
+    @apply relative z-10 bg-accent/20 text-accent shadow-[0_0_18px_rgba(157,92,255,0.24)];
+  }
+
+  .sidebar-personalize .sidebar-label {
+    @apply relative z-10 text-[12px] font-black uppercase tracking-[0.12em];
+  }
+
   .sidebar-cta {
     @apply w-full flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-accent/12 text-accent hover:bg-accent hover:text-bg-dark min-h-[34px] relative;
   }
 
-  .sidebar-shell--closed .sidebar-cta .sidebar-label {
+  .sidebar-shell--closed .sidebar-cta .sidebar-label,
+  .sidebar-shell--closed .sidebar-personalize .sidebar-label {
     @apply md:hidden;
+  }
+
+  .sidebar-shell--closed .sidebar-personalize {
+    @apply md:justify-center md:px-1.5;
   }
 
   .sidebar-footer {
