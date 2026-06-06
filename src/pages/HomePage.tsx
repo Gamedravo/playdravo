@@ -282,7 +282,7 @@ export const HomePage = React.memo(function HomePage({
     <div className="space-y-1 px-1 md:px-2 pb-3">
       <SEO
         title="Play Clean No-Ad Online Games Free – No Download"
-        description="Play lightweight no-ad HTML5 games instantly on PlayDravo. Classic arcade, puzzle, strategy, and casual games — no download, no sign-up, no popups."
+        description="Play lightweight no-ad HTML5 games instantly on GameDravo. Classic arcade, puzzle, strategy, and casual games — no download, no sign-up, no popups."
         keywords="no ad games, free online games, lightweight browser games, play games online, no download games, instant play, arcade games, puzzle games"
         canonicalUrl={`${window.location.origin}/`}
         url={`${window.location.origin}/`}
@@ -291,7 +291,7 @@ export const HomePage = React.memo(function HomePage({
           {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
-            name: 'PlayDravo',
+            name: 'GameDravo',
             url: window.location.origin,
             potentialAction: {
               '@type': 'SearchAction',
@@ -305,7 +305,7 @@ export const HomePage = React.memo(function HomePage({
           {
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            name: 'PlayDravo',
+            name: 'GameDravo',
             url: window.location.origin,
             description: 'Clean no-ad online games platform with lightweight browser games.',
           },
@@ -644,9 +644,9 @@ export const HomePage = React.memo(function HomePage({
                   { icon: <Youtube className="w-5 h-5" />, label: 'YouTube' },
                   { icon: <Github className="w-5 h-5" />, label: 'GitHub' }
                 ].map((social, idx) => (
-                  <a 
-                    key={`footer-social-${social.label}-${idx}`} 
-                    href={`https://${social.label.toLowerCase()}.com/playdravo`}
+                  <a
+                    key={`footer-social-${social.label}-${idx}`}
+                    href={`https://${social.label.toLowerCase()}.com/gamedravo`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`w-12 h-12 rounded-2xl border flex items-center justify-center hover:bg-accent hover:text-bg-dark hover:border-accent transition-all duration-300 group ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}
@@ -686,7 +686,7 @@ export const HomePage = React.memo(function HomePage({
                 <h4 className="text-sm font-semibold tracking-tight text-accent/90 mb-6 lg:mb-8">{t('support')}</h4>
                 <ul className={`space-y-5 text-sm font-bold ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
                   {[
-                    { label: t('aboutUs') || 'About PlayDravo', key: 'About' },
+                    { label: t('aboutUs') || 'About GameDravo', key: 'About' },
                     { label: t('helpCenter'), key: 'Help Center' },
                     { label: t('termsOfService'), key: 'Terms of Service' },
                     { label: t('privacyPolicy'), key: 'Privacy Policy' },
@@ -705,7 +705,7 @@ export const HomePage = React.memo(function HomePage({
                         } else if (item.key === 'About') {
                           setLegalContent({
                             title: item.label,
-                            content: "PlayDravo is an advanced online gaming portal dedicated to providing the fastest, cleanest, and most immersive web gaming experience. Our platform is built on modern web technologies ensuring secure, optimized, and cross-platform compatible gameplay. Join us in making browser gaming excellent again."
+                            content: "GameDravo is an advanced online gaming portal dedicated to providing the fastest, cleanest, and most immersive web gaming experience. Our platform is built on modern web technologies ensuring secure, optimized, and cross-platform compatible gameplay. Join us in making browser gaming excellent again."
                           });
                           setIsLegalModalOpen(true);
                         } else {
@@ -780,7 +780,7 @@ export const HomePage = React.memo(function HomePage({
           <div className={`flex flex-col md:flex-row justify-between items-center gap-8 pt-12 border-t ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
             <div className="flex flex-col md:flex-row items-center gap-8">
               <p className={`text-xs font-semibold text-accent/80 tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                © 2026 PlayDravo GAMING. {t('allRightsReserved')}
+                © 2026 GameDravo GAMING. {t('allRightsReserved')}
               </p>
                 <div className="flex gap-6">
                   {[

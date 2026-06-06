@@ -81,13 +81,13 @@ export function AboutPage({ isDarkMode, t }: AboutPageProps) {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-accent text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            Discover PlayDravo
+            Discover GameDravo
           </div>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
             The Ultimate <span className="text-accent">Web Gaming</span> Destination
           </h1>
           <p className={`text-base md:text-xl leading-relaxed ${isDarkMode ? 'text-white/65' : 'text-black/65'}`}>
-            PlayDravo is a cutting-edge web portal designed for instant gaming access. We curate, optimize, and deliver the world's finest HTML5 web games into a singular premium experience.
+            GameDravo is a cutting-edge web portal designed for instant gaming access. We curate, optimize, and deliver the world's finest HTML5 web games into a singular premium experience.
           </p>
         </motion.div>
 

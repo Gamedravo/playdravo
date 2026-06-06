@@ -38,7 +38,7 @@ export function PlayDravoLogo({
       />
       {showWordmark && (
         <span className={`font-bold tracking-tight whitespace-nowrap ${dim.text}`}>
-          Play<span className="text-accent">Dravo</span>
+          Game<span className="text-accent">Dravo</span>
         </span>
       )}
     </>
@@ -48,7 +48,7 @@ export function PlayDravoLogo({
 
   if (href) {
     return (
-      <Link to={href} className={cls} onClick={onClick} title="PlayDravo Home">
+      <Link to={href} className={cls} onClick={onClick} title="GameDravo Home">
         {inner}
       </Link>
     );
@@ -56,7 +56,7 @@ export function PlayDravoLogo({
 
   if (onClick) {
     return (
-      <button type="button" className={`${cls} cursor-pointer`} onClick={onClick} title="PlayDravo Home">
+      <button type="button" className={`${cls} cursor-pointer`} onClick={onClick} title="GameDravo Home">
         {inner}
       </button>
     );
@@ -70,7 +70,7 @@ export function PlayDravoMark({ size = 32, className = '' }: { size?: number; cl
   return (
     <img
       src="/logo.svg"
-      alt="PlayDravo"
+      alt="GameDravo"
       width={size}
       height={size}
       className={`rounded-lg shrink-0 ${className}`}

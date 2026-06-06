@@ -13,6 +13,8 @@ export const CATEGORY_LIST = [
   'History',
   'Trending',
   'Mods',
+  'Mobile Games',
+  'Best On Mobile',
   'Action',
   'Adventure',
   'Arcade',
@@ -99,20 +101,20 @@ function localGame(
     description,
     rating,
     plays,
-    authorUid: 'playdravo-clean-arcade',
+    authorUid: 'gamedravo-clean-arcade',
     createdAt: verifiedAt,
     isHot: plays > 200000,
     isTop: rating >= 4.85,
     tags: ['No Ads', 'Html5', 'Mobile', ...tags],
-    developer: 'PlayDravo Clean Arcade',
-    publisher: 'PlayDravo',
+    developer: 'GameDravo Clean Arcade',
+    publisher: 'GameDravo',
     mobileOptimization: 'touch-friendly',
     fullscreenSupport: true,
     orientation: 'any',
     embedCompatibility: 'full',
     validationState: 'Verified Working',
     lastVerified: verifiedAt,
-    sourceId: 'playdravo-clean-arcade',
+    sourceId: 'gamedravo-clean-arcade',
     avgPlayTime: '8m',
     contentRating: 'Everyone',
     version: 'clean-1.0',
@@ -149,9 +151,9 @@ function parseTags(raw: string): string[] {
 
 function inferCategory(tagList: string[]): string {
   const tags = tagList.join(' ').toLowerCase();
+  if (/\b(2 player|3 player|4 player|two player|three player|four player|multiplayer|io games)\b/.test(tags)) return 'Multiplayer';
   if (/\b(first person shooter|shooting|fps|gun|battle royale)\b/.test(tags)) return 'Action';
   if (/\b(racing|drift|driving|traffic|car)\b/.test(tags)) return 'Racing';
-  if (/\b(multiplayer|io games)\b/.test(tags)) return 'Multiplayer';
   if (/\b(puzzle|logic|mahjong|sudoku|match 3)\b/.test(tags)) return 'Puzzle';
   if (/\b(sports|soccer|football|golf|basketball|baseball)\b/.test(tags)) return 'Sports';
   if (/\b(simulator|tycoon|management|organizing)\b/.test(tags)) return 'Simulator';
@@ -161,6 +163,31 @@ function inferCategory(tagList: string[]): string {
   if (/\b(action|battle|war|fighting)\b/.test(tags)) return 'Action';
   if (/\b(casual|fun|kids)\b/.test(tags)) return 'Casual';
   return 'Arcade';
+}
+
+function hasPlayerTag(game: Game, playerCount: 1 | 2 | 3 | 4): boolean {
+  const target = `${playerCount} Player`.toLowerCase();
+  return (game.tags ?? []).some((tag) => tag.toLowerCase() === target);
+}
+
+export function gameMatchesCategory(game: Game, category: string): boolean {
+  if (category === 'Mobile Games' || category === 'Best On Mobile') {
+    return game.mobileOptimization === 'touch-friendly' ||
+      game.mobileOptimization === 'responsive' ||
+      (game.tags ?? []).some((tag) => /\b(mobile|touch)\b/i.test(tag));
+  }
+
+  if (category === 'Multiplayer') {
+    return game.category === 'Multiplayer' ||
+      (game.tags ?? []).some((tag) => /\b(multiplayer|io games|2 player|3 player|4 player)\b/i.test(tag));
+  }
+
+  if (category === '1 Player') return hasPlayerTag(game, 1);
+  if (category === '2 Player') return hasPlayerTag(game, 2);
+  if (category === '3 Player') return hasPlayerTag(game, 3);
+  if (category === '4 Player') return hasPlayerTag(game, 4);
+
+  return game.category === category || (game.tags ?? []).some((tag) => tag.toLowerCase() === category.toLowerCase());
 }
 
 function hashSeed(value: string): number {
@@ -186,6 +213,32 @@ function bestThumbnailVariant(image: string): string {
     .replace(/-md\.webp$/i, '-lg.webp')
     .replace(/-xs\.(jpg|jpeg|png)$/i, '-lg.$1')
     .replace(/-md\.(jpg|jpeg|png)$/i, '-lg.$1');
+}
+
+function isSafeOnlineGame(rawGame: RawOnlineGame): boolean {
+  const title = rawGame.title?.trim();
+  const embed = rawGame.embed?.trim();
+  const image = rawGame.image?.trim();
+  if (!title || !embed || !image) return false;
+  if (!/^https:\/\//i.test(embed) || !/^https:\/\//i.test(image)) return false;
+
+  try {
+    const embedUrl = new URL(embed);
+    const imageUrl = new URL(image);
+    const embedHost = embedUrl.hostname.toLowerCase().replace(/^www\./, '');
+    const imageHost = imageUrl.hostname.toLowerCase().replace(/^www\./, '');
+    const embedPath = embedUrl.pathname.toLowerCase();
+    const imagePath = imageUrl.pathname.toLowerCase();
+
+    const trustedEmbedHost = embedHost === 'onlinegames.io' || embedHost === 'cloud.onlinegames.io';
+    const trustedImageHost = imageHost === 'onlinegames.io' || imageHost === 'cloud.onlinegames.io';
+    const blockedWrapper = embedPath.includes('index-og.html') || embedPath.includes('game-og.html');
+    const usableImage = /\.(webp|png|jpe?g)$/i.test(imagePath) && !imagePath.includes('/placeholder');
+
+    return trustedEmbedHost && trustedImageHost && !blockedWrapper && usableImage;
+  } catch {
+    return false;
+  }
 }
 
 function onlineGameToGame(rawGame: RawOnlineGame): Game {
@@ -246,13 +299,13 @@ export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
 
   const seenIds = new Set<string>();
   const remoteGames = rawGames
-    .filter((game) => game.title?.trim() && game.embed?.trim() && game.image?.trim())
+    .filter(isSafeOnlineGame)
     .map(onlineGameToGame);
 
   return [...GAMES, ...remoteGames].filter((game) => {
     if (seenIds.has(game.id)) return false;
     seenIds.add(game.id);
-    return true;
+    return !game.adsInjected && !game.popupRisk && !game.redirectRisk;
   });
 }
 
@@ -262,7 +315,7 @@ export const GAMES: Game[] = [
     'Snake Classic',
     'Arcade',
     '/images/games/js-snake.svg',
-    'The legendary Snake game rebuilt locally for PlayDravo. Eat apples, grow longer, and avoid crashing into yourself. No ads, no popups, no external provider.',
+    'The legendary Snake game rebuilt locally for GameDravo. Eat apples, grow longer, and avoid crashing into yourself. No ads, no popups, no external provider.',
     ['1 Player', 'Arcade', 'Classic', 'Endless', 'Retro', 'Skill'],
     324900,
     4.9,

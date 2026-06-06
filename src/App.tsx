@@ -75,7 +75,7 @@ import { Toaster } from 'sonner';
 import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
-import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog } from './games';
+import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog, gameMatchesCategory } from './games';
 import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import {
@@ -784,7 +784,7 @@ function AppContent() {
           devLog('[Admin init] chat collection is empty. Populating with welcome message...');
           await addDoc(chatColRef, {
             uid: 'system',
-            displayName: 'PlayDravo AI',
+            displayName: 'GameDravo AI',
             text: 'Welcome to the ultimate gaming platform! Systems operational. Type /help for commands.',
             timestamp: serverTimestamp()
           });
@@ -1073,7 +1073,7 @@ function AppContent() {
 
   useEffect(() => {
     if (isAIAssistantOpen && aiChatMessages.length === 0) {
-      setAIChatMessages([{ role: 'model', text: "Hi, I'm the PlayDravo support assistant. I can help you find games, troubleshoot issues, or answer questions about the platform. How can I help you today?" }]);
+      setAIChatMessages([{ role: 'model', text: "Hi, I'm the GameDravo support assistant. I can help you find games, troubleshoot issues, or answer questions about the platform. How can I help you today?" }]);
     }
   }, [isAIAssistantOpen, aiChatMessages.length]);
 
@@ -1109,7 +1109,7 @@ function AppContent() {
       lastAIChatTime.current = now;
       // Gather context about the platform
       const platformContext = {
-        name: "PlayDravo",
+        name: "GameDravo",
         description: "A high-performance gaming portal featuring a wide range of games and community-created mods.",
         categories: CATEGORIES.filter(c => c !== 'All' && c !== 'Favorites' && c !== 'History' && c !== 'Mods'),
         features: [
@@ -1127,7 +1127,7 @@ function AppContent() {
         }
       };
 
-      const systemInstruction = `You are a helpful and friendly gaming assistant on the PlayDravo platform. 
+      const systemInstruction = `You are a helpful and friendly gaming assistant on the GameDravo platform.
           Your personality is helpful, friendly, and welcoming to all players.
           
           Platform Context:
@@ -1422,8 +1422,8 @@ function AppContent() {
       return { game, score };
     }).filter(({ game, score }) => {
       const matchesCategory = selectedCategory === 'All' || selectedCategory === 'Trending'
-        ? true 
-        : selectedCategory === 'Favorites' 
+        ? true
+        : selectedCategory === 'Favorites'
           ? favorites.includes(game.id)
           : selectedCategory === 'Recommended'
             ? recommendedGames.some(rg => rg.id === game.id)
@@ -1431,7 +1431,7 @@ function AppContent() {
               ? playHistory.includes(game.id)
               : selectedCategory === 'Mods'
                 ? (game.mods && game.mods.length > 0)
-                : game.category === selectedCategory;
+                : gameMatchesCategory(game, selectedCategory);
       
       const matchesSearch = !query ? true : score > 0;
       
@@ -1587,8 +1587,8 @@ function AppContent() {
         />
 
         <div className={`flex-1 flex flex-col overflow-hidden`}>
-          {/* Header - Redesigned to match PlayDravo style */}
-          <Header 
+          {/* Header - Redesigned to match GameDravo style */}
+          <Header
             isDarkMode={isDarkMode}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -1967,9 +1967,9 @@ function AppContent() {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                         {[
-                          { id: 'ai-assistant', icon: <Bot className="w-5 h-5 text-accent" />, title: 'Ask PlayDravo AI', desc: 'Get instant recommendations and troubleshooting support from our smart assistant.' },
-                          { id: 'getting-started', icon: <BookOpen className="w-5 h-5 text-accent" />, title: t('gettingStarted'), desc: t('gettingStartedDesc') },
-                          { id: 'modding-guide', icon: <Wrench className="w-5 h-5 text-accent" />, title: t('moddingGuide'), desc: t('moddingGuideDesc') },
+                                          { id: 'ai-assistant', icon: <Bot className="w-5 h-5 text-accent" />, title: 'Ask GameDravo AI', desc: 'Get instant recommendations and troubleshooting support from our smart assistant.' },
+                                          { id: 'getting-started', icon: <BookOpen className="w-5 h-5 text-accent" />, title: t('gettingStarted'), desc: t('gettingStartedDesc') },
+                                          { id: 'modding-guide', icon: <Wrench className="w-5 h-5 text-accent" />, title: t('moddingGuide'), desc: t('moddingGuideDesc') },
                           { id: 'account-security', icon: <ShieldCheck className="w-5 h-5 text-accent" />, title: t('accountSecurity'), desc: t('accountSecurityDesc') },
                           { id: 'faq', icon: <MessageCircle className="w-5 h-5 text-accent" />, title: t('communityFAQ'), desc: t('communityFAQDesc') }
                         ].filter(item => 
@@ -2028,7 +2028,7 @@ function AppContent() {
 
                 <div className={`p-6 border-t text-center transition-all ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
                   <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isDarkMode ? 'text-white/20' : 'text-black/20'}`}>
-                    PlayDravo GAME SUPPORT • EST. 2026
+                    GameDravo GAME SUPPORT • EST. 2026
                   </p>
                 </div>
               </motion.div>

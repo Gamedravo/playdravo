@@ -1,9 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { GAMES } from '../src/games';
+import { GAMES, CATEGORY_LIST, fetchOnlineGamesCatalog } from '../src/games';
 import { HOMEPAGE_CATEGORY_CHIPS } from '../src/lib/homepageCategories';
+import { getCategoryPath } from '../src/utils/categoryRoutes';
 
 const BASE_URL = 'https://www.gamedravo.com';
+const TODAY = new Date().toISOString().slice(0, 10);
+
+interface SitemapEntry {
+  loc: string;
+  changefreq: 'daily' | 'weekly' | 'monthly';
+  priority: string;
+}
 
 function xmlEscape(value: string): string {
   return value
@@ -14,11 +22,45 @@ function xmlEscape(value: string): string {
     .replaceAll("'", '&apos;');
 }
 
-function urlTag(loc: string): string {
-  return `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n  </url>`;
+function absolute(pathname: string): string {
+  if (pathname === '/') return `${BASE_URL}/`;
+  return `${BASE_URL}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
 }
 
-function generate(): string {
+function normalizeUrl(url: string): string {
+  const parsed = new URL(url);
+  parsed.hash = '';
+  if (parsed.pathname !== '/') parsed.pathname = parsed.pathname.replace(/\/+$/, '');
+  return parsed.toString();
+}
+
+function slugifyCategory(label: string): string {
+  return label.toLowerCase().trim().replace(/\s+/g, '-');
+}
+
+function urlTag(entry: SitemapEntry): string {
+  return [
+    '  <url>',
+    `    <loc>${xmlEscape(entry.loc)}</loc>`,
+    `    <lastmod>${TODAY}</lastmod>`,
+    `    <changefreq>${entry.changefreq}</changefreq>`,
+    `    <priority>${entry.priority}</priority>`,
+    '  </url>',
+  ].join('\n');
+}
+
+async function getCatalogGames() {
+  try {
+    return await fetchOnlineGamesCatalog();
+  } catch (error) {
+    console.warn('Remote catalog unavailable while generating sitemap; using bundled verified games only.', error);
+    return GAMES;
+  }
+}
+
+async function generate(): Promise<string> {
+  const catalogGames = await getCatalogGames();
+
   const staticPaths = [
     '/',
     '/search',
@@ -29,34 +71,57 @@ function generate(): string {
     '/terms',
     '/cookies',
     '/status',
+    '/report-bug',
+    '/submit-game',
+    '/library/favorites',
+    '/library/history',
   ];
 
-  // Root uses trailing slash in canonical form.
-  const staticUrls = staticPaths.map((p) => (p === '/' ? `${BASE_URL}/` : `${BASE_URL}${p}`));
-
-  // Categories: include both curated chips and all dataset categories (normalized to URL slugs).
-  const specialCategorySlugs = ['trending', 'new-arrivals', 'top-rated', 'recommended'];
-  const chipSlugs = HOMEPAGE_CATEGORY_CHIPS.map((c) => c.slug);
-  const datasetSlugs = Array.from(
+  const specialCategoryLabels = ['Trending', 'Recommended', 'Mobile Games', 'Best On Mobile'];
+  const chipCategoryPaths = HOMEPAGE_CATEGORY_CHIPS.map((chip) => `/category/${chip.slug}`);
+  const listCategoryPaths = CATEGORY_LIST
+    .filter((label) => !['All', 'Favorites', 'History', 'Mods'].includes(label))
+    .map(getCategoryPath)
+    .filter((pathname) => pathname.startsWith('/category/'));
+  const datasetCategoryPaths = Array.from(
     new Set(
-      GAMES.map((g) => (g.category ?? '').toString().trim()).filter(Boolean).map((label) =>
-        label.toLowerCase().replace(/\s+/g, '-')
-      )
+      catalogGames
+        .map((game) => game.category?.trim())
+        .filter((category): category is string => Boolean(category))
+        .map((category) => `/category/${slugifyCategory(category)}`)
     )
   );
+  const specialCategoryPaths = specialCategoryLabels.map(getCategoryPath);
 
-  const categorySlugs = Array.from(new Set([...specialCategorySlugs, ...chipSlugs, ...datasetSlugs]))
-    .filter((slug) => slug !== 'all');
-  const categoryUrls = categorySlugs.map((slug) => `${BASE_URL}/category/${slug}`);
-  const gameUrls = Array.from(new Set(GAMES.map((g) => `${BASE_URL}/games/${g.id}`)));
+  const entries: SitemapEntry[] = [
+    ...staticPaths.map((pathname) => ({ loc: absolute(pathname), changefreq: 'weekly' as const, priority: pathname === '/' ? '1.0' : '0.7' })),
+    ...Array.from(new Set([...specialCategoryPaths, ...chipCategoryPaths, ...listCategoryPaths, ...datasetCategoryPaths]))
+      .map((pathname) => ({ loc: absolute(pathname), changefreq: 'daily' as const, priority: '0.8' })),
+    ...catalogGames
+      .filter((game) => game.id && game.validationState !== 'Unavailable' && !game.adsInjected && !game.popupRisk && !game.redirectRisk)
+      .map((game) => ({ loc: absolute(`/games/${game.id}`), changefreq: 'weekly' as const, priority: game.isTop || game.isHot ? '0.9' : '0.8' })),
+  ];
 
-  const urls = [...staticUrls, ...categoryUrls, ...gameUrls].map(urlTag).join('\n');
+  const deduped = Array.from(
+    new Map(entries.map((entry) => [normalizeUrl(entry.loc), { ...entry, loc: normalizeUrl(entry.loc) }])).values()
+  ).sort((a, b) => a.loc.localeCompare(b.loc));
+
+  console.log(`Sitemap URLs: ${deduped.length}`);
+  console.log(`Sitemap games: ${catalogGames.length}`);
+
   return `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    `${urls}\n` +
+    `${deduped.map(urlTag).join('\n')}\n` +
     `</urlset>\n`;
 }
 
 const outPath = path.join(process.cwd(), 'public', 'sitemap.xml');
-fs.writeFileSync(outPath, generate(), 'utf8');
-console.log(`Wrote sitemap: ${outPath}`);
+generate()
+  .then((xml) => {
+    fs.writeFileSync(outPath, xml, 'utf8');
+    console.log(`Wrote sitemap: ${outPath}`);
+  })
+  .catch((error) => {
+    console.error('Failed to generate sitemap:', error);
+    process.exitCode = 1;
+  });

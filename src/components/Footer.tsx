@@ -20,7 +20,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
       { label: "Submit Game", path: "/submit-game" }
     ],
     company: [
-      { label: "About PlayDravo", path: "/about" },
+      { label: "About GameDravo", path: "/about" },
       { label: "Contact", path: "/contact" },
       { label: "Support Center", path: "/support" }
     ],
@@ -50,7 +50,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
         <div className="col-span-2 md:col-span-4 space-y-6">
           <PlayDravoLogo size="sm" showWordmark href="/" className="group" />
           <p className={`text-xs leading-relaxed max-w-sm ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
-            PlayDravo is an instant-access web gaming portal curating premier, lightweight, and hardware-optimized HTML5 game configurations for cross-platform desktop & mobile play.
+            GameDravo is an instant-access web gaming portal curating premier, lightweight, and hardware-optimized HTML5 game configurations for cross-platform desktop & mobile play.
           </p>
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -155,7 +155,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className={`text-[11px] font-medium text-center md:text-left space-y-1 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
             <p>
-              &copy; {currentYear} PlayDravo Gaming Hub. All rights reserved.
+              &copy; {currentYear} GameDravo Gaming Hub. All rights reserved.
               All games run sandboxed under compliant license configurations.
             </p>
             <p>

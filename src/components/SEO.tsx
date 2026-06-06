@@ -12,16 +12,16 @@ interface SEOProps {
   structuredData?: unknown;
 }
 
-export const SEO: React.FC<SEOProps> = ({ 
-  title, 
-  description, 
-  keywords, 
-  image, 
+export const SEO: React.FC<SEOProps> = ({
+  title,
+  description,
+  keywords,
+  image,
   url,
   canonicalUrl,
   structuredData,
 }) => {
-  const siteName = 'PlayDravo';
+  const siteName = 'GameDravo';
   const fullTitle = title.includes(siteName) ? title : `${title} – ${siteName}`;
 
   const normalizeCanonical = (value: string) => {

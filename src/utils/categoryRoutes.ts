@@ -172,6 +172,13 @@ export function filterGamesForCategorySlug(
     default: {
       const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
       if (chip) {
+        if (chip.mobileFilter) {
+          return games.filter((g) =>
+            g.mobileOptimization === 'touch-friendly' ||
+            g.mobileOptimization === 'responsive' ||
+            (g.tags ?? []).some((t) => /\b(mobile|touch)\b/i.test(t))
+          );
+        }
         return games.filter((g) => chip.matchers.some((m) => m.test(gameHaystack(g))));
       }
       const label = SLUG_TO_LABEL[lower];
