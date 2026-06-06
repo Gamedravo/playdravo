@@ -1,12 +1,10 @@
-import { memo, useState, useEffect, useRef } from 'react';
-import { Trophy, Heart, Play, Star } from 'lucide-react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { Trophy, Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
-import { GameCardHoverPreview } from './GameCardHoverPreview';
-import { AnimatePresence } from 'motion/react';
-import { claimHoverPreview, releaseHoverPreview } from '../lib/hoverPreviewSession';
+import { getPreviewMediaCandidates, type PreviewMediaCandidate } from '../lib/gamePreviewMedia';
 
 interface GameCardProps {
   game: Game;
@@ -41,7 +39,105 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer',
 };
 
-const HOVER_DELAY_MS = 80;
+function useDesktopHover() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setEnabled(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  return enabled;
+}
+
+function getVideoType(url: string) {
+  if (/\.webm(\?|#|$)/i.test(url)) return 'video/webm';
+  if (/\.ogg|\.ogv(\?|#|$)/i.test(url)) return 'video/ogg';
+  return 'video/mp4';
+}
+
+function InlineCardPreview({
+  game,
+  active,
+}: {
+  game: Game;
+  active: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const candidates = useMemo(
+    () => getPreviewMediaCandidates(game).filter((candidate) => candidate.kind === 'mp4' || candidate.kind === 'gif'),
+    [game],
+  );
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const current: PreviewMediaCandidate | undefined = candidates[candidateIndex];
+
+  useEffect(() => {
+    setCandidateIndex(0);
+  }, [game.id]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !current || current.kind !== 'mp4') return;
+
+    if (!active) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      return;
+    }
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.loop = true;
+    video.src = current.url;
+    video.load();
+    video.play().catch(() => {
+      setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index));
+    });
+
+    return () => {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    };
+  }, [active, current, candidates.length]);
+
+  if (!active || !current) return null;
+
+  if (current.kind === 'gif') {
+    return (
+      <img
+        src={current.url}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index))}
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      className="absolute inset-0 h-full w-full object-cover object-center"
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden
+      onError={() => setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index))}
+    >
+      <source src={current.url} type={getVideoType(current.url)} />
+    </video>
+  );
+}
 
 export const GameCard = memo(function GameCard({
   game,
@@ -53,85 +149,19 @@ export const GameCard = memo(function GameCard({
   t,
 }: GameCardProps) {
   const isFavorite = favorites.includes(game.id);
-  const [showPreview, setShowPreview] = useState(false);
-  const [hoverSupported, setHoverSupported] = useState(false);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-  const cardRef = useRef<HTMLAnchorElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverSupported = useDesktopHover();
+  const [isHovered, setIsHovered] = useState(false);
+  const previewActive = hoverSupported && isHovered;
 
-  useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const update = () => setHoverSupported(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => {
-      mq.removeEventListener('change', update);
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-      releaseHoverPreview(game.id);
-    };
-  }, [game.id]);
-
-  useEffect(() => {
-    if (!showPreview || !cardRef.current) return;
-
-    const updateRect = () => setAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) stopPreview();
-    });
-
-    updateRect();
-    observer.observe(cardRef.current);
-    window.addEventListener('scroll', updateRect, true);
-    window.addEventListener('resize', updateRect);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', updateRect, true);
-      window.removeEventListener('resize', updateRect);
-    };
-  }, [showPreview]);
-
-  const stopPreview = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    setShowPreview(false);
-    setAnchorRect(null);
-    releaseHoverPreview(game.id);
-  };
-
-  const schedulePreviewClose = () => {
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-    closeTimeoutRef.current = setTimeout(stopPreview, 120);
-  };
-
-  const keepPreviewOpen = () => {
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-  };
-
-  const handleMouseEnter = () => {
-    if (!hoverSupported) return;
-    keepPreviewOpen();
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    setAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
-    hoverTimeoutRef.current = setTimeout(() => {
-      claimHoverPreview(game.id);
-      setAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
-      setShowPreview(true);
-    }, HOVER_DELAY_MS);
-  };
-
-  const handleMouseLeave = () => {
-    schedulePreviewClose();
-  };
+  const stopPreview = () => setIsHovered(false);
 
   return (
     <Link
-      ref={cardRef}
       to={`/games/${game.id}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => {
+        if (hoverSupported) setIsHovered(true);
+      }}
+      onMouseLeave={stopPreview}
       onClick={(e) => {
         stopPreview();
         if (handleGameClick) {
@@ -143,11 +173,11 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-150 ease-out group-hover:scale-[1.03] ${
+        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[border-color,box-shadow] duration-150 ease-out ${
           isDarkMode
-            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_8px_24px_rgba(157,92,255,0.25)] group-hover:border-accent/50'
-            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.15)] group-hover:border-accent/40'
-        } group-hover:ring-1 group-hover:ring-accent/30 active:scale-[0.99]`}
+            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_8px_24px_rgba(157,92,255,0.18)] group-hover:border-accent/45'
+            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.12)] group-hover:border-accent/35'
+        } group-hover:ring-1 group-hover:ring-accent/25 active:scale-[0.99]`}
       >
         <div className="absolute inset-0 overflow-hidden">
           <GameThumbnail
@@ -156,36 +186,9 @@ export const GameCard = memo(function GameCard({
             category={game.category}
             title={game.title}
             gameId={game.id}
-            className="w-full h-full object-cover object-center transition-transform duration-150 ease-out group-hover:scale-[1.04]"
+            className="h-full w-full object-cover object-center"
           />
-        </div>
-
-        {hoverSupported && (
-          <AnimatePresence>
-            {showPreview && (
-              <GameCardHoverPreview
-                game={game}
-                gameId={game.id}
-                active={showPreview}
-                isDarkMode={isDarkMode}
-                anchorRect={anchorRect}
-                onPlay={() => {
-                  stopPreview();
-                  handleGameClick(game);
-                }}
-                onPreviewMouseEnter={keepPreviewOpen}
-                onPreviewMouseLeave={schedulePreviewClose}
-              />
-            )}
-          </AnimatePresence>
-        )}
-
-        <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none" />
-
-        <div className="absolute inset-0 z-[6] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
-          <div className="w-11 h-11 rounded-full bg-accent/90 text-bg-dark flex items-center justify-center shadow-[0_0_16px_rgba(157,92,255,0.45)]">
-            <Play className="w-5 h-5 fill-current ml-0.5" />
-          </div>
+          <InlineCardPreview game={game} active={previewActive} />
         </div>
 
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
