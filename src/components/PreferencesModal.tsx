@@ -1,9 +1,7 @@
-import { Settings, X, Zap, Flame, ShieldAlert, Sun, Moon, Target, Trophy, BrainCircuit, RotateCcw } from 'lucide-react';
-import { toast } from 'sonner';
+import { Settings, X, Zap, Trophy, BrainCircuit, RotateCcw } from 'lucide-react';
 import { ModalShell } from './ui/ModalShell';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Language, UserProfile } from '../types';
-import { translations } from '../lib/translations';
 
 interface ThemeOption {
   name: string;
@@ -23,9 +21,6 @@ interface PreferencesModalProps {
   language: Language;
   setLanguage: (lang: Language) => void;
   userProfile: UserProfile | null;
-  togglePreferredCategory: (category: string) => void;
-  categoryKeyMap: Record<string, string>;
-  categories: string[];
   gamerPersona: { title: string; description: string } | null;
   isAnalyzingPersona: boolean;
   analyzeGamerPersona: () => void;
@@ -43,9 +38,6 @@ export function PreferencesModal({
   language,
   setLanguage,
   userProfile,
-  togglePreferredCategory,
-  categoryKeyMap,
-  categories,
   gamerPersona,
   isAnalyzingPersona,
   analyzeGamerPersona,
@@ -156,23 +148,6 @@ export function PreferencesModal({
           <h3 className={`text-[10px] font-semibold tracking-wide mb-4 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('language')}</h3>
           <div className="mb-8">
             <LanguageSwitcher currentLanguage={language} setLanguage={setLanguage} isDarkMode={isDarkMode} variant="grid" />
-          </div>
-
-          <h3 className={`text-[10px] font-semibold tracking-wide mb-4 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('preferredCategories')}</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
-            {categories.filter(c => c !== 'All' && c !== 'Favorites' && c !== 'Mods').map((cat) => (
-              <button
-                key={cat}
-                onClick={() => togglePreferredCategory(cat)}
-                className={`px-3 py-2 rounded-lg text-[10px] font-semibold transition-all border ${
-                  userProfile?.preferredCategories?.includes(cat)
-                    ? 'bg-accent/10 border-accent text-accent'
-                    : 'bg-white/5 border-white/10 text-white/50 hover:border-white/20'
-                }`}
-              >
-                {t((categoryKeyMap[cat] || cat) as keyof typeof translations['en'])}
-              </button>
-            ))}
           </div>
 
           <div className="p-5 bg-accent/5 border border-accent/20 rounded-2xl mb-6">

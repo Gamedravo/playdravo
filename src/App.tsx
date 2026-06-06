@@ -2048,9 +2048,6 @@ function AppContent() {
           language={language}
           setLanguage={setLanguage}
           userProfile={userProfile}
-          togglePreferredCategory={togglePreferredCategory}
-          categoryKeyMap={categoryKeyMap}
-          categories={CATEGORIES}
           gamerPersona={gamerPersona}
           isAnalyzingPersona={isAnalyzingPersona}
           analyzeGamerPersona={analyzeGamerPersona}
