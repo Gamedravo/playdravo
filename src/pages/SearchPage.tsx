@@ -46,6 +46,70 @@ const featuredCategories = [
   { label: 'Recommended', icon: Star, tone: 'from-yellow-500/25 to-amber-500/10' },
 ];
 
+const searchAliases: Record<string, string[]> = {
+  'deep & immersive': ['adventure', 'exploration', 'simulation', 'strategy', 'rpg', 'story', 'world'],
+  'deep immersive': ['adventure', 'exploration', 'simulation', 'strategy', 'rpg', 'story', 'world'],
+  'train your brain': ['puzzle', 'strategy', 'brain', 'logic', 'math', 'word', 'thinking'],
+  'adrenaline rush': ['action', 'racing', 'shooter', 'arcade', 'sports', 'battle', 'speed'],
+};
+
+function getCreatedTime(createdAt: Game['createdAt']) {
+  if (!createdAt) return 0;
+  if (typeof createdAt === 'number') return createdAt;
+  if (typeof createdAt === 'string') return new Date(createdAt).getTime() || 0;
+  if (typeof createdAt?.toDate === 'function') return createdAt.toDate().getTime();
+  if (typeof createdAt?.seconds === 'number') return createdAt.seconds * 1000;
+  if (typeof createdAt?._seconds === 'number') return createdAt._seconds * 1000;
+  return 0;
+}
+
+function getSearchText(game: Game) {
+  return [
+    game.title,
+    game.category,
+    game.description,
+    game.instructions,
+    game.howToPlay,
+    game.controls,
+    game.tipsAndTricks,
+    game.whyYoullLikeIt,
+    game.developer,
+    game.publisher,
+    game.tags?.join(' '),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
+
+function rankSearchResult(game: Game, rawQuery: string, newestTime: number) {
+  const query = rawQuery.trim().toLowerCase();
+  const text = getSearchText(game);
+
+  if (query === 'trending') return (game.isHot ? 10000 : 0) + (game.plays || 0) + (game.rating || 0) * 100;
+  if (query === 'recommended') return (game.isTop ? 10000 : 0) + (game.rating || 0) * 1000 + Math.log10((game.plays || 0) + 1) * 100;
+  if (query === 'new') return Math.max(1, getCreatedTime(game.createdAt) / Math.max(1, newestTime));
+
+  const terms = searchAliases[query] || [query];
+  const queryWords = query.split(/\s+/).filter((word) => word.length > 1);
+  let score = 0;
+
+  if (text.includes(query)) score += 100;
+
+  terms.forEach((term) => {
+    if (text.includes(term)) score += 20;
+    if (game.category.toLowerCase().includes(term)) score += 45;
+    if (game.tags?.some((tag) => tag.toLowerCase().includes(term))) score += 35;
+    if (game.title.toLowerCase().includes(term)) score += 60;
+  });
+
+  if (!searchAliases[query] && queryWords.length > 1 && queryWords.every((word) => text.includes(word))) {
+    score += 30;
+  }
+
+  return score;
+}
+
 export const SearchPage: React.FC<SearchPageProps> = React.memo(({
   isDarkMode,
   t,
@@ -78,27 +142,27 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
   }, []);
 
   useEffect(() => {
-    if (deferredSearchQuery.trim() === '') {
+    const trimmedQuery = deferredSearchQuery.trim();
+    if (trimmedQuery === '') {
       setResults([]);
       return;
     }
 
-    const query = deferredSearchQuery.toLowerCase();
-    const filtered = games.filter((game) =>
-      game.title.toLowerCase().includes(query) ||
-      game.category.toLowerCase().includes(query) ||
-      Boolean(game.tags?.some((tag) => tag.toLowerCase().includes(query))),
-    );
+    const newestTime = Math.max(...games.map((game) => getCreatedTime(game.createdAt)), 1);
+    const ranked = games
+      .map((game) => ({ game, score: rankSearchResult(game, trimmedQuery, newestTime) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || (b.game.plays || 0) - (a.game.plays || 0));
+    const filtered = ranked.map(({ game }) => game);
 
     setResults(filtered);
 
     const saveTimer = setTimeout(() => {
-      const trimmed = deferredSearchQuery.trim();
-      if (trimmed.length > 1 && trimmed.length < 30) {
-        Analytics.trackSearch(trimmed, filtered.length);
+      if (trimmedQuery.length > 1 && trimmedQuery.length < 30) {
+        Analytics.trackSearch(trimmedQuery, filtered.length);
         setRecentSearches((prev) => {
-          const withoutDuplicate = prev.filter((term) => term.toLowerCase() !== trimmed.toLowerCase());
-          const next = [trimmed, ...withoutDuplicate].slice(0, 5);
+          const withoutDuplicate = prev.filter((term) => term.toLowerCase() !== trimmedQuery.toLowerCase());
+          const next = [trimmedQuery, ...withoutDuplicate].slice(0, 5);
           localStorage.setItem('topg_recent_searches', JSON.stringify(next));
           return next;
         });
