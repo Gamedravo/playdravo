@@ -322,50 +322,60 @@
     @apply w-[88px] sm:w-[96px] md:w-[104px];
   }
 
-  /* —— Category browse grid —— */
+  /* —— Curated category browse grid —— */
   .category-chip-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   @media (min-width: 640px) {
     .category-chip-grid {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   @media (min-width: 1024px) {
     .category-chip-grid {
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      gap: 0.625rem;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.875rem;
     }
   }
 
-  @media (min-width: 1280px) {
-    .category-chip-grid {
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-    }
+  .category-chip-grid--expanded {
+    @apply pt-1;
   }
 
   .category-chip {
-    @apply flex flex-col items-center justify-center gap-1.5 h-[72px] min-h-[72px] w-full rounded-xl border active:scale-[0.98] cursor-pointer;
+    @apply flex min-h-[104px] w-full flex-col items-start justify-between rounded-2xl border p-4 text-left active:scale-[0.98] cursor-pointer transition-all duration-200 hover:-translate-y-0.5;
   }
 
   .category-chip--dark {
-    @apply border-white/[0.06] bg-white/[0.03] hover:border-accent/35 hover:bg-white/[0.05];
+    @apply border-white/[0.08] bg-white/[0.035] shadow-[0_14px_40px_rgba(0,0,0,0.18)] hover:bg-white/[0.06] hover:shadow-[0_18px_46px_rgba(0,0,0,0.28)];
   }
 
   .category-chip--light {
-    @apply border-black/[0.06] bg-black/[0.02] hover:border-accent/30 hover:bg-black/[0.04];
+    @apply border-black/[0.07] bg-white/70 shadow-[0_14px_34px_rgba(89,74,120,0.1)] hover:bg-white hover:shadow-[0_18px_42px_rgba(89,74,120,0.16)];
   }
 
   .category-chip-icon {
-    @apply text-[22px] leading-none select-none;
+    @apply text-[30px] leading-none select-none drop-shadow-sm;
   }
 
   .category-chip-label {
-    @apply text-[10px] font-semibold tracking-tight text-center leading-tight px-1 line-clamp-2 min-h-[2.5em] flex items-center justify-center w-full;
+    @apply text-sm font-black tracking-tight leading-tight line-clamp-2;
+  }
+
+  .category-view-all {
+    @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-[10px] font-black uppercase tracking-wider transition-all hover:scale-[1.02] active:scale-95;
+  }
+
+  .category-view-all--dark {
+    @apply border-white/10 bg-white/[0.04] text-white/55 hover:border-accent/35 hover:text-accent;
+  }
+
+  .category-view-all--light {
+    @apply border-black/10 bg-black/[0.03] text-black/55 hover:border-accent/35 hover:text-accent;
   }
 
   /* —— Sidebar —— */

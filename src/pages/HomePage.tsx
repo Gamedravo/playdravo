@@ -67,7 +67,7 @@ interface HomePageProps {
 
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves } from '../utils/recommendations';
-import { buildHomepageCategoryChips } from '../lib/homepageCategories';
+import { HOMEPAGE_CATEGORY_CHIPS } from '../lib/homepageCategories';
 import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from '../lib/homepageCuration';
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
 import { HomePageShelf } from '../components/HomePageShelf';
@@ -112,6 +112,7 @@ export const HomePage = React.memo(function HomePage({
   // Mystery Match State
   const [isFindingMysteryMatch, setIsFindingMysteryMatch] = React.useState(false);
   const [mysteryMatchTitle, setMysteryMatchTitle] = React.useState('');
+  const [showAllCategories, setShowAllCategories] = React.useState(false);
 
   const triggerMysteryMatch = () => {
     if (filteredGames.length === 0 || isFindingMysteryMatch) return;
@@ -187,10 +188,26 @@ export const HomePage = React.memo(function HomePage({
     return 0;
   };
 
-  const exploreCategories = React.useMemo(
-    () => buildHomepageCategoryChips(filteredGames, 1),
-    [filteredGames]
+  const curatedCategoryOrder = React.useMemo(
+    () => ['action', 'adventure', 'racing', 'sports', 'puzzle', 'arcade', 'multiplayer', 'strategy', 'shooter', 'casual', 'simulation', 'mobile'],
+    []
   );
+
+  const curatedCategoryIds = React.useMemo(() => new Set(curatedCategoryOrder), [curatedCategoryOrder]);
+
+  const curatedCategories = React.useMemo(
+    () => curatedCategoryOrder
+      .map((id) => HOMEPAGE_CATEGORY_CHIPS.find((chip) => chip.id === id))
+      .filter((chip): chip is (typeof HOMEPAGE_CATEGORY_CHIPS)[number] => Boolean(chip)),
+    [curatedCategoryOrder]
+  );
+
+  const extraCategories = React.useMemo(
+    () => HOMEPAGE_CATEGORY_CHIPS.filter((chip) => !curatedCategoryIds.has(chip.id)),
+    [curatedCategoryIds]
+  );
+
+  const exploreCategories = showAllCategories ? [...curatedCategories, ...extraCategories] : curatedCategories;
 
   const homepageShelves = React.useMemo(
     () => buildHomepageShelves(filteredGames),
@@ -446,7 +463,7 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
-          <LazyShelf minHeight={180}>
+          <LazyShelf minHeight={280}>
           <section className="shelf-section">
             <div className="shelf-header">
               <div className="section-heading-stack">
@@ -456,9 +473,16 @@ export const HomePage = React.memo(function HomePage({
                 </div>
                 <h3 className="section-title">Browse by genre</h3>
               </div>
+              <button
+                type="button"
+                onClick={() => setShowAllCategories((value) => !value)}
+                className={`category-view-all ${isDarkMode ? 'category-view-all--dark' : 'category-view-all--light'}`}
+              >
+                {showAllCategories ? 'Show curated' : 'View all categories'}
+                <ChevronRight className={`h-3.5 w-3.5 transition-transform ${showAllCategories ? '-rotate-90' : ''}`} />
+              </button>
             </div>
-            <div className="category-chip-grid px-1 md:px-2" ref={categoriesRef}>
-
+            <div className={`category-chip-grid ${showAllCategories ? 'category-chip-grid--expanded' : ''}`} ref={categoriesRef}>
               {exploreCategories.map((cat) => (
                 <button
                   key={`cat-chip-${cat.slug}`}
@@ -469,7 +493,7 @@ export const HomePage = React.memo(function HomePage({
                     else window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                     navigate(`/category/${cat.slug}`);
                   }}
-                  className={`category-chip ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
+                  className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
                   <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
                   <span className="category-chip-label">{cat.title}</span>
