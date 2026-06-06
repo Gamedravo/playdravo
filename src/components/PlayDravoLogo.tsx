@@ -2,10 +2,10 @@ import type { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 const SIZES = {
-  xs: { icon: 24, text: 'text-sm' },
-  sm: { icon: 28, text: 'text-base' },
-  md: { icon: 36, text: 'text-xl' },
-  lg: { icon: 44, text: 'text-2xl' },
+  xs: { icon: 24, text: 'text-sm', sub: 'text-[7px]' },
+  sm: { icon: 30, text: 'text-base', sub: 'text-[8px]' },
+  md: { icon: 38, text: 'text-xl', sub: 'text-[9px]' },
+  lg: { icon: 46, text: 'text-2xl', sub: 'text-[10px]' },
 } as const;
 
 export interface PlayDravoLogoProps {
@@ -27,28 +27,32 @@ export function PlayDravoLogo({
   const dim = SIZES[size];
   const inner = (
     <>
-      <img
-        src="/logo.svg"
-        alt=""
-        aria-hidden
-        width={dim.icon}
-        height={dim.icon}
-        className="shrink-0 rounded-lg"
-        decoding="async"
-      />
+      <span className="brand-mark-shell" aria-hidden>
+        <img
+          src="/logo.svg"
+          alt=""
+          width={dim.icon}
+          height={dim.icon}
+          className="brand-mark-img"
+          decoding="async"
+        />
+      </span>
       {showWordmark && (
-        <span className={`font-bold tracking-tight whitespace-nowrap ${dim.text}`}>
-          Game<span className="text-accent">Dravo</span>
+        <span className="brand-wordmark">
+          <span className={`brand-title ${dim.text}`}>
+            Game<span>Dravo</span>
+          </span>
+          <span className={`brand-subtitle ${dim.sub}`}>instant lightweight play</span>
         </span>
       )}
     </>
   );
 
-  const cls = `inline-flex items-center gap-2 min-w-0 ${className}`;
+  const cls = `brand-logo ${className}`;
 
   if (href) {
     return (
-      <Link to={href} className={cls} onClick={onClick} title="GameDravo Home">
+      <Link to={href} className={cls} onClick={onClick} title="GameDravo Home" aria-label="GameDravo Home">
         {inner}
       </Link>
     );
@@ -56,7 +60,7 @@ export function PlayDravoLogo({
 
   if (onClick) {
     return (
-      <button type="button" className={`${cls} cursor-pointer`} onClick={onClick} title="GameDravo Home">
+      <button type="button" className={`${cls} cursor-pointer`} onClick={onClick} title="GameDravo Home" aria-label="GameDravo Home">
         {inner}
       </button>
     );
@@ -68,13 +72,15 @@ export function PlayDravoLogo({
 /** Icon-only mark for collapsed sidebar / favicon contexts */
 export function PlayDravoMark({ size = 32, className = '' }: { size?: number; className?: string }) {
   return (
-    <img
-      src="/logo.svg"
-      alt="GameDravo"
-      width={size}
-      height={size}
-      className={`rounded-lg shrink-0 ${className}`}
-      decoding="async"
-    />
+    <span className={`brand-mark-shell ${className}`} aria-label="GameDravo">
+      <img
+        src="/logo.svg"
+        alt="GameDravo"
+        width={size}
+        height={size}
+        className="brand-mark-img"
+        decoding="async"
+      />
+    </span>
   );
 }

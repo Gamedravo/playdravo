@@ -295,9 +295,9 @@ export const HomePage = React.memo(function HomePage({
   return (
     <div className="homepage-stack">
       <SEO
-        title="Play Clean No-Ad Online Games Free – No Download"
-        description="Play lightweight no-ad HTML5 games instantly on GameDravo. Classic arcade, puzzle, strategy, and casual games — no download, no sign-up, no popups."
-        keywords="no ad games, free online games, lightweight browser games, play games online, no download games, instant play, arcade games, puzzle games"
+        title="Lightweight Futuristic Browser Games – Play Instantly"
+        description="GameDravo is a lightweight futuristic gaming portal built for instant play: fast browser games, clean discovery, no downloads, and mobile-friendly action, puzzle, arcade, sports, and strategy games."
+        keywords="futuristic browser games, lightweight online games, no download games, instant play games, free HTML5 games, mobile games, arcade games, puzzle games"
         canonicalUrl={`${window.location.origin}/`}
         url={`${window.location.origin}/`}
 
@@ -321,7 +321,8 @@ export const HomePage = React.memo(function HomePage({
             '@type': 'Organization',
             name: 'GameDravo',
             url: window.location.origin,
-            description: 'Clean no-ad online games platform with lightweight browser games.',
+            description: 'Lightweight futuristic online games platform for instant browser play.',
+            logo: `${window.location.origin}/logo.svg`,
           },
         ]}
       />
