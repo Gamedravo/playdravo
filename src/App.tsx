@@ -804,7 +804,7 @@ function AppContent() {
 
   // Real-time Games Listener
   useEffect(() => {
-    const q = query(collection(db, 'games'), orderBy('plays', 'desc'), limit(500));
+    const q = query(collection(db, 'games'), orderBy('plays', 'desc'), limit(600));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
       

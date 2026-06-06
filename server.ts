@@ -51,8 +51,10 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
 });
 
 app.get('/api/gamepix-catalog', async (req, res) => {
-  const requestedLimit = Number(req.query.limit || 1000);
-  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 1000) : 1000;
+  const requestedLimit = Number(req.query.limit || 600);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 600) : 600;
+  const pageSize = 200;
+  const maxPages = Math.ceil(limit / pageSize);
 
   try {
     if (
@@ -63,19 +65,26 @@ app.get('/api/gamepix-catalog', async (req, res) => {
       return res.json(gamePixCatalogCache.data);
     }
 
-    const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=1&pagination=${limit}&sid=1`, {
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': 'PlayDravo-CatalogLoader/1.0',
-      },
-    });
+    const pages = await Promise.all(
+      Array.from({ length: maxPages }, async (_unused, index) => {
+        const page = index + 1;
+        const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`, {
+          headers: {
+            Accept: 'application/json',
+            'User-Agent': 'GameDravo-CatalogLoader/1.0',
+          },
+        });
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: 'Could not load GamePix catalog.' });
-    }
+        if (!response.ok) {
+          throw new Error(`GamePix page ${page} failed: ${response.status}`);
+        }
 
-    const feed = await response.json();
-    const data = Array.isArray(feed?.items) ? feed.items : [];
+        const feed = await response.json();
+        return Array.isArray(feed?.items) ? feed.items : [];
+      })
+    );
+
+    const data = pages.flat().slice(0, limit);
     gamePixCatalogCache = { data, timestamp: Date.now(), limit };
     return res.json(data);
   } catch (error) {
