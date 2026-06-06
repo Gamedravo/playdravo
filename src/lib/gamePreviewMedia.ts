@@ -9,7 +9,7 @@ export interface PreviewMediaCandidate {
 
 /** Ordered hover-preview candidates: explicit MP4 → GIF → thumbnail → none. */
 export function getPreviewMediaCandidates(
-  game: Pick<Game, 'id' | 'thumbnail' | 'previewVideoUrl' | 'previewGifUrl' | 'screenshots'>,
+  game: Pick<Game, 'id' | 'thumbnail' | 'previewVideoUrl' | 'previewGifUrl'>,
 ): PreviewMediaCandidate[] {
   const out: PreviewMediaCandidate[] = [];
   const seen = new Set<string>();
@@ -22,7 +22,6 @@ export function getPreviewMediaCandidates(
 
   add('mp4', game.previewVideoUrl);
   add('gif', game.previewGifUrl);
-  add('thumbnail', game.screenshots?.[0]);
   add('thumbnail', game.thumbnail);
 
   if (out.length === 0) {

@@ -55,8 +55,6 @@ export const GameCard = memo(function GameCard({
   const isFavorite = favorites.includes(game.id);
   const [showPreview, setShowPreview] = useState(false);
   const [hoverSupported, setHoverSupported] = useState(false);
-  const [previewAnchorRect, setPreviewAnchorRect] = useState<DOMRect | null>(null);
-  const cardRef = useRef<HTMLAnchorElement>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -79,9 +77,7 @@ export const GameCard = memo(function GameCard({
   const handleMouseEnter = () => {
     if (!hoverSupported) return;
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    setPreviewAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
     hoverTimeoutRef.current = setTimeout(() => {
-      setPreviewAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
       claimHoverPreview(game.id);
       setShowPreview(true);
     }, HOVER_DELAY_MS);
@@ -93,7 +89,6 @@ export const GameCard = memo(function GameCard({
 
   return (
     <Link
-      ref={cardRef}
       to={`/games/${game.id}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -114,7 +109,11 @@ export const GameCard = memo(function GameCard({
             : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.15)] group-hover:border-accent/40'
         } group-hover:ring-1 group-hover:ring-accent/30 active:scale-[0.99]`}
       >
-        <div className="absolute inset-0 overflow-hidden transition-opacity duration-150">
+        <div
+          className={`absolute inset-0 overflow-hidden transition-opacity duration-150 ${
+            showPreview && hoverSupported ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
           <GameThumbnail
             src={game.thumbnail}
             alt={game.title}
@@ -133,7 +132,6 @@ export const GameCard = memo(function GameCard({
                 gameId={game.id}
                 active={showPreview}
                 isDarkMode={isDarkMode}
-                anchorRect={previewAnchorRect}
               />
             )}
           </AnimatePresence>
