@@ -52,7 +52,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
         {
           id: 'welcome',
           title: 'Welcome to PlayDravo',
-          description: 'Browse 260+ HTML5 games. Log in to save favorites and track achievements.',
+          description: 'Browse clean, lightweight HTML5 games. Log in to save favorites and track achievements.',
           type: 'system',
           timestamp: new Date().toISOString(),
           read: false

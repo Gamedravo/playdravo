@@ -3,11 +3,8 @@ import { GAMES } from '../games';
 import { withSafetyMetadata } from '../lib/adsInjection';
 import { getCategoryFallbackThumbnail } from './thumbnailFallback';
 
-/** Verified onlinegames.io catalog entries only. */
 export function isCatalogGame(game: Pick<Game, 'id' | 'sourceId' | 'authorUid'>): boolean {
-  const catalog = GAMES.find((g) => g.id === game.id);
-  if (!catalog) return false;
-  return catalog.sourceId === 'onlinegames-io' || catalog.authorUid === 'onlinegames-io';
+  return GAMES.some((g) => g.id === game.id);
 }
 
 export type ThumbnailSize = 'md' | 'lg';
@@ -121,7 +118,7 @@ export function parseFirebaseGame(id: string, data: any): Game {
     isHot: !!data.isHot,
     isTop: !!data.isTop,
     createdAt: data.createdAt || new Date().toISOString(),
-    developer: data.developer || 'OnlineGames.io',
+    developer: data.developer || 'PlayDravo Clean Arcade',
     version: data.version || '1.0.0',
     controls: Array.isArray(data.controls) ? data.controls : ['Mouse', 'Touch'],
     features: Array.isArray(data.features) ? data.features : [],
