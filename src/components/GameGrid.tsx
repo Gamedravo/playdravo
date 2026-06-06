@@ -4,7 +4,6 @@ import { Game } from '../types';
 import { GameCard } from './GameCard';
 import { GameThumbnail } from './GameThumbnail';
 import { GameCardSkeleton } from './LoadingSkeletons';
-import { AllGamesPreviewMiniGrid } from './AllGamesPreviewMiniGrid';
 import { GAMES as STATIC_GAMES } from '../games';
 import { useInViewport } from '../hooks/useInViewport';
 
@@ -122,15 +121,6 @@ export const GameGrid = memo(function GameGrid({
           </div>
         )}
       </div>
-
-      {selectedCategory === 'All' && !searchQuery && filteredGames.length >= 3 && (
-        <AllGamesPreviewMiniGrid
-          games={filteredGames}
-          isDarkMode={isDarkMode}
-          handleGameClick={handleGameClick}
-          t={t}
-        />
-      )}
 
       {isLoading ? (
 

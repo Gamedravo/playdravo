@@ -1,10 +1,9 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Trophy, Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
-import { GameplayPreview } from './GameplayPreview';
 import { getPreviewMediaCandidates, type PreviewMediaCandidate } from '../lib/gamePreviewMedia';
 
 interface GameCardProps {
@@ -40,6 +39,34 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer',
 };
 
+let activePreviewCardId: string | null = null;
+const activePreviewListeners = new Set<(cardId: string | null) => void>();
+
+function setActivePreviewCard(cardId: string | null) {
+  if (activePreviewCardId === cardId) return;
+  activePreviewCardId = cardId;
+  activePreviewListeners.forEach((listener) => listener(cardId));
+}
+
+function clearActivePreviewCard(cardId: string) {
+  if (activePreviewCardId === cardId) {
+    setActivePreviewCard(null);
+  }
+}
+
+function useActivePreviewCardId() {
+  const [cardId, setCardId] = useState(activePreviewCardId);
+
+  useEffect(() => {
+    activePreviewListeners.add(setCardId);
+    return () => {
+      activePreviewListeners.delete(setCardId);
+    };
+  }, []);
+
+  return cardId;
+}
+
 function useDesktopHover() {
   const [enabled, setEnabled] = useState(false);
 
@@ -63,17 +90,13 @@ function getVideoType(url: string) {
 function InlineCardPreview({
   game,
   active,
-  isDarkMode,
+  candidates,
 }: {
-  game: Game;
+  game: Pick<Game, 'id' | 'title'>;
   active: boolean;
-  isDarkMode: boolean;
+  candidates: PreviewMediaCandidate[];
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const candidates = useMemo(
-    () => getPreviewMediaCandidates(game).filter((candidate) => candidate.kind === 'mp4' || candidate.kind === 'gif'),
-    [game],
-  );
   const [candidateIndex, setCandidateIndex] = useState(0);
   const current: PreviewMediaCandidate | undefined = candidates[candidateIndex];
 
@@ -83,14 +106,7 @@ function InlineCardPreview({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !current || current.kind !== 'mp4') return;
-
-    if (!active) {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      return;
-    }
+    if (!active || !video || !current || current.kind !== 'mp4') return;
 
     video.muted = true;
     video.defaultMuted = true;
@@ -109,18 +125,14 @@ function InlineCardPreview({
     };
   }, [active, current, candidates.length]);
 
-  if (!active) return null;
-
-  if (!current) {
-    return <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} showLabel={false} />;
-  }
+  if (!active || !current) return null;
 
   if (current.kind === 'gif') {
     return (
       <img
         src={current.url}
         alt=""
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
         loading="eager"
         decoding="async"
         referrerPolicy="no-referrer"
@@ -133,7 +145,7 @@ function InlineCardPreview({
   return (
     <video
       ref={videoRef}
-      className="absolute inset-0 h-full w-full object-cover object-center"
+      className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       muted
       loop
       playsInline
@@ -157,17 +169,32 @@ export const GameCard = memo(function GameCard({
 }: GameCardProps) {
   const isFavorite = favorites.includes(game.id);
   const hoverSupported = useDesktopHover();
-  const [isHovered, setIsHovered] = useState(false);
-  const previewActive = hoverSupported && isHovered;
+  const cardPreviewId = useId();
+  const activeCardId = useActivePreviewCardId();
+  const previewCandidates = useMemo(
+    () => getPreviewMediaCandidates(game).filter((candidate) => candidate.kind === 'mp4' || candidate.kind === 'gif'),
+    [game],
+  );
+  const hasPreview = previewCandidates.length > 0;
+  const previewActive = hoverSupported && activeCardId === cardPreviewId;
 
-  const stopPreview = () => setIsHovered(false);
+  useEffect(() => {
+    if (!hoverSupported) clearActivePreviewCard(cardPreviewId);
+    return () => clearActivePreviewCard(cardPreviewId);
+  }, [cardPreviewId, hoverSupported]);
+
+  const startPreview = () => {
+    if (hoverSupported && hasPreview) {
+      setActivePreviewCard(cardPreviewId);
+    }
+  };
+
+  const stopPreview = () => clearActivePreviewCard(cardPreviewId);
 
   return (
     <Link
       to={`/games/${game.id}`}
-      onMouseEnter={() => {
-        if (hoverSupported) setIsHovered(true);
-      }}
+      onMouseEnter={startPreview}
       onMouseLeave={stopPreview}
       onClick={(e) => {
         stopPreview();
@@ -195,7 +222,7 @@ export const GameCard = memo(function GameCard({
             gameId={game.id}
             className="h-full w-full object-cover object-center"
           />
-          <InlineCardPreview game={game} active={previewActive} isDarkMode={isDarkMode} />
+          <InlineCardPreview game={game} active={previewActive} candidates={previewCandidates} />
         </div>
 
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
