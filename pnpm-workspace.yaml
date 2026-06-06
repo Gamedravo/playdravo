@@ -1,8 +1,3 @@
-onlyBuiltDependencies:
-  - "@firebase/util"
-  - "@google/genai"
-  - protobufjs
-
 allowBuilds:
   # dyad-default-allow-builds begin
   # dyad-default-allow-builds-schema=v1
