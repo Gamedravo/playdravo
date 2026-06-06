@@ -14,6 +14,14 @@ export interface CuratedShelfBlock {
 export const SHELF_MIN_GAMES = 10;
 export const SHELF_TARGET_GAMES = 28;
 
+const FEATURED_ROTATION_KEY = 'gamedravo_featured_spotlight_rotation';
+const FEATURED_ROTATION_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+interface FeaturedRotationState {
+  gameId: string;
+  timestamp: number;
+}
+
 /** Tag shelves that duplicate dedicated category rows — skip for variety. */
 const REDUNDANT_TAG_IDS = new Set([
   'racing',
@@ -41,6 +49,46 @@ const TAG_SUBTITLES: Record<string, string> = {
 
 function haystack(game: Game): string {
   return [...(game.tags || []), game.category, game.title].join(' ');
+}
+
+function readFeaturedRotation(): FeaturedRotationState | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = window.localStorage.getItem(FEATURED_ROTATION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<FeaturedRotationState>;
+    if (!parsed.gameId || typeof parsed.timestamp !== 'number') return null;
+    return { gameId: parsed.gameId, timestamp: parsed.timestamp };
+  } catch {
+    return null;
+  }
+}
+
+function writeFeaturedRotation(state: FeaturedRotationState) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.setItem(FEATURED_ROTATION_KEY, JSON.stringify(state));
+  } catch {
+    // Ignore storage failures; the page can still show a deterministic featured game.
+  }
+}
+
+function pickRotatingFeaturedGame(candidates: Game[]): Game | null {
+  if (!candidates.length) return null;
+
+  const now = Date.now();
+  const stored = readFeaturedRotation();
+  if (stored && now - stored.timestamp < FEATURED_ROTATION_INTERVAL_MS) {
+    return candidates.find((game) => game.id === stored.gameId) ?? candidates[0];
+  }
+
+  const previousIndex = stored ? candidates.findIndex((game) => game.id === stored.gameId) : -1;
+  const nextIndex = previousIndex >= 0 ? (previousIndex + 1) % candidates.length : Math.floor(now / FEATURED_ROTATION_INTERVAL_MS) % candidates.length;
+  const nextGame = candidates[nextIndex] ?? candidates[0];
+  writeFeaturedRotation({ gameId: nextGame.id, timestamp: now });
+  return nextGame;
 }
 
 /** Fill a shelf toward target count from a matcher pool, then general backfill. */
@@ -251,8 +299,9 @@ export function pickFeaturedSpotlight(
   const sorted = pool.sort((a, b) => (b.rating || 0) - (a.rating || 0) || b.plays - a.plays);
   if (!sorted.length) return { hero: null, picks: [] };
 
-  return {
-    hero: sorted[0],
-    picks: sorted.slice(1, 5),
-  };
+  const rotationCandidates = sorted.slice(0, Math.min(12, sorted.length));
+  const hero = pickRotatingFeaturedGame(rotationCandidates) ?? sorted[0];
+  const picks = sorted.filter((game) => game.id !== hero.id).slice(0, 4);
+
+  return { hero, picks };
 }

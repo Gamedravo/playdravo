@@ -1,9 +1,8 @@
-import { memo, useMemo, useState, useCallback } from 'react';
-import { Play, Star, Video } from 'lucide-react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ChevronRight, Play, Radio, Sparkles, Star, Video } from 'lucide-react';
 import { Game } from '../types';
 import { buildThumbnailFallbackChain } from '../utils/gameUtils';
-import { GamePreviewPlayer } from './GamePreviewPlayer';
-import { ModalShell } from './ui/ModalShell';
 
 interface FeaturedSpotlightProps {
   hero: Game;
@@ -13,6 +12,38 @@ interface FeaturedSpotlightProps {
   t: (key: any) => string;
 }
 
+const particles = Array.from({ length: 14 }, (_, index) => ({
+  id: index,
+  left: `${8 + ((index * 17) % 84)}%`,
+  top: `${10 + ((index * 23) % 76)}%`,
+  duration: 8 + (index % 5) * 1.7,
+  delay: index * 0.22,
+}));
+
+function useDesktopAutoplay() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)');
+    const update = () => setEnabled(query.matches);
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  return enabled;
+}
+
+function getVideoType(url: string) {
+  if (/\.webm(\?|#|$)/i.test(url)) return 'video/webm';
+  if (/\.ogg|\.ogv(\?|#|$)/i.test(url)) return 'video/ogg';
+  return 'video/mp4';
+}
+
+function hasPreview(game: Game) {
+  return Boolean(game.previewVideoUrl || game.previewGifUrl || game.trailerUrl);
+}
+
 export const FeaturedSpotlight = memo(function FeaturedSpotlight({
   hero,
   picks,
@@ -20,108 +51,92 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
   onPlay,
   t,
 }: FeaturedSpotlightProps) {
-  const heroChain = useMemo(
-    () => buildThumbnailFallbackChain(hero.id, hero.thumbnail, 'lg', hero.category),
-    [hero.id, hero.thumbnail, hero.category]
-  );
-  const [heroIndex, setHeroIndex] = useState(0);
-  const heroArt = heroChain[heroIndex] ?? heroChain[heroChain.length - 1];
-  const onHeroError = useCallback(() => {
-    setHeroIndex((i) => (i < heroChain.length - 1 ? i + 1 : i));
-  }, [heroChain.length]);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const hasPreview = Boolean(hero.trailerUrl || hero.previewVideoUrl);
+  const [activeGame, setActiveGame] = useState(hero);
+  const sideGames = useMemo(() => {
+    const seen = new Set<string>();
+    return [hero, ...picks].filter((game) => {
+      if (!game || seen.has(game.id)) return false;
+      seen.add(game.id);
+      return true;
+    }).slice(0, 4);
+  }, [hero, picks]);
+
+  useEffect(() => {
+    setActiveGame(hero);
+  }, [hero]);
 
   return (
     <section className="featured-spotlight" aria-label="Featured games">
+      <div className="featured-spotlight-aura" aria-hidden />
+      <div className="featured-spotlight-orb featured-spotlight-orb--one" aria-hidden />
+      <div className="featured-spotlight-orb featured-spotlight-orb--two" aria-hidden />
+      <div className="featured-particles" aria-hidden>
+        {particles.map((particle) => (
+          <span
+            key={particle.id}
+            style={{
+              left: particle.left,
+              top: particle.top,
+              animationDuration: `${particle.duration}s`,
+              animationDelay: `${particle.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
       <div className="featured-spotlight-header">
         <div>
-          <p className="featured-spotlight-eyebrow">Editor&apos;s spotlight</p>
-          <h2 className="featured-spotlight-title">Featured this week</h2>
+          <motion.p
+            className="featured-spotlight-eyebrow"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Today&apos;s curated drop
+          </motion.p>
+          <motion.h2
+            className="featured-spotlight-title"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+          >
+            Featured this week
+          </motion.h2>
         </div>
-        <p className={`featured-spotlight-note hidden sm:block ${isDarkMode ? 'text-white/40' : 'text-black/45'}`}>
-          Hand-picked hits — updated daily
-        </p>
+        <motion.p
+          className={`featured-spotlight-note hidden sm:flex ${isDarkMode ? 'text-white/45' : 'text-black/50'}`}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.45, delay: 0.15, ease: 'easeOut' }}
+        >
+          <Radio className="w-3.5 h-3.5 text-accent" />
+          Auto-refreshes every 24 hours
+        </motion.p>
       </div>
 
       <div className="featured-spotlight-grid">
-        <button
-          type="button"
-          onClick={() => onPlay(hero)}
-          className={`featured-hero group text-left ${isDarkMode ? 'featured-hero--dark' : 'featured-hero--light'}`}
-        >
-          <img
-            key={heroArt}
-            src={heroArt}
-            alt=""
-            className="featured-hero-art"
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-            onError={onHeroError}
-          />
-          <div className="featured-hero-scrim" />
-          <div className="featured-hero-content">
-            <span className="featured-hero-badge">Featured</span>
-            <h3 className="featured-hero-title">{hero.title}</h3>
-            <p className="featured-hero-meta">
-              {hero.category}
-              <span className="opacity-50"> · </span>
-              <Star className="inline w-3.5 h-3.5 text-yellow-400 fill-yellow-400 -mt-0.5" />
-              {(hero.rating || 4.5).toFixed(1)}
-            </p>
-            <div className="flex items-center gap-3">
-              <span className="featured-hero-cta">
-                <Play className="w-4 h-4 fill-current" />
-                {t('playNow') || 'Play now'}
-              </span>
-              {hasPreview && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPreviewOpen(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-black/35 text-white border border-white/15 hover:bg-black/50"
-                  aria-label="Open preview"
-                >
-                  <Video className="w-4 h-4" />
-                  Preview
-                </button>
-              )}
-            </div>
+        <PremiumHeroCard
+          key={activeGame.id}
+          game={activeGame}
+          isDarkMode={isDarkMode}
+          onPlay={onPlay}
+          playLabel={t('playNow') || 'Play now'}
+        />
+
+        <div className="featured-picks" aria-label="Featured recommendations">
+          <div className="featured-picks-header">
+            <span>Recommended next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </div>
-        </button>
-
-        {hasPreview && (
-          <ModalShell
-            isOpen={previewOpen}
-            onClose={() => setPreviewOpen(false)}
-            isDarkMode={isDarkMode}
-            maxWidth="max-w-3xl"
-            zIndex={3000}
-            padding="p-4 md:p-6"
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-lg font-bold tracking-tight">Preview: {hero.title}</h3>
-                  <p className={`text-xs ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-                    Video loads on demand. No autoplay with sound.
-                  </p>
-                </div>
-              </div>
-              <GamePreviewPlayer game={hero} />
-            </div>
-          </ModalShell>
-        )}
-
-        <div className="featured-picks">
-          {picks.slice(0, 4).map((game) => (
+          {sideGames.map((game, index) => (
             <FeaturedPickThumb
               key={game.id}
               game={game}
               isDarkMode={isDarkMode}
+              active={game.id === activeGame.id}
+              index={index}
+              onSelect={setActiveGame}
               onPlay={onPlay}
             />
           ))}
@@ -131,45 +146,210 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
   );
 });
 
+function PremiumHeroCard({
+  game,
+  isDarkMode,
+  onPlay,
+  playLabel,
+}: {
+  game: Game;
+  isDarkMode: boolean;
+  onPlay: (game: Game) => void;
+  playLabel: string;
+}) {
+  const desktopAutoplay = useDesktopAutoplay();
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+  const imageChain = useMemo(
+    () => buildThumbnailFallbackChain(game.id, game.thumbnail, 'lg', game.category),
+    [game.id, game.thumbnail, game.category]
+  );
+  const heroArt = imageChain[imageIndex] ?? imageChain[imageChain.length - 1];
+  const videoUrl = game.previewVideoUrl && !videoFailed ? game.previewVideoUrl : null;
+  const showVideo = desktopAutoplay && Boolean(videoUrl);
+
+  useEffect(() => {
+    setImageIndex(0);
+    setVideoFailed(false);
+  }, [game.id]);
+
+  const onHeroError = useCallback(() => {
+    setImageIndex((index) => (index < imageChain.length - 1 ? index + 1 : index));
+  }, [imageChain.length]);
+
+  return (
+    <motion.button
+      type="button"
+      onClick={() => onPlay(game)}
+      className={`featured-hero group text-left ${isDarkMode ? 'featured-hero--dark' : 'featured-hero--light'}`}
+      initial={{ opacity: 0, y: 18, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.55, ease: 'easeOut' }}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.995 }}
+    >
+      <div className="featured-hero-media">
+        <AnimatePresence mode="wait">
+          {showVideo ? (
+            <motion.video
+              key={`video-${game.id}`}
+              className="featured-hero-art"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={heroArt}
+              aria-hidden
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.015 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              onError={() => setVideoFailed(true)}
+            >
+              <source src={videoUrl ?? undefined} type={videoUrl ? getVideoType(videoUrl) : undefined} />
+            </motion.video>
+          ) : (
+            <motion.img
+              key={heroArt}
+              src={heroArt}
+              alt=""
+              className="featured-hero-art"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              onError={onHeroError}
+              initial={{ opacity: 0, scale: 1.035 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.015 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="featured-hero-scrim" />
+      <div className="featured-hero-gradient featured-hero-gradient--one" aria-hidden />
+      <div className="featured-hero-gradient featured-hero-gradient--two" aria-hidden />
+      <div className="featured-light-streak featured-light-streak--one" aria-hidden />
+      <div className="featured-light-streak featured-light-streak--two" aria-hidden />
+      <div className="featured-floating-chip featured-floating-chip--preview" aria-hidden>
+        <Video className="w-3.5 h-3.5" />
+        {showVideo ? 'Live preview' : 'Daily pick'}
+      </div>
+      <div className="featured-floating-chip featured-floating-chip--score" aria-hidden>
+        <Star className="w-3.5 h-3.5 fill-current" />
+        {(game.rating || 4.5).toFixed(1)}
+      </div>
+
+      <div className="featured-hero-content">
+        <motion.span
+          className="featured-hero-badge"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.08 }}
+        >
+          Featured
+        </motion.span>
+        <motion.h3
+          className="featured-hero-title"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.14, ease: 'easeOut' }}
+        >
+          {game.title}
+        </motion.h3>
+        <motion.div
+          className="featured-hero-meta-row"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
+        >
+          <motion.span className="featured-category-tag" whileHover={{ y: -1, scale: 1.03 }}>
+            {game.category}
+          </motion.span>
+          <motion.span className="featured-rating-badge" whileHover={{ y: -1, scale: 1.04 }}>
+            <Star className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
+            {(game.rating || 4.5).toFixed(1)}
+          </motion.span>
+          <span className="featured-play-count">{Math.max(1, Math.round((game.plays || 0) / 1000))}K plays</span>
+        </motion.div>
+        <motion.span
+          className="featured-hero-cta"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.26, ease: 'easeOut' }}
+        >
+          <Play className="w-4 h-4 fill-current" />
+          {playLabel}
+        </motion.span>
+      </div>
+    </motion.button>
+  );
+}
+
 function FeaturedPickThumb({
   game,
   isDarkMode,
+  active,
+  index,
+  onSelect,
   onPlay,
 }: {
   game: Game;
   isDarkMode: boolean;
+  active: boolean;
+  index: number;
+  onSelect: (game: Game) => void;
   onPlay: (game: Game) => void;
 }) {
   const chain = useMemo(
     () => buildThumbnailFallbackChain(game.id, game.thumbnail, 'md', game.category),
     [game.id, game.thumbnail, game.category]
   );
-  const [index, setIndex] = useState(0);
-  const art = chain[index] ?? chain[chain.length - 1];
+  const [imageIndex, setImageIndex] = useState(0);
+  const art = chain[imageIndex] ?? chain[chain.length - 1];
+
+  useEffect(() => {
+    setImageIndex(0);
+  }, [game.id]);
 
   return (
-            <button
-              type="button"
-              onClick={() => onPlay(game)}
-              className={`featured-pick group ${isDarkMode ? 'featured-pick--dark' : 'featured-pick--light'}`}
-            >
-              <img
-                key={art}
-                src={art}
-                alt=""
-                className="featured-pick-art"
-                loading="lazy"
-                decoding="async"
-                onError={() => setIndex((i) => (i < chain.length - 1 ? i + 1 : i))}
-              />
-              <div className="featured-pick-scrim" />
-              <div className="featured-pick-content">
-                <p className="featured-pick-title">{game.title}</p>
-                <p className="featured-pick-meta">{game.category}</p>
-              </div>
-              <div className="featured-pick-play">
-                <Play className="w-3.5 h-3.5 fill-current" />
-              </div>
-            </button>
+    <motion.button
+      type="button"
+      onMouseEnter={() => onSelect(game)}
+      onFocus={() => onSelect(game)}
+      onClick={() => onPlay(game)}
+      className={`featured-pick group ${active ? 'featured-pick--active' : ''} ${isDarkMode ? 'featured-pick--dark' : 'featured-pick--light'}`}
+      initial={{ opacity: 0, x: 18 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.38, delay: 0.08 + index * 0.05, ease: 'easeOut' }}
+      whileHover={{ x: -3, scale: 1.015 }}
+      whileTap={{ scale: 0.985 }}
+    >
+      <img
+        key={art}
+        src={art}
+        alt=""
+        className="featured-pick-art"
+        loading="lazy"
+        decoding="async"
+        onError={() => setImageIndex((i) => (i < chain.length - 1 ? i + 1 : i))}
+      />
+      <div className="featured-pick-scrim" />
+      <div className="featured-pick-preview-indicator">
+        <span />
+        {hasPreview(game) ? 'Preview ready' : 'Featured pick'}
+      </div>
+      <div className="featured-pick-content">
+        <p className="featured-pick-title">{game.title}</p>
+        <p className="featured-pick-meta">
+          {game.category} · {(game.rating || 4.5).toFixed(1)} ★
+        </p>
+      </div>
+      <div className="featured-pick-play">
+        <Play className="w-3.5 h-3.5 fill-current" />
+      </div>
+    </motion.button>
   );
 }

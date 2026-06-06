@@ -113,6 +113,12 @@ export const HomePage = React.memo(function HomePage({
   const [isFindingMysteryMatch, setIsFindingMysteryMatch] = React.useState(false);
   const [mysteryMatchTitle, setMysteryMatchTitle] = React.useState('');
   const [showAllCategories, setShowAllCategories] = React.useState(false);
+  const [featuredRotationTick, setFeaturedRotationTick] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = window.setInterval(() => setFeaturedRotationTick((tick) => tick + 1), 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   const triggerMysteryMatch = () => {
     if (filteredGames.length === 0 || isFindingMysteryMatch) return;
@@ -230,13 +236,15 @@ export const HomePage = React.memo(function HomePage({
   );
 
   const featuredSpotlight = React.useMemo(
-    () =>
-      pickFeaturedSpotlight(
+    () => {
+      featuredRotationTick;
+      return pickFeaturedSpotlight(
         featuredGame,
         homepageShelves.topRated,
         homepageShelves.trending
-      ),
-    [featuredGame, homepageShelves.topRated, homepageShelves.trending]
+      );
+    },
+    [featuredGame, homepageShelves.topRated, homepageShelves.trending, featuredRotationTick]
   );
 
   const renderShelf = (
