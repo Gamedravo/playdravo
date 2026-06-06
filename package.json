@@ -7,6 +7,8 @@
     "dev": "tsx server.ts",
     "build": "tsx scripts/generate-sitemap.ts && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "build:static": "tsx scripts/generate-sitemap.ts && vite build",
+    "deploy": "pnpm run build:static && wrangler deploy",
+    "preview": "pnpm run build:static && wrangler dev",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
@@ -41,7 +43,8 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.16.0",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "wrangler": "^4.98.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.25",
