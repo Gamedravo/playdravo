@@ -152,83 +152,89 @@
 
   /* —— Featured spotlight —— */
   .featured-spotlight {
-    @apply mb-2 px-1 md:px-2;
+    @apply mb-5 px-1 md:px-2;
   }
 
   .featured-spotlight-header {
-    @apply flex items-end justify-between gap-3 mb-2 px-0.5;
+    @apply flex items-end justify-between gap-3 mb-3 px-0.5;
   }
 
   .featured-spotlight-eyebrow {
-    @apply text-[10px] font-semibold uppercase tracking-widest text-accent mb-0.5;
+    @apply text-[10px] font-semibold uppercase tracking-widest text-accent mb-1;
   }
 
   .featured-spotlight-title {
-    @apply text-lg md:text-xl font-bold tracking-tight;
+    @apply text-2xl md:text-3xl font-black tracking-tight;
   }
 
   .featured-spotlight-note {
-    @apply text-[11px] max-w-[200px] text-right leading-snug;
+    @apply text-xs max-w-[240px] text-right leading-snug;
   }
 
   .featured-spotlight-grid {
-    @apply grid gap-2 md:gap-2.5;
+    @apply grid gap-3 md:gap-4;
     grid-template-columns: 1fr;
   }
 
   @media (min-width: 768px) {
     .featured-spotlight-grid {
-      grid-template-columns: 1.45fr 1fr;
-      min-height: 280px;
+      grid-template-columns: minmax(0, 2.15fr) minmax(240px, 0.85fr);
+      min-height: 430px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .featured-spotlight-grid {
+      min-height: 500px;
     }
   }
 
   .featured-hero {
-    @apply relative overflow-hidden rounded-2xl border min-h-[220px] md:min-h-0 md:h-full cursor-pointer;
+    @apply relative overflow-hidden rounded-[2rem] border min-h-[320px] sm:min-h-[390px] md:min-h-0 md:h-full cursor-pointer shadow-2xl;
   }
 
   .featured-hero--dark {
-    @apply border-white/10 bg-[#0c0c14];
+    @apply border-white/10 bg-[#0c0c14] shadow-black/30;
   }
 
   .featured-hero--light {
-    @apply border-black/10 bg-white;
+    @apply border-black/10 bg-white shadow-black/10;
   }
 
   .featured-hero-art {
-    @apply absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04];
+    @apply absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05];
   }
 
   .featured-hero-scrim {
-    @apply absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/10;
+    @apply absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent;
   }
 
   .featured-hero-content {
-    @apply absolute inset-x-0 bottom-0 p-4 md:p-5 z-10 flex flex-col items-start gap-1.5;
+    @apply absolute inset-x-0 bottom-0 p-5 sm:p-6 md:p-8 z-10 flex flex-col items-start gap-2.5;
   }
 
   .featured-hero-badge {
-    @apply text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md bg-accent text-bg-dark;
+    @apply text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-accent text-bg-dark shadow-lg shadow-accent/25;
   }
 
   .featured-hero-title {
-    @apply text-xl md:text-2xl font-bold text-white leading-tight line-clamp-2 text-left;
+    @apply text-3xl sm:text-4xl md:text-5xl font-black text-white leading-[0.95] line-clamp-2 text-left max-w-3xl;
   }
 
   .featured-hero-meta {
-    @apply text-xs text-white/70 font-medium;
+    @apply text-sm text-white/75 font-semibold;
   }
 
   .featured-hero-cta {
-    @apply mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-bg-dark text-xs font-bold transition-transform duration-100 group-hover:scale-[1.02] active:scale-[0.98];
+    @apply mt-3 inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white text-bg-dark text-sm font-black transition-transform duration-100 group-hover:scale-[1.03] active:scale-[0.98];
   }
 
   .featured-picks {
-    @apply grid grid-cols-2 gap-2 md:grid-cols-1 md:grid-rows-4 md:h-full;
+    @apply grid grid-cols-2 gap-2.5 md:grid-cols-1 md:grid-rows-4 md:h-full;
   }
 
   .featured-pick {
-    @apply relative overflow-hidden rounded-xl border min-h-[100px] md:min-h-0 md:flex-1 cursor-pointer;
+    @apply relative overflow-hidden rounded-2xl border min-h-[118px] sm:min-h-[140px] md:min-h-0 md:flex-1 cursor-pointer;
   }
 
   .featured-pick--dark {
@@ -606,6 +612,10 @@
 
   .shelf-card {
     @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] xl:w-[128px] 2xl:w-[136px] shrink-0 snap-start;
+  }
+
+  .game-card-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4;
   }
 }
 

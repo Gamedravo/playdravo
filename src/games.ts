@@ -149,6 +149,26 @@ function parseTags(raw: string): string[] {
     .map(titleCaseTag);
 }
 
+const AD_HEAVY_GAME_IDS = new Set([
+  'stickman-parkour',
+  'stickman-gta-city',
+  'checkout-frenzy',
+  'dublix',
+  'escape-car',
+  'cube-worlds',
+  'burnout-city',
+  'basket-hoop',
+  'fps-strike',
+  'warstrike',
+  'fast-food-rush',
+  'super-car-driving',
+  'egg-car-racing',
+  'love-tester-story',
+  'cubecraft-survival',
+  'chess-freezenova',
+  'mini-cars-racing',
+]);
+
 function inferCategory(tagList: string[]): string {
   const tags = tagList.join(' ').toLowerCase();
   if (/\b(2 player|3 player|4 player|two player|three player|four player|multiplayer|io games)\b/.test(tags)) return 'Multiplayer';
@@ -220,6 +240,7 @@ function isSafeOnlineGame(rawGame: RawOnlineGame): boolean {
   const embed = rawGame.embed?.trim();
   const image = rawGame.image?.trim();
   if (!title || !embed || !image) return false;
+  if (AD_HEAVY_GAME_IDS.has(slugify(title))) return false;
   if (!/^https:\/\//i.test(embed) || !/^https:\/\//i.test(image)) return false;
 
   try {
@@ -305,7 +326,7 @@ export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
   return [...GAMES, ...remoteGames].filter((game) => {
     if (seenIds.has(game.id)) return false;
     seenIds.add(game.id);
-    return !game.adsInjected && !game.popupRisk && !game.redirectRisk;
+    return !AD_HEAVY_GAME_IDS.has(game.id) && !game.adsInjected && !game.popupRisk && !game.redirectRisk;
   });
 }
 

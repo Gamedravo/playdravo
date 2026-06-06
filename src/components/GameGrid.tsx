@@ -124,14 +124,14 @@ export const GameGrid = memo(function GameGrid({
         </div>
 
         {isLoading ? (
-          <div key="skeletons" className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3">
+          <div key="skeletons" className="game-card-grid">
             {[...Array(12)].map((_, i) => (
               <GameCardSkeleton key={`skeleton-${i}`} isDarkMode={isDarkMode} />
             ))}
           </div>
         ) : filteredGames.length === 0 ? (
           selectedCategory === 'Favorites' ? (
-            <div 
+            <div
               key="favorites-empty"
               className={`col-span-full max-w-2xl mx-auto text-center py-16 px-6 sm:px-8 rounded-[2.5rem] border ${
                 isDarkMode ? 'bg-[#151525]/30 border-white/5' : 'bg-white border-black/5 shadow-sm'
@@ -201,9 +201,9 @@ export const GameGrid = memo(function GameGrid({
             </div>
           )
         ) : (
-          <div 
+          <div
             key={selectedCategory + searchQuery}
-            className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3"
+            className="game-card-grid"
           >
             {filteredGames.slice(0, displayLimit).map((game, index) => (
               <GameCard
