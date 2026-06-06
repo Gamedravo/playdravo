@@ -318,14 +318,6 @@
     @apply flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/40 hover:text-accent transition-colors duration-100;
   }
 
-  .shelf-section--accent {
-    @apply pl-2 border-l-2 border-accent/40;
-  }
-
-  .shelf-section--mobile {
-    @apply pl-2 border-l-2 border-cyan-500/40;
-  }
-
   .shelf-section--mobile .shelf-header-subtitle {
     @apply text-cyan-500;
   }
