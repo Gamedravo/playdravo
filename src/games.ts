@@ -372,15 +372,6 @@ export const GAMES: Game[] = [
     213500,
   ),
   localGame(
-    'pong',
-    'Pong Duel',
-    'Sports',
-    '/images/games/core-ball-clone.svg',
-    'Classic Pong with solo AI and two-player keyboard controls. Simple, fast, and completely ad-free.',
-    ['1 Player', '2 Player', 'Arcade', 'Classic', 'Sports'],
-    189300,
-  ),
-  localGame(
     'minesweeper',
     'Minesweeper Classic',
     'Puzzle',
@@ -388,15 +379,6 @@ export const GAMES: Game[] = [
     'Clear the board without hitting a mine. Use logic, flags, and careful guesses in this clean local Minesweeper build.',
     ['1 Player', 'Board', 'Brain', 'Classic', 'Logic', 'Puzzle'],
     171200,
-  ),
-  localGame(
-    'tic-tac-toe',
-    'Tic Tac Toe',
-    'Strategy',
-    '/images/games/tic-tac-toe.svg',
-    'Play the famous X and O strategy game against a friend on the same device. Instant, lightweight, and safe.',
-    ['2 Player', 'Board', 'Classic', 'Kids', 'Strategy'],
-    165800,
   ),
   localGame(
     'flappy',

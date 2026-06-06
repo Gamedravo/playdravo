@@ -13,7 +13,7 @@ const extraUrls = [
 
 // Let's create an array of rich game templates!
 const bases = [
-  { c: 'Puzzle', t: ['Sudoku Classic', 'Block Puzzle', 'Jewel Magic', 'Merge 10', 'Word Search', 'Minesweeper Pro', 'Tic Tac Toe', 'Brain Trainer', 'Memory Match', 'Tile Master'], tags: ['Logic', 'Brain Training', 'Singleplayer', 'Casual'] },
+  { c: 'Puzzle', t: ['Sudoku Classic', 'Block Puzzle', 'Jewel Magic', 'Merge 10', 'Word Search', 'Minesweeper Pro', 'Brain Trainer', 'Memory Match', 'Tile Master'], tags: ['Logic', 'Brain Training', 'Singleplayer', 'Casual'] },
   { c: 'Arcade', t: ['Fruit Smasher', 'Bubble Shooter', 'Neon Blaster', 'Geometry Rush', 'Space Invaders', 'Tap Tap Dash', 'Pinball FX', 'Snake Xenzia', 'Pong 3D', 'Brick Breaker'], tags: ['Fast-Paced', 'Reflex', 'Retro', 'Highscore'] },
   { c: 'Racing', t: ['Nitro Drift', 'Highway Rider', 'Moto X3M', 'Hill Climb', 'Kart Racing', 'Rally Fury', 'Traffic Racer', 'Drag Racing', 'BMX Stunts', 'Hovercraft Racing'], tags: ['Vehicles', 'Driving', 'Competitive', '3D'] },
   { c: 'Sports', t: ['Basketball Stars', 'Soccer Hero', 'Tennis Clash', 'Golf Battles', 'Pool Billiards', 'Bowling King', 'Archery Master', 'Table Tennis', 'Volleyball', 'Darts Pro'], tags: ['Competitive', 'Simulation', 'Ball Game', 'Multiplayer'] },
