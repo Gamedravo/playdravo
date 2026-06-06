@@ -72,7 +72,6 @@ import { GameThumbnail } from './components/GameThumbnail';
 import { Footer } from './components/Footer';
 import { useModals } from './hooks/useModals';
 
-import { Toaster } from 'sonner';
 import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
@@ -2103,29 +2102,6 @@ function AppContent() {
         accountSettingsView={accountSettingsView}
       />
       </Suspense>
-
-      <Toaster
-        position="top-right"
-        visibleToasts={2}
-        expand={false}
-        closeButton
-        offset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
-        mobileOffset={{ top: 'max(56px, env(safe-area-inset-top, 0px))', right: 12 }}
-        toastOptions={{
-          duration: 7500,
-          unstyled: false,
-          style: {
-            background: '#0a0a0a',
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: '#fff',
-            borderRadius: '0.75rem',
-            fontSize: '13px',
-            fontFamily: 'Inter, sans-serif',
-            fontWeight: '600',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
-          },
-        }}
-      />
     </div>
     </div>
     </SidebarProvider>

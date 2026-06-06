@@ -147,7 +147,7 @@ export const Header = memo(function Header({
               />
             </div>
             {userProfile?.role === 'admin' && (
-              <button 
+              <button
                 onClick={() => setIsSubmitModalOpen(true)}
                 aria-label="Submit a game"
                 className="hidden md:flex p-2 sm:p-3 rounded-2xl transition-colors bg-accent text-bg-dark"
@@ -156,30 +156,32 @@ export const Header = memo(function Header({
               </button>
             )}
 
-            <div className="relative">
-              <button
-                ref={bellRef}
-                onClick={() => setIsNotificationsOpen((open) => !open)}
-                aria-label="Notifications"
-                aria-expanded={isNotificationsOpen}
-                aria-haspopup="dialog"
-                className={`p-2 sm:p-2.5 rounded-xl relative ${isNotificationsOpen ? 'ring-2 ring-accent' : ''} ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white' : 'bg-black/5 hover:bg-black/10 text-black'}`}
-              >
-                <Bell className="w-4 h-4 sm:w-4 sm:h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-extrabold text-white bg-red-500 rounded-full border-2 border-[#12121e]">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
+            {!user && (
+              <div className="relative">
+                <button
+                  ref={bellRef}
+                  onClick={() => setIsNotificationsOpen((open) => !open)}
+                  aria-label="Notifications"
+                  aria-expanded={isNotificationsOpen}
+                  aria-haspopup="dialog"
+                  className={`p-2 sm:p-2.5 rounded-xl relative ${isNotificationsOpen ? 'ring-2 ring-accent' : ''} ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white' : 'bg-black/5 hover:bg-black/10 text-black'}`}
+                >
+                  <Bell className="w-4 h-4 sm:w-4 sm:h-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-extrabold text-white bg-red-500 rounded-full border-2 border-[#12121e]">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
 
-              <NotificationDrawer
-                isOpen={isNotificationsOpen}
-                onClose={() => setIsNotificationsOpen(false)}
-                isDarkMode={isDarkMode}
-                anchorRef={bellRef}
-              />
-            </div>
+                <NotificationDrawer
+                  isOpen={isNotificationsOpen}
+                  onClose={() => setIsNotificationsOpen(false)}
+                  isDarkMode={isDarkMode}
+                  anchorRef={bellRef}
+                />
+              </div>
+            )}
             
             {!user ? (
               <button 

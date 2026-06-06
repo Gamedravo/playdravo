@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { appToast, isToastGameMode } from '../lib/appToast';
 
 export interface AppNotification {
   id: string;
@@ -23,108 +22,55 @@ interface NotificationsContextType {
   clearAll: () => void;
 }
 
+const GUEST_NOTIFICATION: AppNotification = {
+  id: 'guest-account-notice',
+  title: 'No account logged in',
+  description: 'Log in to save favorites, progress, and account settings.',
+  type: 'system',
+  timestamp: new Date(0).toISOString(),
+  read: false,
+};
+
 const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
 
 export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<AppNotification[]>([]);
-  const [userId, setUserId] = useState<string>('guest');
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!auth.currentUser);
+  const [guestNoticeRead, setGuestNoticeRead] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUserId(user ? user.uid : 'guest');
+      setIsLoggedIn(!!user);
+      if (user) setGuestNoticeRead(false);
     });
     return unsubscribe;
   }, []);
 
-  const getStorageKey = useCallback(() => `playdravo_notifications_${userId}`, [userId]);
+  const notifications = useMemo<AppNotification[]>(() => {
+    if (isLoggedIn) return [];
+    return [{ ...GUEST_NOTIFICATION, read: guestNoticeRead }];
+  }, [guestNoticeRead, isLoggedIn]);
 
-  useEffect(() => {
-    const key = getStorageKey();
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      try {
-        setNotifications(JSON.parse(stored));
-      } catch {
-        setNotifications([]);
-      }
-    } else {
-      const initial: AppNotification[] = [
-        {
-          id: 'welcome',
-          title: 'Welcome to PlayDravo',
-          description: 'Browse 260+ HTML5 games. Log in to save favorites and track achievements.',
-          type: 'system',
-          timestamp: new Date().toISOString(),
-          read: false
-        }
-      ];
-      setNotifications(initial);
-      localStorage.setItem(key, JSON.stringify(initial));
-    }
-  }, [userId, getStorageKey]);
-
-  const persist = useCallback((updated: AppNotification[]) => {
-    setNotifications(updated);
-    localStorage.setItem(getStorageKey(), JSON.stringify(updated));
-  }, [getStorageKey]);
-
-  const addNotification = useCallback((
-    notif: Omit<AppNotification, 'id' | 'timestamp' | 'read'>,
-    options?: { toast?: boolean }
-  ) => {
-    const newNotif: AppNotification = {
-      ...notif,
-      id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-      timestamp: new Date().toISOString(),
-      read: false
-    };
-
-    setNotifications((prev) => {
-      const updated = [newNotif, ...prev].slice(0, 50);
-      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
-      return updated;
-    });
-
-    const showToast = options?.toast !== false;
-    if (!showToast || isToastGameMode()) return;
-    if (notif.type === 'game') return;
-
-    if (notif.type === 'achievement') {
-      appToast.success(newNotif.title, { description: newNotif.description });
-    } else {
-      appToast.message(newNotif.title, { description: newNotif.description });
-    }
-  }, [getStorageKey]);
+  const addNotification = useCallback(() => {
+    // All app-generated notifications are intentionally disabled.
+  }, []);
 
   const markAsRead = useCallback((id: string) => {
-    setNotifications((prev) => {
-      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
-      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
-      return updated;
-    });
-  }, [getStorageKey]);
+    if (id === GUEST_NOTIFICATION.id) setGuestNoticeRead(true);
+  }, []);
 
   const markAllAsRead = useCallback(() => {
-    setNotifications((prev) => {
-      const updated = prev.map(n => ({ ...n, read: true }));
-      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
-      return updated;
-    });
-  }, [getStorageKey]);
+    setGuestNoticeRead(true);
+  }, []);
 
   const clearNotification = useCallback((id: string) => {
-    setNotifications((prev) => {
-      const updated = prev.filter(n => n.id !== id);
-      localStorage.setItem(getStorageKey(), JSON.stringify(updated));
-      return updated;
-    });
-  }, [getStorageKey]);
+    if (id === GUEST_NOTIFICATION.id) setGuestNoticeRead(true);
+  }, []);
 
   const clearAll = useCallback(() => {
-    persist([]);
-  }, [persist]);
+    setGuestNoticeRead(true);
+  }, []);
 
-  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
   const value = useMemo(() => ({
     notifications,
@@ -133,7 +79,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     markAsRead,
     markAllAsRead,
     clearNotification,
-    clearAll
+    clearAll,
   }), [notifications, unreadCount, addNotification, markAsRead, markAllAsRead, clearNotification, clearAll]);
 
   return (
