@@ -1,10 +1,21 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || '',
-  httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
-});
+let ai: GoogleGenAI | null = null;
+
+function getGeminiClient(): GoogleGenAI {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing GEMINI_API_KEY environment variable.');
+  }
+
+  ai ??= new GoogleGenAI({
+    apiKey,
+    httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+  });
+
+  return ai;
+}
 
 const resultCache = new Map<string, { result: any; timestamp: number }>();
 const CACHE_TTL = 1000 * 60 * 60;
@@ -41,7 +52,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json(cached.result);
     }
 
-    const response = await ai.models.generateContent({
+    const response = await getGeminiClient().models.generateContent({
       model: model || 'gemini-3-flash-preview',
       contents,
       config

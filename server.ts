@@ -14,14 +14,25 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || '',
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    }
+let ai: GoogleGenAI | null = null;
+
+function getGeminiClient(): GoogleGenAI {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing GEMINI_API_KEY environment variable.');
   }
-});
+
+  ai ??= new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      }
+    }
+  });
+
+  return ai;
+}
 
 // Simple in-memory cache
 const resultCache = new Map<string, { result: any, timestamp: number }>();
@@ -134,8 +145,7 @@ app.post("/api/gemini/generate", async (req, res) => {
   const requestPromise = (async () => {
     const { model, contents, config } = req.body;
     
-    // Use ai.models.generateContent directly
-    const response = await ai.models.generateContent({
+    const response = await getGeminiClient().models.generateContent({
       model: model || "gemini-3-flash-preview",
       contents: contents,
       config: config
@@ -163,7 +173,7 @@ app.post("/api/gemini/chat", async (req, res) => {
   try {
     const { messages, systemInstruction } = req.body;
     
-    const response = await ai.models.generateContent({
+    const response = await getGeminiClient().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: messages.map((m: any) => ({
         role: m.role === 'model' ? 'model' : 'user',

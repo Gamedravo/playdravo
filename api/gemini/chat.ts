@@ -1,10 +1,21 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || '',
-  httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
-});
+let ai: GoogleGenAI | null = null;
+
+function getGeminiClient(): GoogleGenAI {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing GEMINI_API_KEY environment variable.');
+  }
+
+  ai ??= new GoogleGenAI({
+    apiKey,
+    httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+  });
+
+  return ai;
+}
 
 function handleGeminiError(error: any, res: VercelResponse) {
   console.error('Gemini Error:', error);
@@ -32,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { messages, systemInstruction } = req.body || {};
 
-    const response = await ai.models.generateContent({
+    const response = await getGeminiClient().models.generateContent({
       model: 'gemini-3.1-pro-preview',
       contents: messages.map((m: any) => ({
         role: m.role === 'model' ? 'model' : 'user',
