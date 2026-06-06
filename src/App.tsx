@@ -122,6 +122,7 @@ import { markRouteVisited } from './lib/routeVisitCache';
 import { isAdminEmail } from './lib/brandContact';
 import { devLog } from './lib/devLog';
 import { withSafetyMetadata } from './lib/adsInjection';
+import { parseFirebaseGame } from './utils/gameUtils';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
