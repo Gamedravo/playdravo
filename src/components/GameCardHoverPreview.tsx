@@ -18,35 +18,81 @@ interface GameCardHoverPreviewProps {
   onPreviewMouseLeave: () => void;
 }
 
-const PREVIEW_WIDTH = 320;
-const PREVIEW_HEIGHT = 230;
-const GAP = 14;
+const PREVIEW_WIDTH = 280;
+const PREVIEW_HEIGHT = 190;
+const GAP = 12;
 const EDGE_PADDING = 12;
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
 
 function getPreviewPosition(anchorRect: DOMRect | null) {
   if (!anchorRect || typeof window === 'undefined') {
-    return { left: EDGE_PADDING, top: EDGE_PADDING };
+    return { left: EDGE_PADDING, top: EDGE_PADDING, placement: 'right' as const };
   }
 
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const hasRoomRight = anchorRect.right + GAP + PREVIEW_WIDTH <= viewportWidth - EDGE_PADDING;
-  const left = hasRoomRight
-    ? anchorRect.right + GAP
-    : Math.max(EDGE_PADDING, anchorRect.left - GAP - PREVIEW_WIDTH);
-  const desiredTop = anchorRect.top + anchorRect.height / 2 - PREVIEW_HEIGHT / 2;
-  const top = Math.min(
-    Math.max(EDGE_PADDING, desiredTop),
-    Math.max(EDGE_PADDING, viewportHeight - PREVIEW_HEIGHT - EDGE_PADDING),
-  );
+  const space = {
+    right: viewportWidth - EDGE_PADDING - anchorRect.right - GAP,
+    left: anchorRect.left - EDGE_PADDING - GAP,
+    bottom: viewportHeight - EDGE_PADDING - anchorRect.bottom - GAP,
+    top: anchorRect.top - EDGE_PADDING - GAP,
+  };
 
-  return { left, top };
+  const placement =
+    space.right >= PREVIEW_WIDTH
+      ? 'right'
+      : space.left >= PREVIEW_WIDTH
+      ? 'left'
+      : space.bottom >= PREVIEW_HEIGHT
+      ? 'bottom'
+      : space.top >= PREVIEW_HEIGHT
+      ? 'top'
+      : (Object.entries(space).sort((a, b) => b[1] - a[1])[0][0] as 'right' | 'left' | 'bottom' | 'top');
+
+  const centeredTop = anchorRect.top + anchorRect.height / 2 - PREVIEW_HEIGHT / 2;
+  const centeredLeft = anchorRect.left + anchorRect.width / 2 - PREVIEW_WIDTH / 2;
+  const maxLeft = viewportWidth - PREVIEW_WIDTH - EDGE_PADDING;
+  const maxTop = viewportHeight - PREVIEW_HEIGHT - EDGE_PADDING;
+
+  if (placement === 'right') {
+    return {
+      left: clamp(anchorRect.right + GAP, EDGE_PADDING, maxLeft),
+      top: clamp(centeredTop, EDGE_PADDING, maxTop),
+      placement,
+    };
+  }
+
+  if (placement === 'left') {
+    return {
+      left: clamp(anchorRect.left - GAP - PREVIEW_WIDTH, EDGE_PADDING, maxLeft),
+      top: clamp(centeredTop, EDGE_PADDING, maxTop),
+      placement,
+    };
+  }
+
+  if (placement === 'bottom') {
+    return {
+      left: clamp(centeredLeft, EDGE_PADDING, maxLeft),
+      top: clamp(anchorRect.bottom + GAP, EDGE_PADDING, maxTop),
+      placement,
+    };
+  }
+
+  return {
+    left: clamp(centeredLeft, EDGE_PADDING, maxLeft),
+    top: clamp(anchorRect.top - GAP - PREVIEW_HEIGHT, EDGE_PADDING, maxTop),
+    placement,
+  };
 }
 
 export function GameCardHoverPreview({
   game,
   gameId,
   active,
+  isDarkMode,
   anchorRect,
   onPlay,
   onPreviewMouseEnter,
@@ -166,11 +212,17 @@ export function GameCardHoverPreview({
 
   return createPortal(
     <motion.div
-      initial={{ opacity: 0, scale: 0.97, y: 4 }}
+      initial={{ opacity: 0, scale: 0.98, y: position.placement === 'top' ? -4 : 4 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98, y: 4 }}
+      exit={{ opacity: 0, scale: 0.98, y: position.placement === 'top' ? -4 : 4 }}
       transition={{ duration: 0.14, ease: [0.23, 1, 0.32, 1] }}
-      className="pointer-events-auto fixed z-[2000] overflow-hidden rounded-[1.35rem] border border-white/10 bg-[#080811] shadow-[0_22px_70px_rgba(0,0,0,0.55)]"
+      onMouseEnter={onPreviewMouseEnter}
+      onMouseLeave={onPreviewMouseLeave}
+      className={`pointer-events-auto fixed z-[2000] overflow-hidden rounded-[1.15rem] border backdrop-blur-xl ${
+        isDarkMode
+          ? 'border-white/10 bg-[#080811]/95 shadow-[0_18px_48px_rgba(0,0,0,0.5)]'
+          : 'border-black/10 bg-white/95 shadow-[0_18px_48px_rgba(15,23,42,0.2)]'
+      }`}
       style={{ left: position.left, top: position.top, width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT }}
     >
       <div className="absolute inset-0">
@@ -178,13 +230,13 @@ export function GameCardHoverPreview({
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/5" />
       </div>
 
-      <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-md">
+      <div className="absolute left-2.5 top-2.5 flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-white backdrop-blur-md">
         <Play className="h-2.5 w-2.5 fill-current text-accent" />
         Preview
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 space-y-2.5 p-4">
-        <div className="flex items-center gap-2 text-[10px] font-bold">
+      <div className="absolute inset-x-0 bottom-0 space-y-2 p-3">
+        <div className="flex items-center gap-2 text-[9px] font-bold">
           <span className="flex items-center gap-1 text-yellow-300">
             <Star className="h-3 w-3 fill-yellow-300" />
             {rating.toFixed(1)}
@@ -197,16 +249,16 @@ export function GameCardHoverPreview({
         </div>
 
         <div>
-          <h4 className="line-clamp-1 text-base font-black text-white">{game.title}</h4>
-          {snippet && <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-white/58">{snippet}</p>}
+          <h4 className="line-clamp-1 text-sm font-black text-white">{game.title}</h4>
+          {snippet && <p className="mt-0.5 line-clamp-1 text-[10px] leading-relaxed text-white/58">{snippet}</p>}
         </div>
 
         <button
           type="button"
           onClick={onPlay}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-[10px] font-black uppercase tracking-wider text-bg-dark shadow-lg shadow-accent/20 transition-transform active:scale-95"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-3 py-1.5 text-[9px] font-black uppercase tracking-wider text-bg-dark shadow-lg shadow-accent/20 transition-transform hover:scale-[1.03] active:scale-95"
         >
-          <Play className="h-3.5 w-3.5 fill-current" />
+          <Play className="h-3 w-3 fill-current" />
           Play now
         </button>
       </div>

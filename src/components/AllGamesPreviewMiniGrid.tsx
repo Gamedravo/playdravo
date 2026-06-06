@@ -156,7 +156,7 @@ export function AllGamesPreviewMiniGrid({ games, isDarkMode, handleGameClick, t 
           <h4 className="text-sm font-black tracking-tight sm:text-base">Explore All Games</h4>
         </div>
         <span className={`hidden text-[10px] font-semibold sm:block ${isDarkMode ? 'text-white/35' : 'text-black/35'}`}>
-          Hover a game to preview
+          Hover thumbnails to update the preview
         </span>
       </div>
 
@@ -205,6 +205,9 @@ export function AllGamesPreviewMiniGrid({ games, isDarkMode, handleGameClick, t 
             >
               <PreviewMedia game={activeGame} active={previewInView} isDesktop={isDesktop} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/10" />
+              <div className="absolute left-2.5 top-2.5 rounded-full bg-black/50 px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-white/85 backdrop-blur-md">
+                Featured preview
+              </div>
               <div className="absolute inset-x-0 bottom-0 space-y-2 p-3">
                 <div className="flex items-center gap-1 text-[10px] font-bold text-yellow-300">
                   <Star className="h-3 w-3 fill-yellow-300" />

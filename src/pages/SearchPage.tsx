@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, ArrowLeft, Brain, Zap, Sparkles, Flame, Users, Star, History, TrendingUp, Trash2 } from 'lucide-react';
+import {
+  Search,
+  ArrowLeft,
+  Brain,
+  Zap,
+  Sparkles,
+  Flame,
+  Users,
+  Star,
+  History,
+  TrendingUp,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Game } from '../types';
 import { GameCard } from '../components/GameCard';
@@ -17,36 +30,50 @@ interface SearchPageProps {
   setSearchQuery: (query: string) => void;
 }
 
-export const SearchPage: React.FC<SearchPageProps> = React.memo(({ 
-  isDarkMode, 
-  t, 
+const trendingSearches = ['2048', 'Action', 'Arcade', 'Puzzle', 'Sports', 'Strategy'];
+
+const suggestions = [
+  { label: 'Deep & immersive', icon: Brain, tone: 'from-purple-500/25 to-fuchsia-500/10 text-purple-200' },
+  { label: 'Train your brain', icon: Sparkles, tone: 'from-blue-500/25 to-cyan-500/10 text-blue-200' },
+  { label: 'Adrenaline rush', icon: Zap, tone: 'from-orange-500/25 to-red-500/10 text-orange-200' },
+];
+
+const featuredCategories = [
+  { label: 'New', icon: Sparkles, tone: 'from-emerald-500/25 to-teal-500/10' },
+  { label: 'Trending', icon: Flame, tone: 'from-red-500/25 to-orange-500/10' },
+  { label: 'Multiplayer', icon: Users, tone: 'from-blue-500/25 to-indigo-500/10' },
+  { label: 'Recommended', icon: Star, tone: 'from-yellow-500/25 to-amber-500/10' },
+];
+
+export const SearchPage: React.FC<SearchPageProps> = React.memo(({
+  isDarkMode,
+  t,
   games,
-  toggleFavorite, 
+  toggleFavorite,
   userProfile,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
 }) => {
   const [results, setResults] = useState<Game[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // Load recent searches from localStorage on mount
   useEffect(() => {
     if (searchInputRef.current && window.innerWidth >= 768) {
       searchInputRef.current.focus({ preventScroll: true });
     }
+
     const saved = localStorage.getItem('topg_recent_searches');
-    if (saved) {
-      try {
-        setRecentSearches(JSON.parse(saved));
-      } catch (e) {
-        console.error(e);
-      }
+    if (!saved) return;
+
+    try {
+      setRecentSearches(JSON.parse(saved));
+    } catch (error) {
+      console.error(error);
     }
   }, []);
 
-  // Update recent searches securely when search query changes
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setResults([]);
@@ -54,23 +81,21 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     }
 
     const query = searchQuery.toLowerCase();
-    const filtered = games.filter(game => 
-      game.title.toLowerCase().includes(query) || 
+    const filtered = games.filter((game) =>
+      game.title.toLowerCase().includes(query) ||
       game.category.toLowerCase().includes(query) ||
-      (game.tags && game.tags.some(tag => tag.toLowerCase().includes(query)))
+      Boolean(game.tags?.some((tag) => tag.toLowerCase().includes(query))),
     );
+
     setResults(filtered);
 
-    // Save search query after 1.5 seconds of typing (simple debounce saving)
     const saveTimer = setTimeout(() => {
       const trimmed = searchQuery.trim();
       if (trimmed.length > 1 && trimmed.length < 30) {
-        // Track the search with Analytics
         Analytics.trackSearch(trimmed, filtered.length);
-        
-        setRecentSearches(prev => {
-          const filteredPrev = prev.filter(s => s.toLowerCase() !== trimmed.toLowerCase());
-          const next = [trimmed, ...filteredPrev].slice(0, 5);
+        setRecentSearches((prev) => {
+          const withoutDuplicate = prev.filter((term) => term.toLowerCase() !== trimmed.toLowerCase());
+          const next = [trimmed, ...withoutDuplicate].slice(0, 5);
           localStorage.setItem('topg_recent_searches', JSON.stringify(next));
           return next;
         });
@@ -78,224 +103,251 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     }, 1500);
 
     return () => clearTimeout(saveTimer);
-  }, [searchQuery]);
+  }, [searchQuery, games]);
 
-  const clearRecentSearches = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const clearRecentSearches = (event: React.MouseEvent) => {
+    event.stopPropagation();
     setRecentSearches([]);
     localStorage.removeItem('topg_recent_searches');
   };
 
-  // Using a mix of static highly sought terms and dynamic ones
-  const trendingSearches = [
-    '2048',
-    'Action',
-    'Arcade',
-    'Puzzle',
-    'Sports',
-    'Strategy'
-  ];
+  const popularGames = games.slice().sort((a, b) => (b.plays || 0) - (a.plays || 0)).slice(0, 4);
+  const heroGame = popularGames[0] || games[0];
 
-  const suggestions = [
-    { label: 'Deep & immersive', icon: <Brain className="w-4 h-4" />, color: 'bg-purple-500/20 text-purple-500' },
-    { label: 'Train your brain', icon: <Sparkles className="w-4 h-4" />, color: 'bg-blue-500/20 text-blue-500' },
-    { label: 'Adrenaline rush', icon: <Zap className="w-4 h-4" />, color: 'bg-orange-500/20 text-orange-500' },
-  ];
-
-  const featuredCategories = [
-    { label: 'New', icon: <Sparkles className="w-6 h-6" />, color: 'bg-emerald-500/10 text-emerald-500' },
-    { label: 'Trending', icon: <Flame className="w-6 h-6" />, color: 'bg-red-500/10 text-red-500' },
-    { label: 'Multiplayer', icon: <Users className="w-6 h-6" />, color: 'bg-blue-500/10 text-blue-500' },
-    { label: 'Recommended', icon: <Star className="w-6 h-6" />, color: 'bg-yellow-500/10 text-yellow-500' },
-  ];
+  const panelClass = isDarkMode
+    ? 'border-white/10 bg-white/[0.055] shadow-[0_24px_80px_rgba(0,0,0,0.28)]'
+    : 'border-black/10 bg-white/75 shadow-[0_24px_80px_rgba(89,74,120,0.14)]';
 
   return (
-    <div className="w-full">
-      {/* Sticky Search Bar */}
-      <div className={`sticky top-0 z-50 p-3 md:p-8 border-b transition-colors duration-300 ${isDarkMode ? 'border-white/5 bg-bg-dark/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'border-black/5 bg-white/80 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
-        <div className="flex items-center gap-3 md:gap-4 max-w-4xl mx-auto">
-          <button 
-            aria-label="Go back"
-            onClick={() => {
-              setSearchQuery('');
-              navigate('/');
-            }}
-            className={`p-2.5 md:p-3 rounded-full transition-all hover:scale-110 active:scale-90 ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white/70 hover:text-white' : 'bg-black/5 hover:bg-black/10 text-black/70 hover:text-black'}`}
-          >
-            <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
-          </button>
-          
-          <motion.div 
-            initial={{ scale: 0.98, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="flex-1 relative group"
-          >
-            {/* Animated Glow Backdrop */}
-            <div className={`absolute -inset-[1px] md:-inset-[2px] rounded-full blur-md transition-all duration-500 opacity-0 group-focus-within:opacity-100 ${isDarkMode ? 'bg-gradient-to-r from-accent/50 via-purple-500/50 to-accent/50' : 'bg-gradient-to-r from-accent/30 via-purple-400/30 to-accent/30'}`} />
-            
-            {/* Inner Container */}
-            <div className={`relative flex items-center h-12 md:h-14 rounded-full px-4 md:px-5 transition-all duration-300 border ${
-              isDarkMode 
-                ? 'bg-[#151525]/90 border-white/10 group-focus-within:border-accent/50 group-focus-within:bg-[#1a1a2e] shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)]' 
-                : 'bg-white/90 border-black/10 group-focus-within:border-accent/40 group-focus-within:bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]'
-            }`}>
-              <Search className={`w-4 h-4 md:w-5 md:h-5 transition-colors duration-300 ${isDarkMode ? 'text-white/40 group-focus-within:text-accent' : 'text-black/40 group-focus-within:text-accent'}`} />
-              
-              <input 
-                ref={searchInputRef}
-                aria-label="Search games"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('searchGamesPlaceholder') || "Search games..."}
-                className={`flex-1 bg-transparent border-none outline-none px-3 md:px-4 text-[14px] md:text-[15px] font-bold tracking-wide placeholder:font-bold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px] md:placeholder:text-[11px] ${isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/30'}`}
-              />
-              
-              <AnimatePresence>
-                {searchQuery && (
-                  <motion.button 
-                    aria-label="Clear search"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    onClick={() => setSearchQuery('')}
-                    className={`p-1.5 md:p-2 rounded-full transition-all hover:scale-110 active:scale-90 ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white/60 hover:text-white' : 'bg-black/5 hover:bg-black/10 text-black/60 hover:text-black'}`}
-                  >
-                    <span className="text-[10px] md:text-[11px] font-semibold tracking-wide px-1">{t('clear') || 'Clear'}</span>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
-      </div>
+    <div className={`relative min-h-full overflow-hidden ${isDarkMode ? 'bg-[#06060b]' : 'bg-[#f7f4ff]'}`}>
+      <div className="pointer-events-none absolute -top-28 left-1/2 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-[-10rem] top-32 h-72 w-72 rounded-full bg-blue-500/15 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-10 left-[-8rem] h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
 
-      {/* Content Area (Search Results) */}
-      <div className={`pb-20 ${searchQuery ? 'p-3 md:p-8' : 'px-4 md:px-8 pt-4 pb-20'}`}>
-        <div className="max-w-4xl mx-auto">
-          {/* Default View (No Search Query) */}
-          {!searchQuery && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8 py-4"
+      <div className="relative z-10 px-3 pb-16 pt-3 md:px-5 md:pt-5">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-4 flex items-center gap-3 md:mb-6">
+            <button
+              aria-label="Go back"
+              onClick={() => {
+                setSearchQuery('');
+                navigate('/');
+              }}
+              className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl border backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 ${panelClass}`}
             >
-              {/* Recent & Trending Searches Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pb-2">
-                {/* Recent Searches panel */}
-                <div className={`p-5 rounded-3xl border ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.01] border-black/5'}`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold tracking-wider uppercase opacity-40 flex items-center gap-2">
-                      <History className="w-3.5 h-3.5" />
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="group relative flex-1"
+            >
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-accent/35 via-fuchsia-500/20 to-blue-500/25 opacity-70 blur-xl transition-opacity duration-300 group-focus-within:opacity-100" />
+              <div
+                className={`relative flex h-16 items-center rounded-full border px-5 backdrop-blur-2xl transition-all duration-200 md:h-[72px] md:px-7 ${
+                  isDarkMode
+                    ? 'border-white/[0.12] bg-white/[0.075] group-focus-within:border-accent/55 group-focus-within:bg-white/[0.095]'
+                    : 'border-white/70 bg-white/70 group-focus-within:border-accent/45 group-focus-within:bg-white/90'
+                }`}
+              >
+                <Search className="h-5 w-5 shrink-0 text-accent md:h-6 md:w-6" />
+                <input
+                  ref={searchInputRef}
+                  aria-label="Search games"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={t('searchGamesPlaceholder') || 'Search games, genres, moods...'}
+                  className={`h-full flex-1 border-none bg-transparent px-4 text-base font-black tracking-tight outline-none placeholder:text-sm placeholder:font-bold md:text-xl ${
+                    isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/35'
+                  }`}
+                />
+                <AnimatePresence>
+                  {searchQuery && (
+                    <motion.button
+                      aria-label="Clear search"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.12 }}
+                      onClick={() => setSearchQuery('')}
+                      className={`grid h-9 w-9 place-items-center rounded-full transition-all hover:scale-105 active:scale-95 ${
+                        isDarkMode ? 'bg-white/10 text-white/70 hover:text-white' : 'bg-black/5 text-black/60 hover:text-black'
+                      }`}
+                    >
+                      <X className="h-4 w-4" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
+
+          {!searchQuery && (
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]"
+            >
+              <div className={`relative overflow-hidden rounded-[2rem] border p-5 backdrop-blur-2xl md:p-6 ${panelClass}`}>
+                <div className="mb-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Modern discovery
+                </div>
+                <h1 className="max-w-2xl text-3xl font-black leading-none tracking-tight md:text-5xl">
+                  Find your next game without digging through noise.
+                </h1>
+                <p className={`mt-4 max-w-xl text-sm leading-relaxed md:text-base ${isDarkMode ? 'text-white/55' : 'text-black/55'}`}>
+                  Search by title, genre, mood, or favorite play style. Quick suggestions and trending picks keep discovery fast.
+                </p>
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {suggestions.map((suggestion) => {
+                    const Icon = suggestion.icon;
+                    return (
+                      <button
+                        key={suggestion.label}
+                        onClick={() => setSearchQuery(suggestion.label)}
+                        className={`inline-flex items-center gap-2 rounded-full border border-white/10 bg-gradient-to-r px-4 py-2.5 text-sm font-bold backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 ${suggestion.tone}`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {suggestion.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {heroGame && (
+                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/games/${heroGame.id}`)}
+                      className="group relative min-h-[210px] overflow-hidden rounded-[1.5rem] border border-white/10 text-left shadow-2xl shadow-black/20"
+                    >
+                      <GameThumbnail
+                        src={heroGame.thumbnail}
+                        alt={heroGame.title}
+                        category={heroGame.category}
+                        title={heroGame.title}
+                        gameId={heroGame.id}
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-4">
+                        <p className="mb-2 inline-flex rounded-full bg-accent px-3 py-1 text-[9px] font-black uppercase tracking-widest text-bg-dark">
+                          Featured search pick
+                        </p>
+                        <h2 className="line-clamp-1 text-2xl font-black text-white">{heroGame.title}</h2>
+                        <p className="mt-1 text-xs font-semibold text-white/60">{heroGame.category}</p>
+                      </div>
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {featuredCategories.map((category) => {
+                        const Icon = category.icon;
+                        return (
+                          <button
+                            key={category.label}
+                            type="button"
+                            onClick={() => setSearchQuery(category.label)}
+                            className={`group rounded-[1.4rem] border p-4 text-left backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-accent/35 active:scale-95 ${panelClass}`}
+                          >
+                            <div className={`mb-4 grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br ${category.tone} text-white`}>
+                              <Icon className="h-5 w-5" />
+                            </div>
+                            <span className="text-sm font-black tracking-tight">{category.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <div className={`rounded-[2rem] border p-5 backdrop-blur-2xl ${panelClass}`}>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest opacity-70">
+                      <History className="h-4 w-4 text-accent" />
                       {t('recentSearches') || 'Recent Searches'}
                     </h3>
                     {recentSearches.length > 0 && (
-                      <button 
+                      <button
                         aria-label="Clear recent searches"
                         onClick={clearRecentSearches}
-                        className="text-[10px] font-bold tracking-wider uppercase text-red-500 hover:text-red-400 flex items-center gap-1 transition-colors"
+                        className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-red-400 transition-colors hover:text-red-300"
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="h-3 w-3" />
                         {t('clear') || 'Clear'}
                       </button>
                     )}
                   </div>
+
                   {recentSearches.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
-                      {recentSearches.map((term, i) => (
+                      {recentSearches.map((term, index) => (
                         <button
-                          key={`recent-term-${i}`}
+                          key={`recent-term-${index}`}
                           onClick={() => setSearchQuery(term)}
-                          className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 ${
-                            isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white/80' : 'bg-black/5 hover:bg-black/10 text-black/80'
+                          className={`rounded-full px-3 py-2 text-xs font-bold transition-all hover:scale-[1.03] active:scale-95 ${
+                            isDarkMode ? 'bg-white/[0.08] text-white/80 hover:bg-white/[0.12]' : 'bg-black/5 text-black/70 hover:bg-black/10'
                           }`}
                         >
-                          <Search className="w-3 h-3 opacity-60" />
                           {term}
                         </button>
                       ))}
                     </div>
                   ) : (
-                    <p className={`text-xs ${isDarkMode ? 'text-white/30' : 'text-black/30'} italic`}>
+                    <p className={`text-sm ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
                       Your recent searches will appear here.
                     </p>
                   )}
                 </div>
 
-                {/* Trending Searches panel */}
-                <div className={`p-5 rounded-3xl border ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.01] border-black/5'}`}>
-                  <h3 className="text-sm font-bold tracking-wider uppercase opacity-40 flex items-center gap-2 mb-4">
-                    <TrendingUp className="w-3.5 h-3.5" />
+                <div className={`rounded-[2rem] border p-5 backdrop-blur-2xl ${panelClass}`}>
+                  <h3 className="mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-widest opacity-70">
+                    <TrendingUp className="h-4 w-4 text-accent" />
                     {t('trendingSearches') || 'Trending Searches'}
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {trendingSearches.map((term, i) => (
+                    {trendingSearches.map((term) => (
                       <button
-                        key={`trending-term-${i}`}
+                        key={term}
                         onClick={() => setSearchQuery(term)}
-                        className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 ${
-                          isDarkMode ? 'bg-accent/10 hover:bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'
-                        }`}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-accent/12 px-3.5 py-2 text-xs font-black text-accent transition-all hover:scale-[1.03] hover:bg-accent/18 active:scale-95"
                       >
-                        <Flame className="w-3 h-3 fill-current" />
+                        <Flame className="h-3 w-3 fill-current" />
                         {term}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
-
-              {/* Suggestions (Deep & immersive) */}
-              <div className="flex flex-wrap gap-3">
-                {suggestions.map((suggestion, idx) => (
-                  <button
-                    key={`${suggestion.label}-${idx}`}
-                    onClick={() => setSearchQuery(suggestion.label)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-full text-[13px] md:text-sm font-bold transition-all hover:scale-105 active:scale-95 ${suggestion.color}`}
-                  >
-                    {suggestion.icon}
-                    {suggestion.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Featured Categories */}
-              <div>
-                <h2 className="text-lg md:text-2xl font-bold tracking-tight mb-4 md:mb-6">{t('featured') || 'Featured'}</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                  {featuredCategories.map((cat, idx) => (
-                    <motion.button
-                      key={`${cat.label}-${idx}`}
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setSearchQuery(cat.label)}
-                      className={`flex flex-col items-center justify-center gap-3 md:gap-4 p-4 md:p-6 rounded-3xl border transition-all ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-black/5 border-black/10 hover:bg-black/10'}`}
-                    >
-                      <div className={`p-3 md:p-4 rounded-2xl ${cat.color}`}>
-                        {cat.icon}
-                      </div>
-                      <span className="text-sm md:text-base font-bold tracking-wide">{cat.label}</span>
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
             </motion.div>
           )}
 
-          {/* Search Results */}
           {searchQuery && (
-            <div className="py-2">
-              <h2 className="text-xl font-bold tracking-tight mb-6">
-                {t('resultsFor') || 'Results for'} <span className="text-accent">"{searchQuery}"</span>
-              </h2>
-              
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-1">
+              <div className="mb-4 flex items-end justify-between gap-4">
+                <div>
+                  <p className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent">
+                    <Search className="h-3.5 w-3.5" />
+                    {results.length} matches
+                  </p>
+                  <h2 className="text-2xl font-black tracking-tight md:text-3xl">
+                    {t('resultsFor') || 'Results for'} <span className="text-accent">“{searchQuery}”</span>
+                  </h2>
+                </div>
+              </div>
+
               {results.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {results.map((game, idx) => (
-                    <GameCard 
-                      key={`search-game-${game.id}-${idx}`}
+                <div className="game-card-grid">
+                  {results.map((game, index) => (
+                    <GameCard
+                      key={`search-game-${game.id}-${index}`}
                       game={game}
                       isDarkMode={isDarkMode}
                       t={t}
@@ -307,62 +359,51 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-10 md:py-16 space-y-12">
-                  <div className="space-y-4">
-                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 shadow-sm border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
-                      <Search className={`w-10 h-10 ${isDarkMode ? 'text-white/30' : 'text-black/30'}`} />
-                    </div>
-                    <h3 className="text-2xl font-bold tracking-tight">{t('noGamesFound') || 'No games found'}</h3>
-                    <p className={`text-sm ${isDarkMode ? 'text-white/40' : 'text-black/40'} max-w-sm mx-auto`}>{t('noGamesFoundDesc') || 'Try searching for a different category or keyword, or explore our top-rated recommendations below.'}</p>
+                <div className={`rounded-[2rem] border p-6 text-center backdrop-blur-2xl md:p-8 ${panelClass}`}>
+                  <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-3xl bg-accent/12 text-accent">
+                    <Search className="h-8 w-8" />
+                  </div>
+                  <h3 className="text-2xl font-black tracking-tight">{t('noGamesFound') || 'No games found'}</h3>
+                  <p className={`mx-auto mt-2 max-w-md text-sm leading-relaxed ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
+                    {t('noGamesFoundDesc') || 'Try another keyword or jump into one of these popular games.'}
+                  </p>
+
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {trendingSearches.map((term) => (
+                      <button
+                        key={`empty-trending-${term}`}
+                        onClick={() => setSearchQuery(term)}
+                        className={`rounded-full px-4 py-2 text-xs font-bold transition-all hover:scale-[1.03] active:scale-95 ${
+                          isDarkMode ? 'bg-white/[0.08] text-white/80 hover:bg-white/[0.12]' : 'bg-black/5 text-black/70 hover:bg-black/10'
+                        }`}
+                      >
+                        {term}
+                      </button>
+                    ))}
                   </div>
 
-                  <div className={`max-w-xl mx-auto border-t border-dashed p-6 pt-10 rounded-3xl ${isDarkMode ? 'border-white/10 bg-white/[0.01]' : 'border-black/10 bg-black/[0.01]'}`}>
-                    <h4 className="text-xs font-bold uppercase tracking-widest text-accent mb-6 flex items-center justify-center gap-2">
-                      <TrendingUp className="w-4 h-4" />
-                      {t('trendingSearches') || 'Try Trending Searches'}
-                    </h4>
-                    <div className="flex flex-wrap justify-center gap-2 mb-10">
-                      {trendingSearches.map((term, i) => (
-                        <button
-                          key={`empty-trending-term-${i}`}
-                          onClick={() => setSearchQuery(term)}
-                          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 ${
-                            isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white/80' : 'bg-black/5 hover:bg-black/10 text-black/80'
-                          }`}
-                        >
-                          <Search className="w-3 h-3 opacity-60" />
-                          {term}
-                        </button>
-                      ))}
-                    </div>
-
-                    <h4 className="text-xs font-bold uppercase tracking-widest text-accent mb-6 flex items-center justify-center gap-2">
-                      <Sparkles className="w-4 h-4" />
-                      {t('popularGames') || 'We recommend playing'}
-                    </h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      {games.slice().sort((a, b) => b.plays - a.plays).slice(0, 4).map((game) => (
-                        <div 
-                          key={`rec-empty-${game.id}`}
-                          onClick={() => navigate(`/games/${game.id}`)}
-                          className={`p-3 rounded-2xl border flex items-center gap-3 cursor-pointer hover:border-accent/40 hover:-translate-y-0.5 active:scale-98 transition-all text-left ${
-                            isDarkMode ? 'bg-[#151525]/80 border-white/5' : 'bg-white border-black/5'
-                          }`}
-                        >
-                          <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-white/10">
-                            <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h5 className="text-sm font-bold truncate pr-1">{game.title}</h5>
-                            <span className="text-[10px] uppercase font-semibold text-accent">{game.category}</span>
-                          </div>
+                  <div className="mx-auto mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
+                    {popularGames.map((game) => (
+                      <button
+                        key={`rec-empty-${game.id}`}
+                        onClick={() => navigate(`/games/${game.id}`)}
+                        className={`flex items-center gap-3 rounded-2xl border p-3 text-left transition-all hover:-translate-y-0.5 hover:border-accent/40 active:scale-95 ${
+                          isDarkMode ? 'border-white/10 bg-white/[0.04]' : 'border-black/10 bg-white/75'
+                        }`}
+                      >
+                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-white/10">
+                          <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} title={game.title} gameId={game.id} />
                         </div>
-                      ))}
-                    </div>
+                        <div className="min-w-0">
+                          <h5 className="truncate text-sm font-black">{game.title}</h5>
+                          <span className="text-[10px] font-black uppercase tracking-wide text-accent">{game.category}</span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

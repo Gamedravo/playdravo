@@ -58,6 +58,7 @@ export const GameCard = memo(function GameCard({
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const cardRef = useRef<HTMLAnchorElement>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -67,6 +68,7 @@ export const GameCard = memo(function GameCard({
     return () => {
       mq.removeEventListener('change', update);
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
       releaseHoverPreview(game.id);
     };
   }, [game.id]);
@@ -93,13 +95,24 @@ export const GameCard = memo(function GameCard({
 
   const stopPreview = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     setShowPreview(false);
     setAnchorRect(null);
     releaseHoverPreview(game.id);
   };
 
+  const schedulePreviewClose = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    closeTimeoutRef.current = setTimeout(stopPreview, 120);
+  };
+
+  const keepPreviewOpen = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+  };
+
   const handleMouseEnter = () => {
     if (!hoverSupported) return;
+    keepPreviewOpen();
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setAnchorRect(cardRef.current?.getBoundingClientRect() ?? null);
     hoverTimeoutRef.current = setTimeout(() => {
@@ -110,7 +123,7 @@ export const GameCard = memo(function GameCard({
   };
 
   const handleMouseLeave = () => {
-    stopPreview();
+    schedulePreviewClose();
   };
 
   return (
@@ -130,7 +143,7 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[border-color,box-shadow] duration-150 ease-out ${
+        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-150 ease-out group-hover:scale-[1.03] ${
           isDarkMode
             ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_8px_24px_rgba(157,92,255,0.25)] group-hover:border-accent/50'
             : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.15)] group-hover:border-accent/40'
@@ -160,6 +173,8 @@ export const GameCard = memo(function GameCard({
                   stopPreview();
                   handleGameClick(game);
                 }}
+                onPreviewMouseEnter={keepPreviewOpen}
+                onPreviewMouseLeave={schedulePreviewClose}
               />
             )}
           </AnimatePresence>
