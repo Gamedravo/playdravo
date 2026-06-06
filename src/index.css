@@ -142,6 +142,22 @@
     animation: shimmer 1.4s ease-in-out infinite;
   }
 
+  .homepage-stack {
+    @apply flex flex-col gap-6 px-1 md:px-2 pb-6;
+  }
+
+  .homepage-section {
+    @apply relative w-full py-0 mb-0;
+  }
+
+  .homepage-load-more {
+    @apply flex justify-center pt-6;
+  }
+
+  .section-heading-stack {
+    @apply flex min-w-0 flex-col gap-1;
+  }
+
   .section-eyebrow {
     @apply flex items-center gap-1.5 text-accent text-[10px] font-semibold uppercase tracking-wide;
   }
@@ -152,15 +168,19 @@
 
   /* —— Featured spotlight —— */
   .featured-spotlight {
-    @apply mb-5 px-1 md:px-2;
+    @apply relative mb-0 px-1 md:px-2;
   }
 
   .featured-spotlight-header {
     @apply flex items-end justify-between gap-3 mb-3 px-0.5;
   }
 
+  .featured-spotlight-header > div:first-child {
+    @apply flex flex-col gap-1;
+  }
+
   .featured-spotlight-eyebrow {
-    @apply text-[10px] font-semibold uppercase tracking-widest text-accent mb-1;
+    @apply text-[10px] font-semibold uppercase tracking-widest text-accent;
   }
 
   .featured-spotlight-title {
@@ -271,15 +291,15 @@
 
   /* —— Premium shelf headers —— */
   .shelf-header--premium {
-    @apply items-center mb-1.5 px-0.5;
+    @apply items-center px-0.5;
   }
 
   .shelf-header-copy {
-    @apply min-w-0;
+    @apply flex min-w-0 flex-col gap-1;
   }
 
   .shelf-header-subtitle {
-    @apply text-[10px] font-medium uppercase tracking-widest text-accent/80 mb-0.5;
+    @apply text-[10px] font-medium uppercase tracking-widest text-accent/80;
   }
 
   .shelf-header-title {
@@ -604,15 +624,15 @@
   /* —— Shimmer skeletons —— */
 
   .shelf-section {
-    @apply mb-1.5 relative;
+    @apply relative w-full py-0 mb-0;
   }
 
   .shelf-header {
-    @apply flex items-end justify-between mb-1;
+    @apply flex items-end justify-between gap-3 mb-3;
   }
 
   .shelf-scroll {
-    @apply flex overflow-x-auto gap-1.5 pb-1 pt-0.5 px-2 md:px-4 -mx-2 md:-mx-4 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing;
+    @apply flex overflow-x-auto gap-1.5 pb-0 pt-0.5 px-2 md:px-4 -mx-2 md:-mx-4 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
@@ -626,12 +646,17 @@
     @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] xl:w-[128px] 2xl:w-[136px] shrink-0 snap-start;
   }
 
+  .game-grid-header {
+    @apply flex-col items-start md:flex-row md:items-end;
+  }
+
   .game-card-grid {
     @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4;
   }
 }
 
 @keyframes shimmer {
+
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }

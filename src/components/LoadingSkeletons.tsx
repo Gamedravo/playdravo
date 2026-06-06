@@ -32,7 +32,7 @@ export const GameCardGridSkeleton = memo(function GameCardGridSkeleton({
   count = 12,
 }: SkeletonProps & { count?: number }) {
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 sm:gap-3">
+    <div className="game-card-grid">
       {Array.from({ length: count }, (_, i) => (
         <GameCardSkeleton key={`card-skeleton-${i}`} isDarkMode={isDarkMode} />
       ))}
@@ -45,10 +45,12 @@ export const ShelfSkeleton = memo(function ShelfSkeleton({
   cardCount = 8,
 }: SkeletonProps & { cardCount?: number }) {
   return (
-    <section className="shelf-section mb-4">
-      <div className="shelf-header mb-2 space-y-2">
-        <ShimmerBlock isDarkMode={isDarkMode} className="h-3 w-24 rounded-md" />
-        <ShimmerBlock isDarkMode={isDarkMode} className="h-6 w-40 rounded-lg" />
+    <section className="shelf-section">
+      <div className="shelf-header">
+        <div className="section-heading-stack">
+          <ShimmerBlock isDarkMode={isDarkMode} className="h-3 w-24 rounded-md" />
+          <ShimmerBlock isDarkMode={isDarkMode} className="h-6 w-40 rounded-lg" />
+        </div>
       </div>
       <div className="shelf-scroll">
         {Array.from({ length: cardCount }, (_, i) => (
@@ -65,11 +67,12 @@ export const HomePageSkeleton = memo(function HomePageSkeleton({
   isDarkMode = true,
 }: SkeletonProps) {
   return (
-    <div className="space-y-6 px-1 md:px-2 pb-3 animate-in fade-in duration-200">
+    <div className="homepage-stack animate-in fade-in duration-200">
       <ShimmerBlock
         isDarkMode={isDarkMode}
         className="h-[180px] md:h-[220px] rounded-2xl md:rounded-3xl w-full"
       />
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {Array.from({ length: 6 }, (_, i) => (
           <ShimmerBlock key={`chip-skeleton-${i}`} isDarkMode={isDarkMode} className="h-10 rounded-xl" />

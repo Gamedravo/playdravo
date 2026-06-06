@@ -247,7 +247,7 @@ export const HomePage = React.memo(function HomePage({
     return (
       <section className="shelf-section group/shelf">
         <div className="shelf-header">
-          <div className="space-y-0.5">
+          <div className="section-heading-stack">
             <div className="section-eyebrow">
               {Icon && <Icon className="w-3.5 h-3.5" />}
               <span>{eyebrow}</span>
@@ -256,6 +256,7 @@ export const HomePage = React.memo(function HomePage({
           </div>
           {shelfRef && (
             <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
+
               <button onClick={() => handleScroll(shelfRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
@@ -279,7 +280,7 @@ export const HomePage = React.memo(function HomePage({
   const favorites = userProfile?.favorites || [];
 
   return (
-    <div className="space-y-1 px-1 md:px-2 pb-3">
+    <div className="homepage-stack">
       <SEO
         title="Play Clean No-Ad Online Games Free – No Download"
         description="Play lightweight no-ad HTML5 games instantly on GameDravo. Classic arcade, puzzle, strategy, and casual games — no download, no sign-up, no popups."
@@ -330,7 +331,7 @@ export const HomePage = React.memo(function HomePage({
           <LazyShelf eager minHeight={220}>
           <section className="shelf-section">
             <div className="shelf-header">
-              <div className="space-y-0.5">
+              <div className="section-heading-stack">
                 <div className="section-eyebrow">
                   <Clock className="w-3.5 h-3.5" />
                   <span>{t('history') || 'Continue'}</span>
@@ -338,6 +339,7 @@ export const HomePage = React.memo(function HomePage({
                 <h3 className="section-title">{t('continuePlaying')}</h3>
               </div>
               <div className="flex items-center gap-3">
+
                 {recentlyPlayedGames.length > 0 && (
                   <>
                     <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
@@ -405,7 +407,7 @@ export const HomePage = React.memo(function HomePage({
           <LazyShelf eager minHeight={260}>
           <section className="shelf-section group/shelf">
             <div className="shelf-header">
-              <div className="space-y-0.5">
+              <div className="section-heading-stack">
                 <div className="section-eyebrow">
                   <TrendingUp className="w-3.5 h-3.5" />
                   <span>{t('trending') || 'Trending'}</span>
@@ -413,6 +415,7 @@ export const HomePage = React.memo(function HomePage({
                 <h3 className="section-title">{t('trendingNow') || 'Trending Now'}</h3>
               </div>
               <div className="flex items-center gap-2">
+
                 <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
                   <button 
                     onClick={() => handleScroll(trendingRef, 'left')}
@@ -458,7 +461,7 @@ export const HomePage = React.memo(function HomePage({
           <LazyShelf minHeight={180}>
           <section className="shelf-section">
             <div className="shelf-header">
-              <div className="space-y-0.5">
+              <div className="section-heading-stack">
                 <div className="section-eyebrow">
                   <Compass className="w-3.5 h-3.5" />
                   <span>{t('exploreByGenre') || 'Explore Categories'}</span>
@@ -467,6 +470,7 @@ export const HomePage = React.memo(function HomePage({
               </div>
             </div>
             <div className="category-chip-grid px-1 md:px-2" ref={categoriesRef}>
+
               {exploreCategories.map((cat) => (
                 <button
                   key={`cat-chip-${cat.slug}`}
@@ -531,16 +535,17 @@ export const HomePage = React.memo(function HomePage({
 <SectionErrorBoundary sectionName="New Arrivals">
         {selectedCategory === 'All' && !searchQuery && denseNewArrivals.length > 0 && (
           <LazyShelf minHeight={260}>
-          <section className="mb-3 relative group/shelf">
-            <div className="flex items-end justify-between mb-2">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-accent">
-                  <Sparkles className="w-4 h-4" />
-                  <span className="text-xs font-semibold text-accent/80 tracking-tight">{t('discover') || 'DISCOVER'}</span>
+          <section className="shelf-section group/shelf">
+            <div className="shelf-header">
+              <div className="section-heading-stack">
+                <div className="section-eyebrow">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{t('discover') || 'DISCOVER'}</span>
                 </div>
                 <h3 className="section-title">{t('newArrivals')}</h3>
               </div>
               <div className="flex items-center gap-4">
+
                 {/* Scroll Navigation Arrows */}
                 <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-300">
                   <button 
@@ -602,8 +607,8 @@ export const HomePage = React.memo(function HomePage({
       />
 
       {displayLimit < filteredGames.length && (
-        <div className="mt-6 flex justify-center">
-          <button 
+        <div className="homepage-load-more">
+          <button
             onClick={() => setDisplayLimit((prev: number) => prev + 40)}
             className="btn-primary"
           >
@@ -611,6 +616,7 @@ export const HomePage = React.memo(function HomePage({
           </button>
         </div>
       )}
+
         </LazyShelf>
       </SectionErrorBoundary>
 
