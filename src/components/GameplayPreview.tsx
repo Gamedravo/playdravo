@@ -5,9 +5,10 @@ interface GameplayPreviewProps {
   category: string;
   isDarkMode: boolean;
   gameTitle?: string;
+  showLabel?: boolean;
 }
 
-export function GameplayPreview({ category, isDarkMode, gameTitle = 'Game' }: GameplayPreviewProps) {
+export function GameplayPreview({ category, isDarkMode, gameTitle = 'Game', showLabel = true }: GameplayPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -552,12 +553,13 @@ export function GameplayPreview({ category, isDarkMode, gameTitle = 'Game' }: Ga
         className="w-full h-full object-cover rounded-xl md:rounded-2xl transition-all duration-300"
       />
       
-      {/* Immersive Retro Scanning Overlays */}
       <div className="absolute inset-0 bg-scanlines mix-blend-overlay opacity-5 pointer-events-none" />
-      <div className="absolute top-2.5 left-2.5 bg-accent/90 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase tracking-widest text-[#0b0b16] shadow-sm z-30 flex items-center gap-1">
-        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
-        Gameplay Preview
-      </div>
+      {showLabel && (
+        <div className="absolute top-2.5 left-2.5 bg-accent/90 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase tracking-widest text-[#0b0b16] shadow-sm z-30 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping" />
+          Gameplay Preview
+        </div>
+      )}
     </div>
   );
 }

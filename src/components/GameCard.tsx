@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
+import { GameplayPreview } from './GameplayPreview';
 import { getPreviewMediaCandidates, type PreviewMediaCandidate } from '../lib/gamePreviewMedia';
 
 interface GameCardProps {
@@ -62,9 +63,11 @@ function getVideoType(url: string) {
 function InlineCardPreview({
   game,
   active,
+  isDarkMode,
 }: {
   game: Game;
   active: boolean;
+  isDarkMode: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const candidates = useMemo(
@@ -106,7 +109,11 @@ function InlineCardPreview({
     };
   }, [active, current, candidates.length]);
 
-  if (!active || !current) return null;
+  if (!active) return null;
+
+  if (!current) {
+    return <GameplayPreview category={game.category} isDarkMode={isDarkMode} gameTitle={game.title} showLabel={false} />;
+  }
 
   if (current.kind === 'gif') {
     return (
@@ -188,7 +195,7 @@ export const GameCard = memo(function GameCard({
             gameId={game.id}
             className="h-full w-full object-cover object-center"
           />
-          <InlineCardPreview game={game} active={previewActive} />
+          <InlineCardPreview game={game} active={previewActive} isDarkMode={isDarkMode} />
         </div>
 
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
