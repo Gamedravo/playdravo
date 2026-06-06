@@ -14,6 +14,39 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
+const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
+let onlineGamesCatalogCache: { data: unknown; timestamp: number } | null = null;
+const ONLINE_GAMES_CATALOG_CACHE_TTL = 1000 * 60 * 60;
+
+app.get('/api/onlinegames-catalog', async (_req, res) => {
+  try {
+    if (
+      onlineGamesCatalogCache &&
+      Date.now() - onlineGamesCatalogCache.timestamp < ONLINE_GAMES_CATALOG_CACHE_TTL
+    ) {
+      return res.json(onlineGamesCatalogCache.data);
+    }
+
+    const response = await fetch(ONLINE_GAMES_CATALOG_URL, {
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'PlayDravo-CatalogLoader/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Could not load game catalog.' });
+    }
+
+    const data = await response.json();
+    onlineGamesCatalogCache = { data, timestamp: Date.now() };
+    return res.json(data);
+  } catch (error) {
+    console.error('OnlineGames catalog proxy failed:', error);
+    return res.status(502).json({ error: 'Could not load game catalog.' });
+  }
+});
+
 let ai: GoogleGenAI | null = null;
 
 function getGeminiClient(): GoogleGenAI {

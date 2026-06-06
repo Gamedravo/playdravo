@@ -1,12 +1,13 @@
 import { Game } from './types';
 
-const ONLINE_GAMES_SOURCE_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
+const ONLINE_GAMES_SOURCE_URL = '/api/onlinegames-catalog';
 
 export const CATALOG_SOURCE = 'onlinegames.io' as const;
 
 export const CATEGORY_LIST = [
   'All',
   'Favorites',
+
   'Recommended',
   'History',
   'Trending',
