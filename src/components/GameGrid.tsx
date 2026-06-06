@@ -4,6 +4,7 @@ import { Game } from '../types';
 import { GameCard } from './GameCard';
 import { GameThumbnail } from './GameThumbnail';
 import { GameCardSkeleton } from './LoadingSkeletons';
+import { AllGamesPreviewMiniGrid } from './AllGamesPreviewMiniGrid';
 import { GAMES as STATIC_GAMES } from '../games';
 import { useInViewport } from '../hooks/useInViewport';
 
@@ -122,6 +123,15 @@ export const GameGrid = memo(function GameGrid({
         )}
       </div>
 
+      {selectedCategory === 'All' && !searchQuery && filteredGames.length >= 3 && (
+        <AllGamesPreviewMiniGrid
+          games={filteredGames}
+          isDarkMode={isDarkMode}
+          handleGameClick={handleGameClick}
+          t={t}
+        />
+      )}
+
       {isLoading ? (
 
           <div key="skeletons" className="game-card-grid">
@@ -129,6 +139,7 @@ export const GameGrid = memo(function GameGrid({
               <GameCardSkeleton key={`skeleton-${i}`} isDarkMode={isDarkMode} />
             ))}
           </div>
+
         ) : filteredGames.length === 0 ? (
           selectedCategory === 'Favorites' ? (
             <div

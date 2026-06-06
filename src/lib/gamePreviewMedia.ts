@@ -7,9 +7,11 @@ export interface PreviewMediaCandidate {
   url: string;
 }
 
-/** Ordered hover-preview candidates: explicit MP4 → GIF → thumbnail → none. */
+const isAnimatedImage = (url: string) => /\.(gif|webp)(\?|#|$)/i.test(url);
+
+/** Ordered preview candidates: explicit video → GIF/animated image → screenshot → thumbnail → none. */
 export function getPreviewMediaCandidates(
-  game: Pick<Game, 'id' | 'thumbnail' | 'previewVideoUrl' | 'previewGifUrl'>,
+  game: Pick<Game, 'id' | 'thumbnail' | 'previewVideoUrl' | 'previewGifUrl' | 'screenshots'>,
 ): PreviewMediaCandidate[] {
   const out: PreviewMediaCandidate[] = [];
   const seen = new Set<string>();
@@ -22,6 +24,7 @@ export function getPreviewMediaCandidates(
 
   add('mp4', game.previewVideoUrl);
   add('gif', game.previewGifUrl);
+  game.screenshots?.forEach((url) => add(isAnimatedImage(url) ? 'gif' : 'thumbnail', url));
   add('thumbnail', game.thumbnail);
 
   if (out.length === 0) {
