@@ -76,7 +76,6 @@ import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog } from './games';
-import { parseFirebaseGame } from './utils/gameUtils';
 import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import {
