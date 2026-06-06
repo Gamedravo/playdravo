@@ -46,10 +46,8 @@ allowBuilds:
   "@ffprobe-installer/linux-ia32": true
   "@ffprobe-installer/linux-x64": true
   "@fingerprintjs/fingerprintjs-pro-react": true
-  '@firebase/util': set this to true or false
   "@ghaiklor/x509": true
   "@go-task/cli": true
-  '@google/genai': set this to true or false
   "@injectivelabs/sdk-ts": true
   "@instana/autoprofile": true
   "@intlify/vue-i18n-bridge": true
@@ -293,7 +291,6 @@ allowBuilds:
   pre-commit: true
   pre-push: true
   prisma: true
-  protobufjs: set this to true or false
   protoc: true
   protoc-gen-grpc-web: true
   puppeteer: true
