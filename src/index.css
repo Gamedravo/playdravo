@@ -887,7 +887,7 @@
   }
 
   .shelf-card {
-    @apply w-[92px] sm:w-[100px] md:w-[112px] lg:w-[120px] xl:w-[128px] 2xl:w-[136px] shrink-0 snap-start;
+    @apply w-[128px] sm:w-[148px] md:w-[166px] lg:w-[180px] xl:w-[192px] 2xl:w-[204px] shrink-0 snap-start;
   }
 
   .game-grid-header {
@@ -895,7 +895,7 @@
   }
 
   .game-card-grid {
-    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4;
+    @apply grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5;
   }
 }
 

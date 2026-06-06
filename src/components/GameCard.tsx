@@ -203,15 +203,15 @@ export const GameCard = memo(function GameCard({
           handleGameClick(game);
         }
       }}
-      className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-xl"
+      className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`relative aspect-[4/5] rounded-xl overflow-hidden cursor-pointer border transition-[border-color,box-shadow] duration-150 ease-out ${
+        className={`relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-150 ease-out ${
           isDarkMode
-            ? 'border-white/[0.06] bg-[#0c0c14] shadow-[0_2px_8px_rgba(0,0,0,0.35)] group-hover:shadow-[0_8px_24px_rgba(157,92,255,0.18)] group-hover:border-accent/45'
-            : 'border-black/[0.06] bg-white shadow-sm group-hover:shadow-[0_8px_20px_rgba(157,92,255,0.12)] group-hover:border-accent/35'
-        } group-hover:ring-1 group-hover:ring-accent/25 active:scale-[0.99]`}
+            ? 'border-white/[0.08] bg-[#0c0c14] shadow-[0_8px_24px_rgba(0,0,0,0.38)] group-hover:shadow-[0_16px_40px_rgba(157,92,255,0.22)] group-hover:border-accent/55'
+            : 'border-black/[0.08] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] group-hover:shadow-[0_16px_34px_rgba(157,92,255,0.16)] group-hover:border-accent/45'
+        } group-hover:-translate-y-1 group-hover:ring-1 group-hover:ring-accent/30 active:scale-[0.99]`}
       >
         <div className="absolute inset-0 overflow-hidden">
           <GameThumbnail
@@ -255,17 +255,17 @@ export const GameCard = memo(function GameCard({
           <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
 
-        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/95 via-black/75 to-transparent pt-10 z-20 pointer-events-none">
-          <h3 className="text-white font-bold text-[11px] leading-tight line-clamp-2 mb-0.5 group-hover:text-accent transition-colors">
+        <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-14 z-20 pointer-events-none">
+          <h3 className="text-white font-black text-sm leading-tight line-clamp-2 mb-1.5 group-hover:text-accent transition-colors">
             <HighlightText text={game.title} query={searchQuery} />
           </h3>
-          <div className="flex items-center justify-between gap-1">
-            <span className="text-white/45 text-[8px] font-semibold uppercase tracking-wide truncate">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-white/55 text-[10px] font-bold uppercase tracking-wide truncate">
               {t(categoryKeyMap[game.category] || game.category)}
             </span>
-            <div className="flex items-center gap-1 shrink-0">
-              <Star className="w-2.5 h-2.5 text-yellow-400 fill-yellow-400" />
-              <span className="text-[9px] font-semibold text-white/80">{(game.rating || 4.5).toFixed(1)}</span>
+            <div className="flex items-center gap-1 shrink-0 rounded-full bg-white/10 px-2 py-1 backdrop-blur-sm">
+              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+              <span className="text-[10px] font-black text-white/90">{(game.rating || 4.5).toFixed(1)}</span>
             </div>
           </div>
         </div>
