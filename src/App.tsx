@@ -75,16 +75,16 @@ import { Toaster } from 'sonner';
 import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
-import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST } from './games';
+import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog } from './games';
 import { parseFirebaseGame } from './utils/gameUtils';
 import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
-import { 
-  db, 
-  auth, 
-  signInWithGoogle, 
-  logout, 
-  handleFirestoreError, 
+import {
+  db,
+  auth,
+  signInWithGoogle,
+  logout,
+  handleFirestoreError,
   OperationType,
   runTransaction,
   serverTimestamp,
@@ -347,12 +347,38 @@ function AppContent() {
     localStorage.setItem('language', language);
   }, [language]);
 
-  const staticGames = useMemo(() => STATIC_GAMES.map((g) => withSafetyMetadata(g)), []);
+  const [catalogGames, setCatalogGames] = useState<Game[]>(STATIC_GAMES);
+  const staticGames = useMemo(() => catalogGames.map((g) => withSafetyMetadata(g)), [catalogGames]);
   const [games, setGames] = useState<Game[]>(staticGames);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchOnlineGamesCatalog()
+      .then((remoteGames) => {
+        if (cancelled) return;
+        setCatalogGames((currentGames) =>
+          remoteGames.length > currentGames.length ? remoteGames : currentGames
+        );
+      })
+      .catch((error) => {
+        console.warn('Online games catalog failed to load:', error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setGames((currentGames) =>
+      currentGames.length < staticGames.length ? staticGames : currentGames
+    );
+  }, [staticGames]);
+
   const mainRef = useRef<HTMLDivElement>(null);
   const sidebarContentRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
