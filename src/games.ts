@@ -1,6 +1,7 @@
 import { Game } from './types';
 
-const ONLINE_GAMES_SOURCE_URL = '/api/onlinegames-catalog';
+const ONLINE_GAMES_API_URL = '/api/onlinegames-catalog';
+const ONLINE_GAMES_SOURCE_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 
 export const CATALOG_SOURCE = 'onlinegames.io' as const;
 
@@ -220,23 +221,39 @@ function onlineGameToGame(rawGame: RawOnlineGame): Game {
   };
 }
 
-export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
-  const response = await fetch(ONLINE_GAMES_SOURCE_URL);
+async function fetchRawOnlineGames(url: string): Promise<RawOnlineGame[]> {
+  const response = await fetch(url, { headers: { Accept: 'application/json' } });
   if (!response.ok) {
     throw new Error(`Could not load game catalog: ${response.status}`);
   }
 
-  const rawGames = (await response.json()) as RawOnlineGame[];
-  const seenIds = new Set<string>();
+  const rawGames = await response.json();
+  if (!Array.isArray(rawGames)) {
+    throw new Error('Game catalog response was not an array.');
+  }
 
-  return rawGames
+  return rawGames as RawOnlineGame[];
+}
+
+export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
+  let rawGames: RawOnlineGame[];
+
+  try {
+    rawGames = await fetchRawOnlineGames(ONLINE_GAMES_API_URL);
+  } catch {
+    rawGames = await fetchRawOnlineGames(ONLINE_GAMES_SOURCE_URL);
+  }
+
+  const seenIds = new Set<string>();
+  const remoteGames = rawGames
     .filter((game) => game.title?.trim() && game.embed?.trim() && game.image?.trim())
-    .map(onlineGameToGame)
-    .filter((game) => {
-      if (seenIds.has(game.id)) return false;
-      seenIds.add(game.id);
-      return true;
-    });
+    .map(onlineGameToGame);
+
+  return [...GAMES, ...remoteGames].filter((game) => {
+    if (seenIds.has(game.id)) return false;
+    seenIds.add(game.id);
+    return true;
+  });
 }
 
 export const GAMES: Game[] = [
@@ -252,6 +269,7 @@ export const GAMES: Game[] = [
   ),
   localGame(
     'tetris',
+
     'Block Stacker',
     'Puzzle',
     '/images/games/js-tetris.svg',
