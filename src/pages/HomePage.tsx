@@ -1,14 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Gamepad2, 
-  Play, 
-  Share2, 
-  Star, 
-  Wrench, 
-  Sparkles, 
-  Target,
-  ChevronRight, 
+import {
+  Gamepad2,
+  Play,
+  Share2,
+  Star,
+  Wrench,
+  Sparkles,
+  ChevronRight,
   ChevronLeft,
   Trophy,
   Compass,
@@ -82,10 +81,6 @@ export const HomePage = React.memo(function HomePage({
   setSearchQuery,
   featuredGame,
   newArrivals,
-  recommendedGames,
-  isGeneratingRecommendations,
-  recommendationError,
-  generateRecommendations,
   recentlyPlayedGames,
   setPlayHistory,
   filteredGames,
@@ -158,14 +153,12 @@ export const HomePage = React.memo(function HomePage({
   const categoriesRef = React.useRef<HTMLDivElement>(null);
   const newArrivalsRef = React.useRef<HTMLDivElement>(null);
   const lovedRef = React.useRef<HTMLDivElement>(null);
-  const recRef = React.useRef<HTMLDivElement>(null);
   const trendingRef = React.useRef<HTMLDivElement>(null);
   const recentRef = React.useRef<HTMLDivElement>(null);
 
   useHorizontalScroll(categoriesRef);
   useHorizontalScroll(newArrivalsRef);
   useHorizontalScroll(lovedRef);
-  useHorizontalScroll(recRef);
   useHorizontalScroll(trendingRef);
   useHorizontalScroll(recentRef);
 
@@ -212,11 +205,6 @@ export const HomePage = React.memo(function HomePage({
   const denseNewArrivals = React.useMemo(
     () => densifyShelf(newArrivals, filteredGames),
     [newArrivals, filteredGames]
-  );
-
-  const denseRecommended = React.useMemo(
-    () => densifyShelf(recommendedGames, filteredGames),
-    [recommendedGames, filteredGames]
   );
 
   const curatedBlocks = React.useMemo(
@@ -518,16 +506,6 @@ export const HomePage = React.memo(function HomePage({
             />
             </LazyShelf>
           ))}
-      </SectionErrorBoundary>
-
-      {/* Recommended */}
-
-<SectionErrorBoundary sectionName="Recommended Games">
-        {selectedCategory === 'All' && !searchQuery && denseRecommended.length > 0 && (
-          <LazyShelf minHeight={260}>
-          {renderShelf(t('pickedForYou') || 'Picked for you', t('personalized') || 'For you', denseRecommended, 'rec', recRef, Target)}
-          </LazyShelf>
-        )}
       </SectionErrorBoundary>
 
       {/* New Arrivals */}
