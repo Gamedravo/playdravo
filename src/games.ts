@@ -80,49 +80,26 @@ interface RawOnlineGame {
   description: string;
 }
 
-const verifiedAt = '2026-06-06T00:00:00.000Z';
-
-function localGame(
-  id: string,
-  title: string,
-  category: string,
-  thumbnail: string,
-  description: string,
-  tags: string[],
-  plays: number,
-  rating = 4.8,
-): Game {
-  return {
-    id,
-    title,
-    category,
-    url: `/games/clean-arcade.html?game=${id}`,
-    thumbnail,
-    description,
-    rating,
-    plays,
-    authorUid: 'gamedravo-clean-arcade',
-    createdAt: verifiedAt,
-    isHot: plays > 200000,
-    isTop: rating >= 4.85,
-    tags: ['No Ads', 'Html5', 'Mobile', ...tags],
-    developer: 'GameDravo Clean Arcade',
-    publisher: 'GameDravo',
-    mobileOptimization: 'touch-friendly',
-    fullscreenSupport: true,
-    orientation: 'any',
-    embedCompatibility: 'full',
-    validationState: 'Verified Working',
-    lastVerified: verifiedAt,
-    sourceId: 'gamedravo-clean-arcade',
-    avgPlayTime: '8m',
-    contentRating: 'Everyone',
-    version: 'clean-1.0',
-    adsInjected: false,
-    popupRisk: false,
-    redirectRisk: false,
-  };
-}
+const REMOVED_ORIGINAL_GAME_IDS = new Set([
+  'snake',
+  'snake-classic',
+  'tetris',
+  'block-stacker',
+  '2048',
+  '2048-original',
+  'breakout',
+  'minesweeper',
+  'minesweeper-classic',
+  'flappy',
+  'flappy-bird-classic',
+  'dino',
+  'dino-runner',
+  'memory',
+  'memory-match',
+  'space-shooter',
+  'space-defender',
+  'pac-dots',
+]);
 
 function slugify(title: string): string {
   const base = title
@@ -326,107 +303,15 @@ export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
   return [...GAMES, ...remoteGames].filter((game) => {
     if (seenIds.has(game.id)) return false;
     seenIds.add(game.id);
-    return !AD_HEAVY_GAME_IDS.has(game.id) && !game.adsInjected && !game.popupRisk && !game.redirectRisk;
+    const normalizedId = slugify(game.id || game.title || '');
+    const normalizedTitle = slugify(game.title || game.id || '');
+    return !REMOVED_ORIGINAL_GAME_IDS.has(normalizedId) &&
+      !REMOVED_ORIGINAL_GAME_IDS.has(normalizedTitle) &&
+      !AD_HEAVY_GAME_IDS.has(game.id) &&
+      !game.adsInjected &&
+      !game.popupRisk &&
+      !game.redirectRisk;
   });
 }
 
-export const GAMES: Game[] = [
-  localGame(
-    'snake',
-    'Snake Classic',
-    'Arcade',
-    '/images/games/js-snake.svg',
-    'The legendary Snake game rebuilt locally for GameDravo. Eat apples, grow longer, and avoid crashing into yourself. No ads, no popups, no external provider.',
-    ['1 Player', 'Arcade', 'Classic', 'Endless', 'Retro', 'Skill'],
-    324900,
-    4.9,
-  ),
-  localGame(
-    'tetris',
-
-    'Block Stacker',
-    'Puzzle',
-    '/images/games/js-tetris.svg',
-    'A lightweight falling-block puzzle inspired by classic Tetris. Rotate, stack, clear lines, and chase a high score directly in your browser.',
-    ['1 Player', 'Puzzle', 'Classic', 'Strategy', 'Skill'],
-    292100,
-    4.88,
-  ),
-  localGame(
-    '2048',
-    '2048 Original',
-    'Puzzle',
-    '/images/games/2048-original.svg',
-    'Slide numbered tiles and merge matching values until you reach 2048. A fast, clean, local version with touch and keyboard controls.',
-    ['1 Player', 'Board', 'Brain', 'Logic', 'Puzzle', 'Strategy'],
-    276400,
-    4.86,
-  ),
-  localGame(
-    'breakout',
-    'Breakout',
-    'Arcade',
-    '/images/games/breakout-js13k.svg',
-    'Bounce the ball, smash every brick, and keep the paddle alive. A tiny no-ad arcade classic that loads instantly.',
-    ['1 Player', 'Arcade', 'Classic', 'Retro', 'Skill'],
-    213500,
-  ),
-  localGame(
-    'minesweeper',
-    'Minesweeper Classic',
-    'Puzzle',
-    '/images/games/minesweeper-classic.svg',
-    'Clear the board without hitting a mine. Use logic, flags, and careful guesses in this clean local Minesweeper build.',
-    ['1 Player', 'Board', 'Brain', 'Classic', 'Logic', 'Puzzle'],
-    171200,
-  ),
-  localGame(
-    'flappy',
-    'Flappy Bird Classic',
-    'Arcade',
-    '/images/games/floppy-bird.svg',
-    'Tap to fly through pipes in this tiny local flappy-style arcade game. No ad screens before play.',
-    ['1 Player', 'Arcade', 'Endless', 'Retro', 'Skill'],
-    222700,
-    4.84,
-  ),
-  localGame(
-    'dino',
-    'Dino Runner',
-    'Arcade',
-    '/images/games/chrome-dino.svg',
-    'Jump over cactus obstacles in a fast offline-style runner inspired by the classic browser dinosaur game.',
-    ['1 Player', 'Arcade', 'Endless', 'Offline', 'Platformer', 'Skill'],
-    241600,
-    4.87,
-  ),
-  localGame(
-    'memory',
-    'Memory Match',
-    'Puzzle',
-    '/images/games/color-method.svg',
-    'Flip cards, remember icons, and match every pair. A clean brain-training game for quick sessions.',
-    ['1 Player', 'Board', 'Brain', 'Kids', 'Logic', 'Puzzle'],
-    132400,
-  ),
-  localGame(
-    'space-shooter',
-    'Space Defender',
-    'Action',
-    '/images/games/defender-13k.svg',
-    'Pilot a small ship, dodge enemies, and fire lasers in a compact arcade shooter built for fast loading.',
-    ['1 Player', 'Action', 'Arcade', 'Retro', 'Skill'],
-    198500,
-    4.82,
-  ),
-  localGame(
-    'pac-dots',
-    'Pac Dots',
-    'Arcade',
-    '/images/games/pacman-js.svg',
-    'Collect dots in a maze while avoiding roaming ghosts. A lightweight maze-chase classic with no third-party ads.',
-    ['1 Player', 'Arcade', 'Classic', 'Retro', 'Skill'],
-    227300,
-    4.85,
-  ),
-];
+export const GAMES: Game[] = [];

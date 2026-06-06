@@ -30,7 +30,7 @@ interface SearchPageProps {
   setSearchQuery: (query: string) => void;
 }
 
-const trendingSearches = ['2048', 'Action', 'Arcade', 'Puzzle', 'Sports', 'Strategy'];
+const trendingSearches = ['Action', 'Arcade', 'Puzzle', 'Sports', 'Strategy', 'Multiplayer'];
 
 const suggestions = [
   { label: 'Deep & immersive', icon: Brain, tone: 'from-purple-500/25 to-fuchsia-500/10 text-purple-200' },

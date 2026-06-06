@@ -374,9 +374,7 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    setGames((currentGames) =>
-      currentGames.length < staticGames.length ? staticGames : currentGames
-    );
+    setGames(staticGames);
   }, [staticGames]);
 
   const mainRef = useRef<HTMLDivElement>(null);

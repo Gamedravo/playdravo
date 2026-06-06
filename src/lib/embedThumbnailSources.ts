@@ -53,16 +53,12 @@ export const MANUAL_THUMBNAIL_OVERRIDES: Record<string, string> = {
   'poker-quest': 'https://cdn.grindcraft.com/images/games/poker-quest.jpg',
   'grindcraft': 'https://cdn.grindcraft.com/images/grindcraft-logo-wide.png',
   'fray-fight': 'https://frayfight.com/og-image.webp',
-  '2048-original': 'https://gabrielecirulli.github.io/2048/meta/apple-touch-icon.png',
   'hextris-io': 'https://hextris.io/img/icons/apple-touch-icon.png',
   'duckhunt-js': 'https://duckhunt.js.org/favicon-196x196.png',
-  'floppy-bird': 'https://nebezb.com/floppybird/assets/logo.png',
-  'pacman-js': 'https://pacman.platzh1rsch.ch/apple-touch-icon.png',
   'js-tiny-platformer': 'https://jakesgordon.github.io/javascript-tiny-platformer/touch-icon-iphone-retina.png',
   'js-racer': 'https://jakesgordon.github.io/javascript-racer/images/background.png',
   'hexgl': 'https://hexgl.bkcore.com/icon.png',
   'swooop-playcanvas': 'https://s3-eu-west-1.amazonaws.com/images.playcanvas.com/projects/12/4763/TKYXB8-image-50.jpg',
-  'chrome-dino': 'https://chromedino.com/favicon.ico',
 };
 
 export function resolveBestThumbnail(
