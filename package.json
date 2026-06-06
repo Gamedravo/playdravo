@@ -53,12 +53,5 @@
     "tsx": "^4.22.4",
     "typescript": "~5.8.2",
     "vite": "^6.4.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@firebase/util",
-      "@google/genai",
-      "protobufjs"
-    ]
   }
 }
