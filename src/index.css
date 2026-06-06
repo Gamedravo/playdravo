@@ -318,10 +318,6 @@
     @apply flex items-center gap-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/40 hover:text-accent transition-colors duration-100;
   }
 
-  .shelf-section--mobile .shelf-header-subtitle {
-    @apply text-cyan-500;
-  }
-
   .shelf-section--compact .shelf-card {
     @apply w-[88px] sm:w-[96px] md:w-[104px];
   }
