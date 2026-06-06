@@ -810,11 +810,12 @@ export const HomePage = React.memo(function HomePage({
             </div>
             
               <div className="flex items-center gap-4">
-                <span className={`text-[10px] font-mono tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>v2.4.0</span>
+                <span className={`text-[10px] font-mono tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>v2.4.1</span>
               </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 });
