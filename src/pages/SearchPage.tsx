@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useDeferredValue, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+
 import {
   Search,
   ArrowLeft,
@@ -58,8 +59,10 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   useEffect(() => {
+
     if (searchInputRef.current && window.innerWidth >= 768) {
       searchInputRef.current.focus({ preventScroll: true });
     }
@@ -75,12 +78,12 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
   }, []);
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (deferredSearchQuery.trim() === '') {
       setResults([]);
       return;
     }
 
-    const query = searchQuery.toLowerCase();
+    const query = deferredSearchQuery.toLowerCase();
     const filtered = games.filter((game) =>
       game.title.toLowerCase().includes(query) ||
       game.category.toLowerCase().includes(query) ||
@@ -90,7 +93,7 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     setResults(filtered);
 
     const saveTimer = setTimeout(() => {
-      const trimmed = searchQuery.trim();
+      const trimmed = deferredSearchQuery.trim();
       if (trimmed.length > 1 && trimmed.length < 30) {
         Analytics.trackSearch(trimmed, filtered.length);
         setRecentSearches((prev) => {
@@ -103,7 +106,7 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     }, 1500);
 
     return () => clearTimeout(saveTimer);
-  }, [searchQuery, games]);
+  }, [deferredSearchQuery, games]);
 
   const clearRecentSearches = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -111,10 +114,15 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     localStorage.removeItem('topg_recent_searches');
   };
 
-  const popularGames = games.slice().sort((a, b) => (b.plays || 0) - (a.plays || 0)).slice(0, 4);
+  const popularGames = useMemo(
+    () => games.slice().sort((a, b) => (b.plays || 0) - (a.plays || 0)).slice(0, 4),
+    [games],
+  );
+  const visibleResults = useMemo(() => results.slice(0, 72), [results]);
   const heroGame = popularGames[0] || games[0];
 
   const panelClass = isDarkMode
+
     ? 'border-white/10 bg-white/[0.055] shadow-[0_24px_80px_rgba(0,0,0,0.28)]'
     : 'border-black/10 bg-white/75 shadow-[0_24px_80px_rgba(89,74,120,0.14)]';
 
@@ -133,12 +141,13 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                 setSearchQuery('');
                 navigate('/');
               }}
-              className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl border backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 ${panelClass}`}
+              className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 md:h-12 md:w-12 md:rounded-2xl ${panelClass}`}
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
             </button>
 
             <motion.div
+
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18, ease: 'easeOut' }}
@@ -146,24 +155,25 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
             >
               <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-accent/35 via-fuchsia-500/20 to-blue-500/25 opacity-70 blur-xl transition-opacity duration-300 group-focus-within:opacity-100" />
               <div
-                className={`relative flex h-16 items-center rounded-full border px-5 backdrop-blur-2xl transition-all duration-200 md:h-[72px] md:px-7 ${
+                className={`relative flex h-11 items-center rounded-2xl border px-3 backdrop-blur-2xl transition-all duration-200 md:h-[72px] md:rounded-full md:px-7 ${
                   isDarkMode
                     ? 'border-white/[0.12] bg-white/[0.075] group-focus-within:border-accent/55 group-focus-within:bg-white/[0.095]'
                     : 'border-white/70 bg-white/70 group-focus-within:border-accent/45 group-focus-within:bg-white/90'
                 }`}
               >
-                <Search className="h-5 w-5 shrink-0 text-accent md:h-6 md:w-6" />
+                <Search className="h-4 w-4 shrink-0 text-accent md:h-6 md:w-6" />
                 <input
                   ref={searchInputRef}
                   aria-label="Search games"
                   type="text"
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder={t('searchGamesPlaceholder') || 'Search games, genres, moods...'}
-                  className={`h-full flex-1 border-none bg-transparent px-4 text-base font-black tracking-tight outline-none placeholder:text-sm placeholder:font-bold md:text-xl ${
+                  placeholder={t('searchGamesPlaceholder') || 'Search games...'}
+                  className={`h-full min-w-0 flex-1 border-none bg-transparent px-2 text-sm font-black tracking-tight outline-none placeholder:text-xs placeholder:font-bold md:px-4 md:text-xl md:placeholder:text-sm ${
                     isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/35'
                   }`}
                 />
+
                 <AnimatePresence>
                   {searchQuery && (
                     <motion.button
@@ -173,12 +183,13 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.12 }}
                       onClick={() => setSearchQuery('')}
-                      className={`grid h-9 w-9 place-items-center rounded-full transition-all hover:scale-105 active:scale-95 ${
+                      className={`grid h-8 w-8 place-items-center rounded-full transition-all hover:scale-105 active:scale-95 md:h-9 md:w-9 ${
                         isDarkMode ? 'bg-white/10 text-white/70 hover:text-white' : 'bg-black/5 text-black/60 hover:text-black'
                       }`}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
                     </motion.button>
+
                   )}
                 </AnimatePresence>
               </div>
@@ -345,11 +356,12 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
 
               {results.length > 0 ? (
                 <div className="game-card-grid">
-                  {results.map((game, index) => (
+                  {visibleResults.map((game, index) => (
                     <GameCard
                       key={`search-game-${game.id}-${index}`}
                       game={game}
                       isDarkMode={isDarkMode}
+
                       t={t}
                       favorites={userProfile?.favorites || []}
                       toggleFavorite={toggleFavorite}
@@ -357,9 +369,15 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
                       handleGameClick={() => navigate(`/games/${game.id}`)}
                     />
                   ))}
+                  {results.length > visibleResults.length && (
+                    <p className="col-span-full py-3 text-center text-xs font-bold uppercase tracking-widest text-accent/70">
+                      Showing top {visibleResults.length} of {results.length} matches — keep typing to narrow results.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className={`rounded-[2rem] border p-6 text-center backdrop-blur-2xl md:p-8 ${panelClass}`}>
+
                   <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-3xl bg-accent/12 text-accent">
                     <Search className="h-8 w-8" />
                   </div>

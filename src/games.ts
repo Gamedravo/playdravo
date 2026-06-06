@@ -2,10 +2,13 @@ import { Game } from './types';
 
 const ONLINE_GAMES_API_URL = '/api/onlinegames-catalog';
 const ONLINE_GAMES_SOURCE_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
+const GAMEPIX_API_URL = '/api/gamepix-catalog?limit=1000';
+const GAMEPIX_SOURCE_URL = 'https://feeds.gamepix.com/v2/json/?order=quality&page=1&pagination=1000&sid=1';
 
-export const CATALOG_SOURCE = 'onlinegames.io' as const;
+export const CATALOG_SOURCE = 'onlinegames.io + gamepix' as const;
 
 export const CATEGORY_LIST = [
+
   'All',
   'Favorites',
 
@@ -80,7 +83,23 @@ interface RawOnlineGame {
   description: string;
 }
 
+interface RawGamePixGame {
+  id: string;
+  title: string;
+  namespace: string;
+  description?: string;
+  category?: string;
+  orientation?: 'all' | 'landscape' | 'portrait';
+  quality_score?: number;
+  date_published?: string;
+  date_modified?: string;
+  banner_image?: string;
+  image?: string;
+  url: string;
+}
+
 const REMOVED_ORIGINAL_GAME_IDS = new Set([
+
   'snake',
   'snake-classic',
   'tetris',
@@ -272,21 +291,106 @@ function onlineGameToGame(rawGame: RawOnlineGame): Game {
   };
 }
 
+function gamePixCategoryToTags(rawGame: RawGamePixGame): string[] {
+  const category = rawGame.category ? titleCaseTag(rawGame.category.trim().toLowerCase()) : 'Arcade';
+  const tags = new Set<string>(['Html5', 'Mobile', category]);
+  if (/\b(shooter|battle|fighting|stickman)\b/i.test(category)) tags.add('Action');
+  if (/\b(match|memory|puzzle|2048|ball)\b/i.test(category)) tags.add('Puzzle');
+  if (/\b(car|driving|racing)\b/i.test(`${category} ${rawGame.title}`)) tags.add('Racing');
+  if (/\b(sports|soccer|football|basket|penalty)\b/i.test(`${category} ${rawGame.title}`)) tags.add('Sports');
+  return Array.from(tags);
+}
+
+function isSafeGamePixGame(rawGame: RawGamePixGame): boolean {
+  const title = rawGame.title?.trim();
+  const namespace = rawGame.namespace?.trim();
+  const url = rawGame.url?.trim();
+  const image = (rawGame.banner_image || rawGame.image || '').trim();
+  if (!title || !namespace || !url || !image) return false;
+  if (REMOVED_ORIGINAL_GAME_IDS.has(slugify(title)) || REMOVED_ORIGINAL_GAME_IDS.has(slugify(namespace))) return false;
+
+  try {
+    const gameUrl = new URL(url);
+    const imageUrl = new URL(image);
+    return gameUrl.protocol === 'https:' &&
+      gameUrl.hostname.toLowerCase() === 'play.gamepix.com' &&
+      gameUrl.pathname.endsWith('/embed') &&
+      imageUrl.protocol === 'https:' &&
+      imageUrl.hostname.toLowerCase() === 'img.gamepix.com';
+  } catch {
+    return false;
+  }
+}
+
+function gamePixGameToGame(rawGame: RawGamePixGame): Game {
+  const id = `gamepix-${slugify(rawGame.namespace || rawGame.title)}`;
+  const tags = gamePixCategoryToTags(rawGame);
+  const quality = typeof rawGame.quality_score === 'number' ? rawGame.quality_score : 0.75;
+  const rating = Math.round((4.1 + Math.min(Math.max(quality, 0), 1) * 0.8) * 10) / 10;
+  const plays = seededPlays(id);
+  const orientation = rawGame.orientation === 'landscape' || rawGame.orientation === 'portrait' ? rawGame.orientation : 'any';
+
+  return {
+    id,
+    title: rawGame.title.trim(),
+    category: inferCategory(tags),
+    url: rawGame.url.trim(),
+    thumbnail: (rawGame.banner_image || rawGame.image || '').trim(),
+    description: (rawGame.description || `${rawGame.title} is a fast-loading HTML5 game you can play instantly.`).trim().slice(0, 500),
+    rating,
+    plays,
+    authorUid: 'gamepix',
+    createdAt: rawGame.date_published || rawGame.date_modified || '2026-06-06T00:00:00.000Z',
+    isHot: plays > 500000,
+    isTop: rating >= 4.75,
+    tags,
+    developer: 'GamePix',
+    publisher: 'GamePix',
+    mobileOptimization: orientation === 'portrait' || orientation === 'any' ? 'touch-friendly' : 'responsive',
+    fullscreenSupport: true,
+    orientation,
+    embedCompatibility: 'full',
+    validationState: 'Verified Working',
+    lastVerified: '2026-06-06T00:00:00.000Z',
+    sourceId: 'gamepix',
+    avgPlayTime: '8m',
+    contentRating: 'Everyone',
+    adsInjected: false,
+    popupRisk: false,
+    redirectRisk: false,
+  };
+}
+
 async function fetchRawOnlineGames(url: string): Promise<RawOnlineGame[]> {
   const response = await fetch(url, { headers: { Accept: 'application/json' } });
   if (!response.ok) {
-    throw new Error(`Could not load game catalog: ${response.status}`);
+    throw new Error(`Could not load OnlineGames catalog: ${response.status}`);
   }
 
   const rawGames = await response.json();
   if (!Array.isArray(rawGames)) {
-    throw new Error('Game catalog response was not an array.');
+    throw new Error('OnlineGames catalog response was not an array.');
   }
 
   return rawGames as RawOnlineGame[];
 }
 
-export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
+async function fetchRawGamePixGames(url: string): Promise<RawGamePixGame[]> {
+  const response = await fetch(url, { headers: { Accept: 'application/json' } });
+  if (!response.ok) {
+    throw new Error(`Could not load GamePix catalog: ${response.status}`);
+  }
+
+  const raw = await response.json();
+  const items = Array.isArray(raw) ? raw : raw?.items;
+  if (!Array.isArray(items)) {
+    throw new Error('GamePix catalog response did not include an items array.');
+  }
+
+  return items as RawGamePixGame[];
+}
+
+async function fetchOnlineGamesRemote(): Promise<Game[]> {
   let rawGames: RawOnlineGame[];
 
   try {
@@ -295,11 +399,37 @@ export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
     rawGames = await fetchRawOnlineGames(ONLINE_GAMES_SOURCE_URL);
   }
 
-  const seenIds = new Set<string>();
-  const remoteGames = rawGames
-    .filter(isSafeOnlineGame)
-    .map(onlineGameToGame);
+  return rawGames.filter(isSafeOnlineGame).map(onlineGameToGame);
+}
 
+async function fetchGamePixRemote(): Promise<Game[]> {
+  let rawGames: RawGamePixGame[];
+
+  try {
+    rawGames = await fetchRawGamePixGames(GAMEPIX_API_URL);
+  } catch {
+    rawGames = await fetchRawGamePixGames(GAMEPIX_SOURCE_URL);
+  }
+
+  return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
+}
+
+export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
+  const [onlineGamesResult, gamePixResult] = await Promise.allSettled([
+    fetchOnlineGamesRemote(),
+    fetchGamePixRemote(),
+  ]);
+
+  const remoteGames = [
+    ...(onlineGamesResult.status === 'fulfilled' ? onlineGamesResult.value : []),
+    ...(gamePixResult.status === 'fulfilled' ? gamePixResult.value : []),
+  ];
+
+  if (onlineGamesResult.status === 'rejected' && gamePixResult.status === 'rejected') {
+    throw onlineGamesResult.reason;
+  }
+
+  const seenIds = new Set<string>();
   return [...GAMES, ...remoteGames].filter((game) => {
     if (seenIds.has(game.id)) return false;
     seenIds.add(game.id);

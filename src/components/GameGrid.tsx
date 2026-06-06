@@ -73,10 +73,11 @@ export const GameGrid = memo(function GameGrid({
   useEffect(() => {
     if (!sentinelInView || !setDisplayLimit) return;
     if (displayLimit >= filteredGames.length) return;
-    setDisplayLimit((prev) => Math.min(prev + 28, filteredGames.length));
+    setDisplayLimit((prev) => Math.min(prev + 20, filteredGames.length));
   }, [sentinelInView, displayLimit, filteredGames.length, setDisplayLimit]);
 
   const handleReset = () => {
+
     setSearchQuery('');
     setSelectedCategory('All');
   };

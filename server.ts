@@ -15,8 +15,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
+const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
 let onlineGamesCatalogCache: { data: unknown; timestamp: number } | null = null;
+let gamePixCatalogCache: { data: unknown; timestamp: number; limit: number } | null = null;
 const ONLINE_GAMES_CATALOG_CACHE_TTL = 1000 * 60 * 60;
+const GAMEPIX_CATALOG_CACHE_TTL = 1000 * 60 * 60 * 6;
 
 app.get('/api/onlinegames-catalog', async (_req, res) => {
   try {
@@ -44,6 +47,40 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
   } catch (error) {
     console.error('OnlineGames catalog proxy failed:', error);
     return res.status(502).json({ error: 'Could not load game catalog.' });
+  }
+});
+
+app.get('/api/gamepix-catalog', async (req, res) => {
+  const requestedLimit = Number(req.query.limit || 1000);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 1000) : 1000;
+
+  try {
+    if (
+      gamePixCatalogCache &&
+      gamePixCatalogCache.limit === limit &&
+      Date.now() - gamePixCatalogCache.timestamp < GAMEPIX_CATALOG_CACHE_TTL
+    ) {
+      return res.json(gamePixCatalogCache.data);
+    }
+
+    const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=1&pagination=${limit}&sid=1`, {
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'PlayDravo-CatalogLoader/1.0',
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Could not load GamePix catalog.' });
+    }
+
+    const feed = await response.json();
+    const data = Array.isArray(feed?.items) ? feed.items : [];
+    gamePixCatalogCache = { data, timestamp: Date.now(), limit };
+    return res.json(data);
+  } catch (error) {
+    console.error('GamePix catalog proxy failed:', error);
+    return res.status(502).json({ error: 'Could not load GamePix catalog.' });
   }
 });
 

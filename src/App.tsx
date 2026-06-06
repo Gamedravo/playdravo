@@ -1,7 +1,8 @@
-import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, useCallback, Suspense } from 'react';
+import { useState, useMemo, useEffect, useRef, Component, ErrorInfo, ReactNode, lazy, useCallback, Suspense, useDeferredValue } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+
 import { 
   Gamepad2, 
   Search, 
@@ -804,11 +805,12 @@ function AppContent() {
 
   // Real-time Games Listener
   useEffect(() => {
-    const q = query(collection(db, 'games'), orderBy('plays', 'desc'));
+    const q = query(collection(db, 'games'), orderBy('plays', 'desc'), limit(500));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
       
       // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
+
       const gamesMap = new Map(staticGames.map((g) => [g.id, { ...g }]));
       gamesData.forEach((game) => {
         const catalog = gamesMap.get(game.id);
@@ -1396,38 +1398,55 @@ function AppContent() {
   }, [isNewsletterSubscribed]);
 
   useEffect(() => {
-    setDisplayLimit(48);
+    setDisplayLimit(32);
   }, [selectedCategory, searchQuery, sortBy]);
 
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const favoriteIds = useMemo(() => new Set(favorites), [favorites]);
+  const historyIds = useMemo(() => new Set(playHistory), [playHistory]);
+  const recommendedIds = useMemo(() => new Set(recommendedGames.map((game) => game.id)), [recommendedGames]);
+  const searchableGames = useMemo(() => games.map((game) => ({
+    game,
+    title: (game.title || '').toLowerCase(),
+    category: (game.category || '').toLowerCase(),
+    tags: (game.tags || []).map((tag) => tag.toLowerCase()),
+    developer: (game.developer || '').toLowerCase(),
+    description: (game.description || '').toLowerCase(),
+    createdTime: typeof game.createdAt === 'string'
+      ? new Date(game.createdAt).getTime()
+      : typeof game.createdAt?.toMillis === 'function'
+        ? game.createdAt.toMillis()
+        : 0,
+  })), [games]);
+
   const filteredGames = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+    const query = deferredSearchQuery.trim().toLowerCase();
     
-    const filteredWithScores = games.map(game => {
+    const filteredWithScores = searchableGames.map((entry) => {
       let score = 0;
       if (query) {
-        const title = (game.title || '').toLowerCase();
-        if (title === query) score += 100;
-        else if (title.startsWith(query)) score += 50;
-        else if (title.includes(query)) score += 10;
+        if (entry.title === query) score += 100;
+        else if (entry.title.startsWith(query)) score += 50;
+        else if (entry.title.includes(query)) score += 10;
         
-        if (game.category?.toLowerCase().includes(query)) score += 8;
+        if (entry.category.includes(query)) score += 8;
         
-        if (game.tags?.some(t => t.toLowerCase() === query)) score += 8;
-        else if (game.tags?.some(t => t.toLowerCase().includes(query))) score += 4;
+        if (entry.tags.some((tag) => tag === query)) score += 8;
+        else if (entry.tags.some((tag) => tag.includes(query))) score += 4;
         
-        if (game.developer?.toLowerCase().includes(query)) score += 3;
-        if (game.description?.toLowerCase().includes(query)) score += 1;
+        if (entry.developer.includes(query)) score += 3;
+        if (entry.description.includes(query)) score += 1;
       }
-      return { game, score };
+      return { ...entry, score };
     }).filter(({ game, score }) => {
       const matchesCategory = selectedCategory === 'All' || selectedCategory === 'Trending'
         ? true
         : selectedCategory === 'Favorites'
-          ? favorites.includes(game.id)
+          ? favoriteIds.has(game.id)
           : selectedCategory === 'Recommended'
-            ? recommendedGames.some(rg => rg.id === game.id)
+            ? recommendedIds.has(game.id)
             : selectedCategory === 'History'
-              ? playHistory.includes(game.id)
+              ? historyIds.has(game.id)
               : selectedCategory === 'Mods'
                 ? (game.mods && game.mods.length > 0)
                 : gameMatchesCategory(game, selectedCategory);
@@ -1439,23 +1458,20 @@ function AppContent() {
 
     return filteredWithScores.sort((a, b) => {
       if (query && a.score !== b.score) {
-        return b.score - a.score; // prioritize relevance when searching
+        return b.score - a.score;
       }
       const ga = a.game;
       const gb = b.game;
-      if (sortBy === 'latest') {
-        const timeA = typeof ga.createdAt === 'string' ? new Date(ga.createdAt).getTime() : typeof ga.createdAt?.toMillis === 'function' ? ga.createdAt.toMillis() : 0;
-        const timeB = typeof gb.createdAt === 'string' ? new Date(gb.createdAt).getTime() : typeof gb.createdAt?.toMillis === 'function' ? gb.createdAt.toMillis() : 0;
-        return timeB - timeA;
-      }
+      if (sortBy === 'latest') return b.createdTime - a.createdTime;
       if (sortBy === 'plays') return gb.plays - ga.plays;
       if (sortBy === 'rating') return (gb.rating || 0) - (ga.rating || 0);
       if (sortBy === 'title') return ga.title.localeCompare(gb.title);
       return 0;
-    }).map(item => item.game);
-  }, [selectedCategory, searchQuery, sortBy, games, favorites, playHistory, recommendedGames]);
+    }).map((item) => item.game);
+  }, [selectedCategory, deferredSearchQuery, sortBy, searchableGames, favoriteIds, historyIds, recommendedIds]);
 
   const displayedGames = useMemo(() => {
+
     return filteredGames.slice(0, displayLimit);
   }, [filteredGames, displayLimit]);
 
