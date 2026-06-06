@@ -95,7 +95,7 @@ export const Sidebar = memo(function Sidebar({
         <div className="sidebar-brand-row">
           <PlayDravoLogo
             size="sm"
-            showWordmark
+            showWordmark={isSidebarOpen || isMobileOpen}
             onClick={(e) => {
               e.preventDefault();
               navigate('/');
@@ -105,7 +105,7 @@ export const Sidebar = memo(function Sidebar({
             }}
             className="sidebar-brand"
           />
-          <span className="flex-1" aria-hidden />
+          <span className="sidebar-brand-spacer" aria-hidden />
           <button
             type="button"
             onClick={() => setOpen(false)}
