@@ -323,7 +323,7 @@ function AppContent() {
 
   const baseGamesRef = useRef<Game[]>(STATIC_GAMES.map(withSafetyMetadata));
   const [games, setGames] = useState<Game[]>(baseGamesRef.current);
-  const { user: replitUser, isLoading: isAuthLoading, login: replitLogin, logout: replitLogout } = useReplitAuth();
+  const { user: replitUser, isLoading: isAuthLoading, logout: replitLogout } = useReplitAuth();
   const user = replitUser;
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -684,7 +684,7 @@ function AppContent() {
 
   const handleRate = async (value: number) => {
     if (!activeGame || !userProfile) {
-      if (!userProfile) replitLogin();
+      if (!userProfile) setIsLoginModalOpen(true);
       return;
     }
     setIsRatingLoading(true);
@@ -1300,7 +1300,7 @@ function AppContent() {
           setSelectedCategory={setSelectedCategory}
           categoryGroups={categoryGroups}
           userProfile={userProfile}
-          setIsLoginModalOpen={() => replitLogin()}
+          setIsLoginModalOpen={setIsLoginModalOpen}
           logout={replitLogout}
           setIsPreferencesModalOpen={setIsPreferencesModalOpen}
           setIsSubmitModalOpen={setIsSubmitModalOpen}
@@ -1317,7 +1317,7 @@ function AppContent() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             userProfile={userProfile}
-            setIsLoginModalOpen={() => replitLogin()}
+            setIsLoginModalOpen={setIsLoginModalOpen}
             logout={replitLogout}
             accentColor={accentColor}
             setIsCommandPaletteOpen={setIsCommandPaletteOpen}
