@@ -3,8 +3,8 @@ import { UserProfile, Game } from '../types';
 import { type ReplitUser } from '../hooks/useReplitAuth';
 import { AccountSettingsView } from '../hooks/useModals';
 
-const SubmitGameModal = lazy(() =>
-  import('./modals/SubmitGameModal').then((m) => ({ default: m.SubmitGameModal }))
+const CombinedGameModal = lazy(() =>
+  import('./modals/CombinedGameModal').then((m) => ({ default: m.CombinedGameModal }))
 );
 const SubmitModModal = lazy(() =>
   import('./modals/SubmitModModal').then((m) => ({ default: m.SubmitModModal }))
@@ -82,12 +82,13 @@ export function GlobalModals({
     <>
       {isSubmitModalOpen && (
         <ModalSuspense>
-          <SubmitGameModal
+          <CombinedGameModal
             isOpen={isSubmitModalOpen}
             onClose={() => setIsSubmitModalOpen(false)}
             isDarkMode={isDarkMode}
             t={t}
             user={user as any}
+            userProfile={userProfile}
           />
         </ModalSuspense>
       )}

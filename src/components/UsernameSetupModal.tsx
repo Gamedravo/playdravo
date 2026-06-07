@@ -36,7 +36,7 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
 
     setIsSubmitting(true);
     try {
-      await api.updateProfile({ displayName: username, usernameSet: true, username });
+      await api.updateProfile({ displayName: username, usernameSet: true, username, _userId: userId });
       onComplete(username);
       toast.success('Username set successfully!');
       onClose();

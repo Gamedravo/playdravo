@@ -40,8 +40,10 @@ export function useReplitAuth(): UseReplitAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Handle the result from signInWithRedirect on page load
-    getRedirectResult(auth)
+    // Process redirect result BEFORE letting onAuthStateChanged settle.
+    // Without this, onAuthStateChanged fires with null on the first call
+    // (before the redirect token is consumed), causing a flash of the Login button.
+    const redirectPromise = getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
           console.log('[OAuth] Redirect sign-in successful:', result.user.uid);
@@ -59,10 +61,22 @@ export function useReplitAuth(): UseReplitAuthReturn {
         }
       });
 
-    // Listen for auth state changes
+    let firstCall = true;
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(toAppUser(firebaseUser));
-      setIsLoading(false);
+      if (firstCall && !firebaseUser) {
+        // First call with no user — may still be processing a redirect.
+        // Wait for the redirect promise to resolve, then read the actual current user.
+        firstCall = false;
+        redirectPromise.then(() => {
+          setUser(toAppUser(auth.currentUser));
+          setIsLoading(false);
+        });
+      } else {
+        firstCall = false;
+        setUser(toAppUser(firebaseUser));
+        setIsLoading(false);
+      }
     });
 
     return unsubscribe;
