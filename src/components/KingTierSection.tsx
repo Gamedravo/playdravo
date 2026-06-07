@@ -1,5 +1,5 @@
 import { memo, useState, useRef } from 'react';
-import { Crown, Clock, ChevronLeft, ChevronRight, Play, X, Maximize2, Star, Flame, Zap, RefreshCw } from 'lucide-react';
+import { Crown, ChevronLeft, ChevronRight, Play, X, Maximize2, Star, Flame, Zap, RefreshCw, Users } from 'lucide-react';
 
 interface KingTierSectionProps {
   isDarkMode: boolean;
@@ -93,25 +93,11 @@ const BADGE_CONFIG: Record<Badge, { label: string; className: string; Icon: Reac
   live:    { label: 'Live',    className: 'kt-badge--live',    Icon: Zap },
 };
 
-function useCountdown(targetMs: number) {
-  const [remaining, setRemaining] = useState(() => Math.max(0, targetMs - Date.now()));
-  const ref = useRef<number | null>(null);
-  if (!ref.current) {
-    ref.current = window.setInterval(() => {
-      setRemaining((r) => Math.max(0, r - 1000));
-    }, 1000);
-  }
-  const h = Math.floor(remaining / 3600000);
-  const m = Math.floor((remaining % 3600000) / 60000);
-  return `${h}h ${m}m`;
-}
-
-const TARGET_TIME = Date.now() + 20 * 3600000 + 40 * 60000;
+const LIVE_PLAYERS = `${(KING_GAMES.length * 312 + 841).toLocaleString()} playing`;
 
 export const KingTierSection = memo(function KingTierSection({ isDarkMode }: KingTierSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeEmbed, setActiveEmbed] = useState<KingGame | null>(null);
-  const countdown = useCountdown(TARGET_TIME);
 
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return;
@@ -148,10 +134,16 @@ export const KingTierSection = memo(function KingTierSection({ isDarkMode }: Kin
             </div>
           </div>
           <div className="kt-header-right">
-            <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span className={`kt-timer ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-              Ends in {countdown}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-400/30 bg-amber-400/10 text-amber-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                Season 1
+              </span>
+              <span className={`flex items-center gap-1 text-[11px] font-semibold ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
+                <Users className="w-3 h-3" />
+                {LIVE_PLAYERS}
+              </span>
+            </div>
             <div className="kt-nav-btns">
               <button onClick={() => scroll('left')} className={`kt-nav-btn ${isDarkMode ? 'kt-nav-btn--dark' : 'kt-nav-btn--light'}`}>
                 <ChevronLeft className="w-3.5 h-3.5" />
