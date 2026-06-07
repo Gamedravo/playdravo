@@ -165,6 +165,36 @@ export function Footer({ isDarkMode, t }: FooterProps) {
               </a>
             </p>
           </div>
+
+          {/* Prominent legal links — required visible for OAuth/crawler verification */}
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <Link
+              to="/privacy"
+              className={`text-[11px] font-bold underline underline-offset-2 transition-colors ${
+                isDarkMode ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'
+              }`}
+            >
+              Privacy Policy
+            </Link>
+            <span className={isDarkMode ? 'text-white/20' : 'text-black/20'}>·</span>
+            <Link
+              to="/terms"
+              className={`text-[11px] font-semibold transition-colors ${
+                isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'
+              }`}
+            >
+              Terms of Service
+            </Link>
+            <span className={isDarkMode ? 'text-white/20' : 'text-black/20'}>·</span>
+            <Link
+              to="/cookies"
+              className={`text-[11px] font-semibold transition-colors ${
+                isDarkMode ? 'text-white/40 hover:text-white' : 'text-black/40 hover:text-black'
+              }`}
+            >
+              Cookie Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
