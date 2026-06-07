@@ -4,17 +4,14 @@ import {
   Plus, 
   LogIn,
   ChevronDown,
-  Bell,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
 import { UserProfile, Language } from '../types';
 import { User as FirebaseUser } from 'firebase/auth';
-import { useNotifications } from './NotificationsProvider';
-import { NotificationDrawer } from './NotificationDropdown';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { useState, memo, useRef } from 'react';
+import { memo } from 'react';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
 
 interface HeaderProps {
@@ -67,10 +64,6 @@ export const Header = memo(function Header({
   const isSidebarOpen = useSidebarOpen();
   const { toggle: toggleSidebar } = useSidebar();
   const isSearchPage = location.pathname === '/search';
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const { unreadCount } = useNotifications();
-  const bellRef = useRef<HTMLButtonElement>(null);
-
   return (
     <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-150 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
@@ -146,42 +139,14 @@ export const Header = memo(function Header({
                 variant="dropdown"
               />
             </div>
-            {userProfile?.role === 'admin' && (
-              <button
-                onClick={() => setIsSubmitModalOpen(true)}
-                aria-label="Submit a game"
-                className="hidden md:flex p-2 sm:p-3 rounded-2xl transition-colors bg-accent text-bg-dark"
-              >
-                <Plus className="w-4 h-4 sm:w-5 h-5" />
-              </button>
-            )}
-
-            {!user && (
-              <div className="relative">
-                <button
-                  ref={bellRef}
-                  onClick={() => setIsNotificationsOpen((open) => !open)}
-                  aria-label="Notifications"
-                  aria-expanded={isNotificationsOpen}
-                  aria-haspopup="dialog"
-                  className={`p-2 sm:p-2.5 rounded-xl relative ${isNotificationsOpen ? 'ring-2 ring-accent' : ''} ${isDarkMode ? 'bg-white/5 hover:bg-white/10 text-white' : 'bg-black/5 hover:bg-black/10 text-black'}`}
-                >
-                  <Bell className="w-4 h-4 sm:w-4 sm:h-4" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-extrabold text-white bg-red-500 rounded-full border-2 border-[#12121e]">
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
-
-                <NotificationDrawer
-                  isOpen={isNotificationsOpen}
-                  onClose={() => setIsNotificationsOpen(false)}
-                  isDarkMode={isDarkMode}
-                  anchorRef={bellRef}
-                />
-              </div>
-            )}
+            <button
+              onClick={() => setIsSubmitModalOpen(true)}
+              aria-label="Submit a game"
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl transition-colors font-semibold text-xs border ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-accent hover:border-accent hover:text-bg-dark text-white' : 'bg-black/5 border-black/10 hover:bg-accent hover:border-accent hover:text-white text-black'}`}
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Submit Game</span>
+            </button>
             
             {!user ? (
               <button 

@@ -860,37 +860,6 @@ export const GAMES: Game[] = [
     redirectRisk: false,
   },
 
-  // ── Fireboy and Watergirl Series ─────────────────────────────────────
-  {
-    id: 'fbw-2-light-temple',
-    title: 'Fireboy and Watergirl 2: Light Temple',
-    category: 'Adventure',
-    url: 'https://kiz10.com/embed/fireboy-and-watergirl-2-light-temple/',
-    thumbnail: 'https://cdn.kiz10.com/upload/thumbnails/10139/1530728487_fireboy-and-watergirl-2-light-temple.webp',
-    description: 'Fireboy and Watergirl return to the Light Temple! Use mirrors and prisms to direct laser beams, solve new puzzles and reach the exit doors together in this brilliant sequel.',
-    rating: 4.8,
-    plays: 9500000,
-    authorUid: 'curated',
-    createdAt: '2026-06-06T00:00:00.000Z',
-    isHot: true,
-    isTop: false,
-    tags: ['2 Player', 'Multiplayer', 'Adventure', 'Puzzle', 'Platformer', 'Co-Op'],
-    developer: 'Oslo Albet',
-    publisher: 'Kiz10',
-    mobileOptimization: 'responsive',
-    fullscreenSupport: true,
-    orientation: 'landscape',
-    embedCompatibility: 'full',
-    validationState: 'Verified Working',
-    lastVerified: '2026-06-06T00:00:00.000Z',
-    sourceId: 'curated',
-    avgPlayTime: '20m',
-    contentRating: 'Everyone',
-    adsInjected: false,
-    popupRisk: false,
-    redirectRisk: false,
-  },
-
   // ── Girls Games (verified Gameflare embeds) ───────────────────────────
 
   // ── More Girls Games (verified kiz10 + Gameflare embeds) ─────────────

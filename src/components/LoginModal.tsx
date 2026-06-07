@@ -205,7 +205,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black/90 z-[1900]"
           />
-          <div className="relative z-[2000] w-full h-full" onClick={onClose}>
+          <div className="relative z-[2000] w-full h-full overflow-y-auto" onClick={onClose}>
             <div className="min-h-[100dvh] flex items-center justify-center p-4">
               <motion.div
                 key="login-modal-container"
