@@ -233,6 +233,14 @@ function PremiumHeroCard({
       <div className="featured-hero-gradient featured-hero-gradient--two" aria-hidden />
       <div className="featured-light-streak featured-light-streak--one" aria-hidden />
       <div className="featured-light-streak featured-light-streak--two" aria-hidden />
+
+      <div className="featured-hero-hud" aria-hidden>
+        <span className="featured-hud-corner featured-hud-tl" />
+        <span className="featured-hud-corner featured-hud-tr" />
+        <span className="featured-hud-corner featured-hud-bl" />
+        <span className="featured-hud-corner featured-hud-br" />
+      </div>
+
       <div className="featured-floating-chip featured-floating-chip--preview" aria-hidden>
         <Video className="w-3.5 h-3.5" />
         {showVideo ? 'Live preview' : 'Daily pick'}

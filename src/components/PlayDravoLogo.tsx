@@ -11,6 +11,8 @@ const SIZES = {
 export interface PlayDravoLogoProps {
   size?: keyof typeof SIZES;
   showWordmark?: boolean;
+  /** Extra Tailwind classes applied to the wordmark wrapper span */
+  wordmarkClassName?: string;
   className?: string;
   /** Render as home link */
   href?: string;
@@ -20,6 +22,7 @@ export interface PlayDravoLogoProps {
 export function PlayDravoLogo({
   size = 'md',
   showWordmark = true,
+  wordmarkClassName,
   className = '',
   href,
   onClick,
@@ -38,7 +41,7 @@ export function PlayDravoLogo({
         />
       </span>
       {showWordmark && (
-        <span className="brand-wordmark">
+        <span className={wordmarkClassName ?? 'brand-wordmark'}>
           <span className={`brand-title ${dim.text}`}>
             Game<span>Dravo</span>
           </span>
