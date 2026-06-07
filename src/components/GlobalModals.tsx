@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { UserProfile, Game } from '../types';
-import { User as FirebaseUser } from 'firebase/auth';
+import { type ReplitUser } from '../hooks/useReplitAuth';
 import { AccountSettingsView } from '../hooks/useModals';
 
 const SubmitGameModal = lazy(() =>
@@ -39,7 +39,7 @@ const BugReportModal = lazy(() =>
 
 interface GlobalModalsProps {
   modalsState: any;
-  user: FirebaseUser | null;
+  user: ReplitUser | null;
   userProfile: UserProfile | null;
   setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
   legalContent: { title: string; content: string };
@@ -193,7 +193,7 @@ export function GlobalModals({
           <UsernameSetupModal
             isOpen={isUsernameModalOpen}
             onClose={() => setIsUsernameModalOpen(false)}
-            userId={user.uid}
+            userId={user.id}
             onComplete={(newUsername) => {
               setUserProfile((prev) =>
                 prev ? { ...prev, displayName: newUsername, username: newUsername } : prev

@@ -15,12 +15,12 @@ import {
   X
 } from 'lucide-react';
 import { UserProfile } from '../types';
-import { User as FirebaseUser } from 'firebase/auth';
+import { type ReplitUser } from '../hooks/useReplitAuth';
 
 interface ProfileDropdownProps {
   isOpen: boolean;
   onClose: () => void;
-  user: FirebaseUser | null;
+  user: ReplitUser | null;
   userProfile: UserProfile | null;
   isDarkMode: boolean;
   logout: () => void;
@@ -145,7 +145,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                     <div className="relative group">
                       <div className="w-24 h-24 lg:w-16 lg:h-16 rounded-full overflow-hidden border-2 border-accent shadow-lg shadow-accent/20">
                         <img 
-                          src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
+                          src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} 
                           alt="Avatar" 
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"

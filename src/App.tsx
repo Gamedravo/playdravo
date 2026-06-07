@@ -80,14 +80,10 @@ import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import {
   db,
-  auth,
-  signInWithGoogle,
-  logout,
   handleFirestoreError,
   OperationType,
   runTransaction,
   serverTimestamp,
-  persistencePromise
 } from './firebase';
 import { 
   collection, 
@@ -104,7 +100,7 @@ import {
   getDocs,
   where
 } from 'firebase/firestore';
-import { onAuthStateChanged, User as FirebaseUser, getRedirectResult } from 'firebase/auth';
+import { useReplitAuth, type ReplitUser } from './hooks/useReplitAuth';
 import { NotificationsProvider, useNotifications } from './components/NotificationsProvider';
 import { SEO } from './components/SEO';
 import { Sidebar } from './components/Sidebar';
@@ -349,7 +345,8 @@ function AppContent() {
 
   const baseGamesRef = useRef<Game[]>(STATIC_GAMES.map(withSafetyMetadata));
   const [games, setGames] = useState<Game[]>(baseGamesRef.current);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const { user: replitUser, isLoading: isAuthLoading, login: replitLogin, logout: replitLogout } = useReplitAuth();
+  const user = replitUser;
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   
@@ -512,7 +509,7 @@ function AppContent() {
     document.documentElement.style.setProperty('--color-accent', accentColor);
     localStorage.setItem('topg_accent', accentColor);
     if (user && userProfile && userProfile.accentColor !== accentColor) {
-      updateDoc(doc(db, 'users', user.uid), { accentColor }).catch(console.error);
+      updateDoc(doc(db, 'users', user.id), { accentColor }).catch(console.error);
     }
   }, [accentColor, user, userProfile]);
 
@@ -526,7 +523,7 @@ function AppContent() {
       document.documentElement.classList.add('light');
     }
     if (user && userProfile && userProfile.isDarkMode !== isDarkMode) {
-      updateDoc(doc(db, 'users', user.uid), { isDarkMode }).catch(console.error);
+      updateDoc(doc(db, 'users', user.id), { isDarkMode }).catch(console.error);
     }
   }, [isDarkMode, user, userProfile]);
 
@@ -568,123 +565,64 @@ function AppContent() {
     ];
   }, []);
 
-  // Real-time Games Listener
+  // Auth initialization with Replit Auth
   useEffect(() => {
-    // Combined auth initialization
-    let unsubscribeAuth: (() => void) | undefined;
-    let cancelled = false;
-    
-    // Safety timeout for auth initialization
-    const authTimeout = setTimeout(() => {
-      if (!isAuthReady) {
-        console.warn("Auth initialization timed out, forcing isAuthReady=true");
+    if (isAuthLoading) return;
+
+    const initUserProfile = async () => {
+      if (!replitUser) {
+        setUserProfile(null);
+        setGamerPersona(null);
+        setIsAuthReady(true);
+        return;
+      }
+
+      devLog('Replit auth user:', replitUser.id);
+      // Build a UserProfile from the Replit user
+      const displayName = [replitUser.firstName, replitUser.lastName].filter(Boolean).join(' ') || replitUser.username || 'Anonymous';
+      const baseProfile: UserProfile = {
+        uid: replitUser.id,
+        displayName,
+        email: replitUser.email || '',
+        photoURL: replitUser.profileImageUrl || '',
+        role: (replitUser.role as 'user' | 'admin') || 'user',
+        favorites: [],
+        xp: 0,
+        createdAt: new Date().toISOString()
+      };
+
+      // Try to load extended profile from Firestore (may fail on quota)
+      try {
+        const userDocRef = doc(db, 'users', replitUser.id);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const profile = { ...baseProfile, ...userDoc.data() } as UserProfile;
+          if (isAdminEmail(replitUser.email)) profile.role = 'admin';
+          setUserProfile(profile);
+          if (!profile.usernameSet) setIsUsernameModalOpen(true);
+          if (profile.accentColor) setAccentColor(profile.accentColor);
+          if (profile.isDarkMode !== undefined) setIsDarkMode(profile.isDarkMode);
+          if (profile.favorites) setFavorites([...new Set(profile.favorites)]);
+          if (profile.playHistory) setPlayHistory([...new Set(profile.playHistory)]);
+          if (profile.preferredCategories) setPreferredCategories(profile.preferredCategories);
+          if (profile.gamerPersona) setGamerPersona(profile.gamerPersona);
+        } else {
+          await setDoc(userDocRef, baseProfile);
+          setUserProfile(baseProfile);
+          setIsUsernameModalOpen(true);
+        }
+      } catch (error: any) {
+        console.warn('Firestore profile load failed (quota or network):', error?.message);
+        // Fall back to base profile from Replit Auth — app still works
+        setUserProfile(baseProfile);
+      } finally {
         setIsAuthReady(true);
       }
-    }, 12000); // 12 second safety net
-    (async () => {
-      // Ensure persistence is set BEFORE we install listeners so popup OAuth updates the UI immediately.
-      await persistencePromise.catch(() => undefined);
-      if (cancelled) return;
-
-      // Monitor for redirect results
-      getRedirectResult(auth)
-        .then((result) => {
-          if (result?.user) {
-            appToast.success(t('loginSuccess') || 'Successfully logged in!');
-          }
-        })
-        .catch((error) => {
-          console.error("Redirect login error:", error);
-          if (error.code === 'auth/unauthorized-domain') {
-            appToast.error('Unauthorized domain.', {
-              description: "Please add this URL to your Firebase Authorized Domains.",
-              duration: 6000
-            });
-          } else if (error.code === 'auth/web-storage-unsupported' || error.message.includes('cookie')) {
-            appToast.error('Cookies Blocked', {
-              description: "Your browser is blocking cookies. Please open the app in a new tab or enable cookies to log in.",
-              duration: 8000
-            });
-          }
-        });
-
-      // Main auth listener
-      unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
-        devLog('onAuthStateChanged triggered. User:', firebaseUser?.uid);
-        setUser(firebaseUser);
-        clearTimeout(authTimeout);
-        
-        if (firebaseUser) {
-          // Fetch or create user profile
-          const userDocRef = doc(db, 'users', firebaseUser.uid);
-          try {
-            const userDoc = await getDoc(userDocRef);
-            
-            if (userDoc.exists()) {
-              const profile = userDoc.data() as UserProfile;
-              // Force admin role for the designated email
-              if (isAdminEmail(firebaseUser.email)) {
-                profile.role = 'admin';
-              }
-              setUserProfile(profile);
-              if (!profile.usernameSet) {
-                setIsUsernameModalOpen(true);
-              }
-              if (profile.accentColor) setAccentColor(profile.accentColor);
-              if (profile.isDarkMode !== undefined) setIsDarkMode(profile.isDarkMode);
-              if (profile.favorites) setFavorites([...new Set(profile.favorites)]);
-              if (profile.playHistory) setPlayHistory([...new Set(profile.playHistory)]);
-              if (profile.preferredCategories) setPreferredCategories(profile.preferredCategories);
-              if (profile.gamerPersona) {
-                setGamerPersona(profile.gamerPersona);
-              }
-            } else {
-              devLog('Creating new profile for user:', firebaseUser.uid);
-              const newProfile: UserProfile = {
-                uid: firebaseUser.uid,
-                displayName: firebaseUser.displayName || 'Anonymous',
-                email: firebaseUser.email || '',
-                photoURL: firebaseUser.photoURL || '',
-                role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
-                favorites: [],
-                xp: 0,
-                createdAt: new Date().toISOString()
-              };
-              await setDoc(userDocRef, newProfile);
-              setUserProfile(newProfile);
-              setIsUsernameModalOpen(true);
-            }
-          } catch (error: any) {
-            console.error("Error fetching or creating user profile:", error);
-            handleFirestoreError(error, OperationType.WRITE, `users/${firebaseUser.uid}`);
-            // Fallback so the user is still logged in locally even if Firestore fails
-            setUserProfile({
-              uid: firebaseUser.uid,
-              displayName: firebaseUser.displayName || 'Anonymous',
-              email: firebaseUser.email || '',
-              photoURL: firebaseUser.photoURL || '',
-              role: isAdminEmail(firebaseUser.email) ? 'admin' : 'user',
-              favorites: [],
-              xp: 0,
-              createdAt: new Date().toISOString()
-            });
-          } finally {
-            setIsAuthReady(true);
-          }
-        } else {
-          setUserProfile(null);
-          setGamerPersona(null);
-          setIsAuthReady(true);
-        }
-      });
-    })();
-
-    return () => {
-      cancelled = true;
-      if (unsubscribeAuth) unsubscribeAuth();
-      clearTimeout(authTimeout);
     };
-  }, [t]);
+
+    initUserProfile();
+  }, [replitUser, isAuthLoading]);
 
 
   // Global XP Listener
@@ -700,7 +638,7 @@ function AppContent() {
         
         
         try {
-          await updateDoc(doc(db, 'users', user.uid), {
+          await updateDoc(doc(db, 'users', user.id), {
             xp: newXp,
             level: newLevel
           });
@@ -902,7 +840,7 @@ function AppContent() {
   const handleRate = async (value: number) => {
     if (!activeGame || !userProfile) {
       if (!userProfile) {
-        signInWithGoogle();
+        replitLogin();
       }
       return;
     }
@@ -1057,12 +995,12 @@ function AppContent() {
 
     if (user && userProfile) {
       try {
-        await updateDoc(doc(db, 'users', user.uid), {
+        await updateDoc(doc(db, 'users', user.id), {
           favorites: newFavorites
         });
         setUserProfile({ ...userProfile, favorites: newFavorites });
       } catch (error) {
-        handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}`);
+        handleFirestoreError(error, OperationType.UPDATE, `users/${user.id}`);
       }
     }
   };
@@ -1134,7 +1072,7 @@ function AppContent() {
           - Current Stats: ${platformContext.stats.totalGames} games available, ${platformContext.stats.totalMods} mods across various titles.
           
           User Context:
-          - User: ${user?.displayName || 'Guest'}
+          - User: ${user?.firstName || user?.username || 'Guest'}
           - Persona: ${userProfile?.gamerPersona?.title || 'Unknown'}
           - XP: ${userProfile?.xp || 0}
           - Current Language: ${language}
@@ -1225,7 +1163,7 @@ function AppContent() {
 
     if (!user) return;
     try {
-      const userRef = doc(db, 'users', user.uid);
+      const userRef = doc(db, 'users', user.id);
       await updateDoc(userRef, {
         preferredCategories: categories
       });
@@ -1304,7 +1242,7 @@ function AppContent() {
     const persona = { title, description };
     
     try {
-      const userRef = doc(db, 'users', user.uid);
+      const userRef = doc(db, 'users', user.id);
       await updateDoc(userRef, { gamerPersona: persona });
       setGamerPersona(persona);
       setUserProfile(prev => prev ? { ...prev, gamerPersona: persona } : null);
@@ -1357,21 +1295,21 @@ function AppContent() {
   useEffect(() => {
     localStorage.setItem('topg_history', JSON.stringify(playHistory));
     if (user && userProfile && JSON.stringify(userProfile.playHistory) !== JSON.stringify(playHistory)) {
-      updateDoc(doc(db, 'users', user.uid), { playHistory }).catch(console.error);
+      updateDoc(doc(db, 'users', user.id), { playHistory }).catch(console.error);
     }
   }, [playHistory, user, userProfile]);
 
   useEffect(() => {
     localStorage.setItem('topg_favorites', JSON.stringify(favorites));
     if (user && userProfile && JSON.stringify(userProfile.favorites) !== JSON.stringify(favorites)) {
-      updateDoc(doc(db, 'users', user.uid), { favorites }).catch(console.error);
+      updateDoc(doc(db, 'users', user.id), { favorites }).catch(console.error);
     }
   }, [favorites, user, userProfile]);
 
   useEffect(() => {
     localStorage.setItem('topg_preferred_categories', JSON.stringify(preferredCategories));
     if (user && userProfile && JSON.stringify(userProfile.preferredCategories) !== JSON.stringify(preferredCategories)) {
-      updateDoc(doc(db, 'users', user.uid), { preferredCategories }).catch(console.error);
+      updateDoc(doc(db, 'users', user.id), { preferredCategories }).catch(console.error);
     }
   }, [preferredCategories, user, userProfile]);
 
@@ -1379,7 +1317,7 @@ function AppContent() {
     if (gamerPersona) {
       localStorage.setItem('topg_persona', JSON.stringify(gamerPersona));
       if (user && userProfile && JSON.stringify(userProfile.gamerPersona) !== JSON.stringify(gamerPersona)) {
-        updateDoc(doc(db, 'users', user.uid), { gamerPersona }).catch(console.error);
+        updateDoc(doc(db, 'users', user.id), { gamerPersona }).catch(console.error);
       }
     }
   }, [gamerPersona, user, userProfile]);
@@ -1548,8 +1486,8 @@ function AppContent() {
 
     try {
       await addDoc(collection(db, 'chat'), {
-        uid: user.uid,
-        displayName: user.displayName || 'Anonymous',
+        uid: user.id,
+        displayName: userProfile?.displayName || 'Anonymous',
         text: text.trim(),
         timestamp: serverTimestamp()
       });
@@ -1586,8 +1524,8 @@ function AppContent() {
           setSelectedCategory={setSelectedCategory}
           categoryGroups={categoryGroups}
           userProfile={userProfile}
-          setIsLoginModalOpen={setIsLoginModalOpen}
-          logout={logout}
+          setIsLoginModalOpen={() => replitLogin()}
+          logout={replitLogout}
           setIsPreferencesModalOpen={setIsPreferencesModalOpen}
           setIsSubmitModalOpen={setIsSubmitModalOpen}
           handleSurpriseMe={handleSurpriseMe}
@@ -1603,8 +1541,8 @@ function AppContent() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             userProfile={userProfile}
-            setIsLoginModalOpen={setIsLoginModalOpen}
-            logout={logout}
+            setIsLoginModalOpen={() => replitLogin()}
+            logout={replitLogout}
             accentColor={accentColor}
             setIsCommandPaletteOpen={setIsCommandPaletteOpen}
             openAccountSettings={openAccountSettings}
@@ -1629,7 +1567,7 @@ function AppContent() {
               user={user}
               userProfile={userProfile}
               isDarkMode={isDarkMode}
-              logout={logout}
+              logout={replitLogout}
               openAccountSettings={openAccountSettings}
               setIsUsernameModalOpen={setIsUsernameModalOpen}
               setIsHelpCenterOpen={setIsHelpCenterOpen}

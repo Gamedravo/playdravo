@@ -5,6 +5,8 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import cors from "cors";
+import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/index.js";
+import { authStorage } from "./server/replit_integrations/auth/storage.js";
 
 dotenv.config();
 
@@ -278,6 +280,21 @@ app.post("/api/gemini/chat", async (req, res) => {
 });
 
 async function startServer() {
+  // Wire up Replit Auth (session + passport + OIDC routes)
+  await setupAuth(app);
+
+  // Auth API routes
+  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      const user = await authStorage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },

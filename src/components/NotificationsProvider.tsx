@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useReplitAuth } from '../hooks/useReplitAuth';
 
 export interface AppNotification {
   id: string;
@@ -34,25 +33,19 @@ const GUEST_NOTIFICATION: AppNotification = {
 const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
 
 export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => !!auth.currentUser);
+  const { isAuthenticated } = useReplitAuth();
   const [guestNoticeRead, setGuestNoticeRead] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
-      if (user) setGuestNoticeRead(false);
-    });
-    return unsubscribe;
-  }, []);
+    if (isAuthenticated) setGuestNoticeRead(false);
+  }, [isAuthenticated]);
 
   const notifications = useMemo<AppNotification[]>(() => {
-    if (isLoggedIn) return [];
+    if (isAuthenticated) return [];
     return [{ ...GUEST_NOTIFICATION, read: guestNoticeRead }];
-  }, [guestNoticeRead, isLoggedIn]);
+  }, [guestNoticeRead, isAuthenticated]);
 
-  const addNotification = useCallback(() => {
-    // All app-generated notifications are intentionally disabled.
-  }, []);
+  const addNotification = useCallback(() => {}, []);
 
   const markAsRead = useCallback((id: string) => {
     if (id === GUEST_NOTIFICATION.id) setGuestNoticeRead(true);
