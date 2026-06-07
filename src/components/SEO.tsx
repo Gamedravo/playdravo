@@ -13,7 +13,7 @@ interface SEOProps {
 }
 
 const SITE_NAME = 'GameDravo';
-const LEGACY_SITE_NAME = 'PlayDravo';
+const LEGACY_SITE_NAME = 'GameDravo';
 const DEFAULT_IMAGE = '/logo.svg';
 const DEFAULT_KEYWORDS = 'free online games, lightweight browser games, no download games, instant play games, HTML5 games, mobile games, arcade games, puzzle games, action games';
 

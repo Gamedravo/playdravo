@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Check, ShieldAlert } from 'lucide-react';
-import { PlayDravoMark } from './PlayDravoLogo';
+import { GameDravoMark } from './GameDravoLogo';
 import { toast } from 'sonner';
 import { ModalShell } from './ui/ModalShell';
 import { api } from '../lib/api';
@@ -57,7 +57,7 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
     >
       <div className="p-10">
         <div className="flex flex-col items-center text-center mb-8">
-          <PlayDravoMark className="w-12 h-12 mb-4 text-accent" />
+          <GameDravoMark className="w-12 h-12 mb-4 text-accent" />
           <div className="flex items-center gap-2 mb-2">
             <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
             <span className="text-[10px] font-bold text-accent uppercase tracking-[0.3em]">Setup: Username</span>

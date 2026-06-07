@@ -16,7 +16,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
     {
       icon: <Scale className="w-5 h-5 text-accent" />,
       title: "Legal Terms Binding",
-      desc: "By accessing any domain or sub-components of PlayDravo, you verified unconditional acceptance of these terms."
+      desc: "By accessing any domain or sub-components of GameDravo, you verified unconditional acceptance of these terms."
     },
     {
       icon: <UserCheck className="w-5 h-5 text-accent" />,
@@ -26,7 +26,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
     {
       icon: <FileCode className="w-5 h-5 text-accent" />,
       title: "IP Protection",
-      desc: "All design materials, logos, brands, and custom gaming codes remains copyrighted by PlayDravo or licensing partners."
+      desc: "All design materials, logos, brands, and custom gaming codes remains copyrighted by GameDravo or licensing partners."
     }
   ];
 
@@ -79,7 +79,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
             <span className="font-bold text-accent">{lastUpdated}</span>
             <span className={isDarkMode ? 'text-white/20' : 'text-black/20'}>|</span>
             <span className={isDarkMode ? 'text-white/40' : 'text-black/40'}>Author:</span>
-            <span className="font-bold">PlayDravo Operations Compliance Office</span>
+            <span className="font-bold">GameDravo Operations Compliance Office</span>
           </div>
         </motion.div>
 
@@ -115,10 +115,10 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Acceptance of the Terms</h2>
             </div>
             <p>
-              These Terms of Service (referred to as "Terms" or "Agreement") constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("User" or "you"), and PlayDravo Gaming Portal ("PlayDravo", "we", "us", or "our"), concerning your access to and use of the PlayDravo website as well as any other media form, media channel, mobile website, or application related, linked, or otherwise connected thereto.
+              These Terms of Service (referred to as "Terms" or "Agreement") constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("User" or "you"), and GameDravo Gaming Portal ("GameDravo", "we", "us", or "our"), concerning your access to and use of the GameDravo website as well as any other media form, media channel, mobile website, or application related, linked, or otherwise connected thereto.
             </p>
             <p>
-              By accessing the PlayDravo gaming portal, you represent that you have read, understood, and agreed to be bound by all of these Terms of Service. If you do not agree with all of these Terms, then you are strictly prohibited from using the platform and must discontinue use immediately.
+              By accessing the GameDravo gaming portal, you represent that you have read, understood, and agreed to be bound by all of these Terms of Service. If you do not agree with all of these Terms, then you are strictly prohibited from using the platform and must discontinue use immediately.
             </p>
           </section>
 
@@ -129,10 +129,10 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Intellectual Property Rights</h2>
             </div>
             <p>
-              Unless otherwise indicated, the PlayDravo application, including all source code, databases, functionality, software, website designs, audio, video, text, branding patterns, and logos (collectively, the "Content") and the trademarks, service marks, and logos contained therein (the "Marks") are owned or controlled by us or licensed to us, and are protected by copyright and trademark laws and various other intellectual property rights.
+              Unless otherwise indicated, the GameDravo application, including all source code, databases, functionality, software, website designs, audio, video, text, branding patterns, and logos (collectively, the "Content") and the trademarks, service marks, and logos contained therein (the "Marks") are owned or controlled by us or licensed to us, and are protected by copyright and trademark laws and various other intellectual property rights.
             </p>
             <p>
-              The Content and Marks are provided on PlayDravo "AS IS" for your personal, non-commercial use only. Except as expressly provided in these Terms of Service, no part of PlayDravo and no Content or Marks may be copied, reproduced, aggregated, republished, uploaded, posted, publicly displayed, encoded, translated, transmitted, distributed, sold, sublicensed, or otherwise exploited for any commercial purpose whatsoever, without our prior written permission.
+              The Content and Marks are provided on GameDravo "AS IS" for your personal, non-commercial use only. Except as expressly provided in these Terms of Service, no part of GameDravo and no Content or Marks may be copied, reproduced, aggregated, republished, uploaded, posted, publicly displayed, encoded, translated, transmitted, distributed, sold, sublicensed, or otherwise exploited for any commercial purpose whatsoever, without our prior written permission.
             </p>
           </section>
 
@@ -143,14 +143,14 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Prohibited Activities</h2>
             </div>
             <p>
-              You may not access or use PlayDravo for any purpose other than that for which we make the platform available. Standard user regulations require that users shall not:
+              You may not access or use GameDravo for any purpose other than that for which we make the platform available. Standard user regulations require that users shall not:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-xs">
-              <li>Systematically retrieve data or other content from PlayDravo to create or compile, directly or indirectly, a collection, compilation, database, or directory without written permission from us.</li>
-              <li>Exhaust, bypass, disable, or otherwise interfere with security-related components of PlayDravo, including features that prevent or restrict the use or copying of any Content.</li>
+              <li>Systematically retrieve data or other content from GameDravo to create or compile, directly or indirectly, a collection, compilation, database, or directory without written permission from us.</li>
+              <li>Exhaust, bypass, disable, or otherwise interfere with security-related components of GameDravo, including features that prevent or restrict the use or copying of any Content.</li>
               <li>Engage in unauthorized framing of or linking to the application.</li>
               <li>Use any automatic device, script, software robot, spider, or browser extension to manipulate gameplay, execute high score fraud, simulate plays, or alter statistical metrics.</li>
-              <li>Decipher, decompile, disassemble, or reverse engineer any of the software comprising or in any way making up a part of PlayDravo.</li>
+              <li>Decipher, decompile, disassemble, or reverse engineer any of the software comprising or in any way making up a part of GameDravo.</li>
             </ul>
           </section>
 
@@ -161,7 +161,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Disclaimers and Warranties</h2>
             </div>
             <p>
-              THE APPLICATION IS PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU AGREE THAT YOUR USE OF PLAYDRAVO AND OUR SERVICES WILL BE AT YOUR SOLE RISK. TO THE FULLEST PERCENTAGE PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, IN CONNECTION WITH THE PLATFORM AND YOUR USE THEREOF, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+              THE APPLICATION IS PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU AGREE THAT YOUR USE OF GAMEDRAVO AND OUR SERVICES WILL BE AT YOUR SOLE RISK. TO THE FULLEST PERCENTAGE PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, IN CONNECTION WITH THE PLATFORM AND YOUR USE THEREOF, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
             </p>
             <p>
               WE WILL ASSUME NO LIABILITY OR RESPONSIBILITY FOR ANY ERRORS, MISTAKES, OR INACCURACIES OF INTERACTIVE ASSETS, GAME SERVER TIMEOUTS, PERSONAL PROPERTY DAMAGE RESULTING FROM WEB BROWSER ACTIONS, OR UNAUTHORIZED SEIZURES OF ENCRYPTED PLATFORM SERVERS.
@@ -175,7 +175,7 @@ export function TermsPage({ isDarkMode, t }: TermsPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Governing Legislation & Dispute Resolution</h2>
             </div>
             <p>
-              These Terms of Service and your use of PlayDravo are governed by and construed in accordance with the internal system laws, without regard to conflict of law rules. Any legal dispute, claim, or arbitration arising from compliance issues shall be resolved via dedicated mutual consultations or submitted to authorized arbitration forums.
+              These Terms of Service and your use of GameDravo are governed by and construed in accordance with the internal system laws, without regard to conflict of law rules. Any legal dispute, claim, or arbitration arising from compliance issues shall be resolved via dedicated mutual consultations or submitted to authorized arbitration forums.
             </p>
           </section>
 

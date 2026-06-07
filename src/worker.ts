@@ -103,7 +103,7 @@ async function proxyJsonCatalog(
     const response = await fetch(sourceUrl, {
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'PlayDravo-CatalogLoader/1.0',
+        'User-Agent': 'GameDravo-CatalogLoader/1.0',
       },
       cf: {
         cacheTtl: cacheSeconds,

@@ -79,7 +79,7 @@ export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
             <span className="font-bold text-accent">{lastUpdated}</span>
             <span className={isDarkMode ? 'text-white/20' : 'text-black/20'}>|</span>
             <span className={isDarkMode ? 'text-white/40' : 'text-black/40'}>Author:</span>
-            <span className="font-bold">PlayDravo Legal Compliance Division</span>
+            <span className="font-bold">GameDravo Legal Compliance Division</span>
           </div>
         </motion.div>
 
@@ -115,7 +115,7 @@ export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>Information We Collect</h2>
             </div>
             <p>
-              At PlayDravo, we believe in minimal data overhead. We only collect the necessary information required to provide, authenticate, and improve our high-fidelity gaming portal:
+              At GameDravo, we believe in minimal data overhead. We only collect the necessary information required to provide, authenticate, and improve our high-fidelity gaming portal:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-xs">
               <li><strong>Account Credentials:</strong> Email addresses, hashed secure passwords, and display avatars provided during voluntary user registrations or OAuth authentications.</li>
@@ -163,7 +163,7 @@ export function PrivacyPage({ isDarkMode, t }: PrivacyPageProps) {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-xs">
               <li><strong>Google OAuth Identity:</strong> If you elect to register or login using Google, your name, email address, and avatar are verified against Google's authentication tokens.</li>
-              <li><strong>Embedded Web Game Frame Permissions:</strong> Selected isolated free web games require standard sandboxed frame executions. They do not retain access to your core PlayDravo system variables.</li>
+              <li><strong>Embedded Web Game Frame Permissions:</strong> Selected isolated free web games require standard sandboxed frame executions. They do not retain access to your core GameDravo system variables.</li>
             </ul>
           </section>
 

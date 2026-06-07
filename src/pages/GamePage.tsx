@@ -119,7 +119,7 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   // Check embed compatibility
   useEffect(() => {
-    // Hard-block risky embeds (ads/popups/redirects) from running inside PlayDravo.
+    // Hard-block risky embeds (ads/popups/redirects) from running inside GameDravo.
     // These sources can open popups or navigate away from the portal.
     if (game?.adsInjected || game?.popupRisk || game?.redirectRisk) {
       setEmbedStatus({
@@ -408,9 +408,9 @@ export const GamePage: React.FC<GamePageProps> = ({
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
       <SEO 
-        title={`${game.title} – Free Online ${game.category} Game | PlayDravo`}
-        description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on PlayDravo.`}`}
-        keywords={`${game.title}, play ${game.title} online, free ${game.category} game, ${game.category} games, browser games, PlayDravo${game.tags ? ', ' + game.tags.slice(0, 5).join(', ') : ''}`}
+        title={`${game.title} – Free Online ${game.category} Game | GameDravo`}
+        description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on GameDravo.`}`}
+        keywords={`${game.title}, play ${game.title} online, free ${game.category} game, ${game.category} games, browser games, GameDravo${game.tags ? ', ' + game.tags.slice(0, 5).join(', ') : ''}`}
         image={game.thumbnail}
         canonicalUrl={`${window.location.origin}/games/${game.id}`}
         url={`${window.location.origin}/games/${game.id}`}
@@ -418,7 +418,7 @@ export const GamePage: React.FC<GamePageProps> = ({
           '@context': 'https://schema.org',
           '@type': 'VideoGame',
           name: game.title,
-          description: game.description || `Play ${game.title} online for free on PlayDravo.`,
+          description: game.description || `Play ${game.title} online for free on GameDravo.`,
           url: `${window.location.origin}/games/${game.id}`,
           image: game.thumbnail,
           genre: game.category,
@@ -610,7 +610,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                                 This game is disabled for safety (ads/popups/redirects).
                               </span>
                               <span className="text-[10px] text-white/50 block uppercase tracking-wider mb-2">
-                                Disabled on PlayDravo
+                                Disabled on GameDravo
                               </span>
                               <div className="flex justify-center gap-3 pt-2">
                                 <button 
@@ -997,7 +997,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       { label: 'Category', value: game.category, icon: LayoutGrid },
                       { label: 'Rating', value: `${(typeof game.rating === 'number' ? game.rating : Number(game.rating || 0)).toFixed(1)}/5.0`, icon: Star },
                       { label: 'Total Plays', value: `${Number(game.plays || 0).toLocaleString()}`, icon: Users },
-                      { label: 'Developer', value: game.developer || 'PlayDravo Studios', icon: UserIcon }
+                      { label: 'Developer', value: game.developer || 'GameDravo Studios', icon: UserIcon }
                     ].map((stat, idx) => (
                       <div key={`game-stat-${stat.label}-${idx}`} className="flex items-center justify-between">
                         <div className="flex items-center gap-3 opacity-70">

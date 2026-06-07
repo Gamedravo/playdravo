@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Activity, Bug } from 'lucide-react';
-import { PlayDravoLogo } from './PlayDravoLogo';
+import { GameDravoLogo } from './GameDravoLogo';
 import { SUPPORT_EMAIL, supportMailto } from '../lib/brandContact';
 
 interface FooterProps {
@@ -48,7 +48,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
       <div className="max-w-6xl mx-auto px-6 py-12 md:py-16 relative z-10 grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12">
         {/* Brand Column */}
         <div className="col-span-2 md:col-span-4 space-y-6">
-          <PlayDravoLogo size="sm" showWordmark href="/" className="group" />
+          <GameDravoLogo size="sm" showWordmark href="/" className="group" />
           <p className={`text-xs leading-relaxed max-w-sm ${isDarkMode ? 'text-white/45' : 'text-black/45'}`}>
             GameDravo is an instant-access web gaming portal curating premier, lightweight, and hardware-optimized HTML5 game configurations for cross-platform desktop & mobile play.
           </p>

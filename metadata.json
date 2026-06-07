@@ -1,5 +1,5 @@
 {
-  "name": "PlayDravo Gaming Portal",
+  "name": "GameDravo Gaming Portal",
   "description": "A high-performance gaming portal with an Electric Blue aesthetic, featuring the best web games.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

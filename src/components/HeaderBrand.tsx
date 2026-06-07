@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayDravoLogo } from './PlayDravoLogo';
+import { GameDravoLogo } from './GameDravoLogo';
 import { useSidebarOpen } from '../contexts/SidebarContext';
 
 interface HeaderBrandProps {
@@ -24,7 +24,7 @@ export const HeaderBrand = memo(function HeaderBrand({ onHome }: HeaderBrandProp
   const shouldShowBrand = !sidebarOpen;
 
   return (
-    <PlayDravoLogo
+    <GameDravoLogo
       size="sm"
       showWordmark
       onClick={goHome}

@@ -8,7 +8,7 @@ const SIZES = {
   lg: { icon: 46, text: 'text-2xl', sub: 'text-[10px]' },
 } as const;
 
-export interface PlayDravoLogoProps {
+export interface GameDravoLogoProps {
   size?: keyof typeof SIZES;
   showWordmark?: boolean;
   /** Extra Tailwind classes applied to the wordmark wrapper span */
@@ -19,14 +19,14 @@ export interface PlayDravoLogoProps {
   onClick?: (e: MouseEvent) => void;
 }
 
-export function PlayDravoLogo({
+export function GameDravoLogo({
   size = 'md',
   showWordmark = true,
   wordmarkClassName,
   className = '',
   href,
   onClick,
-}: PlayDravoLogoProps) {
+}: GameDravoLogoProps) {
   const dim = SIZES[size];
   const inner = (
     <>
@@ -73,7 +73,7 @@ export function PlayDravoLogo({
 }
 
 /** Icon-only mark for collapsed sidebar / favicon contexts */
-export function PlayDravoMark({ size = 32, className = '' }: { size?: number; className?: string }) {
+export function GameDravoMark({ size = 32, className = '' }: { size?: number; className?: string }) {
   return (
     <span className={`brand-mark-shell ${className}`} aria-label="GameDravo">
       <img

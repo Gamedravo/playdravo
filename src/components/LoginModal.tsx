@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
-import { PlayDravoMark } from './PlayDravoLogo';
+import { GameDravoMark } from './GameDravoLogo';
 import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
 import {
   resetPassword,
@@ -131,15 +131,15 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
 
                 <div className="p-8 flex flex-col gap-5">
                   <div className="flex flex-col items-center gap-3 text-center">
-                    <PlayDravoMark size={48} />
+                    <GameDravoMark size={48} />
                     <div>
                       <h3 className="text-xl font-bold tracking-tight">
                         {isCreatingAccount ? 'Create your account' : t('login') || 'Sign In'}
                       </h3>
                       <p className={`mt-1 text-sm ${isDarkMode ? 'text-white/55' : 'text-black/55'}`}>
                         {isCreatingAccount
-                          ? 'Register to save favorites, track history, and personalize PlayDravo.'
-                          : 'Welcome back. Sign in to continue your PlayDravo session.'}
+                          ? 'Register to save favorites, track history, and personalize GameDravo.'
+                          : 'Welcome back. Sign in to continue your GameDravo session.'}
                       </p>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import { PlayDravoLogo } from './PlayDravoLogo';
+import { GameDravoLogo } from './GameDravoLogo';
 import { useSidebarOpen } from '../contexts/SidebarContext';
 
 /** Compact linked logo for static page headers (Support, Terms, etc.) */
@@ -11,7 +11,7 @@ export function PageBrandMark({ className = '' }: { className?: string }) {
   if (!sidebarOpen) return null;
 
   return (
-    <PlayDravoLogo
+    <GameDravoLogo
       size="sm"
       showWordmark
       href="/"

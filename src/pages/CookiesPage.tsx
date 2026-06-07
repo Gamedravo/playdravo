@@ -115,7 +115,7 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
               <h2 className={`text-lg font-extrabold ${isDarkMode ? 'text-white' : 'text-black'}`}>What Are Cookies?</h2>
             </div>
             <p>
-              Cookies are small block files stored securely in your web browser environment. At PlayDravo, we use standard local browser storage (`localStorage`, `sessionStorage`) alongside browser session identifiers. We minimize persistent tracking and never sell accumulated telemetry signals to marketing agencies.
+              Cookies are small block files stored securely in your web browser environment. At GameDravo, we use standard local browser storage (`localStorage`, `sessionStorage`) alongside browser session identifiers. We minimize persistent tracking and never sell accumulated telemetry signals to marketing agencies.
             </p>
           </section>
 

@@ -72,15 +72,15 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
   return (
     <div className="min-h-screen">
       <SEO 
-        title={`Play ${categoryName} Games Online Free – PlayDravo`}
-        description={`Play the best free ${categoryName} games online on PlayDravo. Browse ${categoryGames.length}+ ${categoryName} games — no download, no sign-up. Instant browser play.`}
-        keywords={`${categoryName} games, free ${categoryName} games online, play ${categoryName} games, browser ${categoryName} games, PlayDravo`}
+        title={`Play ${categoryName} Games Online Free – GameDravo`}
+        description={`Play the best free ${categoryName} games online on GameDravo. Browse ${categoryGames.length}+ ${categoryName} games — no download, no sign-up. Instant browser play.`}
+        keywords={`${categoryName} games, free ${categoryName} games online, play ${categoryName} games, browser ${categoryName} games, GameDravo`}
         canonicalUrl={`${window.location.origin}/category/${categoryId}`}
         url={`${window.location.origin}/category/${categoryId}`}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          name: `${categoryName} Games – PlayDravo`,
+          name: `${categoryName} Games – GameDravo`,
           description: `Browse and play ${categoryGames.length}+ free ${categoryName} games instantly in your browser.`,
           url: `${window.location.origin}/category/${categoryId}`,
           breadcrumb: {

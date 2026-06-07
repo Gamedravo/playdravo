@@ -41,7 +41,7 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
     const response = await fetch(ONLINE_GAMES_CATALOG_URL, {
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'PlayDravo-CatalogLoader/1.0',
+        'User-Agent': 'GameDravo-CatalogLoader/1.0',
       },
     });
 

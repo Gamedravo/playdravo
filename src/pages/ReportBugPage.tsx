@@ -110,7 +110,7 @@ export function ReportBugPage({ isDarkMode, t }: ReportBugPageProps) {
               </div>
               <h2 className="text-2xl font-black tracking-tight text-emerald-500">Bug Report Transmitted!</h2>
               <p className={`text-sm max-w-md mx-auto leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-                Thank you for contributing to PlayDravo stability! Engineering has been notified alongside your client context information. We will deploy repairs directly.
+                Thank you for contributing to GameDravo stability! Engineering has been notified alongside your client context information. We will deploy repairs directly.
               </p>
               <div className="pt-4 flex justify-center gap-4">
                 <button 

@@ -1,7 +1,7 @@
 import { memo, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Sparkles } from 'lucide-react';
-import { PlayDravoLogo } from './PlayDravoLogo';
+import { GameDravoLogo } from './GameDravoLogo';
 import { UserProfile, Language } from '../types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SidebarIcon } from '../lib/sidebarIcons';
@@ -93,7 +93,7 @@ export const Sidebar = memo(function Sidebar({
     >
       <div ref={scrollerRef} className="sidebar-scroll">
         <div className="sidebar-brand-row">
-          <PlayDravoLogo
+          <GameDravoLogo
             size="sm"
             showWordmark={isSidebarOpen || isMobileOpen}
             onClick={(e) => {

@@ -114,7 +114,7 @@ export function AboutPage({ isDarkMode, t }: AboutPageProps) {
           <div className="space-y-6">
             <h2 className="text-3xl font-extrabold tracking-tight">Our Mission</h2>
             <p className={`leading-relaxed ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
-              We believe great games should be accessible instantly to everyone, anywhere, on any device. PlayDravo completely bypasses the friction of heavy client downloads, hardware constraints, and app store paywalls.
+              We believe great games should be accessible instantly to everyone, anywhere, on any device. GameDravo completely bypasses the friction of heavy client downloads, hardware constraints, and app store paywalls.
             </p>
             <p className={`leading-relaxed ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
               By focusing on lightning-fast performance, elegant fluid UI typography, high-contrast dark visual aesthetics, and strong local persistence, we turn simple web browsing into a dedicated, desktop-class gaming console experience.

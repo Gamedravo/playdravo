@@ -47,7 +47,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
           icon: <Wrench className="w-8 h-8 text-accent" />,
           content: (
             <div className="space-y-6">
-              <p>Learn how to create, test, and share custom mods and guides for your favorite games on PlayDravo.</p>
+              <p>Learn how to create, test, and share custom mods and guides for your favorite games on GameDravo.</p>
               <h3 className="text-xl font-bold mt-8">Prerequisites</h3>
               <p>You will need basic knowledge of lightweight programming (HTML, JavaScript, CSS) and the specific game's asset structure.</p>
               <h3 className="text-xl font-bold mt-8">Submitting a Mod</h3>
@@ -181,7 +181,7 @@ export function SupportPage({ isDarkMode, t }: SupportPageProps) {
             <div className="text-center max-w-2xl mx-auto space-y-4 pt-4">
               <h1 className="text-3xl md:text-5xl font-black tracking-tight">Support & Help Center</h1>
               <p className={`text-sm leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-                Welcome to PlayDravo Help portal. Browse our troubleshooting docs, find answers to frequently asked questions, or request direct help from operations using the ticket generator.
+                Welcome to GameDravo Help portal. Browse our troubleshooting docs, find answers to frequently asked questions, or request direct help from operations using the ticket generator.
               </p>
             </div>
 
