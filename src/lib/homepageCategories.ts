@@ -24,7 +24,7 @@ export const HOMEPAGE_CATEGORY_CHIPS: HomepageCategoryChip[] = [
   { id: 'retro', title: 'Retro', icon: '🕹️', slug: 'retro', matchers: [/\bretro\b/i, /\bclassic\b/i], bg: 'from-fuchsia-500/10 to-purple-500/5 hover:border-fuchsia-500/30' },
   { id: 'casual', title: 'Casual', icon: '😊', slug: 'casual', matchers: [/\bcasual\b/i, /\bfun\b/i, /\bkids\b/i], bg: 'from-sky-500/10 to-cyan-500/5 hover:border-sky-500/30' },
   { id: 'sports', title: 'Sports', icon: '⚽', slug: 'sports', matchers: [/\bsports\b/i, /\bsoccer\b/i, /\bfootball\b/i, /\bgolf\b/i, /\bbasketball\b/i], bg: 'from-emerald-500/10 to-teal-500/5 hover:border-emerald-500/30' },
-  { id: 'simulation', title: 'Simulation', icon: '🔧', slug: 'simulation', matchers: [/\bsimulator\b/i, /\bsimulation\b/i, /\btycoon\b/i, /\bmanagement\b/i], bg: 'from-slate-500/10 to-zinc-500/5 hover:border-slate-500/30' },
+  { id: 'simulation', title: 'Simulator', icon: '🔧', slug: 'simulator', matchers: [/\bsimulator\b/i, /\bsimulation\b/i, /\btycoon\b/i, /\bmanagement\b/i], bg: 'from-slate-500/10 to-zinc-500/5 hover:border-slate-500/30' },
   { id: 'adventure', title: 'Adventure', icon: '🗺️', slug: 'adventure', matchers: [/\badventure\b/i, /\bplatformer\b/i, /\bparkour\b/i], bg: 'from-cyan-500/10 to-blue-500/5 hover:border-cyan-500/30' },
   { id: 'survival', title: 'Survival', icon: '🏕️', slug: 'survival', matchers: [/\bsurvival\b/i], bg: 'from-green-500/10 to-emerald-500/5 hover:border-green-500/30' },
   { id: 'horror', title: 'Horror', icon: '👻', slug: 'horror', matchers: [/\bhorror\b/i, /\bscary\b/i, /\bzombie\b/i], bg: 'from-gray-500/10 to-neutral-500/5 hover:border-gray-500/40' },
