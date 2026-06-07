@@ -517,11 +517,11 @@ function AppContent() {
   const categoryGroups = useMemo(() => {
     const mainMenu = ['All', 'Favorites', 'Recommended', 'History', 'Trending'];
     const mobile = ['Mobile Games', 'Best On Mobile'];
-    const multiplayer = ['Multiplayer', '1 Player', '2 Player', '3 Player', '4 Player'];
+    const multiplayer = ['Multiplayer'];
     
     // Any category not in mainMenu, mobile, or multiplayer goes into general Categories
-    const allKnown = [...mainMenu, ...mobile, ...multiplayer];
-    const gameCategories = CATEGORIES.filter(c => !allKnown.includes(c)).sort();
+    const excludeFromCategories = [...mainMenu, ...mobile, ...multiplayer, '1 Player', '2 Player', '3 Player', '4 Player'];
+    const gameCategories = CATEGORIES.filter(c => !excludeFromCategories.includes(c)).sort();
 
     return [
       {

@@ -856,7 +856,27 @@
   }
 
   .sidebar-group-label {
-    @apply px-2 pt-1.5 pb-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/25;
+    @apply px-2 pt-3 pb-1 text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-2;
+    color: var(--neon-cyan);
+    opacity: 0.55;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+    letter-spacing: 0.2em;
+  }
+  .sidebar-group-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(34,211,238,0.3), transparent);
+    border-radius: 1px;
+  }
+
+  .sidebar-shell--light .sidebar-group-label {
+    color: rgba(124, 58, 237, 0.7);
+    text-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
+    opacity: 1;
+  }
+  .sidebar-shell--light .sidebar-group-label::after {
+    background: linear-gradient(90deg, rgba(124,58,237,0.3), transparent);
   }
 
   .sidebar-shell--closed .sidebar-group-label {

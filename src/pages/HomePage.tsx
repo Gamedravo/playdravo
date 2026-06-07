@@ -351,6 +351,98 @@ export const HomePage = React.memo(function HomePage({
         ]}
       />
 
+      {/* Continue Playing — square thumbnail shelf — TOP of page */}
+      <SectionErrorBoundary sectionName="Recently Played">
+        {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && (
+          <LazyShelf eager minHeight={200}>
+          <section className="shelf-section group/shelf">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  {t('continuePlaying')}
+                </h3>
+                <button
+                  onClick={() => setPlayHistory([])}
+                  className={`text-[10px] font-semibold uppercase tracking-widest transition-colors mt-0.5 ${isDarkMode ? 'text-white/25 hover:text-red-400' : 'text-black/25 hover:text-red-500'}`}
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
+                  <button onClick={() => handleScroll(recentRef, 'left')} className={`p-1.5 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent' : 'border-black/10 hover:border-accent text-black hover:text-accent'}`}>
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => handleScroll(recentRef, 'right')} className={`p-1.5 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent' : 'border-black/10 hover:border-accent text-black hover:text-accent'}`}>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <button
+                  onClick={() => setPlayHistory([])}
+                  className="text-sm font-bold text-accent hover:opacity-80 transition-opacity"
+                >
+                  Show all
+                </button>
+              </div>
+            </div>
+
+            <div className="flex overflow-x-auto gap-2.5 pb-1 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" ref={recentRef}>
+              {recentlyPlayedGames.map((game, index) => (
+                <button
+                  key={`recent-${game.id}-${index}`}
+                  onClick={() => handleGameClick(game)}
+                  className="relative shrink-0 snap-start w-[148px] sm:w-[168px] md:w-[186px] aspect-square rounded-2xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  aria-label={`Resume ${game.title}`}
+                >
+                  <img
+                    src={game.thumbnail}
+                    alt={game.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-105"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1 border border-white/10">
+                    <Play className="w-2.5 h-2.5 text-accent fill-accent" />
+                    <span className="text-[9px] font-black uppercase tracking-wide text-white/90 leading-none">
+                      {game.category?.slice(0, 6) || 'Game'}
+                    </span>
+                  </div>
+                  {index === 0 && (
+                    <div className="absolute top-2 right-2 bg-accent text-white text-[8px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-md">
+                      Resume
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 p-2.5">
+                    <p className="text-white text-[11px] font-bold leading-tight line-clamp-2 drop-shadow-md">
+                      {game.title}
+                    </p>
+                  </div>
+                </button>
+              ))}
+              <button
+                onClick={triggerMysteryMatch}
+                disabled={isFindingMysteryMatch}
+                className={`relative shrink-0 snap-start w-[148px] sm:w-[168px] md:w-[186px] aspect-square rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                  isDarkMode
+                    ? 'bg-white/[0.03] border-white/10 hover:border-accent/50 text-accent'
+                    : 'bg-black/[0.02] border-black/10 hover:border-accent/40 text-accent'
+                }`}
+              >
+                <Sparkles className={`w-7 h-7 transition-transform hover:scale-110 ${isFindingMysteryMatch ? 'animate-pulse' : ''}`} />
+                <span className={`text-xs font-bold text-center leading-tight px-3 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  {isFindingMysteryMatch ? (mysteryMatchTitle || 'Finding…') : 'Mystery Match'}
+                </span>
+                <span className={`text-[9px] uppercase tracking-widest font-semibold ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+                  {isFindingMysteryMatch ? 'Searching…' : 'Random pick'}
+                </span>
+              </button>
+            </div>
+          </section>
+          </LazyShelf>
+        )}
+      </SectionErrorBoundary>
+
       <SectionErrorBoundary sectionName="Featured Spotlight">
         {selectedCategory === 'All' && !searchQuery && featuredSpotlight.hero && (
           <FeaturedSpotlight
@@ -394,110 +486,6 @@ export const HomePage = React.memo(function HomePage({
         </div>
       )}
 
-      {/* Continue Playing — square thumbnail shelf */}
-      <SectionErrorBoundary sectionName="Recently Played">
-        {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && (
-          <LazyShelf eager minHeight={200}>
-          <section className="shelf-section group/shelf">
-            {/* Header: title + "Show all" inline */}
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <h3 className={`text-xl sm:text-2xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  {t('continuePlaying')}
-                </h3>
-                <button
-                  onClick={() => setPlayHistory([])}
-                  className={`text-[10px] font-semibold uppercase tracking-widest transition-colors mt-0.5 ${isDarkMode ? 'text-white/25 hover:text-red-400' : 'text-black/25 hover:text-red-500'}`}
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity">
-                  <button onClick={() => handleScroll(recentRef, 'left')} className={`p-1.5 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent' : 'border-black/10 hover:border-accent text-black hover:text-accent'}`}>
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={() => handleScroll(recentRef, 'right')} className={`p-1.5 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent' : 'border-black/10 hover:border-accent text-black hover:text-accent'}`}>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <button
-                  onClick={() => setPlayHistory([])}
-                  className="text-sm font-bold text-accent hover:opacity-80 transition-opacity"
-                >
-                  Show all
-                </button>
-              </div>
-            </div>
-
-            {/* Square thumbnail cards */}
-            <div className="flex overflow-x-auto gap-2.5 pb-1 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" ref={recentRef}>
-              {recentlyPlayedGames.map((game, index) => (
-                <button
-                  key={`recent-${game.id}-${index}`}
-                  onClick={() => handleGameClick(game)}
-                  className="relative shrink-0 snap-start w-[148px] sm:w-[168px] md:w-[186px] aspect-square rounded-2xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                  aria-label={`Resume ${game.title}`}
-                >
-                  {/* Thumbnail */}
-                  <img
-                    src={game.thumbnail}
-                    alt={game.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-105"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
-
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                  {/* Category badge — top left */}
-                  <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1 border border-white/10">
-                    <Play className="w-2.5 h-2.5 text-accent fill-accent" />
-                    <span className="text-[9px] font-black uppercase tracking-wide text-white/90 leading-none">
-                      {game.category?.slice(0, 6) || 'Game'}
-                    </span>
-                  </div>
-
-                  {/* Resume badge on first card */}
-                  {index === 0 && (
-                    <div className="absolute top-2 right-2 bg-accent text-white text-[8px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-md">
-                      Resume
-                    </div>
-                  )}
-
-                  {/* Game title — bottom */}
-                  <div className="absolute inset-x-0 bottom-0 p-2.5">
-                    <p className="text-white text-[11px] font-bold leading-tight line-clamp-2 drop-shadow-md">
-                      {game.title}
-                    </p>
-                  </div>
-                </button>
-              ))}
-
-              {/* Mystery Match card */}
-              <button
-                onClick={triggerMysteryMatch}
-                disabled={isFindingMysteryMatch}
-                className={`relative shrink-0 snap-start w-[148px] sm:w-[168px] md:w-[186px] aspect-square rounded-2xl border flex flex-col items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-                  isDarkMode
-                    ? 'bg-white/[0.03] border-white/10 hover:border-accent/50 text-accent'
-                    : 'bg-black/[0.02] border-black/10 hover:border-accent/40 text-accent'
-                }`}
-              >
-                <Sparkles className={`w-7 h-7 transition-transform hover:scale-110 ${isFindingMysteryMatch ? 'animate-pulse' : ''}`} />
-                <span className={`text-xs font-bold text-center leading-tight px-3 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  {isFindingMysteryMatch ? (mysteryMatchTitle || 'Finding…') : 'Mystery Match'}
-                </span>
-                <span className={`text-[9px] uppercase tracking-widest font-semibold ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                  {isFindingMysteryMatch ? 'Searching…' : 'Random pick'}
-                </span>
-              </button>
-            </div>
-          </section>
-          </LazyShelf>
-        )}
-      </SectionErrorBoundary>
 
       {/* Trending Now */}
 
