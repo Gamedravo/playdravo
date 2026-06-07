@@ -22,8 +22,10 @@ export function ModalShell({
   maxWidth = 'max-w-md',
   zIndex = 50,
   padding = 'p-8',
-  showCloseButton = true
+  showCloseButton = true,
+  className = ''
 }: ModalShellProps) {
+
   useEffect(() => {
     if (!isOpen) return;
     const prevOverflow = document.body.style.overflow;
@@ -34,7 +36,7 @@ export function ModalShell({
   }, [isOpen]);
 
   return (
-    <AnimatePresence initial={false} mode="wait">
+    <AnimatePresence initial={false}>
       {isOpen && (
         <div
           className="fixed inset-0 flex items-center justify-center p-4 md:p-6"
@@ -45,21 +47,23 @@ export function ModalShell({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            transition={{ duration: 0.14 }}
+            className="absolute inset-0 bg-black/80 modal-backdrop-fast"
             onClick={onClose}
           />
+
           <motion.div
             key="modal-content"
-            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            initial={{ opacity: 0, scale: 0.985, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
-            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            className={`relative w-full overflow-hidden rounded-2xl border shadow-2xl ${maxWidth} ${padding} ${
+            exit={{ opacity: 0, scale: 0.985, y: 8 }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className={`modal-content-fast relative w-full overflow-hidden rounded-2xl border shadow-2xl ${maxWidth} ${padding} ${className} ${
               isDarkMode ? 'bg-[#12121e] border-white/10 text-white' : 'bg-white border-black/10 text-black'
             }`}
             onClick={(e) => e.stopPropagation()}
           >
+
             {showCloseButton && (
               <button
                 onClick={(e) => { e.stopPropagation(); onClose(); }}

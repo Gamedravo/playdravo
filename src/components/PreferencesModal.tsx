@@ -56,8 +56,11 @@ export function PreferencesModal({
       padding="p-0"
       showCloseButton={false}
     >
-      <div className={`flex flex-col max-h-[90vh] ${isDarkMode ? 'bg-bg-dark' : 'bg-white'}`}>
-        <div className={`p-6 border-b flex items-center justify-between shrink-0 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+      <div className={`pref-shell flex flex-col max-h-[90vh] ${isDarkMode ? 'bg-bg-dark' : 'bg-white'}`}>
+        <span className="pref-orb -top-10 right-8 h-28 w-28 bg-accent/25" aria-hidden />
+        <span className="pref-orb bottom-20 -left-10 h-32 w-32 bg-cyan-400/15" aria-hidden />
+        <div className={`relative z-10 p-6 border-b flex items-center justify-between shrink-0 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
               <Settings className="w-5 h-5 text-accent" />
@@ -80,20 +83,23 @@ export function PreferencesModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        <div className="relative z-10 flex-1 overflow-y-auto p-6 custom-scrollbar bolt-reveal-stagger">
+          <section>
           <h3 className={`text-[11px] font-semibold tracking-wide mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
             {t('visualInterfaceTheme')}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+
             {THEMES.map((theme) => (
               <button
                 key={theme.key}
                 onClick={() => setAccentColor(theme.color)}
-                className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all border ${
+                className={`pref-option neon-panel p-3 rounded-xl flex flex-col items-center gap-2 border ${
                   accentColor === theme.color
-                    ? 'bg-accent/10 border-accent'
-                    : isDarkMode ? 'bg-white/5 border-white/10 hover:border-white/20' : 'bg-black/5 border-black/10 hover:border-black/20'
+                    ? 'bg-accent/10 border-accent shadow-[0_0_24px_rgba(124,58,237,0.20)]'
+                    : isDarkMode ? 'bg-white/5 border-white/10 hover:border-accent/40 hover:bg-white/10' : 'bg-black/5 border-black/10 hover:border-accent/40 hover:bg-white'
                 }`}
+
               >
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${theme.color}20`, color: theme.color }}>
                   <theme.icon className="w-5 h-5" />
@@ -104,11 +110,14 @@ export function PreferencesModal({
               </button>
             ))}
           </div>
+          </section>
 
+          <section>
           <h3 className={`text-[11px] font-semibold tracking-wide mb-4 ${isDarkMode ? 'text-white' : 'text-black'}`}>
             {t('gamerPersonaAnalysis')}
           </h3>
-          <div className={`p-5 border rounded-2xl mb-8 relative overflow-hidden ${isDarkMode ? 'bg-white/[0.03] border-white/10' : 'bg-black/[0.02] border-black/10'}`}>
+          <div className={`pref-card neon-panel p-5 border mb-8 relative overflow-hidden ${isDarkMode ? 'bg-white/[0.045] border-white/10' : 'bg-white/70 border-black/10'}`}>
+
             {gamerPersona ? (
               <div>
                 <div className="flex items-center gap-3 mb-3">
@@ -144,13 +153,17 @@ export function PreferencesModal({
               </div>
             )}
           </div>
+          </section>
 
+          <section>
           <h3 className={`text-[10px] font-semibold tracking-wide mb-4 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>{t('language')}</h3>
-          <div className="mb-8">
+          <div className="mb-8 pref-card p-3 border border-accent/10 bg-accent/[0.03]">
             <LanguageSwitcher currentLanguage={language} setLanguage={setLanguage} isDarkMode={isDarkMode} variant="grid" />
           </div>
+          </section>
 
-          <div className="p-5 bg-accent/5 border border-accent/20 rounded-2xl mb-6">
+          <div className="pref-card neon-panel p-5 bg-accent/5 border border-accent/20 rounded-2xl mb-6">
+
             <div className="flex items-center gap-3 mb-2">
               <BrainCircuit className="w-4 h-4 text-accent" />
               <h4 className="text-sm font-bold">{t('aiImprovementActive')}</h4>
@@ -159,7 +172,8 @@ export function PreferencesModal({
           </div>
 
           {userProfile?.role === 'admin' && (
-            <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl mb-6">
+            <div className="pref-card neon-panel p-5 bg-red-500/5 border border-red-500/20 rounded-2xl mb-6">
+
               <div className="flex items-center gap-3 mb-2">
                 <Zap className="w-4 h-4 text-red-500" />
                 <h4 className="text-sm font-bold text-red-500 uppercase tracking-wide">{t('adminTools')}</h4>
@@ -173,10 +187,11 @@ export function PreferencesModal({
 
           <button
             onClick={onClose}
-            className="w-full py-3 bg-accent text-bg-dark rounded-xl font-semibold text-xs"
+            className="pref-save neon-panel w-full py-3 bg-accent text-bg-dark rounded-xl font-semibold text-xs"
           >
             {t('savePreferences')}
           </button>
+
         </div>
       </div>
     </ModalShell>

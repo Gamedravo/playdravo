@@ -11,7 +11,7 @@ import { type ReplitUser } from '../hooks/useReplitAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { memo, useState, useRef } from 'react';
+import { memo, startTransition, useEffect, useRef, useState } from 'react';
 import { NotificationDrawer } from './NotificationDropdown';
 import { useNotifications } from './NotificationsProvider';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
@@ -66,16 +66,37 @@ export const Header = memo(function Header({
   const isSidebarOpen = useSidebarOpen();
   const { toggle: toggleSidebar } = useSidebar();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const bellRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
 
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const updateSearch = (query: string) => {
+    setLocalSearchQuery(query);
+    startTransition(() => setSearchQuery(query));
+  };
+
+  const openSearch = () => {
+    if (!isSearchPage) startTransition(() => navigate('/search'));
+  };
+
+  const preloadAccountUi = () => {
+    void import('./GlobalModals');
+    void import('./LoginModal');
+    void import('./AccountSettingsModal');
+  };
+
   const handleMobileSearchChange = (query: string) => {
-    setSearchQuery(query);
-    if (!isSearchPage) navigate('/search');
+    updateSearch(query);
+    openSearch();
   };
 
   return (
+
     <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-150 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
         {/* Mobile Menu Button & Logo */}
@@ -107,15 +128,16 @@ export const Header = memo(function Header({
                 : 'bg-black/5 border-black/10 hover:border-black/20 group-focus-within:border-accent group-focus-within:bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.05)]'
             }`}>
               <Search className={`ml-4 w-4 h-4 transition-colors duration-200 ${isDarkMode ? 'text-white/40 group-focus-within:text-white' : 'text-black/40 group-focus-within:text-black'}`} />
-              <input 
+              <input
                 ref={searchInputRef}
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => navigate('/search')}
-                placeholder={t('search')} 
+                type="text"
+                value={localSearchQuery}
+                onChange={(e) => updateSearch(e.target.value)}
+                onFocus={openSearch}
+                placeholder={t('search')}
                 className={`flex-1 bg-transparent border-none outline-none focus:ring-0 text-[14px] font-medium px-3 tracking-wide placeholder:font-medium placeholder:uppercase placeholder:tracking-widest placeholder:text-[11px] ${isDarkMode ? 'text-white placeholder:text-white/50' : 'text-black placeholder:text-black/50'}`}
               />
+
               <div className="flex items-center gap-2 pr-2">
               </div>
             </div>
@@ -133,14 +155,15 @@ export const Header = memo(function Header({
               <Search className={`ml-3 h-4 w-4 shrink-0 ${isDarkMode ? 'text-cyan-200/70' : 'text-black/45'}`} />
               <input
                 type="text"
-                value={searchQuery}
+                value={localSearchQuery}
                 onChange={(e) => handleMobileSearchChange(e.target.value)}
-                onFocus={() => navigate('/search')}
+                onFocus={openSearch}
                 placeholder="Search"
                 className={`min-w-0 flex-1 bg-transparent px-2 text-sm font-semibold outline-none placeholder:text-xs placeholder:font-bold ${
                   isDarkMode ? 'text-white placeholder:text-white/35' : 'text-black placeholder:text-black/40'
                 }`}
               />
+
             </div>
           </div>
         )}
@@ -183,22 +206,28 @@ export const Header = memo(function Header({
             </button>
             
             {!user ? (
-              <button 
+              <button
+                onPointerEnter={preloadAccountUi}
+                onFocus={preloadAccountUi}
                 onClick={() => setIsLoginModalOpen(true)}
-                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-colors"
+                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-colors fast-surface"
               >
                 <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+
                 <span className="hidden sm:inline">{t('login')}</span>
               </button>
             ) : (
               <div className="relative">
-                <button 
+                <button
+                  onPointerEnter={preloadAccountUi}
+                  onFocus={preloadAccountUi}
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                   aria-label="User Profile"
                   aria-expanded={isProfileDropdownOpen}
                   aria-haspopup="true"
-                  className={`flex items-center gap-2 p-1 pr-2 sm:pr-3 rounded-2xl transition-colors ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'} ${isProfileDropdownOpen ? 'ring-2 ring-accent' : ''}`}
+                  className={`fast-surface flex items-center gap-2 p-1 pr-2 sm:pr-3 rounded-2xl transition-colors ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'} ${isProfileDropdownOpen ? 'ring-2 ring-accent' : ''}`}
                 >
+
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden border border-accent/20">
                     <img 
                       src={userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} 

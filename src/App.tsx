@@ -1154,45 +1154,51 @@ function AppContent() {
 
   const filteredGames = useMemo(() => {
     const query = deferredSearchQuery.trim().toLowerCase();
-    
-    const filteredWithScores = searchableGames.map((entry) => {
-      let score = 0;
-      if (query) {
-        if (entry.title === query) score += 100;
-        else if (entry.title.startsWith(query)) score += 50;
-        else if (entry.title.includes(query)) score += 10;
-        
-        if (entry.category.includes(query)) score += 8;
-        
-        if (entry.tags.some((tag) => tag === query)) score += 8;
-        else if (entry.tags.some((tag) => tag.includes(query))) score += 4;
-        
-        if (entry.developer.includes(query)) score += 3;
-        if (entry.description.includes(query)) score += 1;
-      }
-      return { ...entry, score };
-    }).filter(({ game, score }) => {
-      const matchesCategory = selectedCategory === 'All' || selectedCategory === 'Trending'
-        ? true
-        : selectedCategory === 'Favorites'
-          ? favoriteIds.has(game.id)
-          : selectedCategory === 'Recommended'
-            ? recommendedIds.has(game.id)
-            : selectedCategory === 'History'
-              ? historyIds.has(game.id)
-              : selectedCategory === 'Mods'
-                ? (game.mods && game.mods.length > 0)
-                : gameMatchesCategory(game, selectedCategory);
-      
-      const matchesSearch = !query ? true : score > 0;
-      
-      return matchesCategory && matchesSearch;
-    });
+    const matchesCategory = (game: Game) => selectedCategory === 'All' || selectedCategory === 'Trending'
+      ? true
+      : selectedCategory === 'Favorites'
+        ? favoriteIds.has(game.id)
+        : selectedCategory === 'Recommended'
+          ? recommendedIds.has(game.id)
+          : selectedCategory === 'History'
+            ? historyIds.has(game.id)
+            : selectedCategory === 'Mods'
+              ? !!game.mods?.length
+              : gameMatchesCategory(game, selectedCategory);
 
-    return filteredWithScores.sort((a, b) => {
-      if (query && a.score !== b.score) {
-        return b.score - a.score;
-      }
+    if (!query) {
+      const categoryMatches = searchableGames.filter(({ game }) => matchesCategory(game));
+      return categoryMatches.sort((a, b) => {
+        const ga = a.game;
+        const gb = b.game;
+        if (sortBy === 'latest') return b.createdTime - a.createdTime;
+        if (sortBy === 'plays') return gb.plays - ga.plays;
+        if (sortBy === 'rating') return (gb.rating || 0) - (ga.rating || 0);
+        if (sortBy === 'title') return ga.title.localeCompare(gb.title);
+        return 0;
+      }).map((item) => item.game);
+    }
+
+    const scoredMatches: Array<{ game: Game; score: number; createdTime: number }> = [];
+    for (const entry of searchableGames) {
+      if (!matchesCategory(entry.game)) continue;
+
+      let score = 0;
+      if (entry.title === query) score += 100;
+      else if (entry.title.startsWith(query)) score += 50;
+      else if (entry.title.includes(query)) score += 10;
+
+      if (entry.category.includes(query)) score += 8;
+      if (entry.tags.some((tag) => tag === query)) score += 8;
+      else if (entry.tags.some((tag) => tag.includes(query))) score += 4;
+      if (entry.developer.includes(query)) score += 3;
+      if (entry.description.includes(query)) score += 1;
+
+      if (score > 0) scoredMatches.push({ game: entry.game, score, createdTime: entry.createdTime });
+    }
+
+    return scoredMatches.sort((a, b) => {
+      if (a.score !== b.score) return b.score - a.score;
       const ga = a.game;
       const gb = b.game;
       if (sortBy === 'latest') return b.createdTime - a.createdTime;
@@ -1604,6 +1610,7 @@ function AppContent() {
         </div>
       </div>
 
+        {isCommandPaletteOpen && (
         <Suspense fallback={null}>
         <CommandPalette
           isOpen={isCommandPaletteOpen}
@@ -1620,10 +1627,12 @@ function AppContent() {
           categoryKeyMap={categoryKeyMap as any}
         />
         </Suspense>
+        )}
 
 
 
         {/* Help Center Modal */}
+
         <div className={`fixed inset-0 z-[110] flex items-center justify-center p-4 transition-[visibility] duration-300 ${isHelpCenterOpen ? 'visible' : 'invisible'}`}>
           <motion.div 
             initial={false}

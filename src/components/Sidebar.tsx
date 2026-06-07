@@ -85,7 +85,14 @@ export const Sidebar = memo(function Sidebar({
     if (window.innerWidth < 768) setOpen(false);
   };
 
+  const preloadFastUi = () => {
+    void import('./GlobalModals');
+    void import('./LoginModal');
+    void import('./PreferencesModal');
+  };
+
   return (
+
     <aside
       className={`sidebar-shell ${isDarkMode ? 'sidebar-shell--dark' : 'sidebar-shell--light'} ${
         isSidebarOpen ? 'sidebar-shell--open' : 'sidebar-shell--closed'
@@ -120,6 +127,8 @@ export const Sidebar = memo(function Sidebar({
           <div className="sidebar-block sidebar-top-actions">
             <button
               type="button"
+              onPointerEnter={preloadFastUi}
+              onFocus={preloadFastUi}
               onClick={() => {
                 setIsPreferencesModalOpen(true);
                 closeMobile();
@@ -127,6 +136,7 @@ export const Sidebar = memo(function Sidebar({
               className="sidebar-personalize"
               data-tooltip={t('personalize')}
             >
+
               <span className="sidebar-personalize-glow" aria-hidden />
               <span className="sidebar-icon sidebar-personalize-icon">
                 <Sparkles className="w-[15px] h-[15px]" strokeWidth={2.1} />
@@ -263,10 +273,13 @@ export const Sidebar = memo(function Sidebar({
           ) : (
             <button
               type="button"
+              onPointerEnter={preloadFastUi}
+              onFocus={preloadFastUi}
               onClick={() => setIsLoginModalOpen(true)}
               className="sidebar-login"
               data-tooltip={t('login')}
             >
+
               <LogIn className="w-4 h-4" />
               <span className="sidebar-label">{t('login')}</span>
             </button>

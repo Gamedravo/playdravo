@@ -29,7 +29,18 @@
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes bolt-rise {
+  0% { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.985); filter: blur(5px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
+}
+
+@keyframes pref-orbit {
+  0% { transform: translate3d(-8px, 0, 0) scale(1); opacity: 0.45; }
+  100% { transform: translate3d(10px, 8px, 0) scale(1.08); opacity: 0.75; }
+}
+
 /* Smooth route transitions */
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -184,7 +195,104 @@
     @apply bg-accent/20 rounded-full hover:bg-accent/40 transition-colors;
   }
 
+  .fast-surface,
+  .modal-content-fast,
+  .sidebar-shell,
+  .sidebar-nav-item,
+  .sidebar-personalize,
+  .sidebar-cta,
+  .kt-card {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .modal-backdrop-fast {
+    backdrop-filter: blur(6px);
+  }
+
+  .neon-panel {
+    @apply relative overflow-hidden;
+    transform: translateZ(0);
+  }
+
+  .neon-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.13) 42%, transparent 62%);
+    transform: translateX(-130%) skewX(-16deg);
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .neon-panel:hover::before {
+    transform: translateX(130%) skewX(-16deg);
+  }
+
+  .bolt-reveal {
+    animation: bolt-rise 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .bolt-reveal-stagger > * {
+    animation: bolt-rise 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .bolt-reveal-stagger > *:nth-child(2) { animation-delay: 0.04s; }
+  .bolt-reveal-stagger > *:nth-child(3) { animation-delay: 0.08s; }
+  .bolt-reveal-stagger > *:nth-child(4) { animation-delay: 0.12s; }
+  .bolt-reveal-stagger > *:nth-child(5) { animation-delay: 0.16s; }
+  .bolt-reveal-stagger > *:nth-child(6) { animation-delay: 0.2s; }
+
+  .pref-shell {
+    position: relative;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(34,211,238,0.16), transparent 18rem),
+      radial-gradient(circle at 92% 12%, rgba(244,114,182,0.12), transparent 16rem),
+      linear-gradient(180deg, rgba(255,255,255,0.035), transparent 16rem);
+  }
+
+  .pref-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+    background-image:
+      linear-gradient(rgba(34,211,238,0.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,211,238,0.2) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 50% 0%, black, transparent 72%);
+  }
+
+  .pref-card {
+    @apply relative rounded-2xl border transition-all duration-200;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.12);
+  }
+
+  .pref-option {
+    @apply relative overflow-hidden transition-all duration-200 active:scale-[0.98];
+  }
+
+  .pref-option:hover {
+    transform: translateY(-2px) translateZ(0);
+  }
+
+  .pref-save {
+    @apply relative overflow-hidden transition-all duration-200 hover:brightness-110 active:scale-[0.98];
+    box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 36%, transparent);
+  }
+
+  .pref-orb {
+    @apply pointer-events-none absolute rounded-full blur-2xl;
+    animation: pref-orbit 9s ease-in-out infinite alternate;
+  }
+
+  .app-smooth-enter {
+    animation: bolt-rise 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
   .shimmer-overlay {
+
     background: linear-gradient(
       90deg,
       transparent 0%,
@@ -784,7 +892,8 @@
   .sidebar-shell {
     @apply fixed md:sticky top-0 left-0 z-[60] h-screen shrink-0;
     contain: layout style;
-    transition: none;
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: width, transform;
   }
 
   .sidebar-shell--dark {
@@ -1573,8 +1682,20 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ============================================================
    KING TIER SECTION — Compact Multi-Game Shelf
+
    ============================================================ */
 
 /* Section wrapper */

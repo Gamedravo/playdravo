@@ -82,13 +82,22 @@ function getSearchText(game: Game) {
     .toLowerCase();
 }
 
-function rankSearchResult(game: Game, rawQuery: string, newestTime: number) {
+interface SearchEntry {
+  game: Game;
+  text: string;
+  title: string;
+  category: string;
+  tags: string[];
+  createdTime: number;
+}
+
+function rankSearchEntry(entry: SearchEntry, rawQuery: string, newestTime: number) {
   const query = rawQuery.trim().toLowerCase();
-  const text = getSearchText(game);
+  const { game, text, title, category, tags, createdTime } = entry;
 
   if (query === 'trending') return (game.isHot ? 10000 : 0) + (game.plays || 0) + (game.rating || 0) * 100;
   if (query === 'recommended') return (game.isTop ? 10000 : 0) + (game.rating || 0) * 1000 + Math.log10((game.plays || 0) + 1) * 100;
-  if (query === 'new') return Math.max(1, getCreatedTime(game.createdAt) / Math.max(1, newestTime));
+  if (query === 'new') return Math.max(1, createdTime / Math.max(1, newestTime));
 
   const terms = searchAliases[query] || [query];
   const queryWords = query.split(/\s+/).filter((word) => word.length > 1);
@@ -96,12 +105,12 @@ function rankSearchResult(game: Game, rawQuery: string, newestTime: number) {
 
   if (text.includes(query)) score += 100;
 
-  terms.forEach((term) => {
+  for (const term of terms) {
     if (text.includes(term)) score += 20;
-    if (game.category.toLowerCase().includes(term)) score += 45;
-    if (game.tags?.some((tag) => tag.toLowerCase().includes(term))) score += 35;
-    if (game.title.toLowerCase().includes(term)) score += 60;
-  });
+    if (category.includes(term)) score += 45;
+    if (tags.some((tag) => tag.includes(term))) score += 35;
+    if (title.includes(term)) score += 60;
+  }
 
   if (!searchAliases[query] && queryWords.length > 1 && queryWords.every((word) => text.includes(word))) {
     score += 30;
@@ -111,6 +120,7 @@ function rankSearchResult(game: Game, rawQuery: string, newestTime: number) {
 }
 
 export const SearchPage: React.FC<SearchPageProps> = React.memo(({
+
   isDarkMode,
   t,
   games,
@@ -119,7 +129,6 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
   searchQuery,
   setSearchQuery,
 }) => {
-  const [results, setResults] = useState<Game[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -141,38 +150,51 @@ export const SearchPage: React.FC<SearchPageProps> = React.memo(({
     }
   }, []);
 
+  const searchIndex = useMemo(() => {
+    const entries = games.map((game) => ({
+      game,
+      text: getSearchText(game),
+      title: (game.title || '').toLowerCase(),
+      category: (game.category || '').toLowerCase(),
+      tags: (game.tags || []).map((tag) => tag.toLowerCase()),
+      createdTime: getCreatedTime(game.createdAt),
+    }));
+    return {
+      entries,
+      newestTime: Math.max(...entries.map((entry) => entry.createdTime), 1),
+    };
+  }, [games]);
+
+  const results = useMemo(() => {
+    const trimmedQuery = deferredSearchQuery.trim();
+    if (!trimmedQuery) return [];
+
+    return searchIndex.entries
+      .map((entry) => ({ game: entry.game, score: rankSearchEntry(entry, trimmedQuery, searchIndex.newestTime) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || (b.game.plays || 0) - (a.game.plays || 0))
+      .map(({ game }) => game);
+  }, [deferredSearchQuery, searchIndex]);
+
   useEffect(() => {
     const trimmedQuery = deferredSearchQuery.trim();
-    if (trimmedQuery === '') {
-      setResults([]);
-      return;
-    }
-
-    const newestTime = Math.max(...games.map((game) => getCreatedTime(game.createdAt)), 1);
-    const ranked = games
-      .map((game) => ({ game, score: rankSearchResult(game, trimmedQuery, newestTime) }))
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score || (b.game.plays || 0) - (a.game.plays || 0));
-    const filtered = ranked.map(({ game }) => game);
-
-    setResults(filtered);
+    if (trimmedQuery.length <= 1 || trimmedQuery.length >= 30) return;
 
     const saveTimer = setTimeout(() => {
-      if (trimmedQuery.length > 1 && trimmedQuery.length < 30) {
-        Analytics.trackSearch(trimmedQuery, filtered.length);
-        setRecentSearches((prev) => {
-          const withoutDuplicate = prev.filter((term) => term.toLowerCase() !== trimmedQuery.toLowerCase());
-          const next = [trimmedQuery, ...withoutDuplicate].slice(0, 5);
-          localStorage.setItem('topg_recent_searches', JSON.stringify(next));
-          return next;
-        });
-      }
+      Analytics.trackSearch(trimmedQuery, results.length);
+      setRecentSearches((prev) => {
+        const withoutDuplicate = prev.filter((term) => term.toLowerCase() !== trimmedQuery.toLowerCase());
+        const next = [trimmedQuery, ...withoutDuplicate].slice(0, 5);
+        localStorage.setItem('topg_recent_searches', JSON.stringify(next));
+        return next;
+      });
     }, 1500);
 
     return () => clearTimeout(saveTimer);
-  }, [deferredSearchQuery, games]);
+  }, [deferredSearchQuery, results.length]);
 
   const clearRecentSearches = (event: React.MouseEvent) => {
+
     event.stopPropagation();
     setRecentSearches([]);
     localStorage.removeItem('topg_recent_searches');
