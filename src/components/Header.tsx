@@ -3,7 +3,7 @@ import {
   Search,
   LogIn,
   ChevronDown,
-  Plus,
+  Bell,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
 import { UserProfile, Language } from '../types';
@@ -11,7 +11,9 @@ import { type ReplitUser } from '../hooks/useReplitAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { memo, useState } from 'react';
+import { memo, useState, useRef } from 'react';
+import { NotificationDrawer } from './NotificationDropdown';
+import { useNotifications } from './NotificationsProvider';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
 
 interface HeaderProps {
@@ -64,6 +66,8 @@ export const Header = memo(function Header({
   const isSidebarOpen = useSidebarOpen();
   const { toggle: toggleSidebar } = useSidebar();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const bellRef = useRef<HTMLButtonElement>(null);
+  const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
 
   const handleMobileSearchChange = (query: string) => {
@@ -158,12 +162,24 @@ export const Header = memo(function Header({
               />
             </div>
             <button
-              onClick={() => setIsSubmitModalOpen(true)}
-              aria-label="Submit a game"
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl transition-colors font-semibold text-xs border ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-accent hover:border-accent hover:text-bg-dark text-white' : 'bg-black/5 border-black/10 hover:bg-accent hover:border-accent hover:text-white text-black'}`}
+              ref={bellRef}
+              onClick={() => setIsNotificationsOpen((o) => !o)}
+              aria-label="Notifications"
+              aria-expanded={isNotificationsOpen}
+              className={`relative flex items-center justify-center w-10 h-10 rounded-2xl transition-colors border ${
+                isNotificationsOpen
+                  ? isDarkMode
+                    ? 'bg-white/10 border-white/20 text-white'
+                    : 'bg-black/10 border-black/20 text-black'
+                  : isDarkMode
+                  ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white/70 hover:text-white'
+                  : 'bg-black/5 border-black/10 hover:bg-black/10 text-black/60 hover:text-black'
+              }`}
             >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Submit Game</span>
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent" />
+              )}
             </button>
             
             {!user ? (
@@ -217,6 +233,13 @@ export const Header = memo(function Header({
           </div>
         </div>
       </div>
+
+      <NotificationDrawer
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+        isDarkMode={isDarkMode}
+        anchorRef={bellRef}
+      />
     </header>
   );
 });
