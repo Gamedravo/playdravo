@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import {
   Gamepad2,
@@ -394,7 +395,16 @@ export const HomePage = React.memo(function HomePage({
               </div>
 
               {/* ── COMPACT HORIZONTAL STRIP ── */}
+              <AnimatePresence initial={false}>
               {!showAllRecent && (
+                <motion.div
+                  key="recent-compact"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ overflow: 'hidden' }}
+                >
                 <div
                   className="flex overflow-x-auto gap-2 pb-1 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                   ref={recentRef}
@@ -450,10 +460,21 @@ export const HomePage = React.memo(function HomePage({
                     </span>
                   </button>
                 </div>
+                </motion.div>
               )}
+              </AnimatePresence>
 
               {/* ── EXPANDED GRID ── */}
+              <AnimatePresence initial={false}>
               {showAllRecent && (
+                <motion.div
+                  key="recent-expanded"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ overflow: 'hidden' }}
+                >
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
                   {recentlyPlayedGames.map((game, index) => (
                     <button
@@ -483,7 +504,9 @@ export const HomePage = React.memo(function HomePage({
                     </button>
                   ))}
                 </div>
+                </motion.div>
               )}
+              </AnimatePresence>
 
             </section>
           </LazyShelf>
@@ -634,16 +657,38 @@ export const HomePage = React.memo(function HomePage({
                 </div>
                 <h3 className="section-title">Browse by genre</h3>
               </div>
-              <div className="flex items-center gap-1">
-                <button onClick={() => handleScroll(categoriesRef, 'left')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleScroll(categoriesRef, 'right')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
-                  <ChevronRight className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                {!showAllCategories && (
+                  <>
+                    <button onClick={() => handleScroll(categoriesRef, 'left')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => handleScroll(categoriesRef, 'right')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => setShowAllCategories(v => !v)}
+                  className="text-sm font-bold text-accent hover:opacity-70 transition-opacity"
+                >
+                  {showAllCategories ? 'Collapse' : 'Show all'}
                 </button>
               </div>
             </div>
-            <div className={`category-chip-grid ${showAllCategories ? 'category-chip-grid--expanded' : ''}`} ref={categoriesRef}>
+
+            {/* Horizontal strip */}
+            <AnimatePresence initial={false}>
+            {!showAllCategories && (
+              <motion.div
+                key="cats-strip"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                style={{ overflow: 'hidden' }}
+              >
+            <div className="category-chip-grid" ref={categoriesRef}>
               {exploreCategories.map((cat) => (
                 <button
                   key={`cat-chip-${cat.slug}`}
@@ -661,6 +706,43 @@ export const HomePage = React.memo(function HomePage({
                 </button>
               ))}
             </div>
+              </motion.div>
+            )}
+            </AnimatePresence>
+
+            {/* Expanded wrap grid */}
+            <AnimatePresence initial={false}>
+            {showAllCategories && (
+              <motion.div
+                key="cats-grid"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div className="flex flex-wrap gap-3">
+                  {[...exploreCategories, ...extraCategories.filter(c => !exploreCategories.some(e => e.slug === c.slug))].map((cat) => (
+                    <button
+                      key={`cat-chip-all-${cat.slug}`}
+                      type="button"
+                      onClick={() => {
+                        const main = document.querySelector('main');
+                        if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                        else window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                        navigate(`/category/${cat.slug}`);
+                      }}
+                      className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
+                    >
+                      <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
+                      <span className="category-chip-label">{cat.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+            </AnimatePresence>
+
           </section>
           </LazyShelf>
         )}
