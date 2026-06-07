@@ -87,6 +87,45 @@ function getVideoType(url: string) {
   return 'video/mp4';
 }
 
+/** Thumbnail storyboard — cycles between static images every 1.4 s (YouTube-style) */
+function ThumbnailCycler({
+  candidates,
+  active,
+}: {
+  candidates: PreviewMediaCandidate[];
+  active: boolean;
+}) {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    setIdx(0);
+  }, [active]);
+
+  useEffect(() => {
+    if (!active || candidates.length <= 1) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % candidates.length), 1400);
+    return () => clearInterval(t);
+  }, [active, candidates.length]);
+
+  if (!active || candidates.length === 0) return null;
+
+  const url = candidates[idx]?.url;
+  if (!url) return null;
+
+  return (
+    <img
+      key={url}
+      src={url}
+      alt=""
+      className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none animate-fade-in"
+      loading="eager"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      aria-hidden
+    />
+  );
+}
+
 function InlineCardPreview({
   game,
   active,
@@ -100,22 +139,39 @@ function InlineCardPreview({
   const [candidateIndex, setCandidateIndex] = useState(0);
   const current: PreviewMediaCandidate | undefined = candidates[candidateIndex];
 
+  // Separate thumbnail candidates for the storyboard cycler
+  const thumbnailCandidates = useMemo(
+    () => candidates.filter((c) => c.kind === 'thumbnail'),
+    [candidates],
+  );
+
+  // Non-thumbnail candidates (mp4 / gif / youtube)
+  const richCandidates = useMemo(
+    () => candidates.filter((c) => c.kind !== 'thumbnail'),
+    [candidates],
+  );
+
+  const richCurrent: PreviewMediaCandidate | undefined = richCandidates[candidateIndex];
+  const useRich = richCandidates.length > 0;
+  const useThumbnailCycle = !useRich && thumbnailCandidates.length > 1;
+
   useEffect(() => {
     setCandidateIndex(0);
   }, [game.id]);
 
+  // MP4 playback
   useEffect(() => {
     const video = videoRef.current;
-    if (!active || !video || !current || current.kind !== 'mp4') return;
+    if (!active || !video || !richCurrent || richCurrent.kind !== 'mp4') return;
 
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
     video.loop = true;
-    video.src = current.url;
+    video.src = richCurrent.url;
     video.load();
     video.play().catch(() => {
-      setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index));
+      setCandidateIndex((i) => (i + 1 < richCandidates.length ? i + 1 : i));
     });
 
     return () => {
@@ -123,25 +179,49 @@ function InlineCardPreview({
       video.removeAttribute('src');
       video.load();
     };
-  }, [active, current, candidates.length]);
+  }, [active, richCurrent, richCandidates.length]);
 
-  if (!active || !current) return null;
+  if (!active) return null;
 
-  if (current.kind === 'gif') {
+  // Storyboard thumbnail cycling (e.g. MadKidGames thumb_1 ↔ thumb_2)
+  if (useThumbnailCycle) {
+    return <ThumbnailCycler candidates={thumbnailCandidates} active={active} />;
+  }
+
+  if (!richCurrent) return null;
+
+  // YouTube muted autoplay iframe
+  if (richCurrent.kind === 'youtube') {
     return (
-      <img
-        src={current.url}
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
-        loading="eager"
-        decoding="async"
-        referrerPolicy="no-referrer"
-        onError={() => setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index))}
+      <iframe
+        key={richCurrent.url}
+        src={richCurrent.url}
+        className="absolute inset-0 h-full w-full pointer-events-none"
+        style={{ border: 'none' }}
+        allow="autoplay; encrypted-media"
+        title={game.title}
         aria-hidden
       />
     );
   }
 
+  // Animated GIF / WebP
+  if (richCurrent.kind === 'gif') {
+    return (
+      <img
+        src={richCurrent.url}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
+        loading="eager"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => setCandidateIndex((i) => (i + 1 < richCandidates.length ? i + 1 : i))}
+        aria-hidden
+      />
+    );
+  }
+
+  // HTML5 video (mp4 / webm)
   return (
     <video
       ref={videoRef}
@@ -151,9 +231,9 @@ function InlineCardPreview({
       playsInline
       preload="none"
       aria-hidden
-      onError={() => setCandidateIndex((index) => (index + 1 < candidates.length ? index + 1 : index))}
+      onError={() => setCandidateIndex((i) => (i + 1 < richCandidates.length ? i + 1 : i))}
     >
-      <source src={current.url} type={getVideoType(current.url)} />
+      <source src={richCurrent.url} type={getVideoType(richCurrent.url)} />
     </video>
   );
 }
@@ -171,10 +251,17 @@ export const GameCard = memo(function GameCard({
   const hoverSupported = useDesktopHover();
   const cardPreviewId = useId();
   const activeCardId = useActivePreviewCardId();
-  const previewCandidates = useMemo(
-    () => getPreviewMediaCandidates(game).filter((candidate) => candidate.kind === 'mp4' || candidate.kind === 'gif'),
-    [game],
-  );
+
+  const previewCandidates = useMemo(() => {
+    const all = getPreviewMediaCandidates(game);
+    const rich = all.filter((c) => c.kind === 'mp4' || c.kind === 'gif' || c.kind === 'youtube');
+    const thumbs = all.filter((c) => c.kind === 'thumbnail');
+    // Show preview when: has rich media OR multiple thumbnails to cycle through
+    if (rich.length > 0) return all;
+    if (thumbs.length > 1) return all;
+    return [];
+  }, [game]);
+
   const hasPreview = previewCandidates.length > 0;
   const previewActive = hoverSupported && activeCardId === cardPreviewId;
 
@@ -224,6 +311,16 @@ export const GameCard = memo(function GameCard({
           />
           <InlineCardPreview game={game} active={previewActive} candidates={previewCandidates} />
         </div>
+
+        {/* Preview indicator dot — shows when game has hover preview */}
+        {hasPreview && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            <div className="flex items-center gap-0.5 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-white text-[8px] font-bold uppercase tracking-wider">Preview</span>
+            </div>
+          </div>
+        )}
 
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
           {game.isTop && (
