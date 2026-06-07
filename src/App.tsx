@@ -347,9 +347,8 @@ function AppContent() {
     localStorage.setItem('language', language);
   }, [language]);
 
-  const [catalogGames, setCatalogGames] = useState<Game[]>(STATIC_GAMES);
-  const staticGames = useMemo(() => catalogGames.map((g) => withSafetyMetadata(g)), [catalogGames]);
-  const [games, setGames] = useState<Game[]>(staticGames);
+  const baseGamesRef = useRef<Game[]>(STATIC_GAMES.map(withSafetyMetadata));
+  const [games, setGames] = useState<Game[]>(baseGamesRef.current);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -360,9 +359,11 @@ function AppContent() {
     fetchOnlineGamesCatalog()
       .then((remoteGames) => {
         if (cancelled) return;
-        setCatalogGames((currentGames) =>
-          remoteGames.length > currentGames.length ? remoteGames : currentGames
-        );
+        if (remoteGames.length > baseGamesRef.current.length) {
+          const processed = remoteGames.map(withSafetyMetadata);
+          baseGamesRef.current = processed;
+          setGames(processed);
+        }
       })
       .catch((error) => {
         console.warn('Online games catalog failed to load:', error);
@@ -372,10 +373,6 @@ function AppContent() {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    setGames(staticGames);
-  }, [staticGames]);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const sidebarContentRef = useRef<HTMLDivElement>(null);
@@ -388,7 +385,7 @@ function AppContent() {
     if (cat !== 'All') {
       Analytics.trackCategoryVisit(cat);
     }
-  }, [staticGames]);
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeGame, setActiveGame] = useState<Game | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -456,7 +453,7 @@ function AppContent() {
   useEffect(() => {
     markRouteVisited('/');
     markRouteVisited('/search');
-  }, [staticGames]);
+  }, []);
 
   useEffect(() => {
     markRouteVisited(location.pathname);
@@ -810,7 +807,7 @@ function AppContent() {
       
       // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
 
-      const gamesMap = new Map(staticGames.map((g) => [g.id, { ...g }]));
+      const gamesMap = new Map(baseGamesRef.current.map((g) => [g.id, { ...g }]));
       gamesData.forEach((game) => {
         const catalog = gamesMap.get(game.id);
         if (!catalog) return;
@@ -826,11 +823,10 @@ function AppContent() {
     }, (error) => {
       console.error("Games listener failed:", error);
       handleFirestoreError(error, OperationType.LIST, 'games');
-      // Fallback to static games on error
-      setGames(staticGames);
+      setGames(baseGamesRef.current);
     });
     return () => unsubscribe();
-  }, [staticGames]);
+  }, []);
 
   // Real-time New Arrivals Listener
   useEffect(() => {
@@ -841,7 +837,7 @@ function AppContent() {
     );
     const unsubscribe = onSnapshot(q, () => {
       setNewArrivals(
-        [...staticGames]
+        [...baseGamesRef.current]
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, 12)
       );
@@ -849,7 +845,7 @@ function AppContent() {
       handleFirestoreError(error, OperationType.LIST, 'games');
     });
     return () => unsubscribe();
-  }, [staticGames]);
+  }, []);
 
   // Real-time Mods Listener for Active Game
   useEffect(() => {
@@ -1481,7 +1477,7 @@ function AppContent() {
       .slice(0, 20);
   }, [playHistory, games]);
 
-  const featuredGame = games.find((g) => !g.adsInjected) || staticGames[0];
+  const featuredGame = games.find((g) => !g.adsInjected) || baseGamesRef.current[0];
 
   const handleClaimBonus = () => {
     if (!canClaimBonus) return;

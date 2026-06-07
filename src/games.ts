@@ -445,7 +445,26 @@ async function fetchGamePixRemote(): Promise<Game[]> {
   return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
 }
 
+let _catalogCache: Game[] | null = null;
+let _catalogPromise: Promise<Game[]> | null = null;
+
 export async function fetchOnlineGamesCatalog(): Promise<Game[]> {
+  if (_catalogCache) return _catalogCache;
+  if (_catalogPromise) return _catalogPromise;
+
+  _catalogPromise = _fetchCatalogRemote().then((result) => {
+    _catalogCache = result;
+    _catalogPromise = null;
+    return result;
+  }).catch((err) => {
+    _catalogPromise = null;
+    throw err;
+  });
+
+  return _catalogPromise;
+}
+
+async function _fetchCatalogRemote(): Promise<Game[]> {
   const [onlineGamesResult, gamePixResult] = await Promise.allSettled([
     fetchOnlineGamesRemote(),
     fetchGamePixRemote(),

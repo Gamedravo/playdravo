@@ -20,6 +20,8 @@ let onlineGamesCatalogCache: { data: unknown; timestamp: number } | null = null;
 let gamePixCatalogCache: { data: unknown; timestamp: number; limit: number } | null = null;
 const ONLINE_GAMES_CATALOG_CACHE_TTL = 1000 * 60 * 60;
 const GAMEPIX_CATALOG_CACHE_TTL = 1000 * 60 * 60 * 6;
+let gamePixFailureUntil = 0;
+const GAMEPIX_FAILURE_BACKOFF_TTL = 1000 * 60 * 5; // 5 min backoff on failure
 
 app.get('/api/onlinegames-catalog', async (_req, res) => {
   try {
@@ -51,6 +53,11 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
 });
 
 app.get('/api/gamepix-catalog', async (req, res) => {
+  // Fast-fail if GamePix recently errored
+  if (Date.now() < gamePixFailureUntil) {
+    return res.json([]);
+  }
+
   const requestedLimit = Number(req.query.limit || 600);
   const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 600) : 600;
   const pageSize = 200;
@@ -89,6 +96,7 @@ app.get('/api/gamepix-catalog', async (req, res) => {
     return res.json(data);
   } catch (error) {
     console.error('GamePix catalog proxy failed:', error);
+    gamePixFailureUntil = Date.now() + GAMEPIX_FAILURE_BACKOFF_TTL;
     return res.status(502).json({ error: 'Could not load GamePix catalog.' });
   }
 });
