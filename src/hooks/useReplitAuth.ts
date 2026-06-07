@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
 import { auth, logout as firebaseLogout } from '../firebase';
 
 export interface ReplitUser {
@@ -40,10 +40,32 @@ export function useReplitAuth(): UseReplitAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (firebaseUser) => {
+    // Handle the result from signInWithRedirect on page load
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          console.log('[OAuth] Redirect sign-in successful:', result.user.uid);
+        }
+      })
+      .catch((error: { code?: string; message?: string }) => {
+        if (error.code === 'auth/unauthorized-domain') {
+          console.error(
+            '[OAuth] This domain is not authorized in Firebase Console.\n' +
+            'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
+            'and add: ' + window.location.hostname
+          );
+        } else if (error.code && error.code !== 'auth/no-auth-event') {
+          console.error('[OAuth] Redirect error:', error.code, error.message);
+        }
+      });
+
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(toAppUser(firebaseUser));
       setIsLoading(false);
     });
+
+    return unsubscribe;
   }, []);
 
   const login = () => {
