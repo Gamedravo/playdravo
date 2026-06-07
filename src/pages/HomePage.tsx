@@ -342,6 +342,31 @@ export const HomePage = React.memo(function HomePage({
         )}
       </SectionErrorBoundary>
 
+      {selectedCategory === 'All' && !searchQuery && (
+        <div className="value-props-bar" aria-label="Why GameDravo">
+          <div className="value-prop-item">
+            <span className="value-prop-icon" aria-hidden>⚡</span>
+            <p className="value-prop-text">
+              <strong>1,000+ free games</strong> — play instantly, no waiting
+            </p>
+          </div>
+          <div className="value-prop-divider" aria-hidden />
+          <div className="value-prop-item">
+            <span className="value-prop-icon" aria-hidden>🖥️</span>
+            <p className="value-prop-text">
+              <strong>No download needed</strong> — just your browser
+            </p>
+          </div>
+          <div className="value-prop-divider" aria-hidden />
+          <div className="value-prop-item">
+            <span className="value-prop-icon" aria-hidden>📱</span>
+            <p className="value-prop-text">
+              <strong>Works everywhere</strong> — mobile, tablet &amp; desktop
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Continue Playing — compact horizontal shelf */}
       <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && (
