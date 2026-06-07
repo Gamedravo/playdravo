@@ -137,9 +137,34 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                         {isCreatingAccount ? 'Create your account' : t('login') || 'Sign In'}
                       </h3>
                       <p className={`mt-1 text-sm ${isDarkMode ? 'text-white/55' : 'text-black/55'}`}>
-                        Save favorites, track history, and personalize PlayDravo.
+                        {isCreatingAccount
+                          ? 'Register to save favorites, track history, and personalize PlayDravo.'
+                          : 'Welcome back. Sign in to continue your PlayDravo session.'}
                       </p>
                     </div>
+                  </div>
+
+                  <div className={`rounded-2xl border p-3 flex items-center justify-between gap-3 ${
+                    isDarkMode ? 'border-white/10 bg-white/[0.04]' : 'border-black/10 bg-black/[0.03]'
+                  }`}>
+                    <div>
+                      <p className="text-sm font-bold">
+                        {isCreatingAccount ? 'Already registered?' : 'Not registered yet?'}
+                      </p>
+                      <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
+                        {isCreatingAccount ? 'Switch back to login.' : 'Create a free account in seconds.'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCreatingAccount((value) => !value);
+                        setMessage(null);
+                      }}
+                      className="shrink-0 rounded-xl bg-accent px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
+                    >
+                      {isCreatingAccount ? 'Sign in' : 'Register'}
+                    </button>
                   </div>
 
                   {activeMethod === 'email' ? (
@@ -150,7 +175,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                         className={`self-start inline-flex items-center gap-2 text-xs font-semibold ${isDarkMode ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`}
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
-                        Back to all options
+                        {isCreatingAccount ? 'Back to register options' : 'Back to login options'}
                       </button>
                       <input
                         className={inputClass}
@@ -183,18 +208,23 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                       <div className="flex items-center justify-between gap-3 text-xs font-semibold">
                         <button
                           type="button"
-                          onClick={() => setIsCreatingAccount((value) => !value)}
+                          onClick={() => {
+                            setIsCreatingAccount((value) => !value);
+                            setMessage(null);
+                          }}
                           className="text-accent hover:opacity-80"
                         >
-                          {isCreatingAccount ? 'Already have an account?' : 'Create an account'}
+                          {isCreatingAccount ? 'Already registered? Sign in' : 'Not registered yet? Register'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={handlePasswordReset}
-                          className={isDarkMode ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'}
-                        >
-                          Forgot password?
-                        </button>
+                        {!isCreatingAccount && (
+                          <button
+                            type="button"
+                            onClick={handlePasswordReset}
+                            className={isDarkMode ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'}
+                          >
+                            Forgot password?
+                          </button>
+                        )}
                       </div>
                     </form>
                   ) : (
