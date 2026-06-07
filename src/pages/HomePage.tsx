@@ -347,6 +347,19 @@ export const HomePage = React.memo(function HomePage({
             url: window.location.origin,
             description: 'Lightweight futuristic online games platform for instant browser play.',
             logo: `${window.location.origin}/logo.svg`,
+            foundingDate: '2024',
+            contactPoint: {
+              '@type': 'ContactPoint',
+              contactType: 'customer support',
+              url: `${window.location.origin}/contact`,
+              availableLanguage: 'English',
+            },
+            sameAs: [
+              'https://twitter.com/gamedravo',
+              'https://github.com/gamedravo',
+            ],
+            privacyPolicy: `${window.location.origin}/privacy`,
+            termsOfService: `${window.location.origin}/terms`,
           },
         ]}
       />
