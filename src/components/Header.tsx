@@ -210,11 +210,14 @@ export const Header = memo(function Header({
                 onPointerEnter={preloadAccountUi}
                 onFocus={preloadAccountUi}
                 onClick={() => setIsLoginModalOpen(true)}
-                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-colors fast-surface"
+                className="login-btn-cyber flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs fast-surface text-black"
+                style={{
+                  background: 'linear-gradient(135deg, rgb(34,211,238) 0%, rgb(124,58,237) 100%)',
+                  clipPath: 'polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px))',
+                }}
               >
-                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-
-                <span className="hidden sm:inline">{t('login')}</span>
+                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="hidden sm:inline uppercase tracking-wide">{t('login')}</span>
               </button>
             ) : (
               <div className="relative">

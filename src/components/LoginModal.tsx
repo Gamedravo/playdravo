@@ -1,17 +1,6 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
-import { GameDravoMark } from './GameDravoLogo';
-import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
-import {
-  resetPassword,
-  signInWithEmail,
-  signInWithGithub,
-  signInWithGoogle,
-  signInWithMicrosoft,
-  signUpWithEmail,
-} from '../firebase';
-import { handleAuthError } from '../lib/authErrors';
+import { X, Zap, Shield, Cpu } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -20,241 +9,283 @@ interface LoginModalProps {
   t: (key: string) => string;
 }
 
-export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
-  const [activeMethod, setActiveMethod] = useState<'email' | null>(null);
-  const [loadingProvider, setLoadingProvider] = useState<AuthMethodId | null>(null);
-  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-
-  const inputClass = `w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${
-    isDarkMode
-      ? 'bg-white/[0.04] border-white/10 focus:border-accent/60 placeholder:text-white/30'
-      : 'bg-black/[0.03] border-black/10 focus:border-accent/60 placeholder:text-black/35'
-  }`;
-
-  const runAuth = async (provider: AuthMethodId, action: () => Promise<unknown>) => {
-    setLoadingProvider(provider);
-    setMessage(null);
-    try {
-      await action();
-      onClose();
-    } catch (error) {
-      const err = error as { message?: string };
-      setMessage(err.message || 'Login failed. Please try again.');
-      handleAuthError(error, provider, t);
-    } finally {
-      setLoadingProvider(null);
-    }
+function HudCorner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const base = 'absolute w-5 h-5 pointer-events-none';
+  const styles: Record<string, string> = {
+    tl: 'top-3 left-3 border-t-2 border-l-2',
+    tr: 'top-3 right-3 border-t-2 border-r-2',
+    bl: 'bottom-3 left-3 border-b-2 border-l-2',
+    br: 'bottom-3 right-3 border-b-2 border-r-2',
   };
+  return <div className={`${base} ${styles[pos]} border-cyan-400/70 rounded-sm`} />;
+}
 
-  const handleOAuth = (provider: OAuthProviderId) => {
-    const providers = {
-      google: signInWithGoogle,
-      microsoft: signInWithMicrosoft,
-      github: signInWithGithub,
-    };
-    runAuth(provider, providers[provider]);
-  };
+function ScanLine() {
+  return (
+    <motion.div
+      className="pointer-events-none absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent z-10"
+      initial={{ top: '0%' }}
+      animate={{ top: '100%' }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+    />
+  );
+}
 
-  const handleEmailSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const normalizedEmail = email.trim();
-    if (!normalizedEmail || !password) {
-      setMessage('Enter your email and password to continue.');
-      return;
-    }
+function GridBg() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 opacity-[0.07]"
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(34,211,238,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.6) 1px, transparent 1px)',
+        backgroundSize: '28px 28px',
+      }}
+    />
+  );
+}
 
-    runAuth('email', () =>
-      isCreatingAccount
-        ? signUpWithEmail(normalizedEmail, password)
-        : signInWithEmail(normalizedEmail, password)
-    );
-  };
+function GlitchTitle({ text }: { text: string }) {
+  return (
+    <div className="relative select-none">
+      <span
+        className="absolute inset-0 text-2xl font-black tracking-tight text-cyan-400/30 blur-[1px]"
+        style={{ transform: 'translate(-1px, 0)', clipPath: 'inset(40% 0 50% 0)' }}
+        aria-hidden
+      >
+        {text}
+      </span>
+      <span
+        className="absolute inset-0 text-2xl font-black tracking-tight text-purple-400/25 blur-[1px]"
+        style={{ transform: 'translate(1px, 0)', clipPath: 'inset(20% 0 70% 0)' }}
+        aria-hidden
+      >
+        {text}
+      </span>
+      <motion.span
+        className="relative text-2xl font-black tracking-tight text-white"
+        animate={{ opacity: [1, 0.92, 1, 0.96, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        {text}
+      </motion.span>
+    </div>
+  );
+}
 
-  const handlePasswordReset = async () => {
-    const normalizedEmail = email.trim();
-    if (!normalizedEmail) {
-      setMessage('Enter your email first, then request a reset link.');
-      return;
-    }
+export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    setLoadingProvider('email');
-    setMessage(null);
-    try {
-      await resetPassword(normalizedEmail);
-      setMessage('Password reset email sent. Check your inbox.');
-    } catch (error) {
-      const err = error as { message?: string };
-      setMessage(err.message || 'Could not send reset email.');
-      handleAuthError(error, 'email', t);
-    } finally {
-      setLoadingProvider(null);
-    }
+  useEffect(() => {
+    if (!isOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [isOpen]);
+
+  const handleLogin = () => {
+    window.location.href = '/api/login';
   };
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[2000] flex">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+          {/* Backdrop */}
           <motion.div
-            key="login-modal-overlay"
+            key="login-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/90 z-[1900]"
+            className="absolute inset-0"
+            style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(0,8,25,0.97) 0%, rgba(0,0,0,0.98) 100%)' }}
+            onClick={onClose}
           />
-          <div className="relative z-[2000] w-full h-full overflow-y-auto" onClick={onClose}>
-            <div className="min-h-[100dvh] flex items-center justify-center p-4">
+
+          {/* Backdrop grid */}
+          <motion.div
+            key="login-backdrop-grid"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none absolute inset-0 opacity-[0.025]"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(34,211,238,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)',
+              backgroundSize: '60px 60px',
+            }}
+          />
+
+          {/* Glow orbs on backdrop */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <motion.div
+              animate={{ scale: [1, 1.15, 1], opacity: [0.18, 0.28, 0.18] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute rounded-full"
+              style={{ width: 480, height: 480, top: '15%', left: '25%', background: 'radial-gradient(circle, rgba(124,58,237,0.35), transparent 70%)', filter: 'blur(40px)' }}
+            />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.14, 0.22, 0.14] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+              className="absolute rounded-full"
+              style={{ width: 360, height: 360, bottom: '15%', right: '20%', background: 'radial-gradient(circle, rgba(34,211,238,0.3), transparent 70%)', filter: 'blur(35px)' }}
+            />
+          </div>
+
+          {/* Modal */}
+          <motion.div
+            ref={containerRef}
+            key="login-modal"
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.93, y: 12 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(145deg, rgba(6,8,20,0.98) 0%, rgba(10,12,28,0.98) 100%)',
+              border: '1px solid rgba(34,211,238,0.2)',
+              borderRadius: '1.25rem',
+              boxShadow: '0 0 0 1px rgba(124,58,237,0.12), 0 0 60px rgba(34,211,238,0.1), 0 0 120px rgba(124,58,237,0.08), 0 40px 80px rgba(0,0,0,0.7)',
+            }}
+          >
+            <HudCorner pos="tl" />
+            <HudCorner pos="tr" />
+            <HudCorner pos="bl" />
+            <HudCorner pos="br" />
+            <GridBg />
+            <ScanLine />
+
+            {/* Top cyan line */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
+            {/* Bottom purple line */}
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+
+            {/* Close button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onClose(); }}
+              className="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-white/10 text-white/40 hover:text-cyan-400"
+              style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="relative z-10 p-8 flex flex-col items-center gap-6">
+              {/* Logo mark */}
               <motion.div
-                key="login-modal-container"
-                onClick={(e) => e.stopPropagation()}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ duration: 0.15 }}
-                className={`relative w-full max-w-lg flex flex-col border rounded-[2rem] shadow-2xl overflow-hidden m-auto ${
-                  isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'
-                }`}
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="relative flex items-center justify-center"
               >
-                <button
-                  onClick={(e) => { e.stopPropagation(); onClose(); }}
-                  className={`absolute top-4 right-4 z-[60] w-9 h-9 rounded-xl border flex items-center justify-center transition-colors ${
-                    isDarkMode ? 'bg-black/50 border-white/10 hover:bg-white/10 text-white' : 'bg-white/90 border-black/10 hover:bg-black/10 text-black'
-                  }`}
-                  aria-label="Close login modal"
+                <motion.div
+                  animate={{ opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute w-20 h-20 rounded-full"
+                  style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.25), transparent 70%)', filter: 'blur(8px)' }}
+                />
+                <div
+                  className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(34,211,238,0.12), rgba(124,58,237,0.12))',
+                    border: '1px solid rgba(34,211,238,0.3)',
+                    boxShadow: '0 0 20px rgba(34,211,238,0.15), inset 0 1px 0 rgba(34,211,238,0.1)',
+                  }}
                 >
-                  <X className="w-4 h-4" />
-                </button>
-
-                <div className="p-8 flex flex-col gap-5">
-                  <div className="flex flex-col items-center gap-3 text-center">
-                    <GameDravoMark size={48} />
-                    <div>
-                      <h3 className="text-xl font-bold tracking-tight">
-                        {isCreatingAccount ? 'Create your account' : t('login') || 'Sign In'}
-                      </h3>
-                      <p className={`mt-1 text-sm ${isDarkMode ? 'text-white/55' : 'text-black/55'}`}>
-                        {isCreatingAccount
-                          ? 'Register to save favorites, track history, and personalize GameDravo.'
-                          : 'Welcome back. Sign in to continue your GameDravo session.'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={`rounded-2xl border p-3 flex items-center justify-between gap-3 ${
-                    isDarkMode ? 'border-white/10 bg-white/[0.04]' : 'border-black/10 bg-black/[0.03]'
-                  }`}>
-                    <div>
-                      <p className="text-sm font-bold">
-                        {isCreatingAccount ? 'Already registered?' : 'Not registered yet?'}
-                      </p>
-                      <p className={`text-xs ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>
-                        {isCreatingAccount ? 'Switch back to login.' : 'Create a free account in seconds.'}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsCreatingAccount((value) => !value);
-                        setMessage(null);
-                      }}
-                      className="shrink-0 rounded-xl bg-accent px-4 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90"
-                    >
-                      {isCreatingAccount ? 'Sign in' : 'Register'}
-                    </button>
-                  </div>
-
-                  {activeMethod === 'email' ? (
-                    <form className="flex flex-col gap-3" onSubmit={handleEmailSubmit}>
-                      <button
-                        type="button"
-                        onClick={() => setActiveMethod(null)}
-                        className={`self-start inline-flex items-center gap-2 text-xs font-semibold ${isDarkMode ? 'text-white/60 hover:text-white' : 'text-black/60 hover:text-black'}`}
-                      >
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                        {isCreatingAccount ? 'Back to register options' : 'Back to login options'}
-                      </button>
-                      <input
-                        className={inputClass}
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                        placeholder="Email address"
-                        autoComplete="email"
-                      />
-                      <input
-                        className={inputClass}
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        placeholder="Password"
-                        autoComplete={isCreatingAccount ? 'new-password' : 'current-password'}
-                      />
-                      <button
-                        type="submit"
-                        disabled={loadingProvider === 'email'}
-                        className="w-full rounded-xl bg-accent px-4 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {loadingProvider === 'email' ? (
-                          <span className="inline-flex items-center gap-2">
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Please wait…
-                          </span>
-                        ) : isCreatingAccount ? 'Create account' : 'Sign in with email'}
-                      </button>
-                      <div className="flex items-center justify-between gap-3 text-xs font-semibold">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsCreatingAccount((value) => !value);
-                            setMessage(null);
-                          }}
-                          className="text-accent hover:opacity-80"
-                        >
-                          {isCreatingAccount ? 'Already registered? Sign in' : 'Not registered yet? Register'}
-                        </button>
-                        {!isCreatingAccount && (
-                          <button
-                            type="button"
-                            onClick={handlePasswordReset}
-                            className={isDarkMode ? 'text-white/55 hover:text-white' : 'text-black/55 hover:text-black'}
-                          >
-                            Forgot password?
-                          </button>
-                        )}
-                      </div>
-                    </form>
-                  ) : (
-                    <AuthProviderButtons
-                      isDarkMode={isDarkMode}
-                      loadingProvider={loadingProvider}
-                      activeMethod={activeMethod}
-                      onOAuth={handleOAuth}
-                      onEmail={() => setActiveMethod('email')}
-                    />
-                  )}
-
-                  {message && (
-                    <p className={`rounded-xl border px-3 py-2 text-xs ${
-                      isDarkMode ? 'border-white/10 bg-white/[0.04] text-white/70' : 'border-black/10 bg-black/[0.03] text-black/65'
-                    }`}>
-                      {message}
-                    </p>
-                  )}
-
-                  <div className="flex items-center justify-center gap-2 pt-1">
-                    <ShieldCheck className="w-4 h-4 text-accent" />
-                    <p className={`text-[9px] font-semibold uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                      Secure Authentication
-                    </p>
-                  </div>
+                  <Zap className="w-7 h-7 text-cyan-400" strokeWidth={2.5} />
                 </div>
               </motion.div>
+
+              {/* Title */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.12, duration: 0.3 }}
+                className="text-center flex flex-col gap-1.5"
+              >
+                <GlitchTitle text="ACCESS TERMINAL" />
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-400/60">
+                  GameDravo · Secure Auth
+                </p>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+                className="w-full h-px"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.3), rgba(124,58,237,0.3), transparent)' }}
+              />
+
+              {/* Info rows */}
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.22, duration: 0.3 }}
+                className="w-full flex flex-col gap-2.5"
+              >
+                {[
+                  { icon: Shield, label: 'End-to-end encrypted session', color: 'text-emerald-400' },
+                  { icon: Cpu, label: 'Sync favorites & play history', color: 'text-purple-400' },
+                  { icon: Zap, label: 'Instant access — no passwords', color: 'text-cyan-400' },
+                ].map(({ icon: Icon, label, color }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
+                  >
+                    <div className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center ${color}`}
+                      style={{ background: 'rgba(255,255,255,0.05)' }}>
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="text-xs font-medium text-white/60">{label}</span>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* CTA Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
+                className="w-full"
+              >
+                <motion.button
+                  onClick={handleLogin}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="relative w-full overflow-hidden rounded-xl py-4 font-black text-sm tracking-[0.08em] uppercase text-black flex items-center justify-center gap-3"
+                  style={{
+                    background: 'linear-gradient(135deg, rgb(34,211,238) 0%, rgb(124,58,237) 100%)',
+                    boxShadow: '0 0 30px rgba(34,211,238,0.35), 0 0 60px rgba(124,58,237,0.2), 0 8px 24px rgba(0,0,0,0.4)',
+                    clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))',
+                  }}
+                >
+                  {/* Shine sweep */}
+                  <motion.div
+                    className="pointer-events-none absolute inset-0"
+                    style={{ background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%)' }}
+                    animate={{ x: ['-100%', '200%'] }}
+                    transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5, ease: 'easeInOut' }}
+                  />
+                  <Zap className="w-4 h-4 shrink-0" strokeWidth={3} />
+                  <span>Connect with Replit</span>
+                </motion.button>
+              </motion.div>
+
+              {/* Footer */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.38 }}
+                className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/20 text-center"
+              >
+                Secured by Replit OpenID Connect
+              </motion.p>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </AnimatePresence>

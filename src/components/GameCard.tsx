@@ -294,12 +294,15 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-150 ease-out ${
+        className={`game-card-shell relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-200 ease-out ${
           isDarkMode
-            ? 'border-white/[0.08] bg-[#0c0c14] shadow-[0_8px_24px_rgba(0,0,0,0.38)] group-hover:shadow-[0_16px_40px_rgba(157,92,255,0.22)] group-hover:border-accent/55'
+            ? 'border-white/[0.08] bg-[#0c0c14] shadow-[0_8px_24px_rgba(0,0,0,0.38)] group-hover:shadow-[0_20px_50px_rgba(34,211,238,0.18),0_8px_24px_rgba(124,58,237,0.2)] group-hover:border-cyan-400/40'
             : 'border-black/[0.08] bg-white shadow-[0_8px_22px_rgba(15,23,42,0.08)] group-hover:shadow-[0_16px_34px_rgba(157,92,255,0.16)] group-hover:border-accent/45'
-        } group-hover:-translate-y-1 group-hover:ring-1 group-hover:ring-accent/30 active:scale-[0.99]`}
+        } group-hover:-translate-y-1.5 group-hover:ring-1 group-hover:ring-cyan-400/20 active:scale-[0.98]`}
       >
+        {/* Neon sweep on hover */}
+        <div className="game-card-sweep pointer-events-none absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: 'linear-gradient(115deg, transparent 0%, rgba(34,211,238,0.07) 42%, transparent 62%)' }} />
         <div className="absolute inset-0 overflow-hidden">
           <GameThumbnail
             src={game.thumbnail}
@@ -353,7 +356,7 @@ export const GameCard = memo(function GameCard({
         </button>
 
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-14 z-20 pointer-events-none">
-          <h3 className="text-white font-black text-sm leading-tight line-clamp-2 mb-1.5 group-hover:text-accent transition-colors">
+          <h3 className="text-white font-black text-sm leading-tight line-clamp-2 mb-1.5 group-hover:text-cyan-300 transition-colors duration-200">
             <HighlightText text={game.title} query={searchQuery} />
           </h3>
           <div className="flex items-center justify-between gap-2">

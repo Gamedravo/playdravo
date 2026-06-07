@@ -2203,3 +2203,85 @@
   .kt-timer { display: none; }
   .kt-subtitle-text { display: none; }
 }
+
+/* ====== FUTURISTIC ANIMATIONS ====== */
+
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(34,211,238,0.3), 0 0 20px rgba(34,211,238,0.1); }
+  50% { box-shadow: 0 0 16px rgba(34,211,238,0.55), 0 0 40px rgba(34,211,238,0.2), 0 0 60px rgba(124,58,237,0.1); }
+}
+
+@keyframes hud-flicker {
+  0%, 97%, 100% { opacity: 1; }
+  98% { opacity: 0.7; }
+  99% { opacity: 1; }
+}
+
+@keyframes cyber-scan {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes login-btn-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(34,211,238,0.3), 0 0 40px rgba(124,58,237,0.15); }
+  50% { box-shadow: 0 0 32px rgba(34,211,238,0.55), 0 0 64px rgba(124,58,237,0.3), 0 8px 24px rgba(0,0,0,0.4); }
+}
+
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-neon-pulse { animation: neon-pulse 3s ease-in-out infinite; }
+.animate-hud-flicker { animation: hud-flicker 8s step-end infinite; }
+.animate-float-y { animation: float-y 4s ease-in-out infinite; }
+.animate-login-glow { animation: login-btn-glow 2.5s ease-in-out infinite; }
+.animate-card-enter { animation: card-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-page-enter { animation: page-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.login-btn-cyber {
+  position: relative;
+  overflow: hidden;
+  animation: login-btn-glow 2.5s ease-in-out infinite;
+}
+
+.login-btn-cyber::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0s;
+}
+
+.login-btn-cyber:hover::before {
+  transform: translateX(200%);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.game-card-shell {
+  transform: translateZ(0);
+}
+
+.game-card-shell:hover .game-card-sweep {
+  animation: shimmer 1.2s ease-in-out;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) skewX(-8deg); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-8deg); opacity: 0; }
+}
