@@ -3,19 +3,16 @@ import {
   Search,
   LogIn,
   ChevronDown,
-  Bell,
-  Heart,
+  Plus,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
-import { Game, UserProfile, Language } from '../types';
+import { UserProfile, Language } from '../types';
 import { type ReplitUser } from '../hooks/useReplitAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { memo, useState } from 'react';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
-import { useNotifications } from './NotificationsProvider';
-import { HeaderActionModals } from './HeaderActionModals';
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -23,8 +20,6 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
   user: ReplitUser | null;
   userProfile: UserProfile | null;
-  likedGames: Game[];
-  onGameClick: (game: Game) => void;
   setIsLoginModalOpen: (open: boolean) => void;
   logout: () => void;
   setIsCommandPaletteOpen: (open: boolean) => void;
@@ -39,6 +34,7 @@ interface HeaderProps {
   t: (key: any) => string;
   language: Language;
   setLanguage: (lang: Language) => void;
+  setIsSubmitModalOpen: (open: boolean) => void;
 }
 
 export const Header = memo(function Header({
@@ -47,8 +43,6 @@ export const Header = memo(function Header({
   setSearchQuery,
   user,
   userProfile,
-  likedGames,
-  onGameClick,
   setIsLoginModalOpen,
   logout,
   setIsCommandPaletteOpen,
@@ -62,15 +56,14 @@ export const Header = memo(function Header({
   accentColor,
   t,
   language,
-  setLanguage
+  setLanguage,
+  setIsSubmitModalOpen,
 }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const isSidebarOpen = useSidebarOpen();
   const { toggle: toggleSidebar } = useSidebar();
-  const { unreadCount } = useNotifications();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isLikedGamesOpen, setIsLikedGamesOpen] = useState(false);
   const isSearchPage = location.pathname === '/search';
 
   const handleMobileSearchChange = (query: string) => {
@@ -178,7 +171,7 @@ export const Header = memo(function Header({
                 onClick={() => setIsLoginModalOpen(true)}
                 className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-bg-dark rounded-2xl font-semibold text-xs hover:bg-accent transition-colors"
               >
-                <LogIn className="w-3.5 h-3.5 sm:w-4 h-4" />
+                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">{t('login')}</span>
               </button>
             ) : (
@@ -224,7 +217,6 @@ export const Header = memo(function Header({
           </div>
         </div>
       </div>
-
     </header>
   );
 });
