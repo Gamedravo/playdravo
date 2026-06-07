@@ -28,6 +28,7 @@ export const CATEGORY_LIST = [
   'Casual',
   'Educational',
   'Fighting',
+  'Horror',
   'Multiplayer',
   '1 Player',
   '2 Player',
