@@ -366,120 +366,122 @@ export const HomePage = React.memo(function HomePage({
         ]}
       />
 
-      {/* Continue Playing — compact strip with expandable grid */}
+      {/* Continue Playing — horizontal shelf with expandable grid */}
       <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && (
-          <LazyShelf eager minHeight={80}>
-            <section className="shelf-section">
+          <LazyShelf eager minHeight={160}>
+            <section className="shelf-section group/shelf">
 
-              {/* ── COMPACT ROW (hidden when expanded) ── */}
-              {!showAllRecent && (
-                <div className="flex items-center gap-2">
-                  {/* Label */}
-                  <span className={`shrink-0 text-[11px] font-black uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/35'}`}>
+              {/* Header row */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <h3 className={`text-xl font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
                     {t('continuePlaying')}
-                  </span>
-
-                  {/* Thumbnail strip */}
-                  <div
-                    className="flex overflow-x-auto gap-1.5 flex-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                    ref={recentRef}
+                  </h3>
+                  <button
+                    onClick={() => { setPlayHistory([]); setShowAllRecent(false); }}
+                    className={`text-[10px] font-semibold uppercase tracking-widest transition-colors ${isDarkMode ? 'text-white/25 hover:text-red-400' : 'text-black/25 hover:text-red-500'}`}
                   >
-                    {recentlyPlayedGames.map((game, index) => (
-                      <button
-                        key={`recent-compact-${game.id}-${index}`}
-                        onClick={() => handleGameClick(game)}
-                        className="relative shrink-0 w-[60px] h-[60px] rounded-xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                        aria-label={`Resume ${game.title}`}
-                        title={game.title}
-                      >
-                        <img
-                          src={game.thumbnail}
-                          alt={game.title}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover/card:scale-110"
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                        {index === 0 && (
-                          <div className="absolute inset-0 ring-2 ring-accent/60 rounded-xl pointer-events-none" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                    Clear
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowAllRecent(v => !v)}
+                  className="text-sm font-bold text-accent hover:opacity-70 transition-opacity"
+                >
+                  {showAllRecent ? 'Collapse' : 'Show all'}
+                </button>
+              </div>
 
-                  {/* Show all + Clear */}
-                  <div className="flex items-center gap-2 shrink-0">
+              {/* ── COMPACT HORIZONTAL STRIP ── */}
+              {!showAllRecent && (
+                <div
+                  className="flex overflow-x-auto gap-2 pb-1 scroll-smooth snap-x snap-mandatory cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                  ref={recentRef}
+                >
+                  {recentlyPlayedGames.map((game, index) => (
                     <button
-                      onClick={() => setShowAllRecent(true)}
-                      className="text-xs font-bold text-accent hover:opacity-70 transition-opacity"
+                      key={`recent-${game.id}-${index}`}
+                      onClick={() => handleGameClick(game)}
+                      className="relative shrink-0 snap-start w-[110px] h-[110px] rounded-2xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      aria-label={`Resume ${game.title}`}
                     >
-                      Show all
+                      <img
+                        src={game.thumbnail}
+                        alt={game.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover/card:scale-105"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                      <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/60 backdrop-blur-sm rounded-md px-1.5 py-0.5 border border-white/10">
+                        <Play className="w-2 h-2 text-accent fill-accent" />
+                        <span className="text-[8px] font-black uppercase tracking-wide text-white/90 leading-none">
+                          {game.category?.slice(0, 6) || 'Game'}
+                        </span>
+                      </div>
+                      {index === 0 && (
+                        <div className="absolute top-1.5 right-1.5 bg-accent text-white text-[7px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-md">
+                          Resume
+                        </div>
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 p-2">
+                        <p className="text-white text-[10px] font-bold leading-tight line-clamp-2 drop-shadow-md">
+                          {game.title}
+                        </p>
+                      </div>
                     </button>
-                    <button
-                      onClick={() => setPlayHistory([])}
-                      className={`text-[10px] font-semibold uppercase tracking-widest transition-colors ${isDarkMode ? 'text-white/20 hover:text-red-400' : 'text-black/25 hover:text-red-500'}`}
-                    >
-                      Clear
-                    </button>
-                  </div>
+                  ))}
+                  <button
+                    onClick={triggerMysteryMatch}
+                    disabled={isFindingMysteryMatch}
+                    className={`relative shrink-0 snap-start w-[110px] h-[110px] rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                      isDarkMode
+                        ? 'bg-white/[0.03] border-white/10 hover:border-accent/50 text-accent'
+                        : 'bg-black/[0.02] border-black/10 hover:border-accent/40 text-accent'
+                    }`}
+                  >
+                    <Sparkles className={`w-6 h-6 transition-transform hover:scale-110 ${isFindingMysteryMatch ? 'animate-pulse' : ''}`} />
+                    <span className={`text-[10px] font-bold text-center leading-tight px-2 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                      {isFindingMysteryMatch ? (mysteryMatchTitle || 'Finding…') : 'Mystery Match'}
+                    </span>
+                    <span className={`text-[8px] uppercase tracking-widest font-semibold ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+                      {isFindingMysteryMatch ? 'Searching…' : 'Random pick'}
+                    </span>
+                  </button>
                 </div>
               )}
 
-              {/* ── EXPANDED GRID (replaces compact row) ── */}
+              {/* ── EXPANDED GRID ── */}
               {showAllRecent && (
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className={`text-lg font-black tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                      {t('continuePlaying')}
-                      <span className={`ml-2 text-xs font-semibold ${isDarkMode ? 'text-white/35' : 'text-black/35'}`}>
-                        {recentlyPlayedGames.length} games
-                      </span>
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => { setPlayHistory([]); setShowAllRecent(false); }}
-                        className={`text-[10px] font-semibold uppercase tracking-widest transition-colors ${isDarkMode ? 'text-white/20 hover:text-red-400' : 'text-black/25 hover:text-red-500'}`}
-                      >
-                        Clear
-                      </button>
-                      <button
-                        onClick={() => setShowAllRecent(false)}
-                        className="text-xs font-bold text-accent hover:opacity-70 transition-opacity"
-                      >
-                        Collapse
-                      </button>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                    {recentlyPlayedGames.map((game, index) => (
-                      <button
-                        key={`recent-expanded-${game.id}-${index}`}
-                        onClick={() => { handleGameClick(game); setShowAllRecent(false); }}
-                        className="relative aspect-square rounded-xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                        aria-label={`Resume ${game.title}`}
-                      >
-                        <img
-                          src={game.thumbnail}
-                          alt={game.title}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover/card:scale-110"
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                        {index === 0 && (
-                          <div className="absolute top-1.5 right-1.5 bg-accent text-white text-[7px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-md">
-                            Resume
-                          </div>
-                        )}
-                        <div className="absolute inset-x-0 bottom-0 p-1.5">
-                          <p className="text-white text-[9px] font-bold leading-tight line-clamp-2 drop-shadow-md">
-                            {game.title}
-                          </p>
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+                  {recentlyPlayedGames.map((game, index) => (
+                    <button
+                      key={`recent-expanded-${game.id}-${index}`}
+                      onClick={() => { handleGameClick(game); setShowAllRecent(false); }}
+                      className="relative aspect-square rounded-xl overflow-hidden group/card cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                      aria-label={`Resume ${game.title}`}
+                    >
+                      <img
+                        src={game.thumbnail}
+                        alt={game.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover/card:scale-110"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                      {index === 0 && (
+                        <div className="absolute top-1 right-1 bg-accent text-white text-[7px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-md">
+                          Resume
                         </div>
-                      </button>
-                    ))}
-                  </div>
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 p-1.5">
+                        <p className="text-white text-[9px] font-bold leading-tight line-clamp-2 drop-shadow-md">
+                          {game.title}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
 
