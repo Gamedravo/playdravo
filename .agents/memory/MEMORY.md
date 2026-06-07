@@ -1,0 +1,2 @@
+- [API routing order](api-routing-order.md) — Express API routes must be registered BEFORE Vite middleware or Vite's SPA fallback intercepts them
+- [Firebase migration](firebase-migration.md) — Firebase/Firestore replaced with PostgreSQL + REST API; Firebase files remain as stubs but are unused

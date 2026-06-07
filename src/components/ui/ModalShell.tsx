@@ -11,6 +11,7 @@ interface ModalShellProps {
   zIndex?: number;
   padding?: string;
   showCloseButton?: boolean;
+  className?: string;
 }
 
 export function ModalShell({

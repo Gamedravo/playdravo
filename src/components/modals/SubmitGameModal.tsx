@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { X, RefreshCw, Rocket } from 'lucide-react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../../firebase';
 import { toast } from 'sonner';
+import { api } from '../../lib/api';
 
 interface SubmitGameModalProps {
   isOpen: boolean;
@@ -25,24 +24,18 @@ export function SubmitGameModal({ isOpen, onClose, isDarkMode, t, user }: Submit
     }
 
     setIsSubmittingGameRequest(true);
-    const path = 'gameRequests';
     try {
-      const requestData: any = {
+      await api.submitGameRequest({
         gameName: newGameRequest.gameName.trim(),
-        createdAt: serverTimestamp()
-      };
-
-      if (user?.uid) requestData.userId = user.uid;
-      if (newGameRequest.link && newGameRequest.link.trim()) requestData.link = newGameRequest.link.trim();
-      if (newGameRequest.description && newGameRequest.description.trim()) requestData.description = newGameRequest.description.trim();
-
-      await addDoc(collection(db, path), requestData);
+        link: newGameRequest.link.trim() || undefined,
+        description: newGameRequest.description.trim() || undefined,
+      });
       toast.success(t('submissionReceived') || 'Submission received successfully.');
       onClose();
       setNewGameRequest({ gameName: '', link: '', description: '' });
     } catch (error) {
       console.error("Game Request Error:", error);
-      handleFirestoreError(error, OperationType.CREATE, path);
+      toast.error(t('failedToSubmit') || 'Failed to submit.');
     } finally {
       setIsSubmittingGameRequest(false);
     }
@@ -80,60 +73,46 @@ export function SubmitGameModal({ isOpen, onClose, isDarkMode, t, user }: Submit
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-12 pt-0 scrollbar-hide">
-          <form className="space-y-8" onSubmit={handleGameRequest}>
-            <div className="group/input">
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 group-focus-within/input:text-accent transition-colors ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>{t('gameNameLabel') || 'Game Name'}</label>
-              <input 
-                type="text" 
-                required 
-                value={newGameRequest.gameName}
-                onChange={(e) => setNewGameRequest({...newGameRequest, gameName: e.target.value})}
-                className={`w-full rounded-2xl px-6 py-4 focus:border-accent/50 outline-none transition-all font-bold ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:bg-white/10' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20 focus:bg-black/10'}`} 
-                placeholder="Enter game name" 
-              />
-            </div>
-            <div className="group/input">
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 group-focus-within/input:text-accent transition-colors ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>{t('gameLinkLabel') || 'Game Link'}</label>
-              <input 
-                type="url" 
-                value={newGameRequest.link}
-                onChange={(e) => setNewGameRequest({...newGameRequest, link: e.target.value})}
-                className={`w-full rounded-2xl px-6 py-4 focus:border-accent/50 outline-none transition-all font-mono text-xs ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:bg-white/10' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20 focus:bg-black/10'}`} 
-                placeholder="https://example.com/game" 
-              />
-            </div>
-            <div className="group/input">
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 group-focus-within/input:text-accent transition-colors ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>{t('gameDescriptionLabel') || 'Game Description'}</label>
-              <textarea 
-                value={newGameRequest.description}
-                onChange={(e) => setNewGameRequest({...newGameRequest, description: e.target.value})}
-                className={`w-full h-32 rounded-2xl px-6 py-4 focus:border-accent/50 outline-none transition-all font-medium text-sm resize-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:bg-white/10' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20 focus:bg-black/10'}`} 
-                placeholder="Tell us about the game..." 
-              />
-            </div>
-
-            <motion.button 
-              whileHover={{ scale: 1.02, y: -4 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              disabled={isSubmittingGameRequest}
-              className="w-full py-6 bg-accent text-bg-dark font-bold rounded-3xl shadow-[0_20px_40px_rgba(var(--accent-rgb),0.3)] hover:shadow-[0_30px_60px_rgba(var(--accent-rgb),0.4)] transition-all uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-4 disabled:opacity-50"
-            >
-              {isSubmittingGameRequest ? (
-                <>
-                  <RefreshCw className="w-5 h-5 animate-spin" />
-                  {t('transmitting') || 'Transmitting...'}
-                </>
-              ) : (
-                <>
-                  <Rocket className="w-5 h-5" />
-                  {t('submitRequestButton') || 'Submit Request'}
-                </>
-              )}
-            </motion.button>
-          </form>
-        </div>
+        <form onSubmit={handleGameRequest} className="p-12 pt-6 space-y-6 overflow-y-auto">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('gameTitle') || 'Game Title'} *</label>
+            <input
+              type="text"
+              value={newGameRequest.gameName}
+              onChange={e => setNewGameRequest(prev => ({ ...prev, gameName: e.target.value }))}
+              placeholder={t('gameTitlePlaceholder') || 'e.g. Minecraft, Among Us...'}
+              className={`w-full px-5 py-4 rounded-2xl border text-sm font-medium transition-all focus:outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('gameLink') || 'Game Link (optional)'}</label>
+            <input
+              type="url"
+              value={newGameRequest.link}
+              onChange={e => setNewGameRequest(prev => ({ ...prev, link: e.target.value }))}
+              placeholder="https://..."
+              className={`w-full px-5 py-4 rounded-2xl border text-sm font-medium transition-all focus:outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('description') || 'Description (optional)'}</label>
+            <textarea
+              value={newGameRequest.description}
+              onChange={e => setNewGameRequest(prev => ({ ...prev, description: e.target.value }))}
+              placeholder={t('gameDescriptionPlaceholder') || 'Tell us more about this game...'}
+              rows={3}
+              className={`w-full px-5 py-4 rounded-2xl border text-sm font-medium transition-all focus:outline-none focus:border-accent resize-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmittingGameRequest || !newGameRequest.gameName.trim()}
+            className="w-full py-4 bg-accent text-white font-bold rounded-2xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
+          >
+            {isSubmittingGameRequest ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
+            {isSubmittingGameRequest ? (t('submitting') || 'Submitting...') : (t('submitGame') || 'Submit Game')}
+          </button>
+        </form>
       </motion.div>
     </motion.div>
   );

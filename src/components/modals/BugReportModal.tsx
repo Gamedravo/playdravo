@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { X, Bug, RefreshCw } from 'lucide-react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../../firebase';
 import { toast } from 'sonner';
+import { api } from '../../lib/api';
 
 interface BugReportModalProps {
   isOpen: boolean;
@@ -26,18 +25,12 @@ export function BugReportModal({ isOpen, onClose, isDarkMode, t, user }: BugRepo
     }
 
     setIsSubmittingBug(true);
-    const path = 'bugReports';
     try {
-      const reportData: any = {
+      await api.submitBugReport({
         gameName: bugGameName.trim(),
         description: bugDescription.trim(),
-        createdAt: serverTimestamp()
-      };
-
-      if (user?.uid) reportData.userId = user.uid;
-      if (bugEmail && bugEmail.trim()) reportData.email = bugEmail.trim();
-
-      await addDoc(collection(db, path), reportData);
+        email: bugEmail.trim() || undefined,
+      });
       toast.success(t('submissionReceived') || 'Report submitted successfully.');
       onClose();
       setBugGameName('');
@@ -45,7 +38,6 @@ export function BugReportModal({ isOpen, onClose, isDarkMode, t, user }: BugRepo
       setBugEmail('');
     } catch (error) {
       console.error("Bug Report Error:", error);
-      handleFirestoreError(error, OperationType.CREATE, path);
       toast.error(t('failedToSubmitBugReport') || 'Failed to submit bug report.');
     } finally {
       setIsSubmittingBug(false);
@@ -61,96 +53,66 @@ export function BugReportModal({ isOpen, onClose, isDarkMode, t, user }: BugRepo
         onClick={onClose}
         className={`absolute inset-0 backdrop-blur-xl transition-all duration-500 ${isDarkMode ? 'bg-bg-dark/90' : 'bg-white/90'}`}
       />
-      <motion.div
+      <motion.div 
         initial={false}
-        animate={isOpen ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.98, y: 10 }}
+        animate={isOpen ? { scale: 1, y: 0 } : { scale: 0.95, y: 20 }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className={`relative w-full max-w-xl border rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] transition-all duration-500 ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
+        className={`border w-full max-w-lg rounded-[3rem] shadow-2xl relative z-10 overflow-hidden ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
       >
-        <div className="p-8 flex items-center justify-between border-b border-white/5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20">
-              <Bug className="w-6 h-6 text-red-500" />
-            </div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-50" />
+        <div className="p-10">
+          <div className="flex justify-between items-start mb-8">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                {(t('reportBug') || 'Report Bug').split(' ')[0]} <span className="text-red-500">{(t('reportBug') || 'Report Bug').split(' ').slice(1).join(' ')}</span>
-              </h2>
-              <p className={`text-[11px] font-bold uppercase tracking-[0.3em] ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
-                {t('technicalIssueReport') || 'Technical Issue Report'}
-              </p>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="text-[10px] font-bold text-accent uppercase tracking-[0.3em]">System: Report</span>
+              </div>
+              <h2 className="text-4xl font-bold tracking-tight leading-none">Report a <span className="text-accent">Bug</span></h2>
             </div>
+            <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all hover:rotate-90">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <motion.button 
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={onClose}
-            className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 text-white' : 'bg-black/5 border-black/10 hover:bg-black/10 text-black'}`}
-          >
-            <X className="w-5 h-5" />
-          </motion.button>
-        </div>
-
-        <div className="p-8 overflow-y-auto scrollbar-hide">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
-                {t('gameNameLabel') || 'Game Name'}
-              </label>
-              <input 
-                type="text" 
+              <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('gameName') || 'Game Name'}</label>
+              <input
+                type="text"
                 value={bugGameName}
-                onChange={(e) => setBugGameName(e.target.value)}
-                placeholder="Enter game name"
-                className={`w-full px-6 py-4 rounded-2xl border transition-all text-sm font-medium focus:ring-2 focus:ring-red-500/50 outline-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20'}`}
+                onChange={e => setBugGameName(e.target.value)}
+                placeholder={t('gameNamePlaceholder') || 'Which game has the bug?'}
+                className={`w-full px-4 py-3 rounded-xl border text-sm font-medium transition-all focus:outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
               />
             </div>
-
             <div>
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
-                {t('problemDescriptionLabel') || 'Problem Description'}
-              </label>
-              <textarea 
-                value={bugDescription}
-                onChange={(e) => setBugDescription(e.target.value)}
-                placeholder={t('bugDescriptionPlaceholder') || 'Describe the issue...'}
-                className={`w-full h-40 p-6 rounded-3xl border transition-all resize-none text-sm font-medium focus:ring-2 focus:ring-red-500/50 outline-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20'}`}
-              />
-            </div>
-
-            <div>
-              <label className={`block text-[11px] font-semibold tracking-wide mb-3 ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
-                {t('optionalEmailLabel') || 'Email (Optional)'}
-              </label>
-              <input 
-                type="email" 
+              <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('email') || 'Email (optional)'}</label>
+              <input
+                type="email"
                 value={bugEmail}
-                onChange={(e) => setBugEmail(e.target.value)}
-                placeholder="your@email.com (optional)"
-                className={`w-full px-6 py-4 rounded-2xl border transition-all text-sm font-medium focus:ring-2 focus:ring-red-500/50 outline-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder:text-white/20' : 'bg-black/5 border-black/10 text-black placeholder:text-black/20'}`}
+                onChange={e => setBugEmail(e.target.value)}
+                placeholder="your@email.com"
+                className={`w-full px-4 py-3 rounded-xl border text-sm font-medium transition-all focus:outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
               />
             </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('description') || 'Description'}</label>
+              <textarea
+                value={bugDescription}
+                onChange={e => setBugDescription(e.target.value)}
+                placeholder={t('bugDescriptionPlaceholder') || 'Describe the bug in detail...'}
+                rows={4}
+                className={`w-full px-4 py-3 rounded-xl border text-sm font-medium transition-all focus:outline-none focus:border-accent resize-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+              />
+            </div>
+            <button
+              onClick={handleBugReport}
+              disabled={isSubmittingBug || !bugGameName.trim() || !bugDescription.trim()}
+              className="w-full py-3 bg-accent text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
+            >
+              {isSubmittingBug ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Bug className="w-4 h-4" />}
+              {isSubmittingBug ? (t('submitting') || 'Submitting...') : (t('submitBugReport') || 'Submit Report')}
+            </button>
           </div>
-
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleBugReport}
-            disabled={isSubmittingBug}
-            className="w-full mt-8 py-4 bg-red-500 text-white rounded-2xl font-semibold tracking-wide text-xs shadow-[0_10px_30px_rgba(239,68,68,0.3)] disabled:opacity-50 flex items-center justify-center gap-3"
-          >
-            {isSubmittingBug ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                {t('submitting') || 'Submitting...'}
-              </>
-            ) : (
-              <>
-                <Bug className="w-4 h-4" />
-                {t('submitButton') || 'Submit'}
-              </>
-            )}
-          </motion.button>
         </div>
       </motion.div>
     </div>

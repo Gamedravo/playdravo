@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { X, MessageCircle, HelpCircle } from 'lucide-react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../../firebase';
 import { toast } from 'sonner';
+import { api } from '../../lib/api';
 
 interface GameRequestModalProps {
   isOpen: boolean;
@@ -25,22 +24,17 @@ export function GameRequestModal({ isOpen, onClose, isDarkMode, t, user }: GameR
     }
     setIsSubmittingRequest(true);
     try {
-      await addDoc(collection(db, 'gameRequests'), {
-        userId: user.uid,
-        userEmail: user.email || '',
-        displayName: user.displayName || 'Anonymous Player',
-        gameName: requestTitle,
-        description: requestDescription,
-        status: 'pending',
-        createdAt: serverTimestamp(),
-        votes: 0
+      await api.submitGameRequest({
+        gameName: requestTitle.trim(),
+        description: requestDescription.trim(),
       });
       onClose();
       setRequestTitle('');
       setRequestDescription('');
       toast.success(t('gameRequestSubmitted') || 'Game feature request submitted.');
     } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'gameRequests');
+      console.error("Game Request Error:", error);
+      toast.error(t('failedToSubmitRequest') || 'Failed to submit request.');
     } finally {
       setIsSubmittingRequest(false);
     }
@@ -59,66 +53,49 @@ export function GameRequestModal({ isOpen, onClose, isDarkMode, t, user }: GameR
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         className={`border w-full max-w-lg rounded-[3rem] shadow-2xl relative transition-all duration-500 flex flex-col max-h-[90vh] overflow-hidden ${isDarkMode ? 'bg-bg-dark border-white/10' : 'bg-white border-black/10'}`}
       >
-        <div className="flex justify-between items-start p-12 pb-6 shrink-0">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <MessageCircle className="w-4 h-4 text-accent" />
-              <span className="text-[10px] font-bold text-accent uppercase tracking-[0.3em]">{t('systemFeatureRequest') || 'System Feature Request'}</span>
-            </div>
-            <h2 className="text-4xl font-bold tracking-tight leading-none">
-              {(t('request') || 'Request')} <span className="text-accent">{(t('feature') || 'Feature')}</span>
-            </h2>
-          </div>
-          <button onClick={onClose} className={`p-3 rounded-xl transition-all ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}>
-            <X className={`w-5 h-5 ${isDarkMode ? 'text-white' : 'text-black'}`} />
-          </button>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-12 pt-0 scrollbar-hide">
-          <div className="space-y-6">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-50 shrink-0" />
+        <div className="p-10 overflow-y-auto">
+          <div className="flex justify-between items-start mb-8">
             <div>
-              <label className={`block text-[11px] font-semibold tracking-wide mb-2 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>
-                {t('featureTitle') || 'Feature Title'}
-              </label>
-              <input 
-                type="text" 
-                required 
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="text-[10px] font-bold text-accent uppercase tracking-[0.3em]">Request: Game</span>
+              </div>
+              <h2 className="text-4xl font-bold tracking-tight leading-none">Request a <span className="text-accent">Game</span></h2>
+            </div>
+            <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all hover:rotate-90">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('gameTitle') || 'Game Title'}</label>
+              <input
+                type="text"
                 value={requestTitle}
-                onChange={(e) => setRequestTitle(e.target.value)}
-                className={`w-full rounded-xl px-5 py-3 focus:border-accent/50 outline-none transition-all font-bold ${isDarkMode ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40' : 'bg-black/10 border-black/20 text-black placeholder:text-black/40'}`} 
-                placeholder={t('featureTitlePlaceholder') || 'What feature?'} 
+                onChange={e => setRequestTitle(e.target.value)}
+                placeholder={t('gameTitlePlaceholder') || 'e.g. Among Us, Minecraft...'}
+                className={`w-full px-4 py-3 rounded-xl border text-sm font-medium transition-all focus:outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
               />
             </div>
-            
             <div>
-              <label className={`block text-[11px] font-semibold tracking-wide mb-2 ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>
-                {t('descriptionLogic') || 'Description Logic'}
-              </label>
-              <textarea 
-                required
+              <label className="block text-xs font-bold uppercase tracking-widest opacity-50 mb-2">{t('description') || 'Why do you want it?'}</label>
+              <textarea
                 value={requestDescription}
-                onChange={(e) => setRequestDescription(e.target.value)}
-                className={`w-full rounded-xl px-5 py-3 focus:border-accent/50 outline-none transition-all h-40 resize-none text-sm ${isDarkMode ? 'bg-white/10 border-white/20 text-white placeholder:text-white/40' : 'bg-black/10 border-black/20 text-black placeholder:text-black/40'}`} 
-                placeholder={t('explainFeature') || 'Explain...'} 
-              ></textarea>
+                onChange={e => setRequestDescription(e.target.value)}
+                placeholder={t('requestDescriptionPlaceholder') || 'Tell us why this game should be added...'}
+                rows={4}
+                className={`w-full px-4 py-3 rounded-xl border text-sm font-medium transition-all focus:outline-none focus:border-accent resize-none ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+              />
             </div>
-
-            <div className={`p-6 rounded-2xl border flex items-start gap-4 ${isDarkMode ? 'bg-accent/10 border-accent/30' : 'bg-accent/10 border-accent/30'}`}>
-              <HelpCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-              <p className={`text-[11px] font-medium leading-relaxed ${isDarkMode ? 'text-white/70' : 'text-black/70'}`}>
-                {t('featureRegistryDesc') || 'Features are reviewed.'}
-              </p>
-            </div>
-
-            <motion.button 
+            <button
               onClick={handleSubmitRequest}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
               disabled={isSubmittingRequest || !requestTitle.trim() || !requestDescription.trim()}
-              className={`w-full py-5 font-bold rounded-2xl hover:bg-accent hover:text-bg-dark transition-all uppercase tracking-[0.2em] text-xs disabled:opacity-50 disabled:cursor-not-allowed ${isDarkMode ? 'bg-white text-bg-dark' : 'bg-black text-white'}`}
+              className="w-full py-3 bg-accent text-white font-bold rounded-xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
             >
-              {isSubmittingRequest ? (t('submitting') || 'Submitting...') : (t('submitToRegistry') || 'Submit To Registry')}
-            </motion.button>
+              <MessageCircle className="w-4 h-4" />
+              {isSubmittingRequest ? (t('submitting') || 'Submitting...') : (t('submitRequest') || 'Submit Request')}
+            </button>
           </div>
         </div>
       </motion.div>

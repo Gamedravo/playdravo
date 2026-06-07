@@ -94,6 +94,7 @@ export interface UserProfile {
   isDarkMode?: boolean;
   playHistory?: string[];
   usernameSet?: boolean;
+  username?: string;
 }
 
 export interface Report {

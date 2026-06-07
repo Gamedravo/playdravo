@@ -78,28 +78,7 @@ import { Analytics } from './lib/analytics';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog, gameMatchesCategory } from './games';
 import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
-import {
-  db,
-  handleFirestoreError,
-  OperationType,
-  runTransaction,
-  serverTimestamp,
-} from './firebase';
-import { 
-  collection, 
-  onSnapshot, 
-  query, 
-  orderBy, 
-  limit, 
-  addDoc, 
-  doc, 
-  updateDoc, 
-  increment,
-  setDoc,
-  getDoc,
-  getDocs,
-  where
-} from 'firebase/firestore';
+import { api } from './lib/api';
 import { useReplitAuth, type ReplitUser } from './hooks/useReplitAuth';
 import { NotificationsProvider, useNotifications } from './components/NotificationsProvider';
 import { SEO } from './components/SEO';
@@ -118,7 +97,6 @@ import { markRouteVisited } from './lib/routeVisitCache';
 import { isAdminEmail } from './lib/brandContact';
 import { devLog } from './lib/devLog';
 import { withSafetyMetadata } from './lib/adsInjection';
-import { parseFirebaseGame } from './utils/gameUtils';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
@@ -509,7 +487,7 @@ function AppContent() {
     document.documentElement.style.setProperty('--color-accent', accentColor);
     localStorage.setItem('topg_accent', accentColor);
     if (user && userProfile && userProfile.accentColor !== accentColor) {
-      updateDoc(doc(db, 'users', user.id), { accentColor }).catch(console.error);
+      api.updateProfile({ accentColor }).catch(console.error);
     }
   }, [accentColor, user, userProfile]);
 
@@ -523,7 +501,7 @@ function AppContent() {
       document.documentElement.classList.add('light');
     }
     if (user && userProfile && userProfile.isDarkMode !== isDarkMode) {
-      updateDoc(doc(db, 'users', user.id), { isDarkMode }).catch(console.error);
+      api.updateProfile({ isDarkMode }).catch(console.error);
     }
   }, [isDarkMode, user, userProfile]);
 
@@ -591,30 +569,40 @@ function AppContent() {
         createdAt: new Date().toISOString()
       };
 
-      // Try to load extended profile from Firestore (may fail on quota)
+      // Load extended profile from PostgreSQL via API
       try {
-        const userDocRef = doc(db, 'users', replitUser.id);
-        const userDoc = await getDoc(userDocRef);
+        const serverProfile = await fetch('/api/auth/user').then(r => r.ok ? r.json() : null).catch(() => null);
 
-        if (userDoc.exists()) {
-          const profile = { ...baseProfile, ...userDoc.data() } as UserProfile;
-          if (isAdminEmail(replitUser.email)) profile.role = 'admin';
+        if (serverProfile) {
+          const profile: UserProfile = {
+            ...baseProfile,
+            displayName: serverProfile.displayName || serverProfile.username || baseProfile.displayName,
+            username: serverProfile.username || '',
+            usernameSet: serverProfile.usernameSet || false,
+            accentColor: serverProfile.accentColor || undefined,
+            isDarkMode: serverProfile.isDarkMode !== undefined ? serverProfile.isDarkMode : true,
+            favorites: serverProfile.favorites || [],
+            playHistory: serverProfile.playHistory || [],
+            preferredCategories: serverProfile.preferredCategories || [],
+            gamerPersona: serverProfile.gamerPersona || null,
+            xp: serverProfile.xp || 0,
+            level: serverProfile.level || 1,
+            role: isAdminEmail(replitUser.email) ? 'admin' : (serverProfile.role as 'user' | 'admin' || 'user'),
+          };
           setUserProfile(profile);
           if (!profile.usernameSet) setIsUsernameModalOpen(true);
           if (profile.accentColor) setAccentColor(profile.accentColor);
           if (profile.isDarkMode !== undefined) setIsDarkMode(profile.isDarkMode);
-          if (profile.favorites) setFavorites([...new Set(profile.favorites)]);
-          if (profile.playHistory) setPlayHistory([...new Set(profile.playHistory)]);
-          if (profile.preferredCategories) setPreferredCategories(profile.preferredCategories);
+          if (profile.favorites?.length) setFavorites([...new Set(profile.favorites)]);
+          if (profile.playHistory?.length) setPlayHistory([...new Set(profile.playHistory)]);
+          if (profile.preferredCategories?.length) setPreferredCategories(profile.preferredCategories);
           if (profile.gamerPersona) setGamerPersona(profile.gamerPersona);
         } else {
-          await setDoc(userDocRef, baseProfile);
           setUserProfile(baseProfile);
           setIsUsernameModalOpen(true);
         }
       } catch (error: any) {
-        console.warn('Firestore profile load failed (quota or network):', error?.message);
-        // Fall back to base profile from Replit Auth — app still works
+        console.warn('Profile load failed:', error?.message);
         setUserProfile(baseProfile);
       } finally {
         setIsAuthReady(true);
@@ -631,158 +619,42 @@ function AppContent() {
       const { amount, reason } = e.detail;
       if (amount && user && userProfile) {
         const newXp = (userProfile.xp || 0) + amount;
-        const currentLevel = Math.floor((userProfile.xp || 0) / 1000) + 1;
         const newLevel = Math.floor(newXp / 1000) + 1;
-        
         setUserProfile({ ...userProfile, xp: newXp, level: newLevel });
-        
-        
-        try {
-          await updateDoc(doc(db, 'users', user.id), {
-            xp: newXp,
-            level: newLevel
-          });
-        } catch (error) {
-          console.error("Failed to update XP:", error);
-        }
+        api.updateProfile({ xp: newXp, level: newLevel }).catch(console.error);
       }
     };
-    
     window.addEventListener('add-xp', handleAddXp);
     return () => window.removeEventListener('add-xp', handleAddXp);
   }, [user, userProfile, isDarkMode]);
 
-  // One-time Database Initialization/Verification for Admin
+  // Load game stats from PostgreSQL and merge into catalog
   useEffect(() => {
-    if (userProfile?.role !== 'admin') return;
-    
-    let isMounted = true;
-    
-    const initDatabase = async () => {
-      devLog('[Admin init] Starting one-time database verification...');
-      
-      try {
-        // 1. Verify/Populate games
-        const gamesColRef = collection(db, 'games');
-        const gamesSnapshot = await getDocs(gamesColRef);
-        if (!isMounted) return;
-        
-        const existingGamesIds = new Set(gamesSnapshot.docs.map(doc => doc.id));
-        const missingGames = STATIC_GAMES.filter(g => !existingGamesIds.has(g.id));
-        
-        if (missingGames.length > 0) {
-          devLog(`[Admin init] Found ${missingGames.length} missing games. Populating...`);
-          const batch_size = 5;
-          for (let i = 0; i < missingGames.length; i += batch_size) {
-            if (!isMounted) return;
-            const batch = missingGames.slice(i, i + batch_size);
-            await Promise.all(batch.map(async (game) => {
-              const gameData = {
-                ...game,
-                description: game.description || '',
-                rating: game.rating || 0,
-                plays: game.plays || 0,
-                authorUid: game.authorUid || 'system',
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-              };
-              await setDoc(doc(db, 'games', game.id), gameData);
-            }));
-            devLog(`[Admin init] Populated missing games batch ${Math.floor(i / batch_size) + 1}`);
-          }
-        }
-        
-        // 2. Verify/Populate game requests
-        const reqColRef = collection(db, 'gameRequests');
-        const reqSnapshot = await getDocs(query(reqColRef, limit(1)));
-        if (!isMounted) return;
-        
-        if (reqSnapshot.empty) {
-          devLog('[Admin init] gameRequests collection is empty. Populating with sample request...');
-          await addDoc(reqColRef, {
-            userId: 'system',
-            gameName: 'Grand Theft Auto VI',
-            description: 'The most anticipated game of the decade. We need it here!',
-            status: 'planned',
-            votes: 1337,
-            createdAt: serverTimestamp()
-          });
-        }
-        
-        // 3. Verify/Populate chat
-        const chatColRef = collection(db, 'chat');
-        const chatSnapshot = await getDocs(query(chatColRef, limit(1)));
-        if (!isMounted) return;
-        
-        if (chatSnapshot.empty) {
-          devLog('[Admin init] chat collection is empty. Populating with welcome message...');
-          await addDoc(chatColRef, {
-            uid: 'system',
-            displayName: 'GameDravo AI',
-            text: 'Welcome to the ultimate gaming platform! Systems operational. Type /help for commands.',
-            timestamp: serverTimestamp()
-          });
-        }
-        
-        devLog('[Admin init] One-time database verification complete.');
-      } catch (err) {
-        console.error("[Admin init] Failed during database initialization:", err);
-      }
-    };
-    
-    initDatabase();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [userProfile?.role]);
-
-  // Real-time Games Listener
-  useEffect(() => {
-    const q = query(collection(db, 'games'), orderBy('plays', 'desc'), limit(600));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const gamesData = snapshot.docs.map(doc => parseFirebaseGame(doc.id, doc.data()));
-      
-      // Catalog-only: merge Firestore stats into verified games, never add legacy/AI entries
-
+    let cancelled = false;
+    api.getGameStats().then((stats: any[]) => {
+      if (cancelled) return;
+      const statsMap = new Map(stats.map((s: any) => [s.id, s]));
       const gamesMap = new Map(baseGamesRef.current.map((g) => [g.id, { ...g }]));
-      gamesData.forEach((game) => {
-        const catalog = gamesMap.get(game.id);
+      statsMap.forEach((stat, id) => {
+        const catalog = gamesMap.get(id);
         if (!catalog) return;
-        gamesMap.set(game.id, {
+        gamesMap.set(id, {
           ...catalog,
-          plays: typeof game.plays === 'number' ? game.plays : catalog.plays,
-          rating: typeof game.rating === 'number' && game.rating > 0 ? game.rating : catalog.rating,
-          ratingCount: game.ratingCount ?? catalog.ratingCount,
+          plays: typeof stat.plays === 'number' ? stat.plays : catalog.plays,
+          rating: typeof stat.rating === 'number' && stat.rating > 0 ? stat.rating : catalog.rating,
+          ratingCount: stat.ratingCount ?? catalog.ratingCount,
         });
       });
-      
-      setGames(Array.from(gamesMap.values()));
-    }, (error) => {
-      console.error("Games listener failed:", error);
-      handleFirestoreError(error, OperationType.LIST, 'games');
-      setGames(baseGamesRef.current);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // Real-time New Arrivals Listener
-  useEffect(() => {
-    const q = query(
-      collection(db, 'games'),
-      orderBy('createdAt', 'desc'),
-      limit(5)
-    );
-    const unsubscribe = onSnapshot(q, () => {
+      const merged = Array.from(gamesMap.values());
+      baseGamesRef.current = merged;
+      setGames(merged);
       setNewArrivals(
-        [...baseGamesRef.current]
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        [...merged]
+          .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
           .slice(0, 12)
       );
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'games');
-    });
-    return () => unsubscribe();
+    }).catch((e) => console.warn('Failed to load game stats:', e));
+    return () => { cancelled = true; };
   }, []);
 
   // Real-time Mods Listener for Active Game
@@ -791,102 +663,40 @@ function AppContent() {
       setActiveGameMods([]);
       return;
     }
-    const q = query(collection(db, 'games', activeGame.id, 'mods'), orderBy('downloads', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const modsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Mod));
-      setActiveGameMods(modsData);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, `games/${activeGame.id}/mods`);
-    });
-    return () => unsubscribe();
+    api.getGameMods(activeGame.id).then(setActiveGameMods).catch(console.error);
   }, [activeGame]);
 
-  // Real-time Game Requests Listener
+  // Load Game Requests
   useEffect(() => {
-    const q = query(
-      collection(db, 'gameRequests'),
-      orderBy('createdAt', 'desc'),
-      limit(50)
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as GameRequest));
-      setGameRequests(requests);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'gameRequests');
-    });
-    return () => unsubscribe();
+    api.getGameRequests().then(setGameRequests).catch(console.error);
   }, []);
 
-  // Real-time User Rating Listener
+  // Load User Rating for Active Game
   useEffect(() => {
     if (!activeGame || !userProfile) {
       setUserRating(null);
       return;
     }
-    const ratingDocRef = doc(db, 'games', activeGame.id, 'ratings', userProfile.uid);
-    const unsubscribe = onSnapshot(ratingDocRef, (snapshot) => {
-      if (snapshot.exists()) {
-        setUserRating(snapshot.data().value);
-      } else {
-        setUserRating(null);
-      }
-    }, (error) => {
-      // Silently handle or log
-      console.error("Error fetching user rating:", error);
-    });
-    return () => unsubscribe();
-  }, [activeGame, userProfile]);
+    api.getUserRating(activeGame.id)
+      .then((r: any) => setUserRating(r?.value ?? null))
+      .catch(() => setUserRating(null));
+  }, [activeGame?.id, userProfile?.uid]);
 
   const handleRate = async (value: number) => {
     if (!activeGame || !userProfile) {
-      if (!userProfile) {
-        replitLogin();
-      }
+      if (!userProfile) replitLogin();
       return;
     }
-
     setIsRatingLoading(true);
-    const gameRef = doc(db, 'games', activeGame.id);
-    const ratingRef = doc(db, 'games', activeGame.id, 'ratings', userProfile.uid);
-
     try {
-      await runTransaction(db, async (transaction) => {
-        const gameDoc = await transaction.get(gameRef);
-        if (!gameDoc.exists()) throw new Error("Game does not exist!");
-
-        const ratingDoc = await transaction.get(ratingRef);
-        const gameData = gameDoc.data() as Game;
-        
-        const oldRatingCount = gameData.ratingCount || 0;
-        const oldTotalRating = gameData.totalRating || 0;
-        
-        let newRatingCount = oldRatingCount;
-        let newTotalRating = oldTotalRating;
-
-        if (ratingDoc.exists()) {
-          const oldRatingValue = ratingDoc.data().value;
-          newTotalRating = oldTotalRating - oldRatingValue + value;
-        } else {
-          newRatingCount = oldRatingCount + 1;
-          newTotalRating = oldTotalRating + value;
-        }
-
-        const newAverageRating = Number((newTotalRating / newRatingCount).toFixed(1));
-
-        transaction.set(ratingRef, {
-          uid: userProfile.uid,
-          value: value,
-          timestamp: serverTimestamp()
-        });
-
-        transaction.update(gameRef, {
-          rating: newAverageRating,
-          ratingCount: newRatingCount,
-          totalRating: newTotalRating
-        });
-      });
+      const result = await api.rateGame(activeGame.id, value);
+      setUserRating(result.userRating);
+      setGames(prev => prev.map(g => g.id === activeGame.id
+        ? { ...g, rating: result.rating, ratingCount: result.ratingCount }
+        : g
+      ));
     } catch (error) {
-      handleFirestoreError(error, OperationType.WRITE, `games/${activeGame.id}/ratings/${userProfile.uid}`);
+      console.error("Rating error:", error);
     } finally {
       setIsRatingLoading(false);
     }
@@ -946,20 +756,13 @@ function AppContent() {
   const [isTheaterMode, setIsTheaterMode] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
-  // Real-time Chat Listener
+  // Load Chat Messages
   useEffect(() => {
     if (!userProfile) {
       setChatMessages([]);
       return;
     }
-    const q = query(collection(db, 'chat'), orderBy('timestamp', 'desc'), limit(50));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ChatMessage)).reverse();
-      setChatMessages(messages);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'chat');
-    });
-    return () => unsubscribe();
+    api.getChatMessages().then(setChatMessages).catch(console.error);
   }, [userProfile?.uid]);
 
   const [activeTab, setActiveTab] = useState<'game' | 'mods' | 'trailer' | 'coach' | 'requests'>('game');
@@ -994,14 +797,8 @@ function AppContent() {
     }
 
     if (user && userProfile) {
-      try {
-        await updateDoc(doc(db, 'users', user.id), {
-          favorites: newFavorites
-        });
-        setUserProfile({ ...userProfile, favorites: newFavorites });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.UPDATE, `users/${user.id}`);
-      }
+      api.updateProfile({ favorites: newFavorites }).catch(console.error);
+      setUserProfile({ ...userProfile, favorites: newFavorites });
     }
   };
 
@@ -1163,10 +960,7 @@ function AppContent() {
 
     if (!user) return;
     try {
-      const userRef = doc(db, 'users', user.id);
-      await updateDoc(userRef, {
-        preferredCategories: categories
-      });
+      await api.updateProfile({ preferredCategories: categories });
       setUserProfile(prev => prev ? { ...prev, preferredCategories: categories } : null);
       appToast.success(t('userPreferencesUpdated'));
       generateRecommendations();
@@ -1242,8 +1036,7 @@ function AppContent() {
     const persona = { title, description };
     
     try {
-      const userRef = doc(db, 'users', user.id);
-      await updateDoc(userRef, { gamerPersona: persona });
+      await api.updateProfile({ gamerPersona: persona });
       setGamerPersona(persona);
       setUserProfile(prev => prev ? { ...prev, gamerPersona: persona } : null);
       appToast.success(t('aiPersonaUpdated') || "Persona analyzed successfully!");
@@ -1295,21 +1088,21 @@ function AppContent() {
   useEffect(() => {
     localStorage.setItem('topg_history', JSON.stringify(playHistory));
     if (user && userProfile && JSON.stringify(userProfile.playHistory) !== JSON.stringify(playHistory)) {
-      updateDoc(doc(db, 'users', user.id), { playHistory }).catch(console.error);
+      api.updateProfile({ playHistory }).catch(console.error);
     }
   }, [playHistory, user, userProfile]);
 
   useEffect(() => {
     localStorage.setItem('topg_favorites', JSON.stringify(favorites));
     if (user && userProfile && JSON.stringify(userProfile.favorites) !== JSON.stringify(favorites)) {
-      updateDoc(doc(db, 'users', user.id), { favorites }).catch(console.error);
+      api.updateProfile({ favorites }).catch(console.error);
     }
   }, [favorites, user, userProfile]);
 
   useEffect(() => {
     localStorage.setItem('topg_preferred_categories', JSON.stringify(preferredCategories));
     if (user && userProfile && JSON.stringify(userProfile.preferredCategories) !== JSON.stringify(preferredCategories)) {
-      updateDoc(doc(db, 'users', user.id), { preferredCategories }).catch(console.error);
+      api.updateProfile({ preferredCategories }).catch(console.error);
     }
   }, [preferredCategories, user, userProfile]);
 
@@ -1317,7 +1110,7 @@ function AppContent() {
     if (gamerPersona) {
       localStorage.setItem('topg_persona', JSON.stringify(gamerPersona));
       if (user && userProfile && JSON.stringify(userProfile.gamerPersona) !== JSON.stringify(gamerPersona)) {
-        updateDoc(doc(db, 'users', user.id), { gamerPersona }).catch(console.error);
+        api.updateProfile({ gamerPersona }).catch(console.error);
       }
     }
   }, [gamerPersona, user, userProfile]);
@@ -1449,19 +1242,7 @@ function AppContent() {
     
     scrollToTop();
 
-    try {
-      const gameRef = doc(db, 'games', game.id);
-      const gameSnap = await getDoc(gameRef);
-      if (gameSnap.exists()) {
-        await updateDoc(gameRef, {
-          plays: increment(1)
-        });
-      } else {
-        console.warn(`Game document ${game.id} does not exist in Firestore.`);
-      }
-    } catch (error) {
-      console.warn('Failed to increment plays:', error);
-    }
+    api.incrementPlays(game.id).catch(e => console.warn('Failed to increment plays:', e));
   }, [navigate, generateRelatedGames, scrollToTop]);
 
   const handleSurpriseMe = () => {
@@ -1485,14 +1266,10 @@ function AppContent() {
     if (!text.trim()) return;
 
     try {
-      await addDoc(collection(db, 'chat'), {
-        uid: user.id,
-        displayName: userProfile?.displayName || 'Anonymous',
-        text: text.trim(),
-        timestamp: serverTimestamp()
-      });
+      const msg = await api.sendChatMessage(text.trim());
+      setChatMessages(prev => [...prev, msg]);
     } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'chat');
+      console.error('Failed to send message:', error);
     }
   };
 
@@ -1502,12 +1279,11 @@ function AppContent() {
       return;
     }
     try {
-      await updateDoc(doc(db, 'gameRequests', requestId), {
-        votes: increment(1)
-      });
+      const result = await api.voteGameRequest(requestId);
+      setGameRequests(prev => prev.map(r => r.id === requestId ? { ...r, votes: result.votes } : r));
       appToast.success(t('voteRecorded'));
     } catch (error) {
-      handleFirestoreError(error, OperationType.UPDATE, `gameRequests/${requestId}`);
+      console.error('Vote error:', error);
     }
   };
 
