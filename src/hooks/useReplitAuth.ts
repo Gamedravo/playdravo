@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, logout as firebaseLogout } from '../firebase';
 
 export interface ReplitUser {
   id: string;
@@ -18,33 +20,38 @@ interface UseReplitAuthReturn {
   logout: () => void;
 }
 
+function toAppUser(firebaseUser: typeof auth.currentUser): ReplitUser | null {
+  if (!firebaseUser) return null;
+
+  const [firstName, ...lastNameParts] = (firebaseUser.displayName || '').split(' ').filter(Boolean);
+
+  return {
+    id: firebaseUser.uid,
+    email: firebaseUser.email,
+    firstName: firstName || null,
+    lastName: lastNameParts.join(' ') || null,
+    profileImageUrl: firebaseUser.photoURL,
+    username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || null,
+  };
+}
+
 export function useReplitAuth(): UseReplitAuthReturn {
   const [user, setUser] = useState<ReplitUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/auth/user', { credentials: 'include' })
-      .then((res) => {
-        if (res.ok) return res.json();
-        return null;
-      })
-      .then((data) => {
-        setUser(data ?? null);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    return onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(toAppUser(firebaseUser));
+      setIsLoading(false);
+    });
   }, []);
 
   const login = () => {
-    window.location.href = '/api/login';
+    window.dispatchEvent(new CustomEvent('open-login-modal'));
   };
 
   const logout = () => {
-    window.location.href = '/api/logout';
+    firebaseLogout().catch(console.error);
   };
 
   return {
