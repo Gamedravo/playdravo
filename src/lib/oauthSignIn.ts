@@ -1,7 +1,9 @@
 import {
+  signInWithPopup,
   signInWithRedirect,
   type Auth,
   type AuthProvider,
+  type UserCredential,
 } from 'firebase/auth';
 
 export class AuthCancelledError extends Error {
@@ -23,15 +25,26 @@ export function isAuthCancelError(error: unknown): boolean {
   );
 }
 
-/**
- * Triggers a full-page redirect to the OAuth provider.
- * The page navigates away — this promise never resolves.
- * Call getRedirectResult(auth) on the next page load to get the credential.
- */
+function shouldFallbackToRedirect(error: unknown): boolean {
+  const code = (error as { code?: string })?.code;
+  return (
+    code === 'auth/popup-blocked' ||
+    code === 'auth/operation-not-supported-in-this-environment'
+  );
+}
+
 export async function signInWithOAuthPopup(
   auth: Auth,
   provider: AuthProvider
-): Promise<never> {
-  await signInWithRedirect(auth, provider);
-  return new Promise(() => {});
+): Promise<UserCredential> {
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (error) {
+    if (!shouldFallbackToRedirect(error)) {
+      throw error;
+    }
+
+    await signInWithRedirect(auth, provider);
+    return new Promise(() => {});
+  }
 }

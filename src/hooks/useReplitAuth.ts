@@ -20,6 +20,34 @@ interface UseReplitAuthReturn {
   logout: () => void;
 }
 
+let sharedRedirectUser: User | null = null;
+let sharedRedirectPromise: Promise<void> | null = null;
+
+function processRedirectResult(): Promise<void> {
+  if (!sharedRedirectPromise) {
+    sharedRedirectPromise = getRedirectResult(auth)
+      .then((result) => {
+        sharedRedirectUser = result?.user ?? null;
+        if (sharedRedirectUser) {
+          console.log('[OAuth] Redirect sign-in successful:', sharedRedirectUser.uid);
+        }
+      })
+      .catch((error: { code?: string; message?: string }) => {
+        if (error.code === 'auth/unauthorized-domain') {
+          console.error(
+            '[OAuth] This domain is not authorized in Firebase Console.\n' +
+            'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
+            'and add: ' + window.location.hostname
+          );
+        } else if (error.code && error.code !== 'auth/no-auth-event') {
+          console.error('[OAuth] Redirect error:', error.code, error.message);
+        }
+      });
+  }
+
+  return sharedRedirectPromise;
+}
+
 function toAppUser(firebaseUser: typeof auth.currentUser): ReplitUser | null {
   if (!firebaseUser) return null;
 
@@ -41,7 +69,6 @@ export function useReplitAuth(): UseReplitAuthReturn {
 
   useEffect(() => {
     let isMounted = true;
-    let redirectUser: User | null = null;
     let unsubscribe: (() => void) | undefined;
 
     const finishLoading = (firebaseUser: User | null) => {
@@ -54,38 +81,20 @@ export function useReplitAuth(): UseReplitAuthReturn {
       await persistencePromise;
       if (!isMounted) return;
 
-      const redirectPromise = getRedirectResult(auth)
-        .then((result) => {
-          redirectUser = result?.user ?? null;
-          if (redirectUser) {
-            console.log('[OAuth] Redirect sign-in successful:', redirectUser.uid);
-          }
-        })
-        .catch((error: { code?: string; message?: string }) => {
-          if (error.code === 'auth/unauthorized-domain') {
-            console.error(
-              '[OAuth] This domain is not authorized in Firebase Console.\n' +
-              'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
-              'and add: ' + window.location.hostname
-            );
-          } else if (error.code && error.code !== 'auth/no-auth-event') {
-            console.error('[OAuth] Redirect error:', error.code, error.message);
-          }
-        });
-
+      const redirectPromise = processRedirectResult();
       let firstCall = true;
 
       unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
         if (firstCall && !firebaseUser) {
           firstCall = false;
           redirectPromise.then(() => {
-            finishLoading(auth.currentUser ?? redirectUser);
+            finishLoading(auth.currentUser ?? sharedRedirectUser);
           });
           return;
         }
 
         firstCall = false;
-        finishLoading(firebaseUser ?? redirectUser);
+        finishLoading(firebaseUser ?? sharedRedirectUser);
       });
     };
 
