@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
-import { auth, logout as firebaseLogout } from '../firebase';
+import { onAuthStateChanged, getRedirectResult, type User } from 'firebase/auth';
+import { auth, logout as firebaseLogout, persistencePromise } from '../firebase';
 
 export interface ReplitUser {
   id: string;
@@ -40,46 +40,61 @@ export function useReplitAuth(): UseReplitAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Process redirect result BEFORE letting onAuthStateChanged settle.
-    // Without this, onAuthStateChanged fires with null on the first call
-    // (before the redirect token is consumed), causing a flash of the Login button.
-    const redirectPromise = getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          console.log('[OAuth] Redirect sign-in successful:', result.user.uid);
-        }
-      })
-      .catch((error: { code?: string; message?: string }) => {
-        if (error.code === 'auth/unauthorized-domain') {
-          console.error(
-            '[OAuth] This domain is not authorized in Firebase Console.\n' +
-            'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
-            'and add: ' + window.location.hostname
-          );
-        } else if (error.code && error.code !== 'auth/no-auth-event') {
-          console.error('[OAuth] Redirect error:', error.code, error.message);
-        }
-      });
+    let isMounted = true;
+    let redirectUser: User | null = null;
+    let unsubscribe: (() => void) | undefined;
 
-    let firstCall = true;
+    const finishLoading = (firebaseUser: User | null) => {
+      if (!isMounted) return;
+      setUser(toAppUser(firebaseUser));
+      setIsLoading(false);
+    };
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firstCall && !firebaseUser) {
-        // First call with no user — may still be processing a redirect.
-        // Wait for the redirect promise to resolve, then read the actual current user.
-        firstCall = false;
-        redirectPromise.then(() => {
-          setUser(toAppUser(auth.currentUser));
-          setIsLoading(false);
+    const startAuthListener = async () => {
+      await persistencePromise;
+      if (!isMounted) return;
+
+      const redirectPromise = getRedirectResult(auth)
+        .then((result) => {
+          redirectUser = result?.user ?? null;
+          if (redirectUser) {
+            console.log('[OAuth] Redirect sign-in successful:', redirectUser.uid);
+          }
+        })
+        .catch((error: { code?: string; message?: string }) => {
+          if (error.code === 'auth/unauthorized-domain') {
+            console.error(
+              '[OAuth] This domain is not authorized in Firebase Console.\n' +
+              'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
+              'and add: ' + window.location.hostname
+            );
+          } else if (error.code && error.code !== 'auth/no-auth-event') {
+            console.error('[OAuth] Redirect error:', error.code, error.message);
+          }
         });
-      } else {
-        firstCall = false;
-        setUser(toAppUser(firebaseUser));
-        setIsLoading(false);
-      }
-    });
 
-    return unsubscribe;
+      let firstCall = true;
+
+      unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        if (firstCall && !firebaseUser) {
+          firstCall = false;
+          redirectPromise.then(() => {
+            finishLoading(auth.currentUser ?? redirectUser);
+          });
+          return;
+        }
+
+        firstCall = false;
+        finishLoading(firebaseUser ?? redirectUser);
+      });
+    };
+
+    startAuthListener();
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
   }, []);
 
   const login = () => {
