@@ -505,14 +505,6 @@ export const HomePage = React.memo(function HomePage({
                     Games spiking right now, ranked like a futuristic command feed.
                   </p>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => handleScroll(trendingRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-amber-400/50 bg-black/40 text-white/60 hover:text-amber-400 transition-all active:scale-95 cursor-pointer">
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button onClick={() => handleScroll(trendingRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-amber-400/50 bg-black/40 text-white/60 hover:text-amber-400 transition-all active:scale-95 cursor-pointer">
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
               </div>
 
               <div className="trend-matrix-grid">
