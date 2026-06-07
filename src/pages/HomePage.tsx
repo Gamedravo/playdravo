@@ -351,55 +351,6 @@ export const HomePage = React.memo(function HomePage({
         ]}
       />
 
-      {selectedCategory === 'All' && !searchQuery && (
-        <section
-          className={`rounded-[2rem] border p-5 sm:p-7 overflow-hidden relative ${
-            isDarkMode
-              ? 'bg-white/[0.035] border-white/10 shadow-[0_24px_80px_rgba(0,0,0,0.35)]'
-              : 'bg-black/[0.025] border-black/10 shadow-[0_24px_80px_rgba(0,0,0,0.08)]'
-          }`}
-          aria-labelledby="app-purpose-title"
-        >
-          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(139,92,246,0.14),transparent_30%)]" />
-          <div className="relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-accent mb-4">
-                <Gamepad2 className="w-3.5 h-3.5" />
-                About GameDravo
-              </div>
-              <h1 id="app-purpose-title" className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
-                GameDravo is a free browser gaming hub for instant play, discovery, and personalized game tracking.
-              </h1>
-              <p className={`mt-4 max-w-3xl text-sm sm:text-base leading-7 ${isDarkMode ? 'text-white/68' : 'text-black/65'}`}>
-                Our purpose is to help players quickly find and launch lightweight HTML5 games without downloads. Browse curated categories, play games directly in your browser, save favorites, continue recently played games, and discover new titles across mobile, tablet, and desktop.
-              </p>
-              <p className={`mt-3 max-w-3xl text-xs sm:text-sm leading-6 ${isDarkMode ? 'text-white/52' : 'text-black/55'}`}>
-                Signing in is optional and is used to personalize your experience: keeping you logged in, showing your profile, saving favorites, tracking play history, and storing preferences like theme and language.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              {[
-                ['Play instantly', 'Launch games in the browser with no install.'],
-                ['Discover faster', 'Use categories, trending shelves, and search.'],
-                ['Personalize safely', 'Save favorites, history, and preferences after login.'],
-              ].map(([title, description]) => (
-                <div key={title} className={`rounded-2xl border p-4 ${isDarkMode ? 'bg-black/20 border-white/10' : 'bg-white/70 border-black/10'}`}>
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-white">
-                      <Check className="w-3 h-3" />
-                    </span>
-                    <div>
-                      <h2 className="text-sm font-black">{title}</h2>
-                      <p className={`mt-1 text-xs leading-5 ${isDarkMode ? 'text-white/52' : 'text-black/55'}`}>{description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Continue Playing — square thumbnail shelf — TOP of page */}
       <SectionErrorBoundary sectionName="Recently Played">
 
@@ -536,6 +487,32 @@ export const HomePage = React.memo(function HomePage({
         </div>
       )}
 
+      {selectedCategory === 'All' && !searchQuery && (
+        <section
+          className={`rounded-2xl border px-4 py-3 ${
+            isDarkMode ? 'bg-white/[0.025] border-white/10 text-white/60' : 'bg-black/[0.02] border-black/10 text-black/60'
+          }`}
+          aria-labelledby="app-purpose-title"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3">
+              <Gamepad2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              <div>
+                <h2 id="app-purpose-title" className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  What is GameDravo?
+                </h2>
+                <p className="mt-1 text-xs leading-5">
+                  GameDravo is a free browser gaming hub for instant HTML5 game play, game discovery, favorites, play history, and optional profile preferences. Login helps keep your account, saved games, theme, and language synced.
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent">
+              <Check className="h-3 w-3" />
+              No downloads
+            </span>
+          </div>
+        </section>
+      )}
 
       {/* Trending Now */}
 
