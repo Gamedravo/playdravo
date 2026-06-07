@@ -22,6 +22,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Game, UserProfile, Language } from '../types';
+import { GAMES } from '../games';
 import { GameGrid } from '../components/GameGrid';
 import { SEO } from '../components/SEO';
 import { SectionErrorBoundary } from '../components/SectionErrorBoundary';
@@ -162,12 +163,14 @@ export const HomePage = React.memo(function HomePage({
   const lovedRef = React.useRef<HTMLDivElement>(null);
   const trendingRef = React.useRef<HTMLDivElement>(null);
   const recentRef = React.useRef<HTMLDivElement>(null);
+  const fbwRef = React.useRef<HTMLDivElement>(null);
 
   useHorizontalScroll(categoriesRef);
   useHorizontalScroll(newArrivalsRef);
   useHorizontalScroll(lovedRef);
   useHorizontalScroll(trendingRef);
   useHorizontalScroll(recentRef);
+  useHorizontalScroll(fbwRef);
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -466,6 +469,51 @@ export const HomePage = React.memo(function HomePage({
           </section>
           </LazyShelf>
         )}
+      </SectionErrorBoundary>
+
+      {/* Fireboy & Watergirl Collection */}
+      <SectionErrorBoundary sectionName="FBW Collection">
+        {selectedCategory === 'All' && !searchQuery && (() => {
+          const fbwIds = [
+            'fbw-1-forest-temple', 'fbw-2-light-temple', 'fbw-3-ice-temple',
+            'fbw-4-crystal-temple', 'fbw-5-elements', 'fbw-6-fairy-tales', 'fbw-7-and-friends',
+          ];
+          const fbwGames = fbwIds.map(id => GAMES.find(g => g.id === id)).filter(Boolean) as Game[];
+          if (fbwGames.length === 0) return null;
+          return (
+            <LazyShelf minHeight={260}>
+              <section className="shelf-section group/shelf">
+                <div className="shelf-header">
+                  <div className="section-heading-stack">
+                    <div className="section-eyebrow">
+                      <Gamepad2 className="w-3.5 h-3.5" />
+                      <span>Series</span>
+                    </div>
+                    <h3 className="section-title">Fireboy &amp; Watergirl — All 7 Games</h3>
+                  </div>
+                  <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
+                    <button onClick={() => handleScroll(fbwRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => handleScroll(fbwRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                <div className="shelf-scroll" ref={fbwRef}>
+                  {fbwGames.map((game, index) => (
+                    <div key={`fbw-${game.id}`} className="shelf-card relative">
+                      <div className="absolute -top-1 left-0 z-30 bg-accent text-white text-[8px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded pointer-events-none">
+                        #{index + 1}
+                      </div>
+                      <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </LazyShelf>
+          );
+        })()}
       </SectionErrorBoundary>
 
       {/* Popular Categories */}
