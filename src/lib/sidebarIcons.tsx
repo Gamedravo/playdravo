@@ -26,6 +26,7 @@ import {
   Trophy,
   Brain,
   Skull,
+  Sparkle,
   Rocket,
   Dices,
   type LucideIcon,
@@ -47,6 +48,7 @@ const SIDEBAR_ICON_MAP: Record<string, LucideIcon> = {
   Casual: Smile,
   Educational: BookOpen,
   Fighting: Swords,
+  Girls: Sparkle,
   Horror: Skull,
   Multiplayer: Users,
   '1 Player': User,
@@ -79,6 +81,7 @@ const SIDEBAR_ICON_COLORS: Record<string, string> = {
   Casual:          '#84cc16', // lime — light/fun
   Educational:     '#10b981', // emerald — learning/growth
   Fighting:        '#dc2626', // deep red — combat
+  Girls:           '#f472b6', // pink — girls games
   Horror:          '#7c3aed', // violet — dark/scary
   Multiplayer:     '#e879f9', // fuchsia — social/crowd
   '1 Player':      '#38bdf8', // sky — solo flight
