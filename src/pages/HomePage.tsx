@@ -475,8 +475,7 @@ export const HomePage = React.memo(function HomePage({
       <SectionErrorBoundary sectionName="FBW Collection">
         {selectedCategory === 'All' && !searchQuery && (() => {
           const fbwIds = [
-            'fbw-1-forest-temple', 'fbw-2-light-temple', 'fbw-3-ice-temple',
-            'fbw-4-crystal-temple', 'fbw-5-elements', 'fbw-6-fairy-tales', 'fbw-7-and-friends',
+            'fbw-1-forest-temple', 'fbw-2-light-temple',
           ];
           const fbwGames = fbwIds.map(id => GAMES.find(g => g.id === id)).filter(Boolean) as Game[];
           if (fbwGames.length === 0) return null;
@@ -489,7 +488,7 @@ export const HomePage = React.memo(function HomePage({
                       <Gamepad2 className="w-3.5 h-3.5" />
                       <span>Series</span>
                     </div>
-                    <h3 className="section-title">Fireboy &amp; Watergirl — All 7 Games</h3>
+                    <h3 className="section-title">Fireboy &amp; Watergirl</h3>
                   </div>
                   <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
                     <button onClick={() => handleScroll(fbwRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer">
