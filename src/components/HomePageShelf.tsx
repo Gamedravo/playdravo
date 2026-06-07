@@ -57,7 +57,7 @@ export const HomePageShelf = memo(function HomePageShelf({
         </div>
         <div className="shelf-header-actions">
           {onScroll && shelfRef && (
-            <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-100">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => onScroll(shelfRef, 'left')}
@@ -75,12 +75,6 @@ export const HomePageShelf = memo(function HomePageShelf({
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
-          )}
-          {onViewAll && (
-            <button type="button" onClick={onViewAll} className="shelf-view-all">
-              {viewAllLabel}
-              <ChevronRight className="w-3 h-3" />
-            </button>
           )}
         </div>
       </div>

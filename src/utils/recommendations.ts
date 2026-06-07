@@ -138,8 +138,18 @@ export function buildHomepageShelves(games: Game[]) {
     'Multiplayer',
   ] as const;
 
+  const TRENDING_EXCLUDED = /barbie|princess|dress|makeup|fashion|salon|cooking|baby|nail|wedding|dollhouse|unicorn|pony|mermaid|fairy/i;
+  const TRENDING_PREFERRED = new Set(['Action', 'Racing', 'Sports', 'Multiplayer', 'Shooter', 'Fighting', 'Adventure', 'Arcade']);
+
+  const trendingPool = [...games]
+    .filter((g) => g.category !== 'Girls' && !TRENDING_EXCLUDED.test(g.title))
+    .sort((a, b) => {
+      const bonus = (g: Game) => (TRENDING_PREFERRED.has(g.category) ? 1000000 : 0);
+      return (b.plays + bonus(b)) - (a.plays + bonus(a));
+    });
+
   return {
-    trending: take(byPlays, 28),
+    trending: take(trendingPool, 28),
     topRated: take(byRating.filter((g) => g.rating >= 4.2), 28),
     newArrivals: take(byNew, 28),
     quickPlay: take(

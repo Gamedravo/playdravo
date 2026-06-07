@@ -457,7 +457,7 @@ export const HomePage = React.memo(function HomePage({
 
       {selectedCategory === 'All' && !searchQuery && (
         <SectionErrorBoundary sectionName="King Tier">
-          <KingTierSection isDarkMode={isDarkMode} />
+          <KingTierSection isDarkMode={isDarkMode} games={filteredGames} handleGameClick={handleGameClick} />
         </SectionErrorBoundary>
       )}
 
@@ -505,13 +505,14 @@ export const HomePage = React.memo(function HomePage({
                     Games spiking right now, ranked like a futuristic command feed.
                   </p>
                 </div>
-                <button
-                  onClick={() => navigate('/category/trending')}
-                  className="trend-matrix-view"
-                >
-                  View all
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => handleScroll(trendingRef, 'left')} className="p-2 rounded-lg border border-white/10 hover:border-amber-400/50 bg-black/40 text-white/60 hover:text-amber-400 transition-all active:scale-95 cursor-pointer">
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => handleScroll(trendingRef, 'right')} className="p-2 rounded-lg border border-white/10 hover:border-amber-400/50 bg-black/40 text-white/60 hover:text-amber-400 transition-all active:scale-95 cursor-pointer">
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               <div className="trend-matrix-grid">
@@ -570,14 +571,14 @@ export const HomePage = React.memo(function HomePage({
                 </div>
                 <h3 className="section-title">Browse by genre</h3>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowAllCategories((value) => !value)}
-                className={`category-view-all ${isDarkMode ? 'category-view-all--dark' : 'category-view-all--light'}`}
-              >
-                {showAllCategories ? 'Show curated' : 'View all categories'}
-                <ChevronRight className={`h-3.5 w-3.5 transition-transform ${showAllCategories ? '-rotate-90' : ''}`} />
-              </button>
+              <div className="flex items-center gap-1">
+                <button onClick={() => handleScroll(categoriesRef, 'left')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={() => handleScroll(categoriesRef, 'right')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
             <div className={`category-chip-grid ${showAllCategories ? 'category-chip-grid--expanded' : ''}`} ref={categoriesRef}>
               {exploreCategories.map((cat) => (
@@ -618,12 +619,6 @@ export const HomePage = React.memo(function HomePage({
               favorites={favorites}
               toggleFavorite={toggleFavorite}
               t={t}
-              onViewAll={
-                block.viewAllSlug
-                  ? () => navigate(`/category/${block.viewAllSlug}`)
-                  : undefined
-              }
-              viewAllLabel={t('viewAll') || 'View all'}
             />
             </LazyShelf>
           ))}
@@ -643,31 +638,18 @@ export const HomePage = React.memo(function HomePage({
                 </div>
                 <h3 className="section-title">{t('newArrivals')}</h3>
               </div>
-              <div className="flex items-center gap-4">
-
-                {/* Scroll Navigation Arrows */}
-                <div className="hidden md:flex items-center gap-2 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-300">
-                  <button 
-                    onClick={() => handleScroll(newArrivalsRef, 'left')}
-                    className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => handleScroll(newArrivalsRef, 'right')}
-                    className="p-2.5 rounded-xl border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent backdrop-blur-md transition-all active:scale-95 cursor-pointer"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+              <div className="flex items-center gap-2">
                 <button 
-                  onClick={() => {
-                    navigate('/category/new-arrivals');
-                  }}
-                  className={`flex items-center gap-2 text-[10px] font-semibold tracking-wide hover:text-accent transition-colors group ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}
+                  onClick={() => handleScroll(newArrivalsRef, 'left')}
+                  className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}
                 >
-                  {t('viewAll')}
-                  <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button 
+                  onClick={() => handleScroll(newArrivalsRef, 'right')}
+                  className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
