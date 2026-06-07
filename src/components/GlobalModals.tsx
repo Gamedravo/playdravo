@@ -127,7 +127,12 @@ export function GlobalModals({
             isDarkMode={isDarkMode}
             t={t}
             initialView={accountSettingsView}
+            onEditUsername={() => {
+              setIsAccountSettingsOpen(false);
+              setIsUsernameModalOpen(true);
+            }}
           />
+
         </ModalSuspense>
       )}
 
@@ -196,13 +201,20 @@ export function GlobalModals({
             onClose={() => setIsUsernameModalOpen(false)}
             userId={user.id}
             onComplete={(newUsername) => {
+              const localProfileKey = `gamedravo:userProfile:${user.id}`;
+              const existingLocalProfile = JSON.parse(localStorage.getItem(localProfileKey) || 'null') || {};
+              localStorage.setItem(
+                localProfileKey,
+                JSON.stringify({ ...existingLocalProfile, displayName: newUsername, username: newUsername, usernameSet: true })
+              );
               setUserProfile((prev) =>
-                prev ? { ...prev, displayName: newUsername, username: newUsername } : prev
+                prev ? { ...prev, displayName: newUsername, username: newUsername, usernameSet: true } : prev
               );
               setIsUsernameModalOpen(false);
             }}
             isDarkMode={isDarkMode}
           />
+
         </ModalSuspense>
       )}
 

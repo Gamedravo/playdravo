@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { X, Check, ShieldAlert } from 'lucide-react';
+import { Check } from 'lucide-react';
+import { updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { GameDravoMark } from './GameDravoLogo';
 import { toast } from 'sonner';
 import { ModalShell } from './ui/ModalShell';
 import { api } from '../lib/api';
+import { auth } from '../firebase';
 
 interface UsernameSetupModalProps {
+
   isOpen: boolean;
   onClose: () => void;
   userId: string;
@@ -32,12 +35,30 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const nextUsername = username.trim();
     if (!isValid || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
-      await api.updateProfile({ displayName: username, usernameSet: true, username, _userId: userId });
-      onComplete(username);
+      if (auth.currentUser) {
+        await updateFirebaseProfile(auth.currentUser, { displayName: nextUsername });
+      }
+
+      const localProfileKey = `gamedravo:userProfile:${userId}`;
+      const existingLocalProfile = JSON.parse(localStorage.getItem(localProfileKey) || 'null') || {};
+      localStorage.setItem(
+        localProfileKey,
+        JSON.stringify({ ...existingLocalProfile, displayName: nextUsername, username: nextUsername, usernameSet: true })
+      );
+
+      try {
+
+        await api.updateProfile({ displayName: nextUsername, usernameSet: true, username: nextUsername, _userId: userId });
+      } catch (syncError) {
+        console.warn('Server profile sync failed:', syncError);
+      }
+
+      onComplete(nextUsername);
       toast.success('Username set successfully!');
       onClose();
     } catch (error) {
@@ -49,6 +70,7 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
   };
 
   return (
+
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}

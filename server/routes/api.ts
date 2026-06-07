@@ -14,6 +14,10 @@ const router = Router();
 router.patch("/user/profile", async (req: any, res) => {
   try {
     const userId = req.user?.claims?.sub || req.body._userId;
+    if (!userId || typeof userId !== "string") {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const allowed = [
       "displayName", "usernameSet", "accentColor", "isDarkMode",
       "favorites", "playHistory", "preferredCategories", "gamerPersona",
@@ -23,7 +27,11 @@ router.patch("/user/profile", async (req: any, res) => {
     for (const key of allowed) {
       if (key in req.body) updates[key] = req.body[key];
     }
-    const [user] = await db.update(users).set(updates).where(eq(users.id, userId)).returning();
+
+    const [user] = await db.insert(users)
+      .values({ id: userId, ...updates })
+      .onConflictDoUpdate({ target: users.id, set: updates })
+      .returning();
     res.json(user);
   } catch (error) {
     console.error("Error updating user profile:", error);

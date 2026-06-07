@@ -569,24 +569,25 @@ function AppContent() {
         createdAt: new Date().toISOString()
       };
 
-      // Load extended profile from PostgreSQL via API
+      // Load extended profile from PostgreSQL via API, with local fallback for Firebase-only sessions.
       try {
+        const localProfile = JSON.parse(localStorage.getItem(`gamedravo:userProfile:${replitUser.id}`) || 'null') as Partial<UserProfile> | null;
         const serverProfile = await fetch('/api/auth/user').then(r => r.ok ? r.json() : null).catch(() => null);
 
         if (serverProfile) {
           const profile: UserProfile = {
             ...baseProfile,
-            displayName: serverProfile.displayName || serverProfile.username || baseProfile.displayName,
-            username: serverProfile.username || '',
-            usernameSet: serverProfile.usernameSet || false,
-            accentColor: serverProfile.accentColor || undefined,
-            isDarkMode: serverProfile.isDarkMode !== undefined ? serverProfile.isDarkMode : true,
-            favorites: serverProfile.favorites || [],
-            playHistory: serverProfile.playHistory || [],
-            preferredCategories: serverProfile.preferredCategories || [],
-            gamerPersona: serverProfile.gamerPersona || null,
-            xp: serverProfile.xp || 0,
-            level: serverProfile.level || 1,
+            displayName: serverProfile.displayName || serverProfile.username || localProfile?.displayName || baseProfile.displayName,
+            username: serverProfile.username || localProfile?.username || '',
+            usernameSet: serverProfile.usernameSet || localProfile?.usernameSet || false,
+            accentColor: serverProfile.accentColor || localProfile?.accentColor || undefined,
+            isDarkMode: serverProfile.isDarkMode !== undefined ? serverProfile.isDarkMode : localProfile?.isDarkMode ?? true,
+            favorites: serverProfile.favorites || localProfile?.favorites || [],
+            playHistory: serverProfile.playHistory || localProfile?.playHistory || [],
+            preferredCategories: serverProfile.preferredCategories || localProfile?.preferredCategories || [],
+            gamerPersona: serverProfile.gamerPersona || localProfile?.gamerPersona || null,
+            xp: serverProfile.xp || localProfile?.xp || 0,
+            level: serverProfile.level || localProfile?.level || 1,
             role: isAdminEmail(replitUser.email) ? 'admin' : (serverProfile.role as 'user' | 'admin' || 'user'),
           };
           setUserProfile(profile);
@@ -598,8 +599,13 @@ function AppContent() {
           if (profile.preferredCategories?.length) setPreferredCategories(profile.preferredCategories);
           if (profile.gamerPersona) setGamerPersona(profile.gamerPersona);
         } else {
-          setUserProfile(baseProfile);
-          setIsUsernameModalOpen(true);
+          const profile: UserProfile = {
+            ...baseProfile,
+            ...localProfile,
+            role: isAdminEmail(replitUser.email) ? 'admin' : baseProfile.role,
+          };
+          setUserProfile(profile);
+          if (!profile.usernameSet) setIsUsernameModalOpen(true);
         }
       } catch (error: any) {
         console.warn('Profile load failed:', error?.message);
@@ -607,6 +613,7 @@ function AppContent() {
       } finally {
         setIsAuthReady(true);
       }
+
     };
 
     initUserProfile();

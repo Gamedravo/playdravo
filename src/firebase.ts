@@ -11,6 +11,7 @@ import {
   browserLocalPersistence,
   sendPasswordResetEmail,
   sendEmailVerification,
+  verifyBeforeUpdateEmail,
 } from 'firebase/auth';
 import { getFirestore, runTransaction, serverTimestamp } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
@@ -72,9 +73,16 @@ export async function verifyUserEmail() {
   return sendEmailVerification(auth.currentUser, getAuthActionCodeSettings('/'));
 }
 
+/** Sends a verification link to change the current user's email address. */
+export async function requestEmailChange(newEmail: string) {
+  if (!auth.currentUser) throw new Error('No signed-in user');
+  return verifyBeforeUpdateEmail(auth.currentUser, newEmail, getAuthActionCodeSettings('/'));
+}
+
 export { runTransaction, serverTimestamp };
 
 export enum OperationType {
+
   CREATE = 'create',
   UPDATE = 'update',
   DELETE = 'delete',

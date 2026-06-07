@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft,
   X,
@@ -8,10 +8,17 @@ import {
   LogOut,
   ToggleRight,
   ToggleLeft,
-  User
+  User,
+  Mail,
+  KeyRound,
+  UserPen,
+  Loader2,
+  Send
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { ModalShell } from './ui/ModalShell';
 import { type ReplitUser } from '../hooks/useReplitAuth';
+import { auth, logout, requestEmailChange, resetPassword, verifyUserEmail } from '../firebase';
 
 type AccountView = 'main' | 'email' | 'password' | 'logout-all' | 'delete' | 'notifications' | 'privacy';
 
@@ -22,6 +29,7 @@ interface AccountSettingsModalProps {
   isDarkMode: boolean;
   t: (key: string) => string;
   initialView?: AccountView;
+  onEditUsername?: () => void;
 }
 
 export function AccountSettingsModal({
@@ -30,11 +38,22 @@ export function AccountSettingsModal({
   user,
   isDarkMode,
   t,
-  initialView = 'main'
+  initialView = 'main',
+  onEditUsername
 }: AccountSettingsModalProps) {
   const [view, setView] = useState<AccountView>(initialView);
+  const [newEmail, setNewEmail] = useState('');
+  const [isWorking, setIsWorking] = useState(false);
+
+  const firebaseUser = auth.currentUser;
+  const email = user?.email || firebaseUser?.email || '';
+  const displayName = useMemo(() => {
+    const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+    return firebaseUser?.displayName || fullName || user?.username || 'GameDravo Player';
+  }, [firebaseUser?.displayName, user?.firstName, user?.lastName, user?.username]);
 
   const [notifications, setNotifications] = useState({
+
     gameUpdates: true,
     trendingGames: false,
     friendAlerts: true,
@@ -54,6 +73,7 @@ export function AccountSettingsModal({
   useEffect(() => {
     if (isOpen) {
       setView(initialView);
+      setNewEmail('');
     }
   }, [isOpen, initialView]);
 
@@ -65,8 +85,58 @@ export function AccountSettingsModal({
     else setView('main');
   };
 
-  const handleLogout = () => {
-    window.location.href = '/api/logout';
+  const runAccountAction = async (action: () => Promise<void>, successMessage: string) => {
+    setIsWorking(true);
+    try {
+      await action();
+      toast.success(successMessage);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Please try again.';
+      toast.error(message);
+    } finally {
+      setIsWorking(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await runAccountAction(async () => {
+      await logout();
+      handleClose();
+    }, 'Logged out successfully.');
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast.error('No email address is attached to this account.');
+      return;
+    }
+
+    await runAccountAction(
+      () => resetPassword(email),
+      'Password change email sent. Check your inbox.'
+    );
+  };
+
+  const handleEmailChange = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const normalizedEmail = newEmail.trim();
+    if (!normalizedEmail) {
+      toast.error('Enter your new email address.');
+      return;
+    }
+
+    await runAccountAction(
+      () => requestEmailChange(normalizedEmail),
+      'Verification link sent. Open it to finish changing your email.'
+    );
+    setNewEmail('');
+  };
+
+  const handleVerifyEmail = async () => {
+    await runAccountAction(
+      () => verifyUserEmail(),
+      'Verification email sent. Check your inbox.'
+    );
   };
 
   const ToggleItem = ({ title, desc, value, onChange }: { title: string; desc: string; value: boolean; onChange: (v: boolean) => void }) => (
@@ -85,6 +155,26 @@ export function AccountSettingsModal({
     </div>
   );
 
+  const AccountAction = ({ icon, title, desc, onClick, danger = false }: { icon: React.ReactNode; title: string; desc: string; onClick: () => void; danger?: boolean }) => (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center justify-between p-4 transition-all group border-b last:border-b-0 ${
+        danger
+          ? isDarkMode ? 'bg-red-500/5 border-red-500/20 hover:bg-red-500/10' : 'bg-red-50 border-red-200 hover:bg-red-100'
+          : isDarkMode ? 'bg-white/5 border-white/5 hover:bg-white/10' : 'bg-black/5 border-black/5 hover:bg-black/10'
+      }`}
+      type="button"
+    >
+      <div className="flex items-center gap-3">
+        {icon}
+        <div className="text-left">
+          <p className={`text-sm font-bold ${danger ? 'text-red-500' : isDarkMode ? 'text-white' : 'text-black'}`}>{title}</p>
+          <p className={`text-xs opacity-40 ${isDarkMode ? 'text-white' : 'text-black'}`}>{desc}</p>
+        </div>
+      </div>
+    </button>
+  );
+
   const renderMainView = () => (
     <div className="space-y-6">
       <section>
@@ -96,26 +186,30 @@ export function AccountSettingsModal({
             <User className="w-5 h-5 text-accent" />
             <div>
               <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                {user.firstName || user.username || 'Replit User'}
+                {displayName}
               </p>
               <p className={`text-xs opacity-60 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                @{user.username || user.id}
+                {email || `@${user.username || user.id}`}
               </p>
             </div>
           </div>
           <div className={`p-4 ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}>
             <p className={`text-xs opacity-60 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-              Signed in via Replit. Manage your account at{' '}
-              <a
-                href="https://replit.com/account"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent underline underline-offset-2"
-              >
-                replit.com/account
-              </a>
+              Signed in securely with GameDravo. Update your username, email, password, notifications, and privacy preferences here.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h4 className={`text-[10px] font-bold uppercase tracking-wide mb-3 opacity-40 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+          Security
+        </h4>
+        <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+          <AccountAction icon={<UserPen className="w-5 h-5 text-accent" />} title="Change Username" desc="Edit the gamer tag shown on GameDravo" onClick={() => onEditUsername?.()} />
+          <AccountAction icon={<Mail className="w-5 h-5 text-accent" />} title="Change Email" desc={email ? `Current email: ${email}` : 'Add or update your login email'} onClick={() => setView('email')} />
+          <AccountAction icon={<KeyRound className="w-5 h-5 text-accent" />} title="Change Password" desc="Send a secure password change email" onClick={() => setView('password')} />
+          <AccountAction icon={<ShieldCheck className="w-5 h-5 text-accent" />} title="Verify Email" desc={firebaseUser?.emailVerified ? 'Your email is already verified' : 'Send a verification email'} onClick={handleVerifyEmail} />
         </div>
       </section>
 
@@ -124,31 +218,17 @@ export function AccountSettingsModal({
           {t('manageAccount') || 'Preferences'}
         </h4>
         <div className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-          <button onClick={() => setView('notifications')} className={`w-full flex items-center justify-between p-4 transition-all group border-b ${isDarkMode ? 'bg-white/5 border-white/5 hover:bg-white/10' : 'bg-black/5 border-black/5 hover:bg-black/10'}`}>
-            <div className="flex items-center gap-3">
-              <Bell className="w-5 h-5 text-accent" />
-              <div className="text-left">
-                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('notificationPrefs') || 'Notification Preferences'}</p>
-                <p className={`text-xs opacity-40 ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('manageAlerts') || 'Manage alerts and updates'}</p>
-              </div>
-            </div>
-          </button>
-          <button onClick={() => setView('privacy')} className={`w-full flex items-center justify-between p-4 transition-all group ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}>
-            <div className="flex items-center gap-3">
-              <Shield className="w-5 h-5 text-accent" />
-              <div className="text-left">
-                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('privacyPrefs') || 'Privacy Settings'}</p>
-                <p className={`text-xs opacity-40 ${isDarkMode ? 'text-white' : 'text-black'}`}>{t('profileVisibility') || 'Profile visibility and data'}</p>
-              </div>
-            </div>
-          </button>
+          <AccountAction icon={<Bell className="w-5 h-5 text-accent" />} title={t('notificationPrefs') || 'Notification Preferences'} desc={t('manageAlerts') || 'Manage alerts and updates'} onClick={() => setView('notifications')} />
+          <AccountAction icon={<Shield className="w-5 h-5 text-accent" />} title={t('privacyPrefs') || 'Privacy Settings'} desc={t('profileVisibility') || 'Profile visibility and data'} onClick={() => setView('privacy')} />
         </div>
       </section>
 
       <section>
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all group ${isDarkMode ? 'bg-red-500/5 border-red-500/20 hover:bg-red-500/10' : 'bg-red-50 border-red-200 hover:bg-red-100'}`}
+          disabled={isWorking}
+          className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all group disabled:cursor-not-allowed disabled:opacity-60 ${isDarkMode ? 'bg-red-500/5 border-red-500/20 hover:bg-red-500/10' : 'bg-red-50 border-red-200 hover:bg-red-100'}`}
+          type="button"
         >
           <div className="flex items-center gap-3">
             <LogOut className="w-5 h-5 text-red-500" />
@@ -187,6 +267,41 @@ export function AccountSettingsModal({
 
         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
           {view === 'main' && renderMainView()}
+          {view === 'email' && (
+            <form onSubmit={handleEmailChange} className="space-y-4">
+              <div className={`rounded-2xl border p-4 ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-black/5 bg-black/5'}`}>
+                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>Change Email</p>
+                <p className={`text-xs opacity-60 mt-1 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  Enter a new email. Firebase will send a verification link before the email changes.
+                </p>
+              </div>
+              <input
+                type="email"
+                value={newEmail}
+                onChange={(event) => setNewEmail(event.target.value)}
+                placeholder="new@email.com"
+                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none focus:border-accent ${isDarkMode ? 'bg-white/5 border-white/10 text-white placeholder-white/30' : 'bg-black/5 border-black/10 text-black placeholder-black/30'}`}
+              />
+              <button disabled={isWorking} className="w-full py-4 bg-accent text-white font-bold rounded-xl text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60" type="submit">
+                {isWorking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Send Change Email Link
+              </button>
+            </form>
+          )}
+          {view === 'password' && (
+            <div className="space-y-4">
+              <div className={`rounded-2xl border p-4 ${isDarkMode ? 'border-white/5 bg-white/5' : 'border-black/5 bg-black/5'}`}>
+                <p className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>Change Password</p>
+                <p className={`text-xs opacity-60 mt-1 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                  We will send a secure password change link to {email || 'your account email'}.
+                </p>
+              </div>
+              <button onClick={handlePasswordReset} disabled={isWorking} className="w-full py-4 bg-accent text-white font-bold rounded-xl text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60" type="button">
+                {isWorking ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
+                Send Password Change Email
+              </button>
+            </div>
+          )}
           {view === 'logout-all' && (
             <div className="space-y-6 text-center py-4">
               <ShieldCheck className="w-12 h-12 text-accent mx-auto" />
