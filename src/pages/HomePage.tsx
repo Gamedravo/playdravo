@@ -293,6 +293,28 @@ export const HomePage = React.memo(function HomePage({
   };
 
   const favorites = userProfile?.favorites || [];
+  const [trendHero, ...trendRail] = denseTrending.slice(0, 9);
+
+  const renderTrendCard = (game: Game, index: number) => (
+    <button
+      key={`trend-matrix-${game.id}-${index}`}
+      type="button"
+      onClick={() => handleGameClick(game)}
+      className="trend-matrix-card group"
+      title={game.title}
+    >
+      <img src={game.thumbnail} alt="" className="trend-matrix-card-art" loading="lazy" />
+      <div className="trend-matrix-card-scan" aria-hidden />
+      <div className="trend-matrix-rank">#{String(index + 2).padStart(2, '0')}</div>
+      <div className="trend-matrix-card-body">
+        <p className="trend-matrix-card-title">{game.title}</p>
+        <div className="trend-matrix-card-meta">
+          <span>{game.category}</span>
+          <span>{(game.rating || 4.5).toFixed(1)} ★</span>
+        </div>
+      </div>
+    </button>
+  );
 
   return (
     <div className="homepage-stack">
@@ -450,53 +472,68 @@ export const HomePage = React.memo(function HomePage({
       {/* Trending Now */}
 
 <SectionErrorBoundary sectionName="Trending Now">
-        {selectedCategory === 'All' && !searchQuery && filteredGames.length > 0 && (
-          <LazyShelf eager minHeight={260}>
-          <section className="shelf-section group/shelf">
-            <div className="shelf-header">
-              <div className="section-heading-stack">
-                <div className="section-eyebrow">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  <span>{t('trending') || 'Trending'}</span>
+        {selectedCategory === 'All' && !searchQuery && trendHero && (
+          <LazyShelf eager minHeight={360}>
+            <section className={`trend-matrix ${isDarkMode ? 'trend-matrix--dark' : 'trend-matrix--light'}`}>
+              <div className="trend-matrix-bg" aria-hidden />
+              <div className="trend-matrix-header">
+                <div className="section-heading-stack">
+                  <div className="section-eyebrow trend-matrix-eyebrow">
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    <span>Live velocity chart</span>
+                  </div>
+                  <h3 className="trend-matrix-title">Trending Hyperdrive</h3>
+                  <p className={`trend-matrix-subtitle ${isDarkMode ? 'text-white/45' : 'text-black/50'}`}>
+                    Games spiking right now, ranked like a futuristic command feed.
+                  </p>
                 </div>
-                <h3 className="section-title">{t('trendingNow') || 'Trending Now'}</h3>
-              </div>
-              <div className="flex items-center gap-2">
-
-                <div className="hidden md:flex items-center gap-1 opacity-0 group-hover/shelf:opacity-100 transition-opacity duration-150">
-                  <button 
-                    onClick={() => handleScroll(trendingRef, 'left')}
-                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <button 
-                    onClick={() => handleScroll(trendingRef, 'right')}
-                    className="p-2 rounded-lg border border-white/10 hover:border-accent bg-black/40 text-white hover:text-accent transition-all active:scale-95 cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <button 
-                  onClick={() => {
-                    navigate('/category/trending');
-                  }}
-                  className={`flex items-center gap-2 text-[10px] font-semibold tracking-wide hover:text-accent transition-colors group ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}
+                <button
+                  onClick={() => navigate('/category/trending')}
+                  className="trend-matrix-view"
                 >
-                  {t('viewAll') || 'View All'}
-                  <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  View all
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
- 
-            <div className="shelf-scroll" ref={trendingRef}>
-                {denseTrending.map((game, index) => (
-                  <div key={`trending-${game.id}-${index}`} className="shelf-card">
-                    <GameCard game={game} isDarkMode={isDarkMode} handleGameClick={handleGameClick} favorites={userProfile?.favorites || []} toggleFavorite={toggleFavorite} t={t} />
+
+              <div className="trend-matrix-grid">
+                <button
+                  type="button"
+                  onClick={() => handleGameClick(trendHero)}
+                  className="trend-matrix-hero group"
+                  title={trendHero.title}
+                >
+                  <img src={trendHero.thumbnail} alt="" className="trend-matrix-hero-art" loading="lazy" />
+                  <div className="trend-matrix-hero-glass" aria-hidden />
+                  <div className="trend-matrix-hero-rank">#01</div>
+                  <div className="trend-matrix-wave" aria-hidden>
+                    {Array.from({ length: 18 }).map((_, index) => (
+                      <span key={`wave-${index}`} style={{ height: `${18 + ((index * 13) % 58)}%` }} />
+                    ))}
                   </div>
-                ))}
-            </div>
-          </section>
+                  <div className="trend-matrix-hero-body">
+                    <div className="trend-matrix-live-pill">
+                      <span />
+                      hot signal detected
+                    </div>
+                    <h4>{trendHero.title}</h4>
+                    <div className="trend-matrix-hero-stats">
+                      <span><strong>{(trendHero.rating || 4.5).toFixed(1)}</strong> rating</span>
+                      <span><strong>{Math.max(1, Math.round((trendHero.plays || 0) / 1000))}K</strong> plays</span>
+                      <span><strong>{trendHero.category}</strong> sector</span>
+                    </div>
+                    <span className="trend-matrix-play">
+                      <Play className="w-4 h-4 fill-current" />
+                      Launch now
+                    </span>
+                  </div>
+                </button>
+
+                <div className="trend-matrix-rail" ref={trendingRef}>
+                  {trendRail.map(renderTrendCard)}
+                </div>
+              </div>
+            </section>
           </LazyShelf>
         )}
       </SectionErrorBoundary>

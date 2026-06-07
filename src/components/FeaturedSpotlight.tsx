@@ -93,7 +93,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
             transition={{ duration: 0.45, ease: 'easeOut' }}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            Today&apos;s curated drop
+            Neural arcade uplink
           </motion.p>
           <motion.h2
             className="featured-spotlight-title"
@@ -101,7 +101,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
           >
-            Featured this week
+            Command Deck
           </motion.h2>
         </div>
         <motion.p
@@ -111,7 +111,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
           transition={{ duration: 0.45, delay: 0.15, ease: 'easeOut' }}
         >
           <Radio className="w-3.5 h-3.5 text-accent" />
-          Auto-refreshes every 24 hours
+          Live picks recalibrated for instant play
         </motion.p>
       </div>
 
@@ -250,6 +250,27 @@ function PremiumHeroCard({
         {(game.rating || 4.5).toFixed(1)}
       </div>
 
+      <div className="featured-data-panel" aria-hidden>
+        <div className="featured-data-panel-header">
+          <span className="featured-data-dot" />
+          Player profile sync
+        </div>
+        <div className="featured-data-grid">
+          <span>
+            <strong>{Math.max(1, Math.round((game.plays || 0) / 1000))}K</strong>
+            plays
+          </span>
+          <span>
+            <strong>{(game.rating || 4.5).toFixed(1)}</strong>
+            match
+          </span>
+          <span>
+            <strong>0s</strong>
+            load
+          </span>
+        </div>
+      </div>
+
       <div className="featured-hero-content">
         <motion.span
           className="featured-hero-badge"
@@ -257,7 +278,7 @@ function PremiumHeroCard({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.08 }}
         >
-          Featured
+          Active profile pick
         </motion.span>
         <motion.h3
           className="featured-hero-title"
