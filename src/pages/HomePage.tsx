@@ -475,7 +475,7 @@ export const HomePage = React.memo(function HomePage({
       <SectionErrorBoundary sectionName="FBW Collection">
         {selectedCategory === 'All' && !searchQuery && (() => {
           const fbwIds = [
-            'fbw-1-forest-temple', 'fbw-2-light-temple',
+            'fbw-2-light-temple',
           ];
           const fbwGames = fbwIds.map(id => GAMES.find(g => g.id === id)).filter(Boolean) as Game[];
           if (fbwGames.length === 0) return null;
