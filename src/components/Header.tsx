@@ -1,18 +1,21 @@
-import { 
-  Menu, 
-  Search, 
-  Plus, 
+import {
+  Menu,
+  Search,
   LogIn,
   ChevronDown,
+  Bell,
+  Heart,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
-import { UserProfile, Language } from '../types';
+import { Game, UserProfile, Language } from '../types';
 import { type ReplitUser } from '../hooks/useReplitAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useSidebar, useSidebarOpen } from '../contexts/SidebarContext';
+import { useNotifications } from './NotificationsProvider';
+import { HeaderActionModals } from './HeaderActionModals';
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -20,10 +23,11 @@ interface HeaderProps {
   setSearchQuery: (query: string) => void;
   user: ReplitUser | null;
   userProfile: UserProfile | null;
+  likedGames: Game[];
+  onGameClick: (game: Game) => void;
   setIsLoginModalOpen: (open: boolean) => void;
   logout: () => void;
   setIsCommandPaletteOpen: (open: boolean) => void;
-  setIsSubmitModalOpen: (open: boolean) => void;
   openAccountSettings: (view?: 'main' | 'email' | 'password' | 'logout-all' | 'delete' | 'notifications' | 'privacy') => void;
   setIsUsernameModalOpen: (open: boolean) => void;
   setIsHelpCenterOpen: (open: boolean) => void;
@@ -43,10 +47,11 @@ export const Header = memo(function Header({
   setSearchQuery,
   user,
   userProfile,
+  likedGames,
+  onGameClick,
   setIsLoginModalOpen,
   logout,
   setIsCommandPaletteOpen,
-  setIsSubmitModalOpen,
   openAccountSettings,
   setIsUsernameModalOpen,
   setIsHelpCenterOpen,
@@ -63,7 +68,16 @@ export const Header = memo(function Header({
   const location = useLocation();
   const isSidebarOpen = useSidebarOpen();
   const { toggle: toggleSidebar } = useSidebar();
+  const { unreadCount } = useNotifications();
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isLikedGamesOpen, setIsLikedGamesOpen] = useState(false);
   const isSearchPage = location.pathname === '/search';
+
+  const handleMobileSearchChange = (query: string) => {
+    setSearchQuery(query);
+    if (!isSearchPage) navigate('/search');
+  };
+
   return (
     <header className={`sticky top-0 z-50 w-full border-b transition-colors duration-150 ${isDarkMode ? 'bg-bg-dark border-white/5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)]' : 'bg-white border-black/5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]'}`}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-2.5 flex items-center justify-between gap-4">
@@ -111,15 +125,26 @@ export const Header = memo(function Header({
           </div>
         )}
 
-        {/* Search Icon - Mobile Only */}
+        {/* Search Bar - Mobile */}
         {!isSearchPage && (
-          <div className="flex md:hidden justify-end px-2 ml-auto">
-            <Link
-              to="/search"
-              className={`p-2.5 rounded-full transition-colors ${isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}
-            >
-              <Search className={`w-4 h-4 ${isDarkMode ? 'text-white/60' : 'text-black/60'}`} />
-            </Link>
+          <div className="flex md:hidden flex-1 min-w-[118px] max-w-[220px] relative ml-auto">
+            <div className={`relative flex items-center w-full h-10 rounded-2xl border transition-colors ${
+              isDarkMode
+                ? 'bg-black/45 border-cyan-300/15 focus-within:border-cyan-300/45'
+                : 'bg-black/5 border-black/10 focus-within:border-accent/50'
+            }`}>
+              <Search className={`ml-3 h-4 w-4 shrink-0 ${isDarkMode ? 'text-cyan-200/70' : 'text-black/45'}`} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleMobileSearchChange(e.target.value)}
+                onFocus={() => navigate('/search')}
+                placeholder="Search"
+                className={`min-w-0 flex-1 bg-transparent px-2 text-sm font-semibold outline-none placeholder:text-xs placeholder:font-bold ${
+                  isDarkMode ? 'text-white placeholder:text-white/35' : 'text-black placeholder:text-black/40'
+                }`}
+              />
+            </div>
           </div>
         )}
 
