@@ -444,6 +444,55 @@ export const HomePage = React.memo(function HomePage({
         )}
       </SectionErrorBoundary>
 
+      {selectedCategory === 'All' && !searchQuery && (
+        <section className={`homepage-trust-section ${isDarkMode ? 'homepage-trust-section--dark' : 'homepage-trust-section--light'}`} aria-label="Why GameDravo">
+          <div className="homepage-trust-aura" aria-hidden />
+          <div className="value-props-bar value-props-bar--hero">
+            <div className="value-prop-item">
+              <span className="value-prop-icon" aria-hidden>⚡</span>
+              <p className="value-prop-text">
+                <strong>1,000+ free games</strong> — play instantly, no waiting
+              </p>
+            </div>
+            <div className="value-prop-divider" aria-hidden />
+            <div className="value-prop-item">
+              <span className="value-prop-icon" aria-hidden>🖥️</span>
+              <p className="value-prop-text">
+                <strong>No download needed</strong> — just your browser
+              </p>
+            </div>
+            <div className="value-prop-divider" aria-hidden />
+            <div className="value-prop-item">
+              <span className="value-prop-icon" aria-hidden>📱</span>
+              <p className="value-prop-text">
+                <strong>Works everywhere</strong> — mobile, tablet &amp; desktop
+              </p>
+            </div>
+          </div>
+
+          <div className="homepage-purpose-card" aria-labelledby="app-purpose-title">
+            <div className="homepage-purpose-grid" aria-hidden />
+            <div className="homepage-purpose-copy">
+              <div className="homepage-purpose-icon">
+                <Gamepad2 className="h-4 w-4" />
+              </div>
+              <div>
+                <h2 id="app-purpose-title" className="homepage-purpose-title">
+                  What is <span>GameDravo?</span>
+                </h2>
+                <p className="homepage-purpose-text">
+                  GameDravo is a free browser gaming hub for instant HTML5 game play, smart discovery, favorites, play history, and optional profile preferences. Login keeps your saved games, theme, and language synced.
+                </p>
+              </div>
+            </div>
+            <span className="homepage-purpose-pill">
+              <Check className="h-3 w-3" />
+              No downloads
+            </span>
+          </div>
+        </section>
+      )}
+
       <SectionErrorBoundary sectionName="Featured Spotlight">
         {selectedCategory === 'All' && !searchQuery && featuredSpotlight.hero && (
           <FeaturedSpotlight
@@ -458,60 +507,9 @@ export const HomePage = React.memo(function HomePage({
 
       {selectedCategory === 'All' && !searchQuery && (
         <SectionErrorBoundary sectionName="King Tier">
+
           <KingTierSection isDarkMode={isDarkMode} games={filteredGames} handleGameClick={handleGameClick} />
         </SectionErrorBoundary>
-      )}
-
-      {selectedCategory === 'All' && !searchQuery && (
-        <div className="value-props-bar" aria-label="Why GameDravo">
-          <div className="value-prop-item">
-            <span className="value-prop-icon" aria-hidden>⚡</span>
-            <p className="value-prop-text">
-              <strong>1,000+ free games</strong> — play instantly, no waiting
-            </p>
-          </div>
-          <div className="value-prop-divider" aria-hidden />
-          <div className="value-prop-item">
-            <span className="value-prop-icon" aria-hidden>🖥️</span>
-            <p className="value-prop-text">
-              <strong>No download needed</strong> — just your browser
-            </p>
-          </div>
-          <div className="value-prop-divider" aria-hidden />
-          <div className="value-prop-item">
-            <span className="value-prop-icon" aria-hidden>📱</span>
-            <p className="value-prop-text">
-              <strong>Works everywhere</strong> — mobile, tablet &amp; desktop
-            </p>
-          </div>
-        </div>
-      )}
-
-      {selectedCategory === 'All' && !searchQuery && (
-        <section
-          className={`rounded-2xl border px-4 py-3 ${
-            isDarkMode ? 'bg-white/[0.025] border-white/10 text-white/60' : 'bg-black/[0.02] border-black/10 text-black/60'
-          }`}
-          aria-labelledby="app-purpose-title"
-        >
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-3">
-              <Gamepad2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-              <div>
-                <h2 id="app-purpose-title" className={`text-sm font-black ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                  What is GameDravo?
-                </h2>
-                <p className="mt-1 text-xs leading-5">
-                  GameDravo is a free browser gaming hub for instant HTML5 game play, game discovery, favorites, play history, and optional profile preferences. Login helps keep your account, saved games, theme, and language synced.
-                </p>
-              </div>
-            </div>
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent">
-              <Check className="h-3 w-3" />
-              No downloads
-            </span>
-          </div>
-        </section>
       )}
 
       {/* Trending Now */}
