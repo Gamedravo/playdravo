@@ -73,6 +73,7 @@ import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from 
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
 import { HomePageShelf } from '../components/HomePageShelf';
 import { LazyShelf } from '../components/LazyShelf';
+import { KingTierSection } from '../components/KingTierSection';
 
 export const HomePage = React.memo(function HomePage({
   isDarkMode,
@@ -339,6 +340,12 @@ export const HomePage = React.memo(function HomePage({
           />
         )}
       </SectionErrorBoundary>
+
+      {selectedCategory === 'All' && !searchQuery && (
+        <SectionErrorBoundary sectionName="King Tier">
+          <KingTierSection isDarkMode={isDarkMode} />
+        </SectionErrorBoundary>
+      )}
 
       {selectedCategory === 'All' && !searchQuery && (
         <div className="value-props-bar" aria-label="Why GameDravo">
