@@ -202,11 +202,12 @@ export const GameGrid = memo(function GameGrid({
           {filteredGames.slice(0, displayLimit).map((game, index) => (
             <motion.div
               key={`grid-game-${game.id}-${index}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{
-                duration: 0.28,
-                ease: [0.16, 1, 0.3, 1],
+                type: 'spring',
+                stiffness: 260,
+                damping: 22,
                 delay: Math.min(index, STAGGER_MAX - 1) * STAGGER_STEP,
               }}
             >

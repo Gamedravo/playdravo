@@ -778,21 +778,18 @@
   .value-props-bar {
     @apply relative flex flex-col sm:flex-row items-stretch sm:items-center gap-0 overflow-hidden;
     border-radius: 1.35rem 1.35rem 0 0;
-    border: 1px solid rgba(0, 216, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-bottom: 0;
     background:
-      linear-gradient(90deg, rgba(0, 8, 22, 0.88), rgba(6, 12, 28, 0.94)),
-      radial-gradient(circle at 15% 0%, rgba(34,211,238,0.15), transparent 14rem);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 0 36px rgba(0, 216, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+      linear-gradient(135deg, rgba(12, 16, 36, 0.82), rgba(18, 14, 42, 0.86)),
+      radial-gradient(ellipse at 0% 0%, rgba(124,58,237,0.12), transparent 60%),
+      radial-gradient(ellipse at 100% 100%, rgba(34,211,238,0.08), transparent 50%);
+    backdrop-filter: blur(20px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   .value-props-bar--hero::before {
-    content: '';
-    @apply pointer-events-none absolute inset-y-0 -left-1/4 w-1/4 opacity-70;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-    transform: skewX(-20deg);
-    animation: trust-scan 5.5s ease-in-out infinite;
+    display: none;
   }
 
   .value-prop-item {
@@ -822,14 +819,14 @@
   .value-prop-divider {
     @apply self-stretch shrink-0;
     width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(0, 216, 255, 0.28), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
   }
 
   .homepage-purpose-card {
     @apply relative flex flex-col gap-4 overflow-hidden rounded-b-3xl border px-5 py-4 sm:flex-row sm:items-center sm:justify-between;
-    border-color: rgba(255,255,255,0.10);
-    background: linear-gradient(135deg, rgba(7, 10, 24, 0.96), rgba(5, 8, 19, 0.92));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.07);
+    background: linear-gradient(160deg, rgba(14, 12, 32, 0.95) 0%, rgba(8, 10, 24, 0.92) 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
   }
 
   .homepage-trust-section--light .homepage-purpose-card {
@@ -838,12 +835,7 @@
   }
 
   .homepage-purpose-grid {
-    @apply pointer-events-none absolute inset-0 opacity-[0.12];
-    background-image:
-      linear-gradient(rgba(34,211,238,0.45) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34,211,238,0.35) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: linear-gradient(90deg, black, transparent 80%);
+    display: none;
   }
 
   .homepage-purpose-copy {

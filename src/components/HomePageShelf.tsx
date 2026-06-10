@@ -91,11 +91,12 @@ export const HomePageShelf = memo(function HomePageShelf({
           <motion.div
             key={`${keyPrefix}-${game.id}-${index}`}
             className={cardClassName || 'shelf-card'}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{
-              duration: 0.3,
-              ease: [0.16, 1, 0.3, 1],
+              type: 'spring',
+              stiffness: 240,
+              damping: 20,
               delay: Math.min(index, STAGGER_MAX - 1) * STAGGER_STEP,
             }}
           >
