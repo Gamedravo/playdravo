@@ -173,7 +173,7 @@ router.post("/games/:gameId/mods", isAuthenticated, async (req: any, res) => {
   }
 });
 
-// ─── Game Requests ─────────────────────────────────────────────────────────────
+// ─── Game Requests ─────────────────────────────────��───────────────────────────
 
 router.get("/game-requests", async (_req, res) => {
   try {
