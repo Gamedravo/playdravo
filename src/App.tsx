@@ -478,8 +478,15 @@ function AppContent() {
     return saved !== null ? JSON.parse(saved) : true;
   });
   const [accentColor, setAccentColor] = useState(() => {
+    const themeVersion = localStorage.getItem('topg_theme_v');
     const saved = localStorage.getItem('topg_accent');
-    return saved || '#3B82F6';
+    // v2: switched default palette to midnight gold — reset non-deliberate choices
+    if (themeVersion !== '2') {
+      localStorage.setItem('topg_theme_v', '2');
+      localStorage.setItem('topg_accent', '#F59E0B');
+      return '#F59E0B';
+    }
+    return saved || '#F59E0B';
   });
 
   useEffect(() => {

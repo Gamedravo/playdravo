@@ -168,7 +168,7 @@ export function GameplayPreview({ category, isDarkMode, gameTitle = 'Game', show
       ctx.fillRect(0, 0, width, height);
 
       // Render aesthetic Cyber Grid background lines
-      ctx.strokeStyle = isDarkMode ? 'rgba(157, 92, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)';
+      ctx.strokeStyle = isDarkMode ? 'rgba(251, 146, 60, 0.05)' : 'rgba(0, 0, 0, 0.02)';
       ctx.lineWidth = 1;
       const gridSize = 20;
       for (let x = frame % gridSize; x < width; x += gridSize) {
@@ -360,7 +360,7 @@ export function GameplayPreview({ category, isDarkMode, gameTitle = 'Game', show
         const horizonX = width / 2;
 
         // Draw neon sunset/horizon line
-        ctx.fillStyle = isDarkMode ? 'rgba(157, 92, 255, 0.1)' : 'rgba(0,0,0,0.05)';
+        ctx.fillStyle = isDarkMode ? 'rgba(251, 146, 60, 0.1)' : 'rgba(0,0,0,0.05)';
         ctx.fillRect(0, 0, width, roadY);
 
         // Draw scrolling road perspective grids

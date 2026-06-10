@@ -212,8 +212,8 @@ export const Header = memo(function Header({
                 onClick={() => setIsLoginModalOpen(true)}
                 className="login-btn-cyber flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs fast-surface text-black"
                 style={{
-                  background: 'linear-gradient(135deg, rgb(34,211,238) 0%, rgb(124,58,237) 100%)',
-                  clipPath: 'polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px))',
+                  background: 'linear-gradient(135deg, rgb(251,191,36) 0%, rgb(251,146,60) 100%)',
+                  borderRadius: '999px',
                 }}
               >
                 <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />

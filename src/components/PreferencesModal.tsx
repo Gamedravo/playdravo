@@ -58,7 +58,7 @@ export function PreferencesModal({
     >
       <div className={`pref-shell flex flex-col max-h-[90vh] ${isDarkMode ? 'bg-bg-dark' : 'bg-white'}`}>
         <span className="pref-orb -top-10 right-8 h-28 w-28 bg-accent/25" aria-hidden />
-        <span className="pref-orb bottom-20 -left-10 h-32 w-32 bg-cyan-400/15" aria-hidden />
+        <span className="pref-orb bottom-20 -left-10 h-32 w-32 bg-amber-400/15" aria-hidden />
         <div className={`relative z-10 p-6 border-b flex items-center justify-between shrink-0 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
 
           <div className="flex items-center gap-3">
