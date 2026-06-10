@@ -592,11 +592,11 @@ export const HomePage = React.memo(function HomePage({
                 <div className="section-heading-stack">
                   <div className="section-eyebrow trend-matrix-eyebrow">
                     <TrendingUp className="w-3.5 h-3.5" />
-                    <span>Live velocity chart</span>
+                    <span>Trending now</span>
                   </div>
-                  <h3 className="trend-matrix-title">Trending Hyperdrive</h3>
+                  <h3 className="trend-matrix-title">Trending Games</h3>
                   <p className={`trend-matrix-subtitle ${isDarkMode ? 'text-white/45' : 'text-black/50'}`}>
-                    Games spiking right now, ranked like a futuristic command feed.
+                    Games everyone is playing right now, updated daily.
                   </p>
                 </div>
               </div>
@@ -619,17 +619,17 @@ export const HomePage = React.memo(function HomePage({
                   <div className="trend-matrix-hero-body">
                     <div className="trend-matrix-live-pill">
                       <span />
-                      hot signal detected
+                      Trending up
                     </div>
                     <h4>{trendHero.title}</h4>
                     <div className="trend-matrix-hero-stats">
                       <span><strong>{(trendHero.rating || 4.5).toFixed(1)}</strong> rating</span>
                       <span><strong>{Math.max(1, Math.round((trendHero.plays || 0) / 1000))}K</strong> plays</span>
-                      <span><strong>{trendHero.category}</strong> sector</span>
+                      <span><strong>{trendHero.category}</strong></span>
                     </div>
                     <span className="trend-matrix-play">
                       <Play className="w-4 h-4 fill-current" />
-                      Launch now
+                      Play now
                     </span>
                   </div>
                 </button>

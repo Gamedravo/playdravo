@@ -12,20 +12,35 @@ const EXCLUDED_KEYWORDS = /barbie|princess|dress|makeup|fashion|salon|cooking|ba
 const EXCLUDED_CATEGORIES = new Set(['Girls', 'Educational']);
 const PREFERRED_CATEGORIES = new Set(['Action', 'Racing', 'Sports', 'Multiplayer', 'Shooter', 'Fighting', 'Adventure']);
 
-function pickKingGames(games: Game[], count = 8): Game[] {
-  return games
-    .filter((g) => {
-      if (EXCLUDED_CATEGORIES.has(g.category)) return false;
-      if (EXCLUDED_KEYWORDS.test(g.title)) return false;
-      return true;
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+  const out = [...arr];
+  let s = seed;
+  for (let i = out.length - 1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function pickKingGames(games: Game[], count = 16): Game[] {
+  const filtered = games.filter((g) => {
+    if (EXCLUDED_CATEGORIES.has(g.category)) return false;
+    if (EXCLUDED_KEYWORDS.test(g.title)) return false;
+    return true;
+  });
+
+  const scored = filtered
+    .map((g) => {
+      const bonus = PREFERRED_CATEGORIES.has(g.category) ? 5 : 0;
+      return { g, score: (g.rating || 4) * Math.log10((g.plays || 100) + 10) + bonus };
     })
-    .sort((a, b) => {
-      const bonus = (g: Game) => (PREFERRED_CATEGORIES.has(g.category) ? 5 : 0);
-      const scoreA = (a.rating || 4) * Math.log10((a.plays || 100) + 10) + bonus(a);
-      const scoreB = (b.rating || 4) * Math.log10((b.plays || 100) + 10) + bonus(b);
-      return scoreB - scoreA;
-    })
-    .slice(0, count);
+    .sort((a, b) => b.score - a.score);
+
+  // Take top 40 candidates and rotate them daily using a deterministic seed
+  const pool = scored.slice(0, 40).map((x) => x.g);
+  const daySeed = Math.floor(Date.now() / 86_400_000);
+  return seededShuffle(pool, daySeed).slice(0, count);
 }
 
 const BADGE_MAP: Array<{ label: string; Icon: React.ComponentType<{ className?: string }>; className: string }> = [
