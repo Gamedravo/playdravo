@@ -93,7 +93,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
             transition={{ duration: 0.45, ease: 'easeOut' }}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            Neural arcade uplink
+            Featured today
           </motion.p>
           <motion.h2
             className="featured-spotlight-title"
@@ -101,7 +101,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
           >
-            Command Deck
+            Top Picks
           </motion.h2>
         </div>
         <motion.p
@@ -111,7 +111,7 @@ export const FeaturedSpotlight = memo(function FeaturedSpotlight({
           transition={{ duration: 0.45, delay: 0.15, ease: 'easeOut' }}
         >
           <Radio className="w-3.5 h-3.5 text-accent" />
-          Live picks recalibrated for instant play
+          Handpicked for you
         </motion.p>
       </div>
 
@@ -234,16 +234,9 @@ function PremiumHeroCard({
       <div className="featured-light-streak featured-light-streak--one" aria-hidden />
       <div className="featured-light-streak featured-light-streak--two" aria-hidden />
 
-      <div className="featured-hero-hud" aria-hidden>
-        <span className="featured-hud-corner featured-hud-tl" />
-        <span className="featured-hud-corner featured-hud-tr" />
-        <span className="featured-hud-corner featured-hud-bl" />
-        <span className="featured-hud-corner featured-hud-br" />
-      </div>
-
       <div className="featured-floating-chip featured-floating-chip--preview" aria-hidden>
         <Video className="w-3.5 h-3.5" />
-        {showVideo ? 'Live preview' : 'Daily pick'}
+        {showVideo ? 'Preview' : 'Daily pick'}
       </div>
       <div className="featured-floating-chip featured-floating-chip--score" aria-hidden>
         <Star className="w-3.5 h-3.5 fill-current" />
@@ -253,7 +246,7 @@ function PremiumHeroCard({
       <div className="featured-data-panel" aria-hidden>
         <div className="featured-data-panel-header">
           <span className="featured-data-dot" />
-          Player profile sync
+          Game stats
         </div>
         <div className="featured-data-grid">
           <span>
@@ -262,11 +255,11 @@ function PremiumHeroCard({
           </span>
           <span>
             <strong>{(game.rating || 4.5).toFixed(1)}</strong>
-            match
+            rating
           </span>
           <span>
-            <strong>0s</strong>
-            load
+            <strong>Free</strong>
+            price
           </span>
         </div>
       </div>
@@ -278,7 +271,7 @@ function PremiumHeroCard({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.08 }}
         >
-          Active profile pick
+          Today's pick
         </motion.span>
         <motion.h3
           className="featured-hero-title"
@@ -368,7 +361,7 @@ function FeaturedPickThumb({
       <div className="featured-pick-scrim" />
       <div className="featured-pick-preview-indicator">
         <span />
-        {hasPreview(game) ? 'Preview ready' : 'Featured pick'}
+        {hasPreview(game) ? 'Preview' : 'Featured'}
       </div>
       <div className="featured-pick-content">
         <p className="featured-pick-title">{game.title}</p>
