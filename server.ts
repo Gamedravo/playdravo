@@ -5,6 +5,7 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import cors from "cors";
+import compression from "compression";
 import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/index.js";
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
@@ -14,6 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
+app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 

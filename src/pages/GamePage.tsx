@@ -412,14 +412,14 @@ export const GamePage: React.FC<GamePageProps> = ({
         description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on GameDravo.`}`}
         keywords={`${game.title}, play ${game.title} online, free ${game.category} game, ${game.category} games, browser games, GameDravo${game.tags ? ', ' + game.tags.slice(0, 5).join(', ') : ''}`}
         image={game.thumbnail}
-        canonicalUrl={`${window.location.origin}/games/${game.id}`}
-        url={`${window.location.origin}/games/${game.id}`}
+        canonicalUrl={`https://www.gamedravo.com/games/${game.id}`}
+        url={`https://www.gamedravo.com/games/${game.id}`}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'VideoGame',
           name: game.title,
           description: game.description || `Play ${game.title} online for free on GameDravo.`,
-          url: `${window.location.origin}/games/${game.id}`,
+          url: `https://www.gamedravo.com/games/${game.id}`,
           image: game.thumbnail,
           genre: game.category,
           operatingSystem: 'Web Browser',
@@ -438,9 +438,9 @@ export const GamePage: React.FC<GamePageProps> = ({
           breadcrumb: {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: window.location.origin },
-              { '@type': 'ListItem', position: 2, name: `${game.category} Games`, item: `${window.location.origin}/category/${game.category.toLowerCase().replace(/\s+/g, '-')}` },
-              { '@type': 'ListItem', position: 3, name: game.title, item: `${window.location.origin}/games/${game.id}` },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gamedravo.com' },
+              { '@type': 'ListItem', position: 2, name: `${game.category} Games`, item: `https://www.gamedravo.com/category/${game.category.toLowerCase().replace(/\s+/g, '-')}` },
+              { '@type': 'ListItem', position: 3, name: game.title, item: `https://www.gamedravo.com/games/${game.id}` },
             ],
           },
         }}
@@ -519,9 +519,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                     
                     {/* Bottom: Game title */}
                     <div className="px-3 pb-3 text-center">
-                      <h1 className="text-lg font-bold tracking-tight text-white line-clamp-1 mb-1">
+                      <p className="text-lg font-bold tracking-tight text-white line-clamp-1 mb-1">
                         {game.title}
-                      </h1>
+                      </p>
                       <div className="flex items-center justify-center gap-3 text-[10px] text-white/50">
                         <span className="flex items-center gap-1">
                           <Users className="w-3 h-3" />
@@ -772,9 +772,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h1 className={`text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                    <h2 className={`text-2xl font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>
                       {game.title}
-                    </h1>
+                    </h2>
                     {(game.isHot || game.isTop) && (
                       <div className="px-2 py-0.5 bg-accent/20 text-accent text-[8px] font-semibold tracking-wide rounded-md border border-accent/30">
                         {game.isHot ? 'HOT' : 'TOP'}

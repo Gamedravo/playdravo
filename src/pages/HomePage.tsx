@@ -325,20 +325,20 @@ export const HomePage = React.memo(function HomePage({
         title="Lightweight Futuristic Browser Games – Play Instantly"
         description="GameDravo is a lightweight futuristic gaming portal built for instant play: fast browser games, clean discovery, no downloads, and mobile-friendly action, puzzle, arcade, sports, and strategy games."
         keywords="futuristic browser games, lightweight online games, no download games, instant play games, free HTML5 games, mobile games, arcade games, puzzle games"
-        canonicalUrl={`${window.location.origin}/`}
-        url={`${window.location.origin}/`}
+        canonicalUrl="https://www.gamedravo.com/"
+        url="https://www.gamedravo.com/"
 
         structuredData={[
           {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
             name: 'GameDravo',
-            url: window.location.origin,
+            url: 'https://www.gamedravo.com',
             potentialAction: {
               '@type': 'SearchAction',
               target: {
                 '@type': 'EntryPoint',
-                urlTemplate: `${window.location.origin}/search?q={search_term_string}`,
+                urlTemplate: 'https://www.gamedravo.com/search?q={search_term_string}',
               },
               'query-input': 'required name=search_term_string',
             },
@@ -347,22 +347,22 @@ export const HomePage = React.memo(function HomePage({
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: 'GameDravo',
-            url: window.location.origin,
+            url: 'https://www.gamedravo.com',
             description: 'Lightweight futuristic online games platform for instant browser play.',
-            logo: `${window.location.origin}/logo.svg`,
+            logo: 'https://www.gamedravo.com/logo.svg',
             foundingDate: '2024',
             contactPoint: {
               '@type': 'ContactPoint',
               contactType: 'customer support',
-              url: `${window.location.origin}/contact`,
+              url: 'https://www.gamedravo.com/contact',
               availableLanguage: 'English',
             },
             sameAs: [
               'https://twitter.com/gamedravo',
               'https://github.com/gamedravo',
             ],
-            privacyPolicy: `${window.location.origin}/privacy`,
-            termsOfService: `${window.location.origin}/terms`,
+            privacyPolicy: 'https://www.gamedravo.com/privacy',
+            termsOfService: 'https://www.gamedravo.com/terms',
           },
         ]}
       />

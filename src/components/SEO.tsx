@@ -14,12 +14,13 @@ interface SEOProps {
 
 const SITE_NAME = 'GameDravo';
 const LEGACY_SITE_NAME = 'GameDravo';
+const SITE_ORIGIN = 'https://www.gamedravo.com';
 const DEFAULT_IMAGE = '/logo.svg';
 const DEFAULT_KEYWORDS = 'free online games, lightweight browser games, no download games, instant play games, HTML5 games, mobile games, arcade games, puzzle games, action games';
 
 function normalizeCanonical(value: string) {
   try {
-    const u = new URL(value, window.location.origin);
+    const u = new URL(value, SITE_ORIGIN);
     u.hash = '';
     const trackingParams: string[] = [];
     u.searchParams.forEach((_value, key) => {
@@ -34,7 +35,8 @@ function normalizeCanonical(value: string) {
       }
     });
     trackingParams.forEach((key) => u.searchParams.delete(key));
-    return u.toString();
+    const canonical = u.toString();
+    return canonical.replace(/^https?:\/\/[^/]+/, SITE_ORIGIN);
   } catch {
     return value;
   }
@@ -42,7 +44,8 @@ function normalizeCanonical(value: string) {
 
 function absoluteUrl(value: string) {
   try {
-    return new URL(value, window.location.origin).toString();
+    if (value.startsWith('http')) return value;
+    return `${SITE_ORIGIN}${value.startsWith('/') ? '' : '/'}${value}`;
   } catch {
     return value;
   }
@@ -59,7 +62,8 @@ export const SEO: React.FC<SEOProps> = ({
 }) => {
   const hasBrand = title.includes(SITE_NAME) || title.includes(LEGACY_SITE_NAME);
   const fullTitle = hasBrand ? title.replaceAll(LEGACY_SITE_NAME, SITE_NAME) : `${title} – ${SITE_NAME}`;
-  const canonical = normalizeCanonical(canonicalUrl || url || window.location.href);
+  const rawCanonical = canonicalUrl || url || (typeof window !== 'undefined' ? window.location.href : SITE_ORIGIN);
+  const canonical = normalizeCanonical(rawCanonical);
   const imageUrl = absoluteUrl(image);
   const mergedKeywords = keywords ? `${keywords}, ${DEFAULT_KEYWORDS}` : DEFAULT_KEYWORDS;
 
@@ -68,7 +72,7 @@ export const SEO: React.FC<SEOProps> = ({
     '@type': 'WebApplication',
     name: SITE_NAME,
     alternateName: LEGACY_SITE_NAME,
-    url: window.location.origin,
+    url: SITE_ORIGIN,
     applicationCategory: 'GameApplication',
     operatingSystem: 'Any',
     browserRequirements: 'Requires a modern web browser',
