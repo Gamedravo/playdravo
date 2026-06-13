@@ -1,0 +1,90 @@
+Design a modern AAA-quality gaming website homepage inspired by leading browser gaming platforms, but with a unique identity and original design.
+
+Layout Requirements
+Create a floating top header that is visually detached from the sidebar.
+Header should have:
+Logo on the left
+Large search bar centered
+Notification, favorites, profile/login buttons on the right
+Glassmorphism or modern dark theme styling
+Rounded corners and subtle shadow
+Sticky while scrolling
+Sidebar
+Sidebar should be collapsed by default when the site loads.
+Expand on hover or click.
+Use modern gaming-style icons.
+Keep it minimal and clean.
+Smooth animations and transitions.
+Homepage Structure
+Hero Section
+Featured trending game banner
+Large attractive game showcase
+Call-to-action button: "Play Now"
+Continue Playing
+Small horizontal cards
+Recently played games
+Compact and clean layout
+Recommended For You
+Smart-looking game recommendations
+Mix of large and medium cards
+Dynamic masonry/grid layout
+Trending Games
+Modern game cards
+Hover effects
+Player count badge
+New/Hot labels
+New Releases
+Horizontal scroll section
+Large thumbnails
+Popular Categories
+Action
+Racing
+Shooting
+Sports
+Puzzle
+Multiplayer
+Adventure
+Game Cards
+
+Do NOT copy CrazyGames directly.
+
+Create unique cards with:
+
+Rounded corners (16-20px)
+Smooth hover animation
+Slight zoom effect on hover
+Soft shadows
+High-quality thumbnails
+Game title
+Rating
+Play count
+Category tag
+Optional "Trending" badge
+Visual Style
+Dark gaming theme
+Premium feel
+Black, deep navy, and purple accents
+Clean typography
+Plenty of spacing
+Modern UI similar to premium SaaS products
+No clutter
+Mobile-first responsive design
+UX Goals
+Show more games above the fold
+Fast loading
+Easy navigation
+Professional gaming platform appearance
+Modern animations
+Excellent desktop and mobile experience
+Extra Features
+Search suggestions while typing
+Recently played history
+Favorite games system
+Trending badges
+Infinite scroll or load more
+Personalized recommendations
+Skeleton loading effects
+Smooth page transitions
+Design Goal
+
+The website should feel more modern, cleaner, and more premium than CrazyGames while remaining simple, fast, and focused on helping users discover and play games quickly.
