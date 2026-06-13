@@ -3,12 +3,43 @@ const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
 const CACHE_SECONDS = 60 * 60;
 const GAMEPIX_CACHE_SECONDS = 60 * 60 * 6;
 
+interface WorkerEnv {
+  ASSETS: {
+    fetch: (request: Request) => Promise<Response>;
+  };
+}
+
+type SubmissionStatus = 'pending' | 'approved' | 'rejected';
+
+interface GameStatsRecord {
+  id: string;
+  plays: number;
+  rating: number;
+  ratingCount: number;
+  totalRating: number;
+  updatedAt: string;
+}
+
+interface GameModSubmission {
+  id: string;
+  gameId: string;
+  title: string;
+  description: string;
+  version: string;
+  author: string;
+  authorId: string;
+  downloads: number;
+  rating: number;
+  thumbnail: string;
+  createdAt: string;
+}
+
 interface GameRequestSubmission {
   id: string;
   gameName: string;
   description: string;
   link: string | null;
-  status: 'pending' | 'approved' | 'rejected';
+  status: SubmissionStatus;
   votes: number;
   read: boolean;
   displayName: string;
@@ -16,14 +47,39 @@ interface GameRequestSubmission {
   createdAt: string;
 }
 
-const gameRequestSubmissions: GameRequestSubmission[] = [];
-
-interface WorkerEnv {
-
-  ASSETS: {
-    fetch: (request: Request) => Promise<Response>;
-  };
+interface BugReportSubmission {
+  id: string;
+  gameName: string | null;
+  description: string;
+  email: string | null;
+  read: boolean;
+  createdAt: string;
 }
+
+interface ContactMessageSubmission {
+  id: string;
+  subject: string;
+  message: string;
+  email: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+interface ChatMessageSubmission {
+  id: string;
+  userId: string;
+  displayName: string;
+  text: string;
+  createdAt: string;
+}
+
+const gameStatsRecords = new Map<string, GameStatsRecord>();
+const userRatings = new Map<string, number>();
+const gameModSubmissions: GameModSubmission[] = [];
+const gameRequestSubmissions: GameRequestSubmission[] = [];
+const bugReportSubmissions: BugReportSubmission[] = [];
+const contactMessageSubmissions: ContactMessageSubmission[] = [];
+const chatMessageSubmissions: ChatMessageSubmission[] = [];
 
 export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
@@ -37,125 +93,69 @@ export default {
       return handleGamePixCatalog(request);
     }
 
+    if (url.pathname === '/api/check-embed') {
+      return handleCheckEmbed(request);
+    }
+
+    if (url.pathname === '/api/gemini/chat' || url.pathname === '/api/gemini/generate') {
+      return handleGeminiFallback(request);
+    }
+
+    if (url.pathname === '/api/auth/user') {
+      return handleAuthUser(request);
+    }
+
+    if (url.pathname === '/api/user/profile') {
+      return handleUserProfile(request);
+    }
+
     if (url.pathname === '/api/games/stats') {
       return handleGameStats(request);
+    }
+
+    if (url.pathname.startsWith('/api/games/')) {
+      return handleGameRoutes(request, url);
     }
 
     if (url.pathname === '/api/game-requests' || url.pathname.startsWith('/api/game-requests/')) {
       return handleGameRequests(request, url);
     }
 
-    return env.ASSETS.fetch(request);
+    if (url.pathname === '/api/bug-reports' || url.pathname.startsWith('/api/bug-reports/')) {
+      return handleBugReports(request, url);
+    }
 
+    if (url.pathname === '/api/contact-messages' || url.pathname.startsWith('/api/contact-messages/')) {
+      return handleContactMessages(request, url);
+    }
+
+    if (url.pathname === '/api/game-reports') {
+      return handleGameReports(request);
+    }
+
+    if (url.pathname === '/api/chat') {
+      return handleChat(request);
+    }
+
+    if (url.pathname.startsWith('/api/')) {
+      return Response.json({ message: 'API route not found' }, { status: 404, headers: noStoreJsonHeaders() });
+    }
+
+    return env.ASSETS.fetch(request);
   },
 };
 
 async function handleOnlineGamesCatalog(request: Request): Promise<Response> {
-
   return proxyJsonCatalog(request, ONLINE_GAMES_CATALOG_URL, CACHE_SECONDS, 'Could not load game catalog.');
 }
 
-async function handleGameStats(request: Request): Promise<Response> {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() });
-  }
-
-  if (request.method !== 'GET') {
-    return Response.json({ error: 'Method Not Allowed' }, { status: 405, headers: corsHeaders() });
-  }
-
-  return Response.json([], {
-    headers: {
-      ...corsHeaders(),
-      'Cache-Control': 'public, max-age=60, stale-while-revalidate=60',
-    },
-  });
-}
-
-async function handleGameRequests(request: Request, url: URL): Promise<Response> {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() });
-  }
-
-  const requestId = url.pathname.match(/^\/api\/game-requests\/([^/]+)/)?.[1];
-
-  if (request.method === 'GET' && !requestId) {
-    return Response.json(gameRequestSubmissions, { headers: noStoreJsonHeaders() });
-  }
-
-  if (request.method === 'POST' && !requestId) {
-    const body = await request.json().catch(() => null) as Record<string, unknown> | null;
-    const gameName = cleanText(body?.gameName, 120);
-
-    if (!gameName) {
-      return Response.json({ message: 'Game name is required' }, { status: 400, headers: corsHeaders() });
-    }
-
-    const submission: GameRequestSubmission = {
-      id: crypto.randomUUID(),
-      gameName,
-      description: cleanText(body?.description, 1000) || '',
-      link: cleanText(body?.link, 500) || null,
-      status: 'pending',
-      votes: 0,
-      read: false,
-      displayName: 'GameDravo Player',
-      userEmail: '',
-      createdAt: new Date().toISOString(),
-    };
-
-    gameRequestSubmissions.unshift(submission);
-    gameRequestSubmissions.splice(50);
-    return Response.json(submission, { status: 201, headers: noStoreJsonHeaders() });
-  }
-
-  if (request.method === 'POST' && requestId && url.pathname.endsWith('/vote')) {
-    const existing = gameRequestSubmissions.find((submission) => submission.id === requestId);
-    if (!existing) {
-      return Response.json({ message: 'Game request not found' }, { status: 404, headers: corsHeaders() });
-    }
-
-    existing.votes += 1;
-    return Response.json(existing, { headers: noStoreJsonHeaders() });
-  }
-
-  if (request.method === 'PATCH' && requestId) {
-    const existing = gameRequestSubmissions.find((submission) => submission.id === requestId);
-    if (!existing) {
-      return Response.json({ message: 'Game request not found' }, { status: 404, headers: corsHeaders() });
-    }
-
-    const body = await request.json().catch(() => null) as Record<string, unknown> | null;
-    if (body?.status === 'pending' || body?.status === 'approved' || body?.status === 'rejected') {
-      existing.status = body.status;
-    }
-    if (typeof body?.read === 'boolean') {
-      existing.read = body.read;
-    }
-    return Response.json(existing, { headers: noStoreJsonHeaders() });
-  }
-
-  if (request.method === 'DELETE' && requestId) {
-    const index = gameRequestSubmissions.findIndex((submission) => submission.id === requestId);
-    if (index === -1) {
-      return Response.json({ message: 'Game request not found' }, { status: 404, headers: corsHeaders() });
-    }
-
-    gameRequestSubmissions.splice(index, 1);
-    return Response.json({ ok: true }, { headers: noStoreJsonHeaders() });
-  }
-
-  return Response.json({ error: 'Method Not Allowed' }, { status: 405, headers: corsHeaders() });
-}
-
 async function handleGamePixCatalog(request: Request): Promise<Response> {
-
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders() });
   }
 
   if (request.method !== 'GET') {
-    return Response.json({ error: 'Method Not Allowed' }, { status: 405, headers: corsHeaders() });
+    return methodNotAllowed();
   }
 
   const url = new URL(request.url);
@@ -195,25 +195,432 @@ async function handleGamePixCatalog(request: Request): Promise<Response> {
   });
 }
 
-async function proxyJsonCatalog(
+async function handleCheckEmbed(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
 
+  if (request.method !== 'POST') {
+    return methodNotAllowed();
+  }
+
+  const body = await readJsonBody(request);
+  const targetUrl = cleanText(body?.url, 2000);
+  if (!targetUrl) {
+    return Response.json({ error: 'Missing URL' }, { status: 400, headers: corsHeaders() });
+  }
+
+  try {
+    const parsed = new URL(targetUrl);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return Response.json({ error: 'Invalid URL' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const checkRes = await fetch(parsed.toString(), {
+      method: 'HEAD',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; GameDravoBot/1.0)',
+        Accept: 'text/html,application/xhtml+xml,application/xml',
+      },
+    });
+
+    const xFrameOptions = checkRes.headers.get('x-frame-options')?.toLowerCase();
+    const csp = checkRes.headers.get('content-security-policy')?.toLowerCase();
+    let isBlocked = false;
+    let reason = '';
+
+    if (xFrameOptions === 'deny' || xFrameOptions === 'sameorigin') {
+      isBlocked = true;
+      reason = `Blocked by X-Frame-Options: ${xFrameOptions}`;
+    } else if (csp && (csp.includes("frame-ancestors 'none'") || csp.includes("frame-ancestors 'self'"))) {
+      isBlocked = true;
+      reason = 'Blocked by Content-Security-Policy: frame-ancestors';
+    }
+
+    return Response.json({ embeddable: !isBlocked, reason, status: checkRes.status }, { headers: noStoreJsonHeaders() });
+  } catch (error) {
+    return Response.json({ embeddable: true, reason: error instanceof Error ? error.message : 'Embed check failed', error: true }, { headers: noStoreJsonHeaders() });
+  }
+}
+
+async function handleGeminiFallback(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'POST') {
+    return methodNotAllowed();
+  }
+
+  return Response.json({
+    text: 'The AI assistant is temporarily unavailable on this deployment, but the rest of GameDravo is ready to use.',
+  }, { headers: noStoreJsonHeaders() });
+}
+
+async function handleAuthUser(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'GET') {
+    return methodNotAllowed();
+  }
+
+  return Response.json(null, { headers: noStoreJsonHeaders() });
+}
+
+async function handleUserProfile(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'PATCH') {
+    return methodNotAllowed();
+  }
+
+  const body = await readJsonBody(request);
+  return Response.json({
+    id: cleanText(body?._userId, 120) || 'local-user',
+    ...body,
+    updatedAt: new Date().toISOString(),
+  }, { headers: noStoreJsonHeaders() });
+}
+
+async function handleGameStats(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'GET') {
+    return methodNotAllowed();
+  }
+
+  return Response.json(Array.from(gameStatsRecords.values()), {
+    headers: {
+      ...corsHeaders(),
+      'Cache-Control': 'public, max-age=60, stale-while-revalidate=60',
+    },
+  });
+}
+
+async function handleGameRoutes(request: Request, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  const match = url.pathname.match(/^\/api\/games\/([^/]+)\/(play|rating|rate|mods)$/);
+  if (!match) {
+    return Response.json({ message: 'Game API route not found' }, { status: 404, headers: noStoreJsonHeaders() });
+  }
+
+  const gameId = decodeURIComponent(match[1]);
+  const action = match[2];
+
+  if (request.method === 'POST' && action === 'play') {
+    const stats = getOrCreateStats(gameId);
+    stats.plays += 1;
+    stats.updatedAt = new Date().toISOString();
+    return Response.json({ ok: true }, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'GET' && action === 'rating') {
+    const rating = userRatings.get(gameId);
+    return Response.json(rating ? { gameId, value: rating } : null, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST' && action === 'rate') {
+    const body = await readJsonBody(request);
+    const value = Number(body?.value);
+    if (!Number.isFinite(value) || value < 1 || value > 5) {
+      return Response.json({ message: 'Rating must be 1-5' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const stats = getOrCreateStats(gameId);
+    const existing = userRatings.get(gameId);
+    if (existing) {
+      stats.totalRating = stats.totalRating - existing + value;
+    } else {
+      stats.ratingCount += 1;
+      stats.totalRating += value;
+    }
+    stats.rating = Number((stats.totalRating / Math.max(stats.ratingCount, 1)).toFixed(1));
+    stats.updatedAt = new Date().toISOString();
+    userRatings.set(gameId, value);
+
+    return Response.json({ rating: stats.rating, ratingCount: stats.ratingCount, userRating: value }, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'GET' && action === 'mods') {
+    return Response.json(
+      gameModSubmissions.filter((mod) => mod.gameId === gameId).sort((a, b) => b.downloads - a.downloads),
+      { headers: noStoreJsonHeaders() },
+    );
+  }
+
+  if (request.method === 'POST' && action === 'mods') {
+    const body = await readJsonBody(request);
+    const title = cleanText(body?.title, 120);
+    if (!title) {
+      return Response.json({ message: 'Title is required' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const id = crypto.randomUUID();
+    const mod: GameModSubmission = {
+      id,
+      gameId,
+      title,
+      description: cleanText(body?.description, 1000) || '',
+      version: cleanText(body?.version, 40) || 'v1.0.0',
+      author: 'GameDravo Player',
+      authorId: 'local-user',
+      downloads: 0,
+      rating: 5,
+      thumbnail: `https://picsum.photos/seed/${encodeURIComponent(id)}/200/200`,
+      createdAt: new Date().toISOString(),
+    };
+
+    gameModSubmissions.unshift(mod);
+    trimCollection(gameModSubmissions, 100);
+    return Response.json(mod, { status: 201, headers: noStoreJsonHeaders() });
+  }
+
+  return methodNotAllowed();
+}
+
+async function handleGameRequests(request: Request, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  const requestId = url.pathname.match(/^\/api\/game-requests\/([^/]+)/)?.[1];
+
+  if (request.method === 'GET' && !requestId) {
+    return Response.json(gameRequestSubmissions, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST' && !requestId) {
+    const body = await readJsonBody(request);
+    const gameName = cleanText(body?.gameName, 120);
+    if (!gameName) {
+      return Response.json({ message: 'Game name is required' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const submission: GameRequestSubmission = {
+      id: crypto.randomUUID(),
+      gameName,
+      description: cleanText(body?.description, 1000) || '',
+      link: cleanText(body?.link, 500) || null,
+      status: 'pending',
+      votes: 0,
+      read: false,
+      displayName: 'GameDravo Player',
+      userEmail: '',
+      createdAt: new Date().toISOString(),
+    };
+
+    gameRequestSubmissions.unshift(submission);
+    trimCollection(gameRequestSubmissions, 50);
+    return Response.json(submission, { status: 201, headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST' && requestId && url.pathname.endsWith('/vote')) {
+    const existing = gameRequestSubmissions.find((submission) => submission.id === requestId);
+    if (!existing) {
+      return Response.json({ message: 'Game request not found' }, { status: 404, headers: corsHeaders() });
+    }
+
+    existing.votes += 1;
+    return Response.json(existing, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'PATCH' && requestId) {
+    const existing = gameRequestSubmissions.find((submission) => submission.id === requestId);
+    if (!existing) {
+      return Response.json({ message: 'Game request not found' }, { status: 404, headers: corsHeaders() });
+    }
+
+    const body = await readJsonBody(request);
+    updateReadAndStatus(existing, body);
+    return Response.json(existing, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'DELETE' && requestId) {
+    return deleteFromCollection(gameRequestSubmissions, requestId, 'Game request not found');
+  }
+
+  return methodNotAllowed();
+}
+
+async function handleBugReports(request: Request, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  const id = url.pathname.match(/^\/api\/bug-reports\/([^/]+)/)?.[1];
+
+  if (request.method === 'GET' && !id) {
+    return Response.json(bugReportSubmissions, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST' && !id) {
+    const body = await readJsonBody(request);
+    const description = cleanText(body?.description, 2000);
+    if (!description) {
+      return Response.json({ message: 'Description is required' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const report: BugReportSubmission = {
+      id: crypto.randomUUID(),
+      gameName: cleanText(body?.gameName, 120) || null,
+      description,
+      email: cleanText(body?.email, 320) || null,
+      read: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    bugReportSubmissions.unshift(report);
+    trimCollection(bugReportSubmissions, 100);
+    return Response.json(report, { status: 201, headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'PATCH' && id) {
+    const existing = bugReportSubmissions.find((report) => report.id === id);
+    if (!existing) {
+      return Response.json({ message: 'Bug report not found' }, { status: 404, headers: corsHeaders() });
+    }
+
+    const body = await readJsonBody(request);
+    if (typeof body?.read === 'boolean') existing.read = body.read;
+    return Response.json(existing, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'DELETE' && id) {
+    return deleteFromCollection(bugReportSubmissions, id, 'Bug report not found');
+  }
+
+  return methodNotAllowed();
+}
+
+async function handleContactMessages(request: Request, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  const id = url.pathname.match(/^\/api\/contact-messages\/([^/]+)/)?.[1];
+
+  if (request.method === 'GET' && !id) {
+    return Response.json(contactMessageSubmissions, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST' && !id) {
+    const body = await readJsonBody(request);
+    const subject = cleanText(body?.subject, 200);
+    const message = cleanText(body?.message, 3000);
+    if (!subject || !message) {
+      return Response.json({ message: 'Subject and message are required' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const submission: ContactMessageSubmission = {
+      id: crypto.randomUUID(),
+      subject,
+      message,
+      email: cleanText(body?.email, 320) || null,
+      read: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    contactMessageSubmissions.unshift(submission);
+    trimCollection(contactMessageSubmissions, 100);
+    return Response.json(submission, { status: 201, headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'PATCH' && id) {
+    const existing = contactMessageSubmissions.find((message) => message.id === id);
+    if (!existing) {
+      return Response.json({ message: 'Contact message not found' }, { status: 404, headers: corsHeaders() });
+    }
+
+    const body = await readJsonBody(request);
+    if (typeof body?.read === 'boolean') existing.read = body.read;
+    return Response.json(existing, { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'DELETE' && id) {
+    return deleteFromCollection(contactMessageSubmissions, id, 'Contact message not found');
+  }
+
+  return methodNotAllowed();
+}
+
+async function handleGameReports(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'POST') {
+    return methodNotAllowed();
+  }
+
+  const body = await readJsonBody(request);
+  const reason = cleanText(body?.reason, 2000);
+  if (!reason) {
+    return Response.json({ message: 'Reason is required' }, { status: 400, headers: corsHeaders() });
+  }
+
+  return Response.json({
+    id: crypto.randomUUID(),
+    gameId: cleanText(body?.gameId, 160) || '',
+    gameTitle: cleanText(body?.gameTitle, 200) || null,
+    reason,
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+  }, { status: 201, headers: noStoreJsonHeaders() });
+}
+
+async function handleChat(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method === 'GET') {
+    return Response.json(chatMessageSubmissions.slice(-50), { headers: noStoreJsonHeaders() });
+  }
+
+  if (request.method === 'POST') {
+    const body = await readJsonBody(request);
+    const text = cleanText(body?.text, 1000);
+    if (!text) {
+      return Response.json({ message: 'Text is required' }, { status: 400, headers: corsHeaders() });
+    }
+
+    const message: ChatMessageSubmission = {
+      id: crypto.randomUUID(),
+      userId: 'local-user',
+      displayName: 'GameDravo Player',
+      text,
+      createdAt: new Date().toISOString(),
+    };
+
+    chatMessageSubmissions.push(message);
+    if (chatMessageSubmissions.length > 50) chatMessageSubmissions.shift();
+    return Response.json(message, { status: 201, headers: noStoreJsonHeaders() });
+  }
+
+  return methodNotAllowed();
+}
+
+async function proxyJsonCatalog(
   request: Request,
   sourceUrl: string,
   cacheSeconds: number,
   errorMessage: string,
 ): Promise<Response> {
   if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders(),
-    });
+    return new Response(null, { status: 204, headers: corsHeaders() });
   }
 
   if (request.method !== 'GET') {
-    return Response.json(
-      { error: 'Method Not Allowed' },
-      { status: 405, headers: corsHeaders() },
-    );
+    return methodNotAllowed();
   }
 
   try {
@@ -229,10 +636,7 @@ async function proxyJsonCatalog(
     } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
 
     if (!response.ok) {
-      return Response.json(
-        { error: errorMessage },
-        { status: response.status, headers: corsHeaders() },
-      );
+      return Response.json({ error: errorMessage }, { status: response.status, headers: corsHeaders() });
     }
 
     const data = await response.json();
@@ -244,17 +648,61 @@ async function proxyJsonCatalog(
     });
   } catch (error) {
     console.error('Catalog proxy failed:', error);
-    return Response.json(
-      { error: errorMessage },
-      { status: 502, headers: corsHeaders() },
-    );
+    return Response.json({ error: errorMessage }, { status: 502, headers: corsHeaders() });
   }
+}
+
+async function readJsonBody(request: Request): Promise<Record<string, unknown> | null> {
+  return request.json().catch(() => null) as Promise<Record<string, unknown> | null>;
+}
+
+function getOrCreateStats(gameId: string): GameStatsRecord {
+  const existing = gameStatsRecords.get(gameId);
+  if (existing) return existing;
+
+  const record: GameStatsRecord = {
+    id: gameId,
+    plays: 0,
+    rating: 0,
+    ratingCount: 0,
+    totalRating: 0,
+    updatedAt: new Date().toISOString(),
+  };
+  gameStatsRecords.set(gameId, record);
+  return record;
+}
+
+function updateReadAndStatus(target: { read: boolean; status: SubmissionStatus }, body: Record<string, unknown> | null): void {
+  if (body?.status === 'pending' || body?.status === 'approved' || body?.status === 'rejected') {
+    target.status = body.status;
+  }
+  if (typeof body?.read === 'boolean') {
+    target.read = body.read;
+  }
+}
+
+function deleteFromCollection<T extends { id: string }>(collection: T[], id: string, notFoundMessage: string): Response {
+  const index = collection.findIndex((item) => item.id === id);
+  if (index === -1) {
+    return Response.json({ message: notFoundMessage }, { status: 404, headers: corsHeaders() });
+  }
+
+  collection.splice(index, 1);
+  return Response.json({ ok: true }, { headers: noStoreJsonHeaders() });
+}
+
+function trimCollection(collection: unknown[], maxItems: number): void {
+  collection.splice(maxItems);
 }
 
 function cleanText(value: unknown, maxLength: number): string | undefined {
   if (typeof value !== 'string') return undefined;
   const trimmed = value.trim();
   return trimmed ? trimmed.slice(0, maxLength) : undefined;
+}
+
+function methodNotAllowed(): Response {
+  return Response.json({ error: 'Method Not Allowed' }, { status: 405, headers: corsHeaders() });
 }
 
 function noStoreJsonHeaders(): Record<string, string> {
@@ -265,7 +713,6 @@ function noStoreJsonHeaders(): Record<string, string> {
 }
 
 function corsHeaders(): Record<string, string> {
-
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
