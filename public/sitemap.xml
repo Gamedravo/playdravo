@@ -6,17 +6,7 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://gamedravo.com/search</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://gamedravo.com/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://gamedravo.com/support</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -26,33 +16,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://gamedravo.com/cookies</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://gamedravo.com/privacy</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gamedravo.com/terms</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://gamedravo.com/cookies</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://gamedravo.com/status</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://gamedravo.com/report-bug</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://gamedravo.com/submit-game</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
 </urlset>
