@@ -1119,7 +1119,7 @@ function AppContent() {
             />
           </div>
 
-          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-white'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 pb-6 md:px-5 md:pt-3'} relative`}>
+          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 pb-6 md:px-5 md:pt-3'} relative`}>
             {/* Search Page - rendered in portal-like overlay to prevent flicker */}
             {searchMounted && (
               <div
@@ -1140,7 +1140,7 @@ function AppContent() {
               </div>
             )}
             {/* Main content - use CSS to hide instead of unmounting to prevent flicker */}
-            <div className={`relative min-h-full transition-opacity duration-150 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+            <div className={`relative min-h-full transition-opacity duration-150 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'} main-content-container`}>
             <Routes>
                 <Route path="/" element={
                   <PageLayout>

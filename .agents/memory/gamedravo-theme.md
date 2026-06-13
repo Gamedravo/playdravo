@@ -17,12 +17,21 @@ description: Color palette, sidebar default state, floating header pattern, and 
 - Shadow increases on scroll via `scrolled` state (useEffect on scroll event)
 - `HeaderBrand` hides itself when sidebar is open (`useSidebarOpen`) to avoid duplicate logos
 
-## Sidebar Default State
+## Sidebar Default State + Hover Expand
 - `SidebarContext` defaults to `isOpen = false` (was: `window.innerWidth >= 768`)
 - On desktop md+: closed state shows 60px icon-only column (defined in `.sidebar-shell--closed`)
 - On mobile: closed state slides off-screen completely
+- Hover expand: `Sidebar.tsx` has local `hoverExpanded` state + `onMouseEnter`/`onMouseLeave` on the `aside`; 120ms delay before expansion via a `hoverTimerRef`
+- `isVisuallyOpen = isSidebarOpen || hoverExpanded` controls all render gates (group labels, profile, LanguageSwitcher variant)
+- Hover state gets `.sidebar-shell--hover` CSS class adding a violet box-shadow and `z-index: 65` so it floats over content
 
-**Why:** Design spec requires sidebar collapsed by default for a premium first-load impression.
+**Why:** Design spec requires hover-to-expand for premium UX without changing persistent sidebar state.
+
+## Ultrawide Layout (2560px, 3440px+)
+- `game-card-grid`: 6 cols at xl (1280px), 7 at 2000px, 8 at 2560px, 10 at 3440px — all via `@media` in CSS
+- `shelf-card`: 200px at 2560px, 228px at 3440px — also via `@media`
+- `.main-content-container`: max-width 2400px at 2560px+, 3200px at 3440px+ with `mx-auto`; applied to the Routes wrapper div in App.tsx
+- Header inner div uses `max-w-[1800px] mx-auto` so it never looks empty on ultrawide
 
 ## GameCard Enhancements
 - Play count badge (bottom right, `Play` icon + formatted count)

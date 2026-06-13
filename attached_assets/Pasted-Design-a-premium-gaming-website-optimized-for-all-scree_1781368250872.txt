@@ -1,0 +1,82 @@
+Design a premium gaming website optimized for all screen sizes, especially ultrawide monitors (2560px, 3440px, and 3840px widths).
+
+IMPORTANT:
+Do not simply stretch content across the entire screen. Large monitors should feel rich, balanced, and content-dense.
+
+Layout Rules:
+
+1. Header
+
+* Floating header detached from sidebar.
+* Sticky while scrolling.
+* Large centered search bar.
+* Logo on left.
+* Profile, notifications, favorites, and login on right.
+* Max content width between 1700px and 1900px.
+* Header should never look empty on ultrawide displays.
+
+2. Sidebar
+
+* Collapsed by default.
+* Expand on hover or click.
+* Minimal gaming icons.
+* Smooth animations.
+* Fixed position while scrolling.
+
+3. Main Layout
+
+* Use responsive containers.
+* Avoid huge empty spaces.
+* Use CSS Grid instead of stretched rows.
+* Content should intelligently expand with screen size.
+
+Ultrawide Monitor Optimization:
+
+For screens above 2560px:
+
+* Show 8–10 game cards per row instead of 4–5.
+* Increase content density.
+* Add extra recommendation columns.
+* Display more games above the fold.
+* Reduce oversized margins.
+* Utilize available width effectively.
+
+For screens above 3440px:
+
+* Use a 3-column homepage structure:
+
+  * Main featured content
+  * Recommended games
+  * Trending or recently played panel
+* Keep all sections visually balanced.
+
+Game Cards:
+
+* Modern rounded design.
+* Hover scale effect.
+* Glow effect.
+* High-quality thumbnails.
+* Rating badge.
+* Play count.
+* Category label.
+* Consistent card sizing.
+
+Homepage Sections:
+
+* Hero Featured Game
+* Continue Playing
+* Trending Games
+* Popular Categories
+* New Releases
+* Multiplayer Games
+* Recommended For You
+
+Performance:
+
+* Fast loading.
+* Lazy loading images.
+* Skeleton loading states.
+* Smooth transitions.
+
+Design Goal:
+The website should look premium on laptops, desktops, and especially 34–35 inch ultrawide monitors without large empty areas. The layout should dynamically show more content as screen size increases rather than stretching existing elements.

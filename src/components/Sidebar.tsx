@@ -1,4 +1,4 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo, useRef, useEffect, useState, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { X, Settings, HelpCircle, FileText, Bug, LogOut, LogIn, Sparkles } from 'lucide-react';
 import { GameDravoLogo } from './GameDravoLogo';
@@ -73,17 +73,40 @@ export const Sidebar = memo(function Sidebar({
   const location = useLocation();
   const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSidebarOpen = useSidebarOpen();
   const { setOpen } = useSidebar();
-  const isMobileOpen = isSidebarOpen && typeof window !== 'undefined' && window.innerWidth < 768;
+  const [hoverExpanded, setHoverExpanded] = useState(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const isMobileOpen = isSidebarOpen && isMobile;
+  const isVisuallyOpen = isSidebarOpen || hoverExpanded;
 
   useEffect(() => {
     if (window.innerWidth < 768) setOpen(false);
   }, [location.pathname, setOpen]);
 
+  // Clear hover state when sidebar is explicitly opened/closed
+  useEffect(() => {
+    if (isSidebarOpen) setHoverExpanded(false);
+  }, [isSidebarOpen]);
+
   const closeMobile = () => {
     if (window.innerWidth < 768) setOpen(false);
   };
+
+  const onMouseEnter = useCallback(() => {
+    if (window.innerWidth < 768 || isSidebarOpen) return;
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => setHoverExpanded(true), 120);
+  }, [isSidebarOpen]);
+
+  const onMouseLeave = useCallback(() => {
+    if (window.innerWidth < 768) return;
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    setHoverExpanded(false);
+  }, []);
+
+  useEffect(() => () => { if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current); }, []);
 
   const preloadFastUi = () => {
     void import('./GlobalModals');
@@ -95,14 +118,16 @@ export const Sidebar = memo(function Sidebar({
 
     <aside
       className={`sidebar-shell ${isDarkMode ? 'sidebar-shell--dark' : 'sidebar-shell--light'} ${
-        isSidebarOpen ? 'sidebar-shell--open' : 'sidebar-shell--closed'
+        isSidebarOpen ? 'sidebar-shell--open' : hoverExpanded ? 'sidebar-shell--open sidebar-shell--hover' : 'sidebar-shell--closed'
       }`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div ref={scrollerRef} className="sidebar-scroll">
         <div className="sidebar-brand-row">
           <GameDravoLogo
             size="sm"
-            showWordmark={isSidebarOpen || isMobileOpen}
+            showWordmark={isVisuallyOpen || isMobileOpen}
             onClick={(e) => {
               e.preventDefault();
               navigate('/');
@@ -157,7 +182,7 @@ export const Sidebar = memo(function Sidebar({
 
           {categoryGroups.map((group, groupIndex) => (
             <div key={`sidebar-group-${groupIndex}`} className="sidebar-block">
-              {(isSidebarOpen || isMobileOpen) && group.title !== 'Main Menu' && (
+              {(isVisuallyOpen || isMobileOpen) && group.title !== 'Main Menu' && (
                 <p className="sidebar-group-label">{group.title}</p>
               )}
               <nav className="sidebar-nav" aria-label={group.title}>
@@ -242,8 +267,8 @@ export const Sidebar = memo(function Sidebar({
               setLanguage={setLanguage}
               isDarkMode={isDarkMode}
               align="left"
-              minimal={!isSidebarOpen && !isMobileOpen}
-              variant={isSidebarOpen || isMobileOpen ? 'grid' : 'dropdown'}
+              minimal={!isVisuallyOpen && !isMobileOpen}
+              variant={isVisuallyOpen || isMobileOpen ? 'grid' : 'dropdown'}
             />
           </div>
         </div>
@@ -251,7 +276,7 @@ export const Sidebar = memo(function Sidebar({
         <div className="sidebar-footer">
           {userProfile ? (
             <>
-              {(isSidebarOpen || isMobileOpen) && (
+              {(isVisuallyOpen || isMobileOpen) && (
                 <div className="sidebar-profile">
                   <img
                     src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.uid}`}

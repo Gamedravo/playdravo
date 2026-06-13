@@ -109,7 +109,7 @@ export const Header = memo(function Header({
           ? `bg-[#09090f]/85 border-white/[0.07] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.04)]' : 'shadow-[0_4px_24px_rgba(0,0,0,0.35)]'}`
           : `bg-white/90 border-black/[0.06] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]' : 'shadow-[0_4px_18px_rgba(0,0,0,0.07)]'}`
       }`}>
-        <div className="max-w-[1440px] mx-auto px-3 md:px-5 py-2.5 flex items-center justify-between gap-3 md:gap-4">
+        <div className="max-w-[1800px] mx-auto px-3 md:px-5 py-2.5 flex items-center justify-between gap-3 md:gap-4">
           {/* Sidebar Toggle & Logo */}
           <div className="flex items-center gap-3">
             <button
