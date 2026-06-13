@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /api/onlinegames-catalog
+Allow: /api/gamepix-catalog
+Allow: /api/games/stats
+Allow: /api/game-requests
 Disallow: /api/
 Disallow: /admin
 Disallow: /library/history

@@ -1,12 +1,8 @@
 import { Game } from './types';
 
 const ONLINE_GAMES_API_URL = '/api/onlinegames-catalog';
-const ONLINE_GAMES_SOURCE_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 const GAMEPIX_TARGET_CATALOG_SIZE = 600;
-const GAMEPIX_PAGE_SIZE = 200;
-const GAMEPIX_MAX_PAGES = 5;
 const GAMEPIX_API_URL = `/api/gamepix-catalog?limit=${GAMEPIX_TARGET_CATALOG_SIZE}`;
-const GAMEPIX_SOURCE_URL = 'https://feeds.gamepix.com/v2/json/';
 
 export const CATALOG_SOURCE = 'onlinegames.io + gamepix' as const;
 
@@ -408,41 +404,21 @@ async function fetchRawGamePixGames(url: string): Promise<RawGamePixGame[]> {
 }
 
 async function fetchOnlineGamesRemote(): Promise<Game[]> {
-  let rawGames: RawOnlineGame[];
-
   try {
-    rawGames = await fetchRawOnlineGames(ONLINE_GAMES_API_URL);
+    const rawGames = await fetchRawOnlineGames(ONLINE_GAMES_API_URL);
+    return rawGames.filter(isSafeOnlineGame).map(onlineGameToGame);
   } catch {
-    rawGames = await fetchRawOnlineGames(ONLINE_GAMES_SOURCE_URL);
+    return [];
   }
-
-  return rawGames.filter(isSafeOnlineGame).map(onlineGameToGame);
-}
-
-async function fetchGamePixSourcePages(): Promise<RawGamePixGame[]> {
-  const pages: RawGamePixGame[][] = [];
-
-  for (let page = 1; page <= GAMEPIX_MAX_PAGES; page += 1) {
-    const pageUrl = `${GAMEPIX_SOURCE_URL}?order=quality&page=${page}&pagination=${GAMEPIX_PAGE_SIZE}&sid=1`;
-    const pageItems = await fetchRawGamePixGames(pageUrl);
-    if (pageItems.length === 0) break;
-    pages.push(pageItems);
-    if (pages.flat().length >= GAMEPIX_TARGET_CATALOG_SIZE) break;
-  }
-
-  return pages.flat().slice(0, GAMEPIX_TARGET_CATALOG_SIZE);
 }
 
 async function fetchGamePixRemote(): Promise<Game[]> {
-  let rawGames: RawGamePixGame[];
-
   try {
-    rawGames = await fetchRawGamePixGames(GAMEPIX_API_URL);
+    const rawGames = await fetchRawGamePixGames(GAMEPIX_API_URL);
+    return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
   } catch {
-    rawGames = await fetchGamePixSourcePages();
+    return [];
   }
-
-  return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
 }
 
 let _catalogCache: Game[] | null = null;
