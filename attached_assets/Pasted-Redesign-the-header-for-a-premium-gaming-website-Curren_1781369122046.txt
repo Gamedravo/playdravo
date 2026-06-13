@@ -1,0 +1,73 @@
+Redesign the header for a premium gaming website.
+
+Current Issue:
+The header feels overcrowded and busy. Too many navigation items compete for attention, making the logo and search bar feel less important. The design should feel cleaner, more modern, and more premium.
+
+Design Goals:
+
+* Reduce visual clutter.
+* Make the search bar the primary focal point.
+* Improve logo visibility.
+* Keep navigation accessible without overcrowding the header.
+* Maintain a modern AAA gaming platform aesthetic.
+
+Header Layout:
+
+Primary Header:
+
+* Hamburger menu on the left.
+* Logo with clear breathing room.
+* Large centered search bar.
+* Notifications icon.
+* Favorites icon.
+* Language selector.
+* Login/Profile button.
+
+Do NOT place category links directly in the main header.
+
+Desired Structure:
+
+[ Menu ] [ Logo ] ---------------- [ Large Search Bar ] ---------------- [ Notifications ] [ Language ] [ Login ]
+
+Search Bar:
+
+* Largest element in the header.
+* Width between 500px and 900px depending on screen size.
+* Smooth hover and focus effects.
+* Rounded premium styling.
+* Search suggestions dropdown.
+
+Secondary Navigation Bar:
+Place categories in a separate row below the main header.
+
+Example:
+Action • Racing • Sports • Multiplayer • Adventure • Puzzle • Shooting • Strategy
+
+Requirements:
+
+* Horizontally scrollable on smaller screens.
+* Clean pill-style buttons.
+* Subtle hover effects.
+* Less visual weight than the main header.
+
+Visual Hierarchy:
+
+1. Search Bar
+2. Logo
+3. Login/Profile
+4. Categories
+
+Large Screen Optimization:
+For 2560px+ and ultrawide monitors:
+
+* Keep the header balanced.
+* Do not keep adding more buttons into the header.
+* Expand search width instead.
+* Add spacing around the logo.
+* Keep the interface clean and uncluttered.
+
+Design Philosophy:
+A premium gaming website should feel focused and intentional. The header should prioritize search and branding, while category navigation should live in a secondary navigation bar. Avoid the appearance of a crowded dashboard or admin panel.
+
+Reference Style:
+Modern gaming launcher, premium streaming platform, and AAA game storefront aesthetics with dark backgrounds, subtle glows, clean spacing, and strong visual hierarchy.

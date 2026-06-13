@@ -4,12 +4,6 @@ import {
   LogIn,
   ChevronDown,
   Bell,
-  Flame,
-  Zap,
-  Trophy,
-  Users,
-  Map,
-  CarFront,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
 import { UserProfile, Language } from '../types';
@@ -45,12 +39,21 @@ interface HeaderProps {
   setIsSubmitModalOpen: (open: boolean) => void;
 }
 
-const QUICK_CATEGORIES = [
-  { label: 'Action', icon: Flame },
-  { label: 'Racing', icon: CarFront },
-  { label: 'Sports', icon: Trophy },
-  { label: 'Multiplayer', icon: Users },
-  { label: 'Adventure', icon: Map },
+const CATEGORIES = [
+  'All',
+  'Action',
+  'Adventure',
+  'Arcade',
+  'Casual',
+  'Fighting',
+  'Horror',
+  'Multiplayer',
+  'Puzzle',
+  'Racing',
+  'Shooting',
+  'Simulator',
+  'Sports',
+  'Strategy',
 ];
 
 export const Header = memo(function Header({
@@ -82,7 +85,7 @@ export const Header = memo(function Header({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [scrolled, setScrolled] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
   const bellRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
@@ -118,23 +121,23 @@ export const Header = memo(function Header({
   };
 
   const handleCategoryClick = (cat: string) => {
-    setActiveCategory(cat === activeCategory ? null : cat);
-    if (setSelectedCategory) {
-      setSelectedCategory(cat === activeCategory ? 'All' : cat);
-    }
+    setActiveCategory(cat);
+    if (setSelectedCategory) setSelectedCategory(cat);
     if (location.pathname !== '/') startTransition(() => navigate('/'));
   };
 
   return (
     <header className="sticky top-0 z-50 w-full px-2 md:px-3 pt-2 pb-0">
-      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 ${
+      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 overflow-hidden ${
         isDarkMode
           ? `bg-[#09090f]/85 border-white/[0.07] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.04)]' : 'shadow-[0_4px_24px_rgba(0,0,0,0.35)]'}`
           : `bg-white/90 border-black/[0.06] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]' : 'shadow-[0_4px_18px_rgba(0,0,0,0.07)]'}`
       }`}>
-        <div className="header-inner px-3 md:px-5 py-2 flex items-center gap-2 md:gap-3">
 
-          {/* ── Left: Toggle + Logo ── */}
+        {/* ── Primary Header Row ── */}
+        <div className="header-inner px-3 md:px-5 py-2.5 flex items-center gap-3">
+
+          {/* Left: Toggle + Logo */}
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={toggleSidebar}
@@ -153,56 +156,23 @@ export const Header = memo(function Header({
               onHome={() => {
                 if (setSelectedCategory) setSelectedCategory('All');
                 if (setSearchQuery) setSearchQuery('');
-                setActiveCategory(null);
+                setActiveCategory('All');
               }}
             />
           </div>
 
-          {/* ── Center: Quick Category Pills + Search ── */}
-          <div className="flex flex-1 items-center gap-2 xl:gap-3 min-w-0">
-
-            {/* Quick Category Pills — visible at xl (1280px) and above */}
+          {/* Center: Search — main focal point */}
+          <div className="flex-1 flex justify-center px-2 md:px-4">
+            {/* Desktop search */}
             {!isSearchPage && (
-              <nav className="hidden xl:flex items-center gap-1 shrink-0">
-                {QUICK_CATEGORIES.map(({ label, icon: Icon }) => {
-                  const isActive = activeCategory === label;
-                  return (
-                    <button
-                      key={label}
-                      onClick={() => handleCategoryClick(label)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold tracking-wide transition-all duration-150 border whitespace-nowrap active:scale-95 ${
-                        isActive
-                          ? isDarkMode
-                            ? 'bg-violet-600/25 border-violet-500/40 text-violet-200'
-                            : 'bg-violet-100 border-violet-300/60 text-violet-700'
-                          : isDarkMode
-                          ? 'bg-white/[0.04] border-white/[0.06] text-white/55 hover:bg-white/[0.09] hover:border-white/[0.14] hover:text-white/90'
-                          : 'bg-black/[0.03] border-black/[0.07] text-black/50 hover:bg-black/[0.07] hover:border-black/[0.12] hover:text-black/80'
-                      }`}
-                    >
-                      <Icon className="w-3 h-3 shrink-0" />
-                      <span>{label}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            )}
-
-            {/* Divider — only shown when categories are visible */}
-            {!isSearchPage && (
-              <div className={`hidden xl:block h-5 w-px shrink-0 ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`} />
-            )}
-
-            {/* Search Bar — Desktop */}
-            {!isSearchPage && (
-              <div className="hidden md:flex flex-1 min-w-[180px] relative group">
-                <div className={`relative flex items-center w-full h-10 rounded-xl transition-all duration-150 border ${
+              <div className="hidden md:flex w-full max-w-[900px] relative group">
+                <div className={`relative flex items-center w-full h-11 rounded-xl transition-all duration-200 border ${
                   isDarkMode
-                    ? 'bg-white/[0.05] border-white/[0.08] hover:border-white/[0.15] group-focus-within:border-violet-500/50 group-focus-within:bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
-                    : 'bg-black/[0.04] border-black/[0.08] hover:border-black/[0.15] group-focus-within:border-violet-500/40 group-focus-within:bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]'
+                    ? 'bg-white/[0.055] border-white/[0.09] hover:border-white/[0.18] hover:bg-white/[0.08] group-focus-within:border-violet-500/55 group-focus-within:bg-white/[0.08] group-focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.12)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+                    : 'bg-black/[0.04] border-black/[0.09] hover:border-black/[0.16] group-focus-within:border-violet-500/45 group-focus-within:bg-white group-focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.10)] shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]'
                 }`}>
-                  <Search className={`ml-3.5 w-4 h-4 shrink-0 transition-colors duration-150 ${
-                    isDarkMode ? 'text-white/30 group-focus-within:text-violet-400' : 'text-black/35 group-focus-within:text-violet-500'
+                  <Search className={`ml-4 w-[17px] h-[17px] shrink-0 transition-colors duration-200 ${
+                    isDarkMode ? 'text-white/32 group-focus-within:text-violet-400' : 'text-black/35 group-focus-within:text-violet-500'
                   }`} />
                   <input
                     ref={searchInputRef}
@@ -211,26 +181,22 @@ export const Header = memo(function Header({
                     onChange={(e) => updateSearch(e.target.value)}
                     onFocus={openSearch}
                     placeholder={t('search')}
-                    className={`flex-1 bg-transparent border-none outline-none focus:ring-0 text-[13.5px] font-medium px-3 tracking-wide placeholder:font-semibold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10.5px] ${
+                    className={`flex-1 bg-transparent border-none outline-none focus:ring-0 text-[13.5px] font-medium px-3.5 tracking-wide placeholder:font-semibold placeholder:uppercase placeholder:tracking-widest placeholder:text-[10px] ${
                       isDarkMode ? 'text-white placeholder:text-white/28' : 'text-black placeholder:text-black/38'
                     }`}
                   />
-                  {/* Keyboard shortcut hint */}
-                  <div className={`mr-3 hidden lg:flex items-center gap-1 shrink-0 select-none pointer-events-none`}>
-                    <kbd className={`px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold border ${
+                  <div className="mr-3.5 hidden lg:flex items-center gap-1 shrink-0 select-none pointer-events-none">
+                    <kbd className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold border ${
                       isDarkMode ? 'bg-white/[0.06] border-white/[0.12] text-white/30' : 'bg-black/[0.05] border-black/[0.10] text-black/35'
-                    }`}>⌘</kbd>
-                    <kbd className={`px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold border ${
-                      isDarkMode ? 'bg-white/[0.06] border-white/[0.12] text-white/30' : 'bg-black/[0.05] border-black/[0.10] text-black/35'
-                    }`}>K</kbd>
+                    }`}>⌘K</kbd>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Mobile Search */}
+            {/* Mobile search */}
             {!isSearchPage && (
-              <div className="flex md:hidden flex-1 min-w-[80px] relative">
+              <div className="flex md:hidden w-full relative">
                 <div className={`relative flex items-center w-full h-9 rounded-xl border transition-all ${
                   isDarkMode
                     ? 'bg-white/[0.05] border-white/[0.08] focus-within:border-violet-500/50'
@@ -242,8 +208,8 @@ export const Header = memo(function Header({
                     value={localSearchQuery}
                     onChange={(e) => handleMobileSearchChange(e.target.value)}
                     onFocus={openSearch}
-                    placeholder="Search"
-                    className={`min-w-0 flex-1 bg-transparent px-2 text-sm font-semibold outline-none placeholder:text-xs placeholder:font-bold ${
+                    placeholder="Search games…"
+                    className={`min-w-0 flex-1 bg-transparent px-2.5 text-sm font-medium outline-none placeholder:text-xs placeholder:font-semibold ${
                       isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/35'
                     }`}
                   />
@@ -254,10 +220,8 @@ export const Header = memo(function Header({
             {isSearchPage && <div className="flex-1" />}
           </div>
 
-          {/* ── Right: Actions ── */}
+          {/* Right: Actions */}
           <div className="flex items-center gap-1.5 shrink-0">
-
-            {/* Language Selector */}
             <div className="hidden md:block">
               <LanguageSwitcher
                 currentLanguage={language}
@@ -269,7 +233,6 @@ export const Header = memo(function Header({
               />
             </div>
 
-            {/* Notifications Bell */}
             <button
               ref={bellRef}
               onClick={() => setIsNotificationsOpen((o) => !o)}
@@ -291,10 +254,8 @@ export const Header = memo(function Header({
               )}
             </button>
 
-            {/* Divider */}
-            <div className={`hidden sm:block h-5 w-px mx-0.5 ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`} />
+            <div className={`hidden sm:block h-5 w-px ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`} />
 
-            {/* Login / Profile */}
             {!user ? (
               <button
                 onPointerEnter={preloadAccountUi}
@@ -357,6 +318,33 @@ export const Header = memo(function Header({
             )}
           </div>
         </div>
+
+        {/* ── Secondary Category Navigation Strip ── */}
+        <div className={`header-inner border-t ${isDarkMode ? 'border-white/[0.05]' : 'border-black/[0.05]'}`}>
+          <div className="px-3 md:px-5 py-2 flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+            {CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => handleCategoryClick(cat)}
+                  className={`category-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-150 whitespace-nowrap active:scale-95 ${
+                    isActive
+                      ? isDarkMode
+                        ? 'bg-violet-600/30 border border-violet-500/50 text-violet-200 shadow-[0_0_12px_rgba(124,58,237,0.20)]'
+                        : 'bg-violet-100 border border-violet-300/70 text-violet-700'
+                      : isDarkMode
+                      ? 'border border-transparent text-white/45 hover:text-white/80 hover:border-white/10 hover:bg-white/[0.05]'
+                      : 'border border-transparent text-black/45 hover:text-black/75 hover:border-black/08 hover:bg-black/[0.04]'
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
 
       <NotificationDrawer
