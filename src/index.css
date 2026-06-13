@@ -705,7 +705,83 @@
     @apply absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white text-bg-dark opacity-0 shadow-lg transition-all duration-200 group-hover:scale-105 group-hover:opacity-100;
   }
 
-  /* —— Hero trust intro —— */
+  /* —— Compact SEO info strip (top of homepage) —— */
+  .homepage-info-strip {
+    @apply rounded-2xl border overflow-hidden;
+    animation: bolt-rise 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .homepage-info-strip--dark {
+    background: linear-gradient(135deg, rgba(12, 14, 30, 0.88) 0%, rgba(18, 12, 40, 0.82) 100%);
+    border-color: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px);
+  }
+
+  .homepage-info-strip--light {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(14px);
+  }
+
+  .homepage-info-strip-inner {
+    @apply flex flex-col md:flex-row md:items-center gap-2 md:gap-0 px-4 py-2.5;
+  }
+
+  .homepage-info-props {
+    @apply flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] shrink-0;
+    color: rgba(255, 255, 255, 0.80);
+  }
+
+  .homepage-info-strip--light .homepage-info-props {
+    color: rgba(0, 0, 0, 0.72);
+  }
+
+  .homepage-info-prop {
+    @apply flex items-center gap-1.5;
+  }
+
+  .homepage-info-prop strong {
+    color: rgba(255, 255, 255, 0.97);
+    font-weight: 800;
+  }
+
+  .homepage-info-strip--light .homepage-info-prop strong {
+    color: rgba(0, 0, 0, 0.90);
+  }
+
+  .homepage-info-sep {
+    color: rgba(255, 255, 255, 0.20);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .homepage-info-strip--light .homepage-info-sep {
+    color: rgba(0, 0, 0, 0.18);
+  }
+
+  .homepage-info-divider {
+    @apply hidden md:block shrink-0 self-stretch w-px mx-4;
+    background: rgba(255, 255, 255, 0.10);
+  }
+
+  .homepage-info-strip--light .homepage-info-divider {
+    background: rgba(0, 0, 0, 0.09);
+  }
+
+  .homepage-info-desc {
+    @apply text-[12px] md:text-[13px] leading-snug min-w-0;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .homepage-info-strip--light .homepage-info-desc {
+    color: rgba(0, 0, 0, 0.50);
+  }
+
+  .homepage-info-brand {
+    @apply text-accent font-black;
+  }
+
+  /* —— Hero trust intro (legacy — keep for reference) —— */
   .homepage-trust-section {
     @apply relative isolate overflow-hidden rounded-3xl p-0.5;
     animation: bolt-rise 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;

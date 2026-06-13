@@ -364,6 +364,43 @@ export const HomePage = React.memo(function HomePage({
         ]}
       />
 
+      {/* SEO info strip — compact banner for Google indexing */}
+      {selectedCategory === 'All' && !searchQuery && (
+        <section
+          className={`homepage-info-strip ${isDarkMode ? 'homepage-info-strip--dark' : 'homepage-info-strip--light'}`}
+          aria-label="About GameDravo"
+        >
+          <div className="homepage-info-strip-inner">
+            {/* Value props */}
+            <div className="homepage-info-props">
+              <span className="homepage-info-prop">
+                <span aria-hidden>⚡</span>
+                <span><strong>1,000+ free games</strong> — play instantly</span>
+              </span>
+              <span className="homepage-info-sep" aria-hidden>·</span>
+              <span className="homepage-info-prop">
+                <span aria-hidden>🖥️</span>
+                <span><strong>No download needed</strong></span>
+              </span>
+              <span className="homepage-info-sep" aria-hidden>·</span>
+              <span className="homepage-info-prop">
+                <span aria-hidden>📱</span>
+                <span><strong>Works everywhere</strong> — mobile, tablet &amp; desktop</span>
+              </span>
+            </div>
+            <span className="homepage-info-divider" aria-hidden />
+            {/* SEO description */}
+            <p className="homepage-info-desc">
+              <strong className="homepage-info-brand">
+                <Gamepad2 className="inline w-3.5 h-3.5 mr-1 -mt-0.5" aria-hidden />
+                <span id="app-purpose-title">What is GameDravo?</span>
+              </strong>
+              {' '}Free browser gaming hub — instant HTML5 play, smart discovery, favorites &amp; play history. No downloads required.
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* Continue Playing — horizontal shelf with expandable grid */}
       <SectionErrorBoundary sectionName="Recently Played">
         {selectedCategory === 'All' && !searchQuery && recentlyPlayedGames.length > 0 && (
@@ -694,54 +731,6 @@ export const HomePage = React.memo(function HomePage({
         </SectionErrorBoundary>
       )}
 
-      {/* Platform Info */}
-      {selectedCategory === 'All' && !searchQuery && (
-        <section className={`homepage-trust-section ${isDarkMode ? 'homepage-trust-section--dark' : 'homepage-trust-section--light'}`} aria-label="Why GameDravo">
-          <div className="homepage-trust-aura" aria-hidden />
-          <div className="value-props-bar value-props-bar--hero">
-            <div className="value-prop-item">
-              <span className="value-prop-icon" aria-hidden>⚡</span>
-              <p className="value-prop-text">
-                <strong>1,000+ free games</strong> — play instantly, no waiting
-              </p>
-            </div>
-            <div className="value-prop-divider" aria-hidden />
-            <div className="value-prop-item">
-              <span className="value-prop-icon" aria-hidden>🖥️</span>
-              <p className="value-prop-text">
-                <strong>No download needed</strong> — just your browser
-              </p>
-            </div>
-            <div className="value-prop-divider" aria-hidden />
-            <div className="value-prop-item">
-              <span className="value-prop-icon" aria-hidden>📱</span>
-              <p className="value-prop-text">
-                <strong>Works everywhere</strong> — mobile, tablet &amp; desktop
-              </p>
-            </div>
-          </div>
-          <div className="homepage-purpose-card" aria-labelledby="app-purpose-title">
-            <div className="homepage-purpose-grid" aria-hidden />
-            <div className="homepage-purpose-copy">
-              <div className="homepage-purpose-icon">
-                <Gamepad2 className="h-4 w-4" />
-              </div>
-              <div>
-                <h2 id="app-purpose-title" className="homepage-purpose-title">
-                  What is <span>GameDravo?</span>
-                </h2>
-                <p className="homepage-purpose-text">
-                  GameDravo is a free browser gaming hub for instant HTML5 game play, smart discovery, favorites, play history, and optional profile preferences. Login keeps your saved games, theme, and language synced.
-                </p>
-              </div>
-            </div>
-            <span className="homepage-purpose-pill">
-              <Check className="h-3 w-3" />
-              No downloads
-            </span>
-          </div>
-        </section>
-      )}
 
       <SectionErrorBoundary sectionName="Curated Shelves">
         {selectedCategory === 'All' &&
