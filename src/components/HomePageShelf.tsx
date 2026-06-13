@@ -1,5 +1,4 @@
 import { memo, useRef, RefObject } from 'react';
-import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Smartphone } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
@@ -26,8 +25,6 @@ interface HomePageShelfProps {
   cardClassName?: string;
 }
 
-const STAGGER_MAX = 10;
-const STAGGER_STEP = 0.045;
 
 export const HomePageShelf = memo(function HomePageShelf({
   title,
@@ -88,17 +85,9 @@ export const HomePageShelf = memo(function HomePageShelf({
       </div>
       <div className="shelf-scroll" ref={internalRef}>
         {shelfGames.map((game, index) => (
-          <motion.div
+          <div
             key={`${keyPrefix}-${game.id}-${index}`}
             className={cardClassName || 'shelf-card'}
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: 'spring',
-              stiffness: 240,
-              damping: 20,
-              delay: Math.min(index, STAGGER_MAX - 1) * STAGGER_STEP,
-            }}
           >
             <GameCard
               game={game}
@@ -108,7 +97,7 @@ export const HomePageShelf = memo(function HomePageShelf({
               toggleFavorite={toggleFavorite}
               t={t}
             />
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

@@ -1,5 +1,4 @@
 import { memo, useEffect } from 'react';
-import { motion } from 'motion/react';
 import { Search, RotateCcw, Play, Star, Terminal, Trophy, Flame, Heart, Clock } from 'lucide-react';
 import { Game } from '../types';
 import { GameCard } from './GameCard';
@@ -49,8 +48,6 @@ const categoryKeyMap: Record<string, string> = {
   '4 Player': 'fourPlayer'
 };
 
-const STAGGER_MAX = 12;
-const STAGGER_STEP = 0.04;
 
 export const GameGrid = memo(function GameGrid({ 
   filteredGames,
@@ -200,17 +197,7 @@ export const GameGrid = memo(function GameGrid({
           className="game-card-grid"
         >
           {filteredGames.slice(0, displayLimit).map((game, index) => (
-            <motion.div
-              key={`grid-game-${game.id}-${index}`}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                type: 'spring',
-                stiffness: 260,
-                damping: 22,
-                delay: Math.min(index, STAGGER_MAX - 1) * STAGGER_STEP,
-              }}
-            >
+            <div key={`grid-game-${game.id}-${index}`}>
               <GameCard
                 game={game}
                 isDarkMode={isDarkMode}
@@ -220,7 +207,7 @@ export const GameGrid = memo(function GameGrid({
                 searchQuery={searchQuery}
                 t={t}
               />
-            </motion.div>
+            </div>
           ))}
           {displayLimit < filteredGames.length && (
             <div ref={sentinelRef} className="col-span-full h-4" aria-hidden />
