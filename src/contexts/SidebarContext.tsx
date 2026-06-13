@@ -9,9 +9,7 @@ interface SidebarContextValue {
 const SidebarContext = createContext<SidebarContextValue | null>(null);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [isOpen, setIsOpen] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth >= 768 : true
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   const setOpen = useCallback((open: boolean) => setIsOpen(open), []);
   const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
