@@ -79,7 +79,7 @@ async function fetchOnlineGameIds(): Promise<string[]> {
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) {
-      console.warn(`OnlineGames catalog returned ${res.status}, skipping remote games`);
+      console.warn(`OnlineGames catalog returned ${res.status}, skipping`);
       return [];
     }
     const raw: Array<{ title?: string; embed?: string; image?: string }> = await res.json();
@@ -98,10 +98,43 @@ async function fetchOnlineGameIds(): Promise<string[]> {
       } catch { continue; }
       ids.push(id);
     }
-    console.log(`Fetched ${ids.length} games from OnlineGames.io`);
+    console.log(`  OnlineGames.io: ${ids.length} games`);
     return ids;
   } catch (err) {
     console.warn('Failed to fetch OnlineGames catalog:', (err as Error).message);
+    return [];
+  }
+}
+
+const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
+const GAMEPIX_PAGE_SIZE = 24;
+const GAMEPIX_TARGET = 600;
+
+async function fetchGamePixIds(): Promise<string[]> {
+  try {
+    console.log('Fetching GamePix catalog...');
+    const totalPages = Math.ceil(GAMEPIX_TARGET / GAMEPIX_PAGE_SIZE);
+    const pages = await Promise.all(
+      Array.from({ length: totalPages }, async (_, i) => {
+        const page = i + 1;
+        const res = await fetch(
+          `${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${GAMEPIX_PAGE_SIZE}&sid=1`,
+          { headers: { Accept: 'application/json', 'User-Agent': 'GameDravo-SitemapGenerator/1.0' },
+            signal: AbortSignal.timeout(15000) }
+        );
+        if (!res.ok) return [];
+        const feed = await res.json();
+        return Array.isArray(feed?.items) ? feed.items : [];
+      })
+    );
+    const items = pages.flat().slice(0, GAMEPIX_TARGET);
+    const ids = items
+      .filter((g: any) => g.namespace || g.title)
+      .map((g: any) => `gamepix-${slugify(g.namespace || g.title)}`);
+    console.log(`  GamePix: ${ids.length} games`);
+    return ids;
+  } catch (err) {
+    console.warn('Failed to fetch GamePix catalog:', (err as Error).message);
     return [];
   }
 }
@@ -144,9 +177,10 @@ async function generate(): Promise<string> {
     entries.push({ loc: absolute(`/games/${game.id}`), changefreq: 'weekly', priority: '0.8' });
   }
 
-  // ── Online catalog game pages (fetched at build time) ────────────────────
-  const remoteIds = await fetchOnlineGameIds();
-  for (const id of remoteIds) {
+  // ── Fetch remote catalogs in parallel ────────────────────────────────────
+  const [onlineIds, gamePixIds] = await Promise.all([fetchOnlineGameIds(), fetchGamePixIds()]);
+
+  for (const id of [...onlineIds, ...gamePixIds]) {
     if (seenIds.has(id)) continue;
     seenIds.add(id);
     entries.push({ loc: absolute(`/games/${id}`), changefreq: 'weekly', priority: '0.8' });

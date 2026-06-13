@@ -68,7 +68,7 @@ app.get('/api/gamepix-catalog', async (req, res) => {
 
   const requestedLimit = Number(req.query.limit || 600);
   const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 600) : 600;
-  const pageSize = 200;
+  const pageSize = 24; // GamePix max supported pagination size
   const maxPages = Math.ceil(limit / pageSize);
 
   try {

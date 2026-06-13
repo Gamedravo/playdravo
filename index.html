@@ -77,13 +77,29 @@
   </head>
   <body>
     <div id="root">
-      <main style="font-family:Inter,Arial,sans-serif;padding:24px;max-width:860px;margin:0 auto;color:#e5f4ff;background:#070a16;min-height:100vh;line-height:1.65;">
-        <p style="font-size:28px;font-weight:800;margin:0 0 16px;">GameDravo free browser games</p>
-        <p>GameDravo is a fast, lightweight gaming portal for instant no-download play. Browse action, puzzle, arcade, racing, sports, strategy, and mobile-friendly HTML5 games directly in your browser. The site is built for quick discovery, clean navigation, responsive layouts, and smooth play on desktop, tablet, and mobile devices.</p>
-        <p>Players can use the homepage to discover trending games, new arrivals, top-rated picks, and recommended browser games. Category pages organize the catalog into action games, puzzle games, arcade games, racing games, sports games, strategy games, simulation games, adventure games, multiplayer games, and casual games so every visitor can find something playable in seconds.</p>
-        <p>Game pages provide clear game descriptions, safe launch controls, favorites, ratings, recent-play history, and related recommendations. The experience focuses on HTML5 and web-friendly games that run in modern browsers without installers, large downloads, or complicated setup steps. Public information pages explain privacy, terms, cookies, support, contact options, bug reporting, site status, and game submissions.</p>
-        <p>GameDravo is designed as a searchable, lightweight, futuristic destination for free online games. It keeps navigation simple, text readable, controls touch-friendly, and gameplay accessible for users who want instant entertainment from any modern browser.</p>
-      </main>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#070a16;font-family:Inter,Arial,sans-serif;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="52" height="52" rx="14" fill="#F59E0B" fill-opacity="0.15"/>
+            <path d="M14 26C14 19.373 19.373 14 26 14C32.627 14 38 19.373 38 26C38 32.627 32.627 38 26 38" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M22 22L32 26L22 30V22Z" fill="#F59E0B"/>
+          </svg>
+          <span style="color:#F59E0B;font-size:22px;font-weight:800;letter-spacing:0.04em;">GameDravo</span>
+          <div style="display:flex;gap:6px;margin-top:4px;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#F59E0B;opacity:0.9;animation:gd-pulse 1.2s ease-in-out infinite;"></span>
+            <span style="width:7px;height:7px;border-radius:50%;background:#F59E0B;opacity:0.9;animation:gd-pulse 1.2s ease-in-out 0.2s infinite;"></span>
+            <span style="width:7px;height:7px;border-radius:50%;background:#F59E0B;opacity:0.9;animation:gd-pulse 1.2s ease-in-out 0.4s infinite;"></span>
+          </div>
+        </div>
+        <style>@keyframes gd-pulse{0%,100%{opacity:.2;transform:scale(.85)}50%{opacity:.9;transform:scale(1)}}</style>
+        <!-- SEO content for crawlers -->
+        <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
+          <h1>GameDravo — Free Browser Games, No Download</h1>
+          <p>GameDravo is a fast, lightweight gaming portal for instant no-download play. Browse action, puzzle, arcade, racing, sports, strategy, and mobile-friendly HTML5 games directly in your browser.</p>
+          <p>Discover trending games, new arrivals, top-rated picks, and recommended browser games. Categories include action, puzzle, arcade, racing, sports, strategy, simulation, adventure, multiplayer, and casual games.</p>
+          <nav><a href="/">Home</a> <a href="/about">About</a> <a href="/contact">Contact</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a></nav>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="/src/main.tsx"></script>
