@@ -23,6 +23,8 @@ interface HomePageShelfProps {
   t: (key: string) => string;
   keyPrefix: string;
   cardClassName?: string;
+  /** Number of leading cards to mark as high-priority (eager image load). */
+  priorityCount?: number;
 }
 
 
@@ -38,6 +40,7 @@ export const HomePageShelf = memo(function HomePageShelf({
   t,
   keyPrefix,
   cardClassName,
+  priorityCount = 0,
 }: HomePageShelfProps) {
   if (!Array.isArray(games) || !games.length) return null;
 
@@ -96,6 +99,7 @@ export const HomePageShelf = memo(function HomePageShelf({
               favorites={favorites}
               toggleFavorite={toggleFavorite}
               t={t}
+              priority={index < priorityCount}
             />
           </div>
         ))}

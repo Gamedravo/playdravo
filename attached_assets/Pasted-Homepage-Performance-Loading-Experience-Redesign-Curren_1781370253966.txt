@@ -1,0 +1,123 @@
+Homepage Performance & Loading Experience Redesign
+
+Current Problem:
+
+The homepage loads content progressively while users scroll. Game thumbnails, banners, cards, and sections appear late, creating a slow and unfinished experience.
+
+Goal:
+
+Create a homepage experience similar to top gaming platforms where the page feels fully loaded immediately after opening.
+
+Requirements:
+
+1. Prioritize Above-the-Fold Content
+
+When the homepage opens:
+
+* Header must already be loaded.
+* First game sections must already be loaded.
+* Featured game thumbnails must already be loaded.
+* First rows of game cards must already be visible.
+* No empty containers.
+
+Users should immediately see playable content.
+
+2. Aggressive Prefetching
+
+Preload:
+
+* Homepage game data.
+* Featured games.
+* Trending games.
+* Category thumbnails.
+* Hero images.
+* First screen images.
+
+Load these before the user scrolls.
+
+3. Skeleton Loading
+
+If content is still loading:
+
+Display:
+
+* Game card skeletons.
+* Thumbnail placeholders.
+* Banner placeholders.
+
+Never show blank empty areas.
+
+4. Prevent Layout Shifts
+
+Reserve exact dimensions before images load.
+
+Requirements:
+
+* Fixed thumbnail aspect ratios.
+* Fixed card heights.
+* Fixed banner heights.
+* No jumping content.
+
+5. Smart Image Loading
+
+Load Priority:
+
+Highest Priority:
+
+* Header assets.
+* Logo.
+* First visible game cards.
+* First visible thumbnails.
+
+Medium Priority:
+
+* Trending section.
+* Browse by Genre.
+
+Low Priority:
+
+* Below-the-fold sections.
+
+6. Instant Homepage Feel
+
+The homepage should appear usable within the first second.
+
+Users should instantly see:
+
+* Search bar.
+* Categories.
+* Multiple game cards.
+* Game thumbnails.
+
+The page should feel populated immediately.
+
+7. Scrolling Experience
+
+When scrolling:
+
+* Next sections should already be prefetched.
+* Images should be ready before entering viewport.
+* Avoid visible loading while scrolling.
+
+8. Technical Requirements
+
+* Use image preloading.
+* Use request caching.
+* Use CDN image delivery.
+* Optimize image sizes.
+* Lazy load only content far below the fold.
+* Do not lazy load the first visible game cards.
+
+9. User Experience Goal
+
+Users should never think:
+
+"The website is still loading."
+
+Instead they should feel:
+
+"Everything is already here and ready to play."
+
+Reference Experience:
+
+The homepage should feel as responsive and instantly populated as leading browser gaming platforms where game discovery begins immediately without waiting for banners, thumbnails, or cards to appear.

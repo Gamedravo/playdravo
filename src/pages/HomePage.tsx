@@ -311,7 +311,13 @@ export const HomePage = React.memo(function HomePage({
       className="trend-matrix-card group"
       title={game.title}
     >
-      <img src={game.thumbnail} alt="" className="trend-matrix-card-art" loading="lazy" />
+      <img
+        src={game.thumbnail}
+        alt=""
+        className="trend-matrix-card-art"
+        loading={index < 4 ? 'eager' : 'lazy'}
+        fetchPriority={index < 4 ? 'high' : 'auto'}
+      />
       <div className="trend-matrix-card-scan" aria-hidden />
       <div className="trend-matrix-rank">#{String(index + 2).padStart(2, '0')}</div>
       <div className="trend-matrix-card-body">
@@ -574,7 +580,7 @@ export const HomePage = React.memo(function HomePage({
                   className="trend-matrix-hero group"
                   title={trendHero.title}
                 >
-                  <img src={trendHero.thumbnail} alt="" className="trend-matrix-hero-art" loading="lazy" />
+                  <img src={trendHero.thumbnail} alt="" className="trend-matrix-hero-art" loading="eager" fetchPriority="high" />
                   <div className="trend-matrix-hero-glass" aria-hidden />
                   <div className="trend-matrix-hero-rank">#01</div>
                   <div className="trend-matrix-wave" aria-hidden>
@@ -613,7 +619,7 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
-          <LazyShelf minHeight={280}>
+          <LazyShelf eager minHeight={280}>
           <section className="shelf-section">
             <div className="shelf-header">
               <div className="section-heading-stack">
@@ -748,6 +754,7 @@ export const HomePage = React.memo(function HomePage({
               favorites={favorites}
               toggleFavorite={toggleFavorite}
               t={t}
+              priorityCount={blockIndex === 0 ? 6 : 0}
             />
             </LazyShelf>
           ))}

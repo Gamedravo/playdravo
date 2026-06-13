@@ -14,6 +14,8 @@ interface GameCardProps {
   toggleFavorite: (gameId: string) => void;
   searchQuery?: string;
   t: (key: any) => string;
+  /** Mark this card's thumbnail as high-priority (above-the-fold). */
+  priority?: boolean;
 }
 
 const categoryKeyMap: Record<string, string> = {
@@ -245,6 +247,7 @@ export const GameCard = memo(function GameCard({
   toggleFavorite,
   searchQuery = '',
   t,
+  priority = false,
 }: GameCardProps) {
   const isFavorite = favorites.includes(game.id);
   const hoverSupported = useDesktopHover();
@@ -314,6 +317,7 @@ export const GameCard = memo(function GameCard({
             category={game.category}
             title={game.title}
             gameId={game.id}
+            priority={priority}
             className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           />
           <InlineCardPreview game={game} active={previewActive} candidates={previewCandidates} />

@@ -25,7 +25,7 @@ export const GameThumbnail = memo(function GameThumbnail({
   referrerPolicy = 'no-referrer',
 }: GameThumbnailProps) {
   const [containerRef, inView] = useInViewport<HTMLDivElement>({
-    rootMargin: '250px 0px',
+    rootMargin: '500px 0px',
     once: true,
   });
 
