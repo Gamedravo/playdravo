@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import cors from "cors";
 import compression from "compression";
@@ -109,60 +108,6 @@ app.get('/api/gamepix-catalog', async (req, res) => {
   }
 });
 
-let ai: GoogleGenAI | null = null;
-
-function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error('Missing GEMINI_API_KEY environment variable.');
-  }
-
-  ai ??= new GoogleGenAI({
-    apiKey,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
-    }
-  });
-
-  return ai;
-}
-
-// Simple in-memory cache
-const resultCache = new Map<string, { result: any, timestamp: number }>();
-const pendingRequests = new Map<string, Promise<any>>();
-const CACHE_TTL = 1000 * 60 * 60; // 1 hour
-
-const getCacheKey = (type: string, data: any) => {
-  return `${type}:${JSON.stringify(data)}`;
-};
-
-// Rate limiting state
-const lastRequestTime = new Map<string, number>();
-const MIN_REQUEST_INTERVAL = 2000; // 2 seconds between requests from same client (simple)
-
-// Helper for error handling
-const handleGeminiError = (error: any, res: express.Response) => {
-  console.error("Gemini Error:", error);
-  
-  if (error.message?.includes('429') || error.status === 'RESOURCE_EXHAUSTED' || error.status === 429) {
-    return res.status(429).json({
-      error: "Quota Exceeded",
-      message: "You've exceeded the Gemini API free tier quota. Upgrading to a paid tier increases your quota. You can select a billing-enabled API key in the Settings > Secrets panel.",
-      isQuotaError: true
-    });
-  }
-
-  if (error.message?.includes('403') || error.message?.includes('PERMISSION_DENIED') || error.message?.includes('API_KEY_INVALID')) {
-    return res.status(403).json({
-      error: "Invalid API Key",
-      message: "Access denied. Please check your API key in the Settings > Secrets panel."
-    });
-  }
-
-  res.status(500).json({ error: error.message || "An unexpected error occurred with the AI server." });
-};
 
 // Check Embed Compatibility Route
 app.post("/api/check-embed", async (req, res) => {
@@ -217,73 +162,6 @@ app.post("/api/check-embed", async (req, res) => {
   }
 });
 
-// Generic Gemini Generate Route
-app.post("/api/gemini/generate", async (req, res) => {
-  const cacheKey = getCacheKey('generate', req.body);
-  
-  // Check cache
-  const cached = resultCache.get(cacheKey);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return res.json(cached.result);
-  }
-
-  // Check pending
-  if (pendingRequests.has(cacheKey)) {
-    try {
-      const result = await pendingRequests.get(cacheKey);
-      return res.json(result);
-    } catch (error) {
-      return handleGeminiError(error, res);
-    }
-  }
-
-  const requestPromise = (async () => {
-    const { model, contents, config } = req.body;
-    
-    const response = await getGeminiClient().models.generateContent({
-      model: model || "gemini-3-flash-preview",
-      contents: contents,
-      config: config
-    });
-    
-    const finalResult = { text: response.text };
-    resultCache.set(cacheKey, { result: finalResult, timestamp: Date.now() });
-    return finalResult;
-  })();
-
-  pendingRequests.set(cacheKey, requestPromise);
-
-  try {
-    const result = await requestPromise;
-    res.json(result);
-  } catch (error: any) {
-    handleGeminiError(error, res);
-  } finally {
-    pendingRequests.delete(cacheKey);
-  }
-});
-
-// Chat Route
-app.post("/api/gemini/chat", async (req, res) => {
-  try {
-    const { messages, systemInstruction } = req.body;
-    
-    const response = await getGeminiClient().models.generateContent({
-      model: "gemini-3.1-pro-preview",
-      contents: messages.map((m: any) => ({
-        role: m.role === 'model' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      })),
-      config: {
-        systemInstruction: systemInstruction
-      }
-    });
-    
-    res.json({ text: response.text });
-  } catch (error: any) {
-    handleGeminiError(error, res);
-  }
-});
 
 async function startServer() {
   // Wire up Replit Auth (session + passport + OIDC routes)

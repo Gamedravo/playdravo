@@ -52,7 +52,6 @@ import {
   ShieldCheck,
   Mail,
   LifeBuoy,
-  BrainCircuit,
   ShieldAlert,
   Sun,
   Moon,
@@ -60,7 +59,6 @@ import {
   Ban,
   BookOpen,
   MessageCircle,
-  Bot,
   Terminal,
   ExternalLink,
   Tag as TagIcon,
@@ -102,8 +100,6 @@ const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
 const CommandPalette = lazy(() => import('./components/CommandPalette').then((m) => ({ default: m.CommandPalette })));
 const PreferencesModal = lazy(() => import('./components/PreferencesModal').then((m) => ({ default: m.PreferencesModal })));
-const AIAssistant = lazy(() => import('./components/AIAssistant').then((m) => ({ default: m.AIAssistant })));
-
 const CategoryPage = lazy(() => import('./pages/CategoryPage').then((module) => ({ default: module.CategoryPage })));
 const AdminPanel = lazy(() => import('./pages/AdminPanel').then((module) => ({ default: module.AdminPanel })));
 const SupportPage = lazy(() => import('./pages/SupportPage').then(module => ({ default: module.SupportPage })));
@@ -383,10 +379,6 @@ function AppContent() {
   const [dailyBonus, setDailyBonus] = useState(3000);
   const [canClaimBonus, setCanClaimBonus] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
-  const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false);
-  const [aiChatMessages, setAIChatMessages] = useState<{role: 'user' | 'model', text: string}[]>([]);
-  const [isAITyping, setIsAITyping] = useState(false);
-  
   // Modal states from hook
   const modalsState = useModals();
   const {
@@ -442,20 +434,8 @@ function AppContent() {
 
   const [reportReason, setReportReason] = useState('');
   const [isSubmittingGameRequest, setIsSubmittingGameRequest] = useState(false);
-  const [chatSummary, setChatSummary] = useState<string | null>(null);
-  const [isGeneratingChatSummary, setIsGeneratingChatSummary] = useState(false);
-
-  const [gamerPersona, setGamerPersona] = useState<{ title: string; description: string } | null>(() => {
-    const saved = localStorage.getItem('topg_persona');
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [isAnalyzingPersona, setIsAnalyzingPersona] = useState(false);
-  const [relatedGames, setRelatedGames] = useState<Game[]>([]);
-  const [isGeneratingRelatedGames, setIsGeneratingRelatedGames] = useState(false);
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
   const [newArrivals, setNewArrivals] = useState<Game[]>([]);
-  const [isGeneratingRecommendations, setIsGeneratingRecommendations] = useState(false);
-  const [recommendationError, setRecommendationError] = useState<string | null>(null);
   const [legalContent, setLegalContent] = useState({ title: '', content: '' });
   
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -557,7 +537,6 @@ function AppContent() {
     const initUserProfile = async () => {
       if (!replitUser) {
         setUserProfile(null);
-        setGamerPersona(null);
         setIsAuthReady(true);
         return;
       }
@@ -592,7 +571,6 @@ function AppContent() {
             favorites: serverProfile.favorites || localProfile?.favorites || [],
             playHistory: serverProfile.playHistory || localProfile?.playHistory || [],
             preferredCategories: serverProfile.preferredCategories || localProfile?.preferredCategories || [],
-            gamerPersona: serverProfile.gamerPersona || localProfile?.gamerPersona || null,
             xp: serverProfile.xp || localProfile?.xp || 0,
             level: serverProfile.level || localProfile?.level || 1,
             role: isAdminEmail(replitUser.email) ? 'admin' : (serverProfile.role as 'user' | 'admin' || 'user'),
@@ -604,7 +582,6 @@ function AppContent() {
           if (profile.favorites?.length) setFavorites([...new Set(profile.favorites)]);
           if (profile.playHistory?.length) setPlayHistory([...new Set(profile.playHistory)]);
           if (profile.preferredCategories?.length) setPreferredCategories(profile.preferredCategories);
-          if (profile.gamerPersona) setGamerPersona(profile.gamerPersona);
         } else {
           const profile: UserProfile = {
             ...baseProfile,
@@ -785,10 +762,6 @@ function AppContent() {
   const [modSortBy, setModSortBy] = useState<'downloads' | 'rating' | 'newest'>('downloads');
   const [displayLimit, setDisplayLimit] = useState(28);
 
-  const handleGenerateDescriptions = () => {
-    appToast.error('AI automatic generations have been disabled for performance.');
-  };
-
   const toggleFavorite = async (gameId: string) => {
     const isAdding = !favorites.includes(gameId);
     
@@ -816,156 +789,13 @@ function AppContent() {
     }
   };
 
-  useEffect(() => {
-    if (isAIAssistantOpen && aiChatMessages.length === 0) {
-      setAIChatMessages([{ role: 'model', text: "Hi, I'm the GameDravo support assistant. I can help you find games, troubleshoot issues, or answer questions about the platform. How can I help you today?" }]);
-    }
-  }, [isAIAssistantOpen, aiChatMessages.length]);
-
-  const lastAIChatTime = useRef<number>(0);
-  const aiChatCache = useRef<Map<string, string>>(new Map());
-
-  const handleAIChat = async (message: string) => {
-    if (!message.trim()) return;
-    
-    // Cooldown check (5 seconds)
-    const now = Date.now();
-    if (now - lastAIChatTime.current < 5000) {
-      appToast.error("Neural processing cooling down. Please wait a moment.");
-      return;
-    }
-
-    const newMessages = [...aiChatMessages, { role: 'user' as const, text: message }];
-    setAIChatMessages(newMessages);
-    setIsAITyping(true);
-
-    // Cache check
-    const cacheKey = message.trim().toLowerCase();
-    if (aiChatCache.current.has(cacheKey)) {
-      const cachedResponse = aiChatCache.current.get(cacheKey)!;
-      setTimeout(() => {
-        setAIChatMessages([...newMessages, { role: 'model', text: cachedResponse }]);
-        setIsAITyping(false);
-      }, 500); 
-      return;
-    }
-
-    try {
-      lastAIChatTime.current = now;
-      // Gather context about the platform
-      const platformContext = {
-        name: "GameDravo",
-        description: "A high-performance gaming portal featuring a wide range of games and community-created mods.",
-        categories: CATEGORIES.filter(c => c !== 'All' && c !== 'Favorites' && c !== 'History' && c !== 'Mods'),
-        features: [
-          "AI Game Assistant: Real-time help and strategies.",
-          "AI Game Coach: Personalized tips based on your play style.",
-          "Modding: Users can generate and apply mods to games.",
-          "Game Requests: Users can request new games or features.",
-          "Gamer Persona: AI analysis of your gaming habits.",
-          "Credits & XP: Earn rewards by playing and interacting.",
-          "Deep Search: AI-powered game discovery."
-        ],
-        stats: {
-          totalGames: games.length,
-          totalMods: games.reduce((acc, g) => acc + (g.mods?.length || 0), 0)
-        }
-      };
-
-      const systemInstruction = `You are a helpful and friendly gaming assistant on the GameDravo platform.
-          Your personality is helpful, friendly, and welcoming to all players.
-          
-          Platform Context:
-          - Name: ${platformContext.name}
-          - Description: ${platformContext.description}
-          - Available Categories: ${platformContext.categories.join(', ')}
-          - Key Features: ${platformContext.features.join('; ')}
-          - Current Stats: ${platformContext.stats.totalGames} games available, ${platformContext.stats.totalMods} mods across various titles.
-          
-          User Context:
-          - User: ${user?.firstName || user?.username || 'Guest'}
-          - Persona: ${userProfile?.gamerPersona?.title || 'Unknown'}
-          - XP: ${userProfile?.xp || 0}
-          - Current Language: ${language}
-          
-          Your Goals:
-          1. Provide elite-level gaming advice, strategies, and technical insights.
-          2. Help users navigate the platform with precision.
-          3. Recommend games using the available library: ${games.slice(0, 20).map(g => g.title).join(', ')} (and many more).
-          4. Analyze user queries with deep understanding of gaming mechanics.
-          
-          Guidelines:
-          - Respond in the user's current language (${language}).
-          - Be concise but provide high-value, "pro" insights.
-          - Use advanced gaming terminology (Meta, Mechanics, Optimization, Frame-perfect, Strat).
-          - Maintain an elite, high-performance vibe.`;
-
-      const res = await fetch('/api/gemini/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          messages: newMessages,
-          systemInstruction,
-          language
-        })
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to connect to AI server");
-      }
-      const data = await res.json();
-
-      if (data.text) {
-        aiChatCache.current.set(cacheKey, data.text);
-        setAIChatMessages([...newMessages, { role: 'model', text: data.text }]);
-      } else {
-        throw new Error("Empty response from AI.");
-      }
-    } catch (error: any) {
-      console.error("AI Error:", error);
-      const errorMessage = error.message || "Connection lost. Game Assistant connection interrupted.";
-      setAIChatMessages([...newMessages, { role: 'model', text: errorMessage }]);
-      appToast.error(errorMessage);
-    } finally {
-      setIsAITyping(false);
-    }
-  };
-
-
-  const generateRelatedGames = (game: Game) => {
-    setIsGeneratingRelatedGames(true);
-    // Local similarity algorithm
-    const related = games
-      .filter(g => g.id !== game.id)
-      .map(g => {
-        let score = 0;
-        if (g.category === game.category) score += 5;
-        
-        const gameTags = game.tags || [];
-        const otherTags = g.tags || [];
-        const commonTags = gameTags.filter(t => otherTags.includes(t));
-        score += commonTags.length * 2;
-        
-        return { game: g, score };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map(item => item.game);
-
-    setRelatedGames(related);
-    setIsGeneratingRelatedGames(false);
-  };
-
   const generateRecommendations = () => {
-    setIsGeneratingRecommendations(true);
     const recommendations = buildRecommendations(games, {
       limit: 12,
       playHistory,
       preferredCategories: userProfile?.preferredCategories || preferredCategories,
     });
     setRecommendedGames(recommendations);
-    setIsGeneratingRecommendations(false);
   };
 
   const updatePreferredCategories = async (categories: string[]) => {
@@ -993,81 +823,7 @@ function AppContent() {
   };
 
 
-  const generateChatSummary = () => {
-    if (chatMessages.length < 3) return;
-    
-    setIsGeneratingChatSummary(true);
-    // Simple local summary
-    const trendingGames = [...new Set(chatMessages.map(m => m.text.match(/\b\w+\b/g)).flat())]
-      .filter(w => w && w.length > 4)
-      .slice(0, 2);
-      
-    const summary = `The atmosphere is energetic with players discussing strategies. ${trendingGames.length > 0 ? `Topic of interest: ${trendingGames.join(', ')}.` : ''}`;
-    
-    setChatSummary(summary);
-    setIsGeneratingChatSummary(false);
-    setTimeout(() => setChatSummary(null), 5000);
-  };
-
-  const analyzeGamerPersona = async () => {
-    if (!user || (!userProfile?.favorites?.length && !playHistory.length)) {
-      appToast.error(t('addGamesToFavorites'));
-      return;
-    }
-    setIsAnalyzingPersona(true);
-    
-    // Local persona analysis based on favorite categories and tags
-    const favoriteGames = games.filter(g => userProfile?.favorites?.includes(g.id) || playHistory.includes(g.id));
-    
-    const categories = favoriteGames.map(g => g.category);
-    const categoryCounts: Record<string, number> = {};
-    categories.forEach(c => { categoryCounts[c] = (categoryCounts[c] || 0) + 1; });
-    
-    const topCategory = Object.keys(categoryCounts).length > 0 
-      ? Object.keys(categoryCounts).reduce((a, b) => categoryCounts[a] > categoryCounts[b] ? a : b)
-      : 'Action';
-
-    let title = "The Explorer";
-    let description = "You enjoy trying a bit of everything and finding hidden gems across genres.";
-
-    if (topCategory === 'Action' || topCategory === 'Shooter' || topCategory === 'Fighting') {
-      title = "The Adrenaline Junkie";
-      description = "You thrive in fast-paced, high-stakes environments where reaction time is everything.";
-    } else if (topCategory === 'Strategy' || topCategory === 'Puzzle') {
-      title = "The Mastermind";
-      description = "Calculated and precise. You enjoy outsmarting your opponents and solving complex systems.";
-    } else if (topCategory === 'Adventure' || topCategory === 'RPG') {
-      title = "The Storyteller";
-      description = "Immersion is key. You love losing yourself in sprawling worlds and rich narratives.";
-    } else if (topCategory === 'Arcade' || topCategory === 'Casual') {
-      title = "The Chill Gamer";
-      description = "Gaming is your escape. You prefer quick, fun sessions to unwind and relax.";
-    } else if (topCategory === 'Horror' || topCategory === 'Survival') {
-      title = "The Survivor";
-      description = "You love the thrill of danger and overcoming seemingly insurmountable odds.";
-    }
-
-    const persona = { title, description };
-    
-    try {
-      await api.updateProfile({ gamerPersona: persona });
-      setGamerPersona(persona);
-      setUserProfile(prev => prev ? { ...prev, gamerPersona: persona } : null);
-      appToast.success(t('aiPersonaUpdated') || "Persona analyzed successfully!");
-    } catch (error) {
-      console.error("Persona Update Error:", error);
-      appToast.error("Failed to update persona.");
-    } finally {
-      setIsAnalyzingPersona(false);
-    }
-  };
-
-
   const handleHelpCardClick = (id: string) => {
-    if (id === 'ai-assistant') {
-      setIsAIAssistantOpen(true);
-      return;
-    }
     setIsHelpCenterOpen(false);
     navigate(`/support/${id}`);
   };
@@ -1119,15 +875,6 @@ function AppContent() {
       api.updateProfile({ preferredCategories }).catch(console.error);
     }
   }, [preferredCategories, user, userProfile]);
-
-  useEffect(() => {
-    if (gamerPersona) {
-      localStorage.setItem('topg_persona', JSON.stringify(gamerPersona));
-      if (user && userProfile && JSON.stringify(userProfile.gamerPersona) !== JSON.stringify(gamerPersona)) {
-        api.updateProfile({ gamerPersona }).catch(console.error);
-      }
-    }
-  }, [gamerPersona, user, userProfile]);
 
   useEffect(() => {
     localStorage.setItem('topg_sort_by', sortBy);
@@ -1254,7 +1001,6 @@ function AppContent() {
     Analytics.trackGameOpen(game.id, game.title);
     navigate(`/games/${game.id}`);
     setActiveTab('game');
-    generateRelatedGames(game);
     setPlayHistory(prev => {
       const filtered = prev.filter(id => id !== game.id);
       return [game.id, ...filtered].slice(0, 20);
@@ -1263,7 +1009,7 @@ function AppContent() {
     scrollToTop();
 
     api.incrementPlays(game.id).catch(e => console.warn('Failed to increment plays:', e));
-  }, [navigate, generateRelatedGames, scrollToTop]);
+  }, [navigate, scrollToTop]);
 
   const handleSurpriseMe = () => {
     if (games.length === 0) {
@@ -1406,9 +1152,6 @@ function AppContent() {
                       featuredGame={featuredGame}
                       newArrivals={newArrivals}
                       recommendedGames={recommendedGames}
-                      isGeneratingRecommendations={isGeneratingRecommendations}
-                      recommendationError={recommendationError}
-                      generateRecommendations={generateRecommendations}
                       recentlyPlayedGames={recentlyPlayedGames}
                       setPlayHistory={setPlayHistory}
                       filteredGames={filteredGames}
@@ -1647,7 +1390,6 @@ function AppContent() {
             transition={{ duration: 0.2 }}
             onClick={() => {
               setIsHelpCenterOpen(false);
-              setIsAIAssistantOpen(false);
             }}
             className={`absolute inset-0 backdrop-blur-sm ${isDarkMode ? 'bg-bg-dark/90' : 'bg-white/90'}`}
           />
@@ -1685,7 +1427,6 @@ function AppContent() {
                     whileTap={{ scale: 0.9 }}
                     onClick={() => {
                       setIsHelpCenterOpen(false);
-                      setIsAIAssistantOpen(false);
                     }}
                     className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-black/5 border-black/10 hover:bg-black/10'}`}
                   >
@@ -1693,28 +1434,10 @@ function AppContent() {
                   </motion.button>
                 </div>
 
-                <div className={`flex-1 overflow-y-auto scrollbar-hide relative z-10 ${isAIAssistantOpen ? 'flex flex-col p-6' : 'p-8'}`}>
-                  {isAIAssistantOpen ? (
-                    <Suspense fallback={<div className="p-8 text-center text-white/40 text-sm">Loading assistant…</div>}>
-                    <AIAssistant
-                      isOpen={true}
-                      setIsOpen={setIsAIAssistantOpen}
-                      isDarkMode={isDarkMode}
-                      t={t}
-                      aiChatMessages={aiChatMessages}
-                      setAIChatMessages={setAIChatMessages}
-                      isAITyping={isAITyping}
-                      handleAIChat={handleAIChat}
-                      generateChatSummary={generateChatSummary}
-                      isGeneratingChatSummary={isGeneratingChatSummary}
-                      chatSummary={chatSummary}
-                    />
-                    </Suspense>
-                  ) : (
-                    <>
+                <div className="flex-1 overflow-y-auto scrollbar-hide relative z-10 p-8">
+                  <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                         {[
-                                          { id: 'ai-assistant', icon: <Bot className="w-5 h-5 text-accent" />, title: 'Ask GameDravo AI', desc: 'Get instant recommendations and troubleshooting support from our smart assistant.' },
                                           { id: 'getting-started', icon: <BookOpen className="w-5 h-5 text-accent" />, title: t('gettingStarted'), desc: t('gettingStartedDesc') },
                                           { id: 'modding-guide', icon: <Wrench className="w-5 h-5 text-accent" />, title: t('moddingGuide'), desc: t('moddingGuideDesc') },
                           { id: 'account-security', icon: <ShieldCheck className="w-5 h-5 text-accent" />, title: t('accountSecurity'), desc: t('accountSecurityDesc') },
@@ -1761,7 +1484,6 @@ function AppContent() {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => {
                             setIsHelpCenterOpen(false);
-                            setIsAIAssistantOpen(false);
                             setIsSupportModalOpen(true);
                           }}
                           className="px-8 py-4 bg-accent text-bg-dark rounded-2xl font-bold transition-all whitespace-nowrap relative z-20"
@@ -1770,7 +1492,6 @@ function AppContent() {
                         </motion.button>
                       </div>
                     </>
-                  )}
                 </div>
 
                 <div className={`p-6 border-t text-center transition-all ${isDarkMode ? 'bg-white/[0.02] border-white/5' : 'bg-black/[0.02] border-black/5'}`}>
@@ -1794,10 +1515,6 @@ function AppContent() {
           language={language}
           setLanguage={setLanguage}
           userProfile={userProfile}
-          gamerPersona={gamerPersona}
-          isAnalyzingPersona={isAnalyzingPersona}
-          analyzeGamerPersona={analyzeGamerPersona}
-          handleGenerateDescriptions={handleGenerateDescriptions}
         />
         </Suspense>
         )}

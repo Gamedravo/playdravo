@@ -28,7 +28,6 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
-    "@google/genai": "^1.52.0",
     "@tailwindcss/vite": "^4.3.0",
     "@types/compression": "^1.8.1",
     "@types/connect-pg-simple": "^7.0.3",

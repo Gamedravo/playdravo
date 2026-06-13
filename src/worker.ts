@@ -116,10 +116,6 @@ export default {
       return handleCheckEmbed(request);
     }
 
-    if (url.pathname === '/api/gemini/chat' || url.pathname === '/api/gemini/generate') {
-      return handleGeminiFallback(request);
-    }
-
     if (url.pathname === '/api/auth/user') {
       return handleAuthUser(request);
     }
@@ -284,20 +280,6 @@ async function handleCheckEmbed(request: Request): Promise<Response> {
   } catch (error) {
     return Response.json({ embeddable: true, reason: error instanceof Error ? error.message : 'Embed check failed', error: true }, { headers: noStoreJsonHeaders() });
   }
-}
-
-async function handleGeminiFallback(request: Request): Promise<Response> {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() });
-  }
-
-  if (request.method !== 'POST') {
-    return methodNotAllowed();
-  }
-
-  return Response.json({
-    text: 'The AI assistant is temporarily unavailable on this deployment, but the rest of GameDravo is ready to use.',
-  }, { headers: noStoreJsonHeaders() });
 }
 
 async function handleAuthUser(request: Request): Promise<Response> {

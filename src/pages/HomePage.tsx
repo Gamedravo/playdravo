@@ -38,9 +38,6 @@ interface HomePageProps {
   featuredGame: Game | null;
   newArrivals: Game[];
   recommendedGames: Game[];
-  isGeneratingRecommendations: boolean;
-  recommendationError: string | null;
-  generateRecommendations: () => void;
   recentlyPlayedGames: Game[];
   setPlayHistory: (history: any) => void;
   filteredGames: Game[];
