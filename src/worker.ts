@@ -22,6 +22,10 @@ export default {
       return handleGamePixCatalog(request);
     }
 
+    if (url.pathname === '/api/games/stats') {
+      return handleGameStats(request);
+    }
+
     return env.ASSETS.fetch(request);
 
   },
@@ -29,6 +33,23 @@ export default {
 
 async function handleOnlineGamesCatalog(request: Request): Promise<Response> {
   return proxyJsonCatalog(request, ONLINE_GAMES_CATALOG_URL, CACHE_SECONDS, 'Could not load game catalog.');
+}
+
+async function handleGameStats(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'GET') {
+    return Response.json({ error: 'Method Not Allowed' }, { status: 405, headers: corsHeaders() });
+  }
+
+  return Response.json([], {
+    headers: {
+      ...corsHeaders(),
+      'Cache-Control': 'public, max-age=60, stale-while-revalidate=60',
+    },
+  });
 }
 
 async function handleGamePixCatalog(request: Request): Promise<Response> {
@@ -46,40 +67,39 @@ async function handleGamePixCatalog(request: Request): Promise<Response> {
   const pageSize = 200;
   const maxPages = Math.ceil(limit / pageSize);
 
-  try {
-    const pages = await Promise.all(
-      Array.from({ length: maxPages }, async (_unused, index) => {
-        const page = index + 1;
-        const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`, {
-          headers: {
-            Accept: 'application/json',
-            'User-Agent': 'GameDravo-CatalogLoader/1.0',
-          },
-          cf: {
-            cacheTtl: GAMEPIX_CACHE_SECONDS,
-            cacheEverything: true,
-          },
-        } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
+  const pageResults = await Promise.allSettled(
+    Array.from({ length: maxPages }, async (_unused, index) => {
+      const page = index + 1;
+      const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`, {
+        headers: {
+          Accept: 'application/json',
+          'User-Agent': 'GameDravo-CatalogLoader/1.0',
+        },
+        cf: {
+          cacheTtl: GAMEPIX_CACHE_SECONDS,
+          cacheEverything: true,
+        },
+      } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
 
-        if (!response.ok) throw new Error(`GamePix page ${page} failed: ${response.status}`);
-        const feed = await response.json();
-        return Array.isArray(feed?.items) ? feed.items : [];
-      })
-    );
+      if (!response.ok) throw new Error(`GamePix page ${page} failed: ${response.status}`);
+      const feed = await response.json();
+      return Array.isArray(feed?.items) ? feed.items : [];
+    })
+  );
 
-    return Response.json(pages.flat().slice(0, limit), {
-      headers: {
-        ...corsHeaders(),
-        'Cache-Control': `public, max-age=${GAMEPIX_CACHE_SECONDS}, stale-while-revalidate=${GAMEPIX_CACHE_SECONDS}`,
-      },
-    });
-  } catch (error) {
-    console.error('GamePix catalog proxy failed:', error);
-    return Response.json({ error: 'Could not load GamePix catalog.' }, { status: 502, headers: corsHeaders() });
-  }
+  const games = pageResults.flatMap((result) => result.status === 'fulfilled' ? result.value : []);
+  const cacheSeconds = games.length > 0 ? GAMEPIX_CACHE_SECONDS : 60;
+
+  return Response.json(games.slice(0, limit), {
+    headers: {
+      ...corsHeaders(),
+      'Cache-Control': `public, max-age=${cacheSeconds}, stale-while-revalidate=${cacheSeconds}`,
+    },
+  });
 }
 
 async function proxyJsonCatalog(
+
   request: Request,
   sourceUrl: string,
   cacheSeconds: number,

@@ -3,14 +3,23 @@ const apiFetch = async (url: string, options?: RequestInit) => {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
   });
+  const contentType = res.headers.get('content-type') || '';
+  const isJson = contentType.includes('application/json');
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: res.statusText }));
+    const err = isJson ? await res.json().catch(() => ({ message: res.statusText })) : { message: res.statusText };
     throw new Error(err.message || 'Request failed');
   }
+
+  if (!isJson) {
+    throw new Error(`Expected JSON from ${url}, received ${contentType || 'unknown content type'}`);
+  }
+
   return res.json();
 };
 
 export const api = {
+
   // User profile
   updateProfile: (data: Record<string, any>) =>
     apiFetch('/api/user/profile', { method: 'PATCH', body: JSON.stringify(data) }),

@@ -22,29 +22,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const pageSize = 200;
   const maxPages = Math.ceil(limit / pageSize);
 
-  try {
-    const pages = await Promise.all(
-      Array.from({ length: maxPages }, async (_unused, index) => {
-        const page = index + 1;
-        const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`, {
-          headers: {
-            Accept: 'application/json',
-            'User-Agent': 'GameDravo-CatalogLoader/1.0',
-          },
-        });
+  const pageResults = await Promise.allSettled(
+    Array.from({ length: maxPages }, async (_unused, index) => {
+      const page = index + 1;
+      const response = await fetch(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`, {
+        headers: {
+          Accept: 'application/json',
+          'User-Agent': 'GameDravo-CatalogLoader/1.0',
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error(`GamePix page ${page} failed: ${response.status}`);
-        }
+      if (!response.ok) {
+        throw new Error(`GamePix page ${page} failed: ${response.status}`);
+      }
 
-        const feed = await response.json();
-        return Array.isArray(feed?.items) ? feed.items : [];
-      })
-    );
+      const feed = await response.json();
+      return Array.isArray(feed?.items) ? feed.items : [];
+    })
+  );
 
-    return res.status(200).json(pages.flat().slice(0, limit));
-  } catch (error) {
-    console.error('GamePix catalog proxy failed:', error);
-    return res.status(502).json({ error: 'Could not load GamePix catalog.' });
+  const games = pageResults.flatMap((result) => result.status === 'fulfilled' ? result.value : []);
+  if (games.length === 0) {
+    res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=60');
   }
+
+  return res.status(200).json(games.slice(0, limit));
 }
