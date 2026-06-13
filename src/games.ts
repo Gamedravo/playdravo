@@ -1,8 +1,11 @@
 import { Game } from './types';
 
 const ONLINE_GAMES_API_URL = '/api/onlinegames-catalog';
+const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 const GAMEPIX_TARGET_CATALOG_SIZE = 600;
 const GAMEPIX_API_URL = `/api/gamepix-catalog?limit=${GAMEPIX_TARGET_CATALOG_SIZE}`;
+const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
+const CAN_FETCH_EXTERNAL_CATALOGS = typeof window === 'undefined';
 
 export const CATALOG_SOURCE = 'onlinegames.io + gamepix' as const;
 
@@ -403,12 +406,31 @@ async function fetchRawGamePixGames(url: string): Promise<RawGamePixGame[]> {
   return items as RawGamePixGame[];
 }
 
+async function fetchRawGamePixFeed(limit: number): Promise<RawGamePixGame[]> {
+  const pageSize = 100;
+  const pages = Math.ceil(limit / pageSize);
+  const results = await Promise.all(
+    Array.from({ length: pages }, async (_, index) => {
+      const page = index + 1;
+      return fetchRawGamePixGames(`${GAMEPIX_CATALOG_URL}?order=quality&page=${page}&pagination=${pageSize}&sid=1`);
+    })
+  );
+
+  return results.flat().slice(0, limit);
+}
+
 async function fetchOnlineGamesRemote(): Promise<Game[]> {
   try {
     const rawGames = await fetchRawOnlineGames(ONLINE_GAMES_API_URL);
     return rawGames.filter(isSafeOnlineGame).map(onlineGameToGame);
   } catch {
-    return [];
+    if (!CAN_FETCH_EXTERNAL_CATALOGS) return [];
+    try {
+      const rawGames = await fetchRawOnlineGames(ONLINE_GAMES_CATALOG_URL);
+      return rawGames.filter(isSafeOnlineGame).map(onlineGameToGame);
+    } catch {
+      return [];
+    }
   }
 }
 
@@ -417,7 +439,13 @@ async function fetchGamePixRemote(): Promise<Game[]> {
     const rawGames = await fetchRawGamePixGames(GAMEPIX_API_URL);
     return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
   } catch {
-    return [];
+    if (!CAN_FETCH_EXTERNAL_CATALOGS) return [];
+    try {
+      const rawGames = await fetchRawGamePixFeed(GAMEPIX_TARGET_CATALOG_SIZE);
+      return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
+    } catch {
+      return [];
+    }
   }
 }
 
