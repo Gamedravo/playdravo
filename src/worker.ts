@@ -85,6 +85,24 @@ export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const url = new URL(request.url);
 
+    if (url.hostname === 'gamedravo.com') {
+      url.hostname = 'www.gamedravo.com';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.pathname === '/game' || url.pathname.startsWith('/game/')) {
+      url.pathname = url.pathname.replace(/^\/game/, '/games');
+      return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.pathname === '/robots.txt') {
+      return serveSeoAsset(request, env, 'text/plain; charset=utf-8');
+    }
+
+    if (url.pathname === '/sitemap.xml') {
+      return serveSeoAsset(request, env, 'application/xml; charset=utf-8');
+    }
+
     if (url.pathname === '/api/onlinegames-catalog') {
       return handleOnlineGamesCatalog(request);
     }
@@ -145,11 +163,20 @@ export default {
   },
 };
 
+async function serveSeoAsset(request: Request, env: WorkerEnv, contentType: string): Promise<Response> {
+  const response = await env.ASSETS.fetch(request);
+  const headers = new Headers(response.headers);
+  headers.set('Content-Type', contentType);
+  headers.set('Cache-Control', 'public, max-age=3600');
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 async function handleOnlineGamesCatalog(request: Request): Promise<Response> {
   return proxyJsonCatalog(request, ONLINE_GAMES_CATALOG_URL, CACHE_SECONDS, 'Could not load game catalog.');
 }
 
 async function handleGamePixCatalog(request: Request): Promise<Response> {
+
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders() });
   }
@@ -717,5 +744,6 @@ function corsHeaders(): Record<string, string> {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'X-Robots-Tag': 'noindex, nofollow',
   };
 }

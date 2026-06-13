@@ -56,10 +56,11 @@ export function CombinedGameModal({ isOpen, onClose, isDarkMode, t, user, userPr
 
   const handlePlayFavorite = (game: Game) => {
     handleClose();
-    navigate(`/game/${game.id}`);
+    navigate(`/games/${game.id}`);
   };
 
   return (
+
     <motion.div
       initial={false}
       animate={isOpen ? { opacity: 1, pointerEvents: 'auto' } : { opacity: 0, pointerEvents: 'none' }}

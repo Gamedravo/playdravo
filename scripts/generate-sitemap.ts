@@ -73,11 +73,10 @@ async function generate(): Promise<string> {
     '/status',
     '/report-bug',
     '/submit-game',
-    '/library/favorites',
-    '/library/history',
   ];
 
   const specialCategoryLabels = ['Trending', 'Recommended', 'Mobile Games', 'Best On Mobile'];
+
   const chipCategoryPaths = HOMEPAGE_CATEGORY_CHIPS.map((chip) => `/category/${chip.slug}`);
   const listCategoryPaths = CATEGORY_LIST
     .filter((label) => !['All', 'Favorites', 'History', 'Mods'].includes(label))
