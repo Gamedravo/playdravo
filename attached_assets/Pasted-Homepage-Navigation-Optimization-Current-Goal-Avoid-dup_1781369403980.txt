@@ -1,0 +1,110 @@
+Homepage Navigation Optimization
+
+Current Goal:
+Avoid duplicate category navigation and keep the website clean, modern, and focused on game discovery.
+
+Required Changes:
+
+1. Main Header
+   Keep the header minimal and focused on:
+
+* Logo
+* Search bar
+* Notifications
+* Favorites
+* Language selector
+* Login/Profile button
+
+Do NOT place category navigation inside the main header.
+
+The header should prioritize:
+
+1. Search
+
+2. Branding
+
+3. User actions
+
+4. Remove Secondary Category Header
+
+Remove any category row directly below the main header such as:
+
+Action • Racing • Sports • Multiplayer • Adventure
+
+Reason:
+The homepage already contains a dedicated "Browse by Genre" section. Showing categories in multiple locations creates redundancy and visual clutter.
+
+3. Keep "Browse by Genre"
+
+Use the category cards section as the primary category navigation system.
+
+Categories:
+
+* Action
+* Adventure
+* Racing
+* Sports
+* Puzzle
+* Arcade
+* Multiplayer
+* Strategy
+* Shooting
+* Casual
+
+This section should remain visible on the homepage and act as the main category discovery area.
+
+4. Improve Category Cards
+
+Enhance category cards with:
+
+* Larger icons
+* Smooth hover animation
+* Subtle glow effect
+* Slight scale effect on hover
+* Better spacing
+* Premium gradients
+
+Optional:
+Display game count below each category.
+
+Example:
+
+Action
+1,245 Games
+
+Adventure
+892 Games
+
+Sports
+731 Games
+
+5. User Experience
+
+Avoid showing the same navigation options multiple times.
+
+Good:
+Header → Search and account actions
+Browse by Genre → Categories
+
+Bad:
+Header → Categories
+Secondary Navigation → Categories
+Browse by Genre → Categories
+
+This creates repetition and wastes valuable screen space.
+
+6. Design Philosophy
+
+The homepage should feel focused and intentional.
+
+Header = Search + User Actions
+
+Browse by Genre = Category Discovery
+
+Featured Sections = Game Discovery
+
+Each section should have a clear purpose without duplicating functionality.
+
+Final Goal:
+
+Remove category navigation from the header and use the "Browse by Genre" cards as the single primary category navigation system. This creates a cleaner, more premium gaming experience and improves visual hierarchy across desktop, ultrawide, and mobile screens.

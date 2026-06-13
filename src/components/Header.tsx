@@ -39,22 +39,6 @@ interface HeaderProps {
   setIsSubmitModalOpen: (open: boolean) => void;
 }
 
-const CATEGORIES = [
-  'All',
-  'Action',
-  'Adventure',
-  'Arcade',
-  'Casual',
-  'Fighting',
-  'Horror',
-  'Multiplayer',
-  'Puzzle',
-  'Racing',
-  'Shooting',
-  'Simulator',
-  'Sports',
-  'Strategy',
-];
 
 export const Header = memo(function Header({
   isDarkMode,
@@ -85,7 +69,6 @@ export const Header = memo(function Header({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [scrolled, setScrolled] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('All');
   const bellRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
@@ -120,15 +103,9 @@ export const Header = memo(function Header({
     openSearch();
   };
 
-  const handleCategoryClick = (cat: string) => {
-    setActiveCategory(cat);
-    if (setSelectedCategory) setSelectedCategory(cat);
-    if (location.pathname !== '/') startTransition(() => navigate('/'));
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full px-2 md:px-3 pt-2 pb-0">
-      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 overflow-hidden ${
+      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 ${
         isDarkMode
           ? `bg-[#09090f]/85 border-white/[0.07] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.55),0_0_0_1px_rgba(255,255,255,0.04)]' : 'shadow-[0_4px_24px_rgba(0,0,0,0.35)]'}`
           : `bg-white/90 border-black/[0.06] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]' : 'shadow-[0_4px_18px_rgba(0,0,0,0.07)]'}`
@@ -316,32 +293,6 @@ export const Header = memo(function Header({
                 </div>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* ── Secondary Category Navigation Strip ── */}
-        <div className={`header-inner border-t ${isDarkMode ? 'border-white/[0.05]' : 'border-black/[0.05]'}`}>
-          <div className="px-3 md:px-5 py-2 flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-            {CATEGORIES.map((cat) => {
-              const isActive = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => handleCategoryClick(cat)}
-                  className={`category-pill shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-150 whitespace-nowrap active:scale-95 ${
-                    isActive
-                      ? isDarkMode
-                        ? 'bg-violet-600/30 border border-violet-500/50 text-violet-200 shadow-[0_0_12px_rgba(124,58,237,0.20)]'
-                        : 'bg-violet-100 border border-violet-300/70 text-violet-700'
-                      : isDarkMode
-                      ? 'border border-transparent text-white/45 hover:text-white/80 hover:border-white/10 hover:bg-white/[0.05]'
-                      : 'border border-transparent text-black/45 hover:text-black/75 hover:border-black/08 hover:bg-black/[0.04]'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
           </div>
         </div>
 

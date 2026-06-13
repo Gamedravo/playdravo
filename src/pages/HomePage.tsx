@@ -66,7 +66,7 @@ interface HomePageProps {
 
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves } from '../utils/recommendations';
-import { HOMEPAGE_CATEGORY_CHIPS } from '../lib/homepageCategories';
+import { HOMEPAGE_CATEGORY_CHIPS, countGamesForChip } from '../lib/homepageCategories';
 import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from '../lib/homepageCuration';
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
 import { HomePageShelf } from '../components/HomePageShelf';
@@ -216,6 +216,14 @@ export const HomePage = React.memo(function HomePage({
   );
 
   const exploreCategories = showAllCategories ? [...curatedCategories, ...extraCategories] : curatedCategories;
+
+  const categoryCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    HOMEPAGE_CATEGORY_CHIPS.forEach((chip) => {
+      counts[chip.id] = countGamesForChip(filteredGames, chip);
+    });
+    return counts;
+  }, [filteredGames]);
 
   const homepageShelves = React.useMemo(
     () => buildHomepageShelves(filteredGames),
@@ -691,7 +699,12 @@ export const HomePage = React.memo(function HomePage({
                   className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
                   <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                  <span className="category-chip-label">{cat.title}</span>
+                  <div className="flex flex-col">
+                    <span className="category-chip-label">{cat.title}</span>
+                    {categoryCounts[cat.id] !== undefined && (
+                      <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} Games</span>
+                    )}
+                  </div>
                 </button>
               ))}
             </div>
@@ -724,7 +737,12 @@ export const HomePage = React.memo(function HomePage({
                       className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                     >
                       <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                      <span className="category-chip-label">{cat.title}</span>
+                      <div className="flex flex-col">
+                        <span className="category-chip-label">{cat.title}</span>
+                        {categoryCounts[cat.id] !== undefined && (
+                          <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} Games</span>
+                        )}
+                      </div>
                     </button>
                   ))}
                 </div>
