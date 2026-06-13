@@ -1316,6 +1316,29 @@
     z-index: 65;
   }
 
+  /* —— Header inner container — ultrawide max-width + scaling —— */
+  .header-inner {
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (min-width: 2560px) {
+    .header-inner {
+      max-width: 2400px;
+    }
+    /* Widen search on ultrawide */
+    .header-inner .group.flex-1 {
+      min-width: 400px;
+    }
+  }
+
+  @media (min-width: 3440px) {
+    .header-inner {
+      max-width: 3200px;
+    }
+  }
+
   /* —— Futuristic hero/profile upgrades —— */
   .featured-spotlight {
     @apply rounded-[2rem] p-3 md:p-4 overflow-hidden;

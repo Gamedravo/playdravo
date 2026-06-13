@@ -1,0 +1,73 @@
+Analyze the current website header and redesign it for a premium gaming platform experience.
+
+Current Problem:
+The header has too much unused horizontal space on large monitors (2560px, 3440px, and 4K displays). The logo, search bar, and login area feel disconnected, creating visible empty gaps and making the layout look unfinished.
+
+Goals:
+
+* Eliminate unnecessary empty space.
+* Make the header feel balanced and premium.
+* Improve visual hierarchy.
+* Optimize for ultrawide monitors.
+* Keep the modern dark gaming aesthetic.
+
+Header Requirements:
+
+1. Floating Header
+
+* Detached from the sidebar.
+* Rounded corners.
+* Subtle glow and shadow.
+* Sticky on scroll.
+* Full-width appearance without looking stretched.
+
+2. Logo Area
+
+* Slightly larger logo.
+* Better brand visibility.
+* Consistent vertical alignment.
+
+3. Search Bar
+
+* Main focal point of the header.
+* Occupy 55–65% of available header width.
+* Expand dynamically on larger screens.
+* Rounded modern design.
+* Search icon inside.
+* Optional live suggestions dropdown.
+
+4. Right Side Actions
+
+* Language selector.
+* Notifications.
+* Favorites.
+* User profile or Login button.
+* Even spacing between items.
+* Consistent sizing.
+
+5. Large Screen Optimization
+   For screens wider than 2560px:
+
+* Increase search bar width.
+* Add quick category links:
+  Action, Racing, Sports, Multiplayer, Adventure.
+* Prevent large empty gaps.
+* Use space for navigation instead of blank areas.
+
+6. Visual Balance
+   Bad Layout:
+   [Logo] ........ [Search] ........ [Login]
+
+Desired Layout:
+[Logo] [Categories] [Large Search Bar] [Notifications] [Favorites] [Profile/Login]
+
+7. Premium Gaming Feel
+
+* Inspired by modern gaming launchers and gaming platforms.
+* Clean spacing.
+* High-quality hover animations.
+* Subtle orange/gold accent colors.
+* Professional desktop-first experience.
+
+Design Goal:
+The header should feel dense, purposeful, and premium on all screen sizes. On ultrawide monitors there should be no obvious empty spaces. The layout should intelligently use available width to improve navigation, game discovery, and user engagement rather than leaving blank gaps.
