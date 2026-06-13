@@ -112,6 +112,7 @@ const ReportBugPage = lazy(() => import('./pages/ReportBugPage').then(module => 
 const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ default: module.ContactPage })));
 const SubmitGamePage = lazy(() => import('./pages/SubmitGamePage').then(module => ({ default: module.SubmitGamePage })));
 const CookiesPage = lazy(() => import('./pages/CookiesPage').then(module => ({ default: module.CookiesPage })));
+const HtmlSitemapPage = lazy(() => import('./pages/HtmlSitemapPage').then(module => ({ default: module.HtmlSitemapPage })));
 
 const categoryKeyMap: Record<string, keyof typeof translations['en']> = {
   'Action': 'action',
@@ -1346,6 +1347,13 @@ function AppContent() {
                   <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <CookiesPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                  </LazyRoute>
+                } />
+                <Route path="/html-sitemap" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                  <PageLayout>
+                    <HtmlSitemapPage isDarkMode={isDarkMode} t={t} />
                   </PageLayout>
                   </LazyRoute>
                 } />
