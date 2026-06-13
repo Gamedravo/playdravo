@@ -215,8 +215,74 @@ async function startServer() {
       return res.sendFile(filePath);
     });
     app.use(express.static(distPath));
+
+    // Route-specific SEO meta — injected server-side so crawlers see correct title/canonical
+    const SITE_ORIGIN = 'https://gamedravo.com';
+    const ROUTE_META: Record<string, { title: string; description: string }> = {
+      '/': {
+        title: 'GameDravo | Free Browser Games, No Download',
+        description: 'GameDravo is a lightweight futuristic gaming portal for instant no-download browser games across action, puzzle, arcade, sports, strategy, and mobile play.',
+      },
+      '/about': {
+        title: 'About GameDravo | Free Instant Browser Games',
+        description: 'Learn about GameDravo — a lightweight futuristic portal for free, instant, no-download browser games across action, puzzle, arcade, sports, and more.',
+      },
+      '/contact': {
+        title: 'Contact GameDravo | Get in Touch',
+        description: 'Contact the GameDravo team for support, partnerships, game submissions, or general enquiries. We are here to help.',
+      },
+      '/privacy': {
+        title: 'Privacy Policy | GameDravo',
+        description: 'Read the GameDravo Privacy Policy to understand how we collect, use, and protect your personal data when you use our free browser gaming platform.',
+      },
+      '/terms': {
+        title: 'Terms of Service | GameDravo',
+        description: 'Review the GameDravo Terms of Service — the rules and guidelines governing your use of our free browser gaming platform.',
+      },
+      '/cookies': {
+        title: 'Cookie Policy | GameDravo',
+        description: 'Learn how GameDravo uses cookies to improve your experience, save preferences, and keep our free browser gaming platform secure.',
+      },
+      '/submit-game': {
+        title: 'Submit a Game | GameDravo',
+        description: 'Submit your browser game to GameDravo for review and potential listing on our free gaming platform.',
+      },
+      '/support': {
+        title: 'Support | GameDravo',
+        description: 'Get help from the GameDravo support team. Report bugs, request games, or ask questions about our free browser gaming platform.',
+      },
+    };
+
     app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      const htmlPath = path.join(distPath, 'index.html');
+      try {
+        let html = fs.readFileSync(htmlPath, 'utf8');
+        const routePath = req.path.replace(/\/$/, '') || '/';
+        const meta = ROUTE_META[routePath];
+        const canonical = `${SITE_ORIGIN}${routePath === '/' ? '' : routePath}/`;
+        if (meta) {
+          html = html.replace(
+            /(<title>)[^<]*(<\/title>)/,
+            `$1${meta.title}$2`
+          );
+          html = html.replace(
+            /<!-- Per-page canonical injected server-side or by React Helmet -->/,
+            `<link rel="canonical" href="${canonical}" />`
+          );
+          html = html.replace(
+            /(<meta name="description" content=")[^"]*(")/,
+            `$1${meta.description}$2`
+          );
+        } else {
+          html = html.replace(
+            /<!-- Per-page canonical injected server-side or by React Helmet -->/,
+            `<link rel="canonical" href="${canonical}" />`
+          );
+        }
+        res.type('text/html').send(html);
+      } catch {
+        res.sendFile(htmlPath);
+      }
     });
   }
 

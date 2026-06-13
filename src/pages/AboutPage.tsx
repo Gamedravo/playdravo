@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
+import { SEO } from '../components/SEO';
 import { Gamepad2, Sparkles, Zap, Trophy, Shield, Users, Home, ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface AboutPageProps {
@@ -41,6 +42,12 @@ export function AboutPage({ isDarkMode, t }: AboutPageProps) {
   ];
 
   return (
+    <>
+    <SEO
+      title="About GameDravo | Free Instant Browser Games"
+      description="Learn about GameDravo — a lightweight futuristic portal for free, instant, no-download browser games across action, puzzle, arcade, sports, and more."
+      canonicalUrl="https://gamedravo.com/about"
+    />
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
       <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
@@ -170,5 +177,6 @@ export function AboutPage({ isDarkMode, t }: AboutPageProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

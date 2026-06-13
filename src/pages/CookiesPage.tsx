@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PageBrandMark } from '../components/PageBrandMark';
+import { SEO } from '../components/SEO';
 import { ShieldCheck, Flame, Info, Eye, FileText, CheckCircle, Home, ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface CookiesPageProps {
@@ -31,6 +32,12 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
   ];
 
   return (
+    <>
+    <SEO
+      title="Cookie Policy | GameDravo"
+      description="Learn how GameDravo uses cookies to improve your experience, save preferences, and keep our free browser gaming platform secure."
+      canonicalUrl="https://gamedravo.com/cookies"
+    />
     <div className={`min-h-screen ${isDarkMode ? 'text-white' : 'text-black'}`}>
       <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         {/* Navigation Breadcrumbs Header */}
@@ -148,5 +155,6 @@ export function CookiesPage({ isDarkMode, t }: CookiesPageProps) {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }
