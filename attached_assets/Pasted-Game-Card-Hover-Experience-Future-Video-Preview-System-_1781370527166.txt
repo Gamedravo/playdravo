@@ -1,0 +1,128 @@
+Game Card Hover Experience & Future Video Preview System
+
+Goal:
+Create a premium gaming platform experience similar to modern gaming portals while keeping performance fast and scalable.
+
+Phase 1 (Implement Now)
+
+Improve game card interactions without using video previews.
+
+Hover Effects:
+
+1. Card Scale Animation
+
+* Smoothly scale card to 1.03–1.05 on hover.
+* Use GPU-accelerated transforms.
+* Duration: 200–300ms.
+
+2. Premium Glow Effect
+
+* Add subtle orange/purple glow matching GameDravo branding.
+* Glow should be elegant, not overpowering.
+* Increase slightly on hover.
+
+3. Play Icon Animation
+
+* Display animated Play button overlay on hover.
+* Fade in smoothly.
+* Slight scale-up animation.
+* Position centered or bottom-left.
+
+4. Thumbnail Enhancement
+
+* Slight brightness increase on hover.
+* Optional subtle zoom effect on image.
+* Maintain image quality.
+
+5. Card Elevation
+
+* Raise card slightly above surrounding cards.
+* Add soft shadow.
+* Create a premium floating effect.
+
+Performance Requirements:
+
+* Smooth 60 FPS animations.
+* No layout shifts.
+* No performance impact on large game grids.
+
+Phase 2 (Future System)
+
+Automatic Gameplay Preview Generation
+
+Goal:
+Generate hover preview videos automatically without manually recording every game.
+
+System Requirements:
+
+1. Automatic Capture Pipeline
+
+When a new HTML5 game is added:
+
+* Launch game automatically in a hidden iframe.
+* Wait for game initialization.
+* Simulate gameplay if possible.
+* Record 5–10 seconds of gameplay.
+* Export optimized MP4/WebM preview.
+* Store preview for future use.
+
+2. Preview Storage
+
+For each game store:
+
+* Thumbnail image
+* Gameplay preview video
+* Metadata
+
+Example:
+
+game-thumbnail.webp
+game-preview.webm
+
+3. Hover Preview Behavior
+
+When user hovers a game card:
+
+* Delay 300–500ms.
+* Start muted autoplay preview.
+* Loop smoothly.
+* Stop when hover ends.
+
+Requirements:
+
+* Instant playback.
+* No loading spinner.
+* No audio.
+* No page lag.
+
+4. Optimization
+
+Only generate previews for:
+
+* Trending games
+* Most played games
+* Featured games
+* Games with high engagement
+
+Do not generate previews for every game initially.
+
+5. Smart Loading
+
+Do not preload all videos.
+
+Load preview only when:
+
+* Card enters viewport
+* User hovers card
+
+Prioritize performance over visual effects.
+
+User Experience Goal:
+
+Current Experience:
+Hover → Card grows, glows, Play button appears.
+
+Future Experience:
+Hover → Gameplay preview starts automatically like premium gaming platforms.
+
+The design should feel modern, responsive, and professional while maintaining excellent loading performance.

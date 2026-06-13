@@ -297,16 +297,16 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`game-card-shell relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-200 ease-out ${
+        className={`game-card-shell relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow,filter] duration-250 ease-out ${
           isDarkMode
-            ? 'border-white/[0.07] bg-[#0c0c14] shadow-[0_6px_20px_rgba(0,0,0,0.4)] group-hover:shadow-[0_22px_56px_rgba(124,58,237,0.22),0_8px_24px_rgba(0,0,0,0.45)] group-hover:border-violet-400/40'
-            : 'border-black/[0.08] bg-white shadow-[0_6px_20px_rgba(15,23,42,0.08)] group-hover:shadow-[0_18px_40px_rgba(124,58,237,0.18)] group-hover:border-violet-400/40'
-        } group-hover:-translate-y-2 active:scale-[0.98]`}
+            ? 'border-white/[0.07] bg-[#0c0c14] shadow-[0_4px_16px_rgba(0,0,0,0.5)] group-hover:shadow-[0_24px_60px_rgba(124,58,237,0.32),0_8px_28px_rgba(0,0,0,0.55),0_0_0_1px_rgba(251,191,36,0.10)] group-hover:border-violet-400/50'
+            : 'border-black/[0.08] bg-white shadow-[0_4px_16px_rgba(15,23,42,0.10)] group-hover:shadow-[0_20px_48px_rgba(124,58,237,0.22),0_4px_16px_rgba(251,191,36,0.10)] group-hover:border-violet-400/40'
+        } group-hover:-translate-y-2 group-hover:scale-[1.03] active:scale-[0.97] active:-translate-y-0`}
       >
-        {/* Premium hover sheen */}
+        {/* Premium hover sheen — orange-purple diagonal */}
         <div
           className="pointer-events-none absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.09) 0%, transparent 45%, rgba(251,191,36,0.07) 100%)' }}
+          style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.13) 0%, transparent 40%, rgba(251,191,36,0.10) 100%)' }}
         />
 
         {/* Image / video area */}
@@ -318,7 +318,7 @@ export const GameCard = memo(function GameCard({
             title={game.title}
             gameId={game.id}
             priority={priority}
-            className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            className="h-full w-full object-cover object-center transition-[transform,filter] duration-500 ease-out group-hover:scale-[1.06] group-hover:brightness-[1.08]"
           />
           <InlineCardPreview game={game} active={previewActive} candidates={previewCandidates} />
         </div>
@@ -368,11 +368,16 @@ export const GameCard = memo(function GameCard({
           <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Play button overlay on hover */}
+        {/* Play button overlay on hover — fades + scales in */}
         <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-          <div className="w-11 h-11 rounded-full flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.6)] backdrop-blur-md border border-white/20"
-            style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85))' }}>
-            <Play className="w-4 h-4 text-black fill-black ml-0.5" />
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md border border-white/25 scale-75 group-hover:scale-100 transition-transform duration-[250ms] ease-out"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88))',
+              boxShadow: '0 4px 28px rgba(0,0,0,0.65), 0 0 0 3px rgba(124,58,237,0.20)',
+            }}
+          >
+            <Play className="w-[18px] h-[18px] text-black fill-black ml-0.5" />
           </div>
         </div>
 
