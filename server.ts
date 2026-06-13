@@ -8,6 +8,7 @@ import compression from "compression";
 import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/index.js";
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
+import previewRoutes from "./server/routes/previews.js";
 
 dotenv.config();
 
@@ -29,8 +30,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Serve locally-stored game preview files (written at runtime, not part of dist build)
+app.use('/previews', express.static(path.join(process.cwd(), 'public/previews')));
+
 // Mount API routes early (before Vite middleware) so they aren't intercepted by SPA fallback
 app.use("/api", apiRoutes);
+app.use("/api/previews", previewRoutes);
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';

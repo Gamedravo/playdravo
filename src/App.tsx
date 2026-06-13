@@ -95,6 +95,7 @@ import { markRouteVisited } from './lib/routeVisitCache';
 import { isAdminEmail } from './lib/brandContact';
 import { devLog } from './lib/devLog';
 import { withSafetyMetadata } from './lib/adsInjection';
+import { fetchPreviewManifest } from './hooks/usePreviewManifest';
 
 const GamePage = lazy(() => import('./pages/GamePage').then((m) => ({ default: m.GamePage })));
 const GlobalModals = lazy(() => import('./components/GlobalModals').then((m) => ({ default: m.GlobalModals })));
@@ -113,6 +114,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage').then(module => ({ d
 const SubmitGamePage = lazy(() => import('./pages/SubmitGamePage').then(module => ({ default: module.SubmitGamePage })));
 const CookiesPage = lazy(() => import('./pages/CookiesPage').then(module => ({ default: module.CookiesPage })));
 const HtmlSitemapPage = lazy(() => import('./pages/HtmlSitemapPage').then(module => ({ default: module.HtmlSitemapPage })));
+const PreviewDashboardPage = lazy(() => import('./pages/PreviewDashboardPage').then(m => ({ default: m.PreviewDashboardPage })));
 
 const categoryKeyMap: Record<string, keyof typeof translations['en']> = {
   'Action': 'action',
@@ -344,6 +346,27 @@ function AppContent() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  // Load preview manifest and merge discovered preview URLs into game data
+  useEffect(() => {
+    let cancelled = false;
+    fetchPreviewManifest().then((manifest) => {
+      if (cancelled || Object.keys(manifest).length === 0) return;
+      setGames((prev) =>
+        prev.map((g) => {
+          const entry = manifest[g.id];
+          if (!entry) return g;
+          // Don't overwrite an existing explicit previewVideoUrl/previewGifUrl from the catalog
+          if (g.previewVideoUrl || g.previewGifUrl) return g;
+          const isVideo = entry.kind === 'mp4' || entry.kind === 'webm';
+          return isVideo
+            ? { ...g, previewVideoUrl: entry.url }
+            : { ...g, previewGifUrl: entry.url };
+        }),
+      );
+    });
+    return () => { cancelled = true; };
   }, []);
 
   const mainRef = useRef<HTMLDivElement>(null);
@@ -1282,6 +1305,23 @@ function AppContent() {
                     <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <PageLayout>
                       <AdminPanel isDarkMode={isDarkMode} t={t} type="support-tickets" />
+                    </PageLayout>
+                    </LazyRoute>
+                  ) : (
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="text-center">
+                        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                        <h2 className="text-2xl font-bold tracking-tight">{t('unauthorizedAdmin')}</h2>
+                        <Link to="/" className="mt-6 px-8 py-3 bg-accent text-bg-dark font-bold rounded-xl uppercase tracking-widest text-xs inline-block">Return Home</Link>
+                      </div>
+                    </div>
+                  )
+                } />
+                <Route path="/admin/previews" element={
+                  userProfile?.role === 'admin' ? (
+                    <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                    <PageLayout>
+                      <PreviewDashboardPage games={games} />
                     </PageLayout>
                     </LazyRoute>
                   ) : (
