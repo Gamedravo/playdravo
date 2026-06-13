@@ -146,6 +146,7 @@ async function generate(): Promise<string> {
   const staticPages: [string, SitemapEntry['changefreq'], string][] = [
     ['/', 'daily', '1.0'],
     ['/search', 'weekly', '0.7'],
+    ['/html-sitemap', 'weekly', '0.7'],
     ['/about', 'monthly', '0.6'],
     ['/contact', 'monthly', '0.5'],
     ['/support', 'monthly', '0.5'],
