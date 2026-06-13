@@ -1541,7 +1541,7 @@ export const GAMES: Game[] = [
     title: 'Tekken 3',
     category: 'Fighting',
     url: 'https://www.gameflare.com/embed/tekken-3/',
-    thumbnail: '/tekken3-thumbnail.png',
+    thumbnail: '/tekken3.png',
     description: 'The legendary fighting game is here! Choose from 23 iconic fighters and battle through the King of Iron Fist Tournament. One of the greatest arcade fighters ever made — now in your browser.',
     rating: 4.9,
     plays: 18000000,
