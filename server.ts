@@ -176,19 +176,22 @@ app.post("/api/check-embed", async (req, res) => {
 
 
 // HTML sitemap — server-rendered page listing all game URLs from sitemap.xml.
-// Gives crawlers internal links to every game page, fixing "orphaned pages" SEO errors.
+// Uses relative URLs so crawlers count every link as a proper internal link.
 app.get('/html-sitemap', (_req, res) => {
   try {
     const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
     const xml = fs.readFileSync(sitemapPath, 'utf8');
     const allUrls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
 
-    const gameUrls = allUrls.filter(u => u.includes('/games/'));
-    const categoryUrls = allUrls.filter(u => u.includes('/category/'));
-    const staticUrls = allUrls.filter(u => !u.includes('/games/') && !u.includes('/category/'));
+    // Convert absolute sitemap URLs to relative paths
+    const toPath = (absUrl: string) => absUrl.replace(/^https?:\/\/[^/]+/, '');
 
-    const toLabel = (url: string, base: string) =>
-      url.replace(base, '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Home';
+    const gamePaths = allUrls.filter(u => u.includes('/games/')).map(toPath);
+    const categoryPaths = allUrls.filter(u => u.includes('/category/')).map(toPath);
+    const staticPaths = allUrls.filter(u => !u.includes('/games/') && !u.includes('/category/')).map(toPath);
+
+    const toLabel = (p: string, prefix: string) =>
+      p.replace(prefix, '').replace(/^gamepix-/, '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Home';
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -196,7 +199,7 @@ app.get('/html-sitemap', (_req, res) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Games Index | GameDravo</title>
-  <meta name="description" content="Complete index of all ${gameUrls.length} free browser games on GameDravo. Browse every game by title — no download required.">
+  <meta name="description" content="Complete index of all ${gamePaths.length} free browser games on GameDravo. Browse every game by title — no download required.">
   <link rel="canonical" href="https://gamedravo.com/html-sitemap">
   <style>
     *{box-sizing:border-box}body{font-family:system-ui,sans-serif;max-width:1200px;margin:0 auto;padding:24px 16px;color:#1a202c;background:#f7fafc}
@@ -218,24 +221,26 @@ app.get('/html-sitemap', (_req, res) => {
     <a href="/category/sports">Sports</a>
     <a href="/category/arcade">Arcade</a>
     <a href="/category/multiplayer">Multiplayer</a>
+    <a href="/category/strategy">Strategy</a>
+    <a href="/category/adventure">Adventure</a>
   </nav>
 
   <h1>GameDravo — All Games Index</h1>
-  <p class="sub">Browse all <strong>${gameUrls.length}</strong> free browser games available on GameDravo. Click any title to play instantly — no download required.</p>
+  <p class="sub">Browse all <strong>${gamePaths.length}</strong> free browser games available on GameDravo. Click any title to play instantly — no download required.</p>
 
-  <h2>Site Pages <span class="count">${staticUrls.length} pages</span></h2>
+  <h2>Site Pages <span class="count">${staticPaths.length} pages</span></h2>
   <ul class="static-list">
-    ${staticUrls.map(u => `<li><a href="${u}">${toLabel(u, 'https://gamedravo.com')}</a></li>`).join('\n    ')}
+    ${staticPaths.map(p => `<li><a href="${p}">${toLabel(p, '/')}</a></li>`).join('\n    ')}
   </ul>
 
-  <h2>Game Categories <span class="count">${categoryUrls.length} categories</span></h2>
+  <h2>Game Categories <span class="count">${categoryPaths.length} categories</span></h2>
   <ul class="static-list">
-    ${categoryUrls.map(u => `<li><a href="${u}">${toLabel(u, 'https://gamedravo.com/category/')}</a></li>`).join('\n    ')}
+    ${categoryPaths.map(p => `<li><a href="${p}">${toLabel(p, '/category/')}</a></li>`).join('\n    ')}
   </ul>
 
-  <h2>All Games <span class="count">${gameUrls.length} games</span></h2>
+  <h2>All Games <span class="count">${gamePaths.length} games</span></h2>
   <ul>
-    ${gameUrls.map(u => `<li><a href="${u}">${toLabel(u, 'https://gamedravo.com/games/')}</a></li>`).join('\n    ')}
+    ${gamePaths.map(p => `<li><a href="${p}">${toLabel(p, '/games/')}</a></li>`).join('\n    ')}
   </ul>
 </body>
 </html>`;
