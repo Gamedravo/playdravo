@@ -32,14 +32,14 @@
     <meta name="google-adsense-account" content="ca-pub-9059029112983000" />
     <!-- Google Site Verification: add your code from Google Search Console when ready -->
     <!-- <meta name="google-site-verification" content="YOUR_CODE_HERE" /> -->
-    <link rel="canonical" href="https://www.gamedravo.com/" />
+    <link rel="canonical" href="https://gamedravo.com/" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="apple-touch-icon" href="/logo.svg" />
     <title>GameDravo | Lightweight Futuristic Browser Games</title>
     <link rel="dns-prefetch" href="https://www.onlinegames.io" />
 
-    <!-- Static JSON-LD for crawlers/bots that do not execute JavaScript (e.g. Google OAuth review bot) -->
+    <!-- Static JSON-LD for crawlers/bots that do not execute JavaScript. Keep it minimal and universally valid. -->
     <script type="application/ld+json">
     [
       {
@@ -47,13 +47,10 @@
         "@type": "WebSite",
         "name": "GameDravo",
         "alternateName": "GameDravo – Instant Browser Games",
-        "url": "https://www.gamedravo.com/",
+        "url": "https://gamedravo.com/",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://www.gamedravo.com/search?q={search_term_string}"
-          },
+          "target": "https://gamedravo.com/search?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       },
@@ -61,50 +58,34 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "GameDravo",
-        "url": "https://www.gamedravo.com/",
-        "logo": "https://www.gamedravo.com/logo.svg",
+        "url": "https://gamedravo.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://gamedravo.com/logo.svg"
+        },
         "description": "GameDravo is a free lightweight futuristic gaming portal for instant no-download browser games.",
-        "foundingDate": "2024",
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "customer support",
-          "url": "https://www.gamedravo.com/contact",
+          "url": "https://gamedravo.com/contact",
           "availableLanguage": "English"
-        },
-        "sameAs": [
-          "https://twitter.com/gamedravo",
-          "https://github.com/gamedravo"
-        ],
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Free Browser Games",
-          "itemListElement": [
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Free Instant-Play Browser Games", "description": "Over 1,000 free HTML5 games playable instantly in any browser, no download required." } }
-          ]
-        },
-        "privacyPolicy": "https://www.gamedravo.com/privacy",
-        "termsOfService": "https://www.gamedravo.com/terms"
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "GameDravo",
-        "url": "https://www.gamedravo.com/",
-        "applicationCategory": "GameApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires a modern web browser with JavaScript enabled",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
         }
       }
     ]
     </script>
+
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main style="font-family:Inter,Arial,sans-serif;padding:24px;max-width:760px;margin:0 auto;color:#e5f4ff;background:#070a16;min-height:100vh;">
+        <h1>GameDravo free browser games</h1>
+        <p>GameDravo is a fast, lightweight gaming portal for instant no-download play. Browse action, puzzle, arcade, racing, sports, strategy, and mobile-friendly HTML5 games directly in your browser.</p>
+        <p>Every public page is designed for quick discovery, clean navigation, and safe gameplay. Use the homepage to find trending games, category pages to explore genres, search to jump to a title, and game pages to launch playable browser experiences.</p>
+        <p>Popular sections include action games, puzzle games, arcade games, racing games, sports games, strategy games, mobile games, new arrivals, top-rated games, and recommended picks. GameDravo focuses on simple access, responsive layouts, and fast loading across desktop and mobile devices.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+
     <!-- Static links for search/OAuth crawlers that do not execute JavaScript -->
     <noscript>
       <div style="font-family:sans-serif;padding:24px;max-width:680px;margin:0 auto;">

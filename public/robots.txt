@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
-Allow: /api/
-Disallow: /admin
-Disallow: /library/history
-Disallow: /library/favorites
 
-Sitemap: https://www.gamedravo.com/sitemap.xml
+Sitemap: https://gamedravo.com/sitemap.xml

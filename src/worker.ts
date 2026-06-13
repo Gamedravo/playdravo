@@ -85,12 +85,13 @@ export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.hostname === 'gamedravo.com') {
-      url.hostname = 'www.gamedravo.com';
+    if (url.hostname === 'www.gamedravo.com') {
+      url.hostname = 'gamedravo.com';
       return Response.redirect(url.toString(), 301);
     }
 
     if (url.pathname === '/game' || url.pathname.startsWith('/game/')) {
+
       url.pathname = url.pathname.replace(/^\/game/, '/games');
       return Response.redirect(url.toString(), 301);
     }
@@ -159,7 +160,7 @@ export default {
       return Response.json({ message: 'API route not found' }, { status: 404, headers: noStoreJsonHeaders() });
     }
 
-    return env.ASSETS.fetch(request);
+    return serveStaticAsset(request, env);
   },
 };
 
@@ -171,7 +172,22 @@ async function serveSeoAsset(request: Request, env: WorkerEnv, contentType: stri
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
+async function serveStaticAsset(request: Request, env: WorkerEnv): Promise<Response> {
+  const response = await env.ASSETS.fetch(request);
+  const url = new URL(request.url);
+  const headers = new Headers(response.headers);
+
+  if (/\.(?:js|css|mjs|woff2?|png|jpe?g|webp|gif|svg|ico)$/i.test(url.pathname)) {
+    headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (url.pathname === '/' || headers.get('Content-Type')?.includes('text/html')) {
+    headers.set('Cache-Control', 'public, max-age=300, must-revalidate');
+  }
+
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 async function handleOnlineGamesCatalog(request: Request): Promise<Response> {
+
   return proxyJsonCatalog(request, ONLINE_GAMES_CATALOG_URL, CACHE_SECONDS, 'Could not load game catalog.');
 }
 

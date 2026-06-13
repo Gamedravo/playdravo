@@ -14,7 +14,7 @@ interface SEOProps {
 
 const SITE_NAME = 'GameDravo';
 const LEGACY_SITE_NAME = 'GameDravo';
-const SITE_ORIGIN = 'https://www.gamedravo.com';
+const SITE_ORIGIN = 'https://gamedravo.com';
 const DEFAULT_IMAGE = '/logo.svg';
 const DEFAULT_KEYWORDS = 'free online games, lightweight browser games, no download games, instant play games, HTML5 games, mobile games, arcade games, puzzle games, action games';
 
@@ -69,19 +69,11 @@ export const SEO: React.FC<SEOProps> = ({
 
   const baseStructuredData = {
     '@context': 'https://schema.org',
-    '@type': 'WebApplication',
+    '@type': 'WebSite',
     name: SITE_NAME,
     alternateName: LEGACY_SITE_NAME,
     url: SITE_ORIGIN,
-    applicationCategory: 'GameApplication',
-    operatingSystem: 'Any',
-    browserRequirements: 'Requires a modern web browser',
     description: 'A lightweight futuristic portal for instant no-download browser games.',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
   };
 
   const jsonLd = structuredData

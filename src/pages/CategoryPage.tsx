@@ -71,23 +71,23 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
 
   return (
     <div className="min-h-screen">
-      <SEO 
+      <SEO
         title={`Play ${categoryName} Games Online Free – GameDravo`}
         description={`Play the best free ${categoryName} games online on GameDravo. Browse ${categoryGames.length}+ ${categoryName} games — no download, no sign-up. Instant browser play.`}
         keywords={`${categoryName} games, free ${categoryName} games online, play ${categoryName} games, browser ${categoryName} games, GameDravo`}
-        canonicalUrl={`https://www.gamedravo.com/category/${categoryId}`}
-        url={`https://www.gamedravo.com/category/${categoryId}`}
+        canonicalUrl={`https://gamedravo.com/category/${categoryId}`}
+        url={`https://gamedravo.com/category/${categoryId}`}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
           name: `${categoryName} Games – GameDravo`,
           description: `Browse and play ${categoryGames.length}+ free ${categoryName} games instantly in your browser.`,
-          url: `https://www.gamedravo.com/category/${categoryId}`,
+          url: `https://gamedravo.com/category/${categoryId}`,
           breadcrumb: {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gamedravo.com' },
-              { '@type': 'ListItem', position: 2, name: `${categoryName} Games`, item: `https://www.gamedravo.com/category/${categoryId}` },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://gamedravo.com' },
+              { '@type': 'ListItem', position: 2, name: `${categoryName} Games`, item: `https://gamedravo.com/category/${categoryId}` },
             ],
           },
         }}

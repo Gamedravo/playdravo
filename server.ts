@@ -310,17 +310,18 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
 
-    // Force canonical host in production (non-www -> www).
+    // Force canonical host in production (www -> non-www).
     app.use((req, res, next) => {
       const host = String(req.headers.host || '').toLowerCase();
-      if (host === 'gamedravo.com' || host.startsWith('gamedravo.com:')) {
-        const target = `https://www.gamedravo.com${req.originalUrl || '/'}`;
+      if (host === 'www.gamedravo.com' || host.startsWith('www.gamedravo.com:')) {
+        const target = `https://gamedravo.com${req.originalUrl || '/'}`;
         return res.redirect(301, target);
       }
       return next();
     });
 
     // Ensure correct content-types for SEO-critical static files (avoid SPA fallback).
+
     app.get('/sitemap.xml', (_req, res) => {
       res.type('application/xml');
       const distFile = path.join(distPath, 'sitemap.xml');

@@ -4,10 +4,11 @@ import { GAMES, CATEGORY_LIST, fetchOnlineGamesCatalog } from '../src/games';
 import { HOMEPAGE_CATEGORY_CHIPS } from '../src/lib/homepageCategories';
 import { getCategoryPath } from '../src/utils/categoryRoutes';
 
-const BASE_URL = 'https://www.gamedravo.com';
+const BASE_URL = 'https://gamedravo.com';
 const TODAY = new Date().toISOString().slice(0, 10);
 
 interface SitemapEntry {
+
   loc: string;
   changefreq: 'daily' | 'weekly' | 'monthly';
   priority: string;

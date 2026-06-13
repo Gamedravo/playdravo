@@ -407,19 +407,19 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
-      <SEO 
+      <SEO
         title={`${game.title} – Free Online ${game.category} Game | GameDravo`}
         description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on GameDravo.`}`}
         keywords={`${game.title}, play ${game.title} online, free ${game.category} game, ${game.category} games, browser games, GameDravo${game.tags ? ', ' + game.tags.slice(0, 5).join(', ') : ''}`}
         image={game.thumbnail}
-        canonicalUrl={`https://www.gamedravo.com/games/${game.id}`}
-        url={`https://www.gamedravo.com/games/${game.id}`}
+        canonicalUrl={`https://gamedravo.com/games/${game.id}`}
+        url={`https://gamedravo.com/games/${game.id}`}
         structuredData={{
           '@context': 'https://schema.org',
           '@type': 'VideoGame',
           name: game.title,
           description: game.description || `Play ${game.title} online for free on GameDravo.`,
-          url: `https://www.gamedravo.com/games/${game.id}`,
+          url: `https://gamedravo.com/games/${game.id}`,
           image: game.thumbnail,
           genre: game.category,
           operatingSystem: 'Web Browser',
@@ -438,9 +438,9 @@ export const GamePage: React.FC<GamePageProps> = ({
           breadcrumb: {
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gamedravo.com' },
-              { '@type': 'ListItem', position: 2, name: `${game.category} Games`, item: `https://www.gamedravo.com/category/${game.category.toLowerCase().replace(/\s+/g, '-')}` },
-              { '@type': 'ListItem', position: 3, name: game.title, item: `https://www.gamedravo.com/games/${game.id}` },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://gamedravo.com' },
+              { '@type': 'ListItem', position: 2, name: `${game.category} Games`, item: `https://gamedravo.com/category/${game.category.toLowerCase().replace(/\s+/g, '-')}` },
+              { '@type': 'ListItem', position: 3, name: game.title, item: `https://gamedravo.com/games/${game.id}` },
             ],
           },
         }}
