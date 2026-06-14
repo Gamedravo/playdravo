@@ -35,9 +35,11 @@ app.use((req, res, next) => {
 // Serve locally-stored game preview files (written at runtime, not part of dist build)
 app.use('/previews', express.static(path.join(process.cwd(), 'public/previews')));
 
-// Mount API routes early (before Vite middleware) so they aren't intercepted by SPA fallback
-app.use("/api", apiRoutes);
+// Mount API routes early (before Vite middleware) so they aren't intercepted by SPA fallback.
+// /api/previews must come BEFORE /api so Express doesn't have to traverse all of apiRoutes
+// before reaching the previews handler (and to avoid any future apiRoutes wildcard shadowing it).
 app.use("/api/previews", previewRoutes);
+app.use("/api", apiRoutes);
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';

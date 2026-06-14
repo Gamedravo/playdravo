@@ -8,12 +8,16 @@ const PREVIEWS_DIR = path.resolve(process.cwd(), 'public/previews');
 const MANIFEST_FILE = path.join(PREVIEWS_DIR, 'manifest.json');
 
 function ensureDir() {
-  if (!fs.existsSync(PREVIEWS_DIR)) {
-    fs.mkdirSync(PREVIEWS_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(PREVIEWS_DIR)) {
+      fs.mkdirSync(PREVIEWS_DIR, { recursive: true });
+    }
+  } catch {
+    // Non-fatal: read-only filesystem or permission issue. Manifest will return {} safely.
   }
 }
 
-ensureDir();
+try { ensureDir(); } catch { /* ignore startup errors */ }
 
 export interface PreviewEntry {
   url: string;
@@ -40,8 +44,21 @@ function saveManifest(m: Manifest): void {
 }
 
 // GET /api/previews/manifest
+// Publicly accessible — returns {} if no previews have been captured yet.
+// Must never return a non-2xx status so Googlebot doesn't flag it as a failed resource.
 router.get('/manifest', (_req, res) => {
-  res.json(loadManifest());
+  try {
+    const manifest = loadManifest();
+    res
+      .set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .json(manifest);
+  } catch {
+    res
+      .set('Cache-Control', 'no-store')
+      .set('Content-Type', 'application/json; charset=utf-8')
+      .json({});
+  }
 });
 
 // GET /api/previews/stats

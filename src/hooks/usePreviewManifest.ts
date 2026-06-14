@@ -17,9 +17,13 @@ export async function fetchPreviewManifest(): Promise<PreviewManifest> {
   if (cached) return cached;
   if (inflightPromise) return inflightPromise;
 
-  inflightPromise = fetch('/api/previews/manifest')
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+
+  inflightPromise = fetch('/api/previews/manifest', { signal: controller.signal })
     .then((r) => (r.ok ? r.json() : {}))
     .catch(() => ({}))
+    .finally(() => clearTimeout(timer))
     .then((data: PreviewManifest) => {
       cached = data;
       inflightPromise = null;
