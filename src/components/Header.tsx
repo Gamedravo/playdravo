@@ -72,6 +72,7 @@ export const Header = memo(function Header({
   const bellRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
+
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
@@ -136,9 +137,8 @@ export const Header = memo(function Header({
             />
           </div>
 
-          {/* Center: Search — primary focal point */}
+          {/* Center: Desktop search only — mobile search is in its own row below */}
           <div className="flex-1 flex justify-center px-1 md:px-6 lg:px-10">
-            {/* Desktop search */}
             {!isSearchPage && (
               <div className="hidden md:flex w-full max-w-[900px] relative group">
                 <div className={`relative flex items-center w-full h-11 rounded-xl transition-all duration-200 border ${
@@ -168,34 +168,10 @@ export const Header = memo(function Header({
                 </div>
               </div>
             )}
-
-            {/* Mobile search */}
-            {!isSearchPage && (
-              <div className="flex md:hidden w-full relative">
-                <div className={`relative flex items-center w-full h-9 rounded-xl border transition-all ${
-                  isDarkMode
-                    ? 'bg-white/[0.05] border-white/[0.08] focus-within:border-violet-500/50 focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.12)]'
-                    : 'bg-black/[0.04] border-black/[0.08] focus-within:border-violet-500/40'
-                }`}>
-                  <Search className={`ml-2.5 h-3.5 w-3.5 shrink-0 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`} />
-                  <input
-                    type="text"
-                    value={localSearchQuery}
-                    onChange={(e) => handleMobileSearchChange(e.target.value)}
-                    onFocus={openSearch}
-                    placeholder="Search games…"
-                    className={`min-w-0 flex-1 bg-transparent px-2.5 text-sm font-medium outline-none placeholder:text-xs placeholder:font-semibold ${
-                      isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/35'
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
-
             {isSearchPage && <div className="flex-1" />}
           </div>
 
-          {/* Right: Actions */}
+          {/* Right: Actions — always fully visible */}
           <div className="flex items-center gap-1.5 shrink-0">
             <div className="hidden md:block">
               <LanguageSwitcher
@@ -236,7 +212,7 @@ export const Header = memo(function Header({
                 onPointerEnter={preloadAccountUi}
                 onFocus={preloadAccountUi}
                 onClick={() => setIsLoginModalOpen(true)}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 rounded-xl font-bold text-[12px] text-white transition-all active:scale-95 hover:brightness-110 uppercase tracking-wide"
+                className="flex items-center gap-2 px-3 sm:px-5 py-2 rounded-xl font-bold text-[12px] text-white transition-all active:scale-95 hover:brightness-110 uppercase tracking-wide"
                 style={{
                   background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
                   boxShadow: '0 4px 18px rgba(124,58,237,0.40)',
@@ -293,6 +269,31 @@ export const Header = memo(function Header({
             )}
           </div>
         </div>
+
+        {/* ── Mobile Search Row ── 
+            Sits below the actions row so the login button always has room.
+            Hidden on desktop (md+) since desktop search lives in the row above. */}
+        {!isSearchPage && (
+          <div className="md:hidden px-3 pb-2.5">
+            <div className={`relative flex items-center w-full h-9 rounded-xl border transition-all ${
+              isDarkMode
+                ? 'bg-white/[0.05] border-white/[0.08] focus-within:border-violet-500/50 focus-within:shadow-[0_0_0_2px_rgba(124,58,237,0.12)]'
+                : 'bg-black/[0.04] border-black/[0.08] focus-within:border-violet-500/40'
+            }`}>
+              <Search className={`ml-2.5 h-3.5 w-3.5 shrink-0 ${isDarkMode ? 'text-white/40' : 'text-black/40'}`} />
+              <input
+                type="text"
+                value={localSearchQuery}
+                onChange={(e) => handleMobileSearchChange(e.target.value)}
+                onFocus={openSearch}
+                placeholder="Search games…"
+                className={`min-w-0 flex-1 bg-transparent px-2.5 text-sm font-medium outline-none placeholder:text-xs placeholder:font-semibold ${
+                  isDarkMode ? 'text-white placeholder:text-white/30' : 'text-black placeholder:text-black/35'
+                }`}
+              />
+            </div>
+          </div>
+        )}
 
       </div>
 
