@@ -6,7 +6,6 @@ import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
 import { getPreviewMediaCandidates, type PreviewMediaCandidate } from '../lib/gamePreviewMedia';
 import { usePreviewManifest } from '../hooks/usePreviewManifest';
-import { GameplayPreview } from './GameplayPreview';
 
 interface GameCardProps {
   game: Game;
@@ -140,14 +139,10 @@ function InlineCardPreview({
   game,
   active,
   candidates,
-  category,
-  isDarkMode,
 }: {
   game: Pick<Game, 'id' | 'title'>;
   active: boolean;
   candidates: PreviewMediaCandidate[];
-  category: string;
-  isDarkMode: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [candidateIndex, setCandidateIndex] = useState(0);
@@ -166,7 +161,6 @@ function InlineCardPreview({
   const richCurrent: PreviewMediaCandidate | undefined = richCandidates[candidateIndex];
   const useRich = richCandidates.length > 0;
   const useThumbnailCycle = !useRich && thumbnailCandidates.length > 1;
-  const useCanvasFallback = !useRich && !useThumbnailCycle;
 
   useEffect(() => {
     setCandidateIndex(0);
@@ -199,8 +193,8 @@ function InlineCardPreview({
     return <ThumbnailCycler candidates={thumbnailCandidates} active={active} />;
   }
 
-  if (useCanvasFallback) {
-    return <GameplayPreview category={category} isDarkMode={isDarkMode} gameTitle={game.title} showLabel={false} />;
+  if (!useRich && !useThumbnailCycle) {
+    return null;
   }
 
   if (!richCurrent) return null;
@@ -345,8 +339,6 @@ export const GameCard = memo(function GameCard({
             game={game}
             active={previewActive}
             candidates={previewCandidates}
-            category={game.category}
-            isDarkMode={isDarkMode}
           />
         </div>
 

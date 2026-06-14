@@ -259,8 +259,12 @@ async function headOk(url: string): Promise<boolean> {
         Referer: 'https://www.onlinegames.io/',
       },
     });
-    const ct = r.headers.get('content-type') ?? '';
-    return r.ok && r.status === 200 && !ct.startsWith('text/html');
+    if (!r.ok || r.status !== 200) return false;
+    const ct = (r.headers.get('content-type') ?? '').toLowerCase().split(';')[0].trim();
+    const isVideo = ct === 'video/mp4' || ct === 'video/webm' || ct === 'video/ogg' || ct === 'image/gif';
+    if (!isVideo) return false;
+    const cl = parseInt(r.headers.get('content-length') ?? '0', 10);
+    return !isNaN(cl) && cl > 50_000;
   } catch {
     return false;
   }

@@ -8,7 +8,7 @@ export interface PreviewMediaCandidate {
   url: string;
 }
 
-const isAnimatedImage = (url: string) => /\.(gif|webp)(\?|#|$)/i.test(url);
+const isAnimatedImage = (url: string) => /\.gif(\?|#|$)/i.test(url);
 
 function extractYouTubeId(url: string): string | null {
   const m =
