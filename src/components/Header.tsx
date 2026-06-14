@@ -4,12 +4,11 @@ import {
   LogIn,
   ChevronDown,
   Bell,
-  ChevronRight,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
 import { UserProfile, Language } from '../types';
 import { type ReplitUser } from '../hooks/useReplitAuth';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ProfileDropdown } from './ProfileDropdown';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { memo, startTransition, useEffect, useRef, useState } from 'react';
@@ -40,22 +39,6 @@ interface HeaderProps {
   setIsSubmitModalOpen: (open: boolean) => void;
 }
 
-const CATEGORY_PILLS = [
-  { label: 'Action', slug: 'action' },
-  { label: 'Racing', slug: 'racing' },
-  { label: 'Sports', slug: 'sports' },
-  { label: 'Multiplayer', slug: 'multiplayer' },
-  { label: 'Adventure', slug: 'adventure' },
-  { label: 'Puzzle', slug: 'puzzle' },
-  { label: 'Shooter', slug: 'shooter' },
-  { label: 'Strategy', slug: 'strategy' },
-  { label: 'Arcade', slug: 'arcade' },
-  { label: 'Fighting', slug: 'fighting' },
-  { label: 'Casual', slug: 'casual' },
-  { label: 'Simulator', slug: 'simulator' },
-  { label: 'Horror', slug: 'horror' },
-  { label: 'Survival', slug: 'survival' },
-];
 
 export const Header = memo(function Header({
   isDarkMode,
@@ -89,10 +72,6 @@ export const Header = memo(function Header({
   const bellRef = useRef<HTMLButtonElement>(null);
   const { unreadCount } = useNotifications();
   const isSearchPage = location.pathname === '/search';
-  const activeCategorySlug = location.pathname.startsWith('/category/')
-    ? location.pathname.replace('/category/', '').replace(/\/$/, '')
-    : null;
-
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
@@ -312,64 +291,6 @@ export const Header = memo(function Header({
                 </div>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* ── Secondary Category Nav ── */}
-        <div className={`border-t ${isDarkMode ? 'border-white/[0.05]' : 'border-black/[0.05]'}`}>
-          <div
-            className="flex items-center gap-1.5 px-3 md:px-5 py-2 overflow-x-auto scrollbar-none"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            <Link
-              to="/"
-              onClick={() => { if (setSelectedCategory) setSelectedCategory('All'); }}
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-semibold tracking-wide transition-all duration-150 border whitespace-nowrap ${
-                location.pathname === '/' && !activeCategorySlug
-                  ? isDarkMode
-                    ? 'bg-violet-600/25 border-violet-500/40 text-violet-200'
-                    : 'bg-violet-100 border-violet-300/50 text-violet-700'
-                  : isDarkMode
-                  ? 'bg-white/[0.04] border-white/[0.06] text-white/50 hover:bg-white/[0.08] hover:border-white/[0.12] hover:text-white/85'
-                  : 'bg-black/[0.03] border-black/[0.06] text-black/50 hover:bg-black/[0.07] hover:border-black/[0.12] hover:text-black/80'
-              }`}
-            >
-              All
-            </Link>
-
-            {CATEGORY_PILLS.map((cat) => {
-              const isActive = activeCategorySlug === cat.slug;
-              return (
-                <Link
-                  key={cat.slug}
-                  to={`/category/${cat.slug}`}
-                  className={`shrink-0 px-3 py-1 rounded-full text-[11.5px] font-semibold tracking-wide transition-all duration-150 border whitespace-nowrap ${
-                    isActive
-                      ? isDarkMode
-                        ? 'bg-violet-600/25 border-violet-500/40 text-violet-200'
-                        : 'bg-violet-100 border-violet-300/50 text-violet-700'
-                      : isDarkMode
-                      ? 'bg-white/[0.04] border-white/[0.06] text-white/50 hover:bg-white/[0.08] hover:border-white/[0.12] hover:text-white/85'
-                      : 'bg-black/[0.03] border-black/[0.06] text-black/50 hover:bg-black/[0.07] hover:border-black/[0.12] hover:text-black/80'
-                  }`}
-                >
-                  {cat.label}
-                </Link>
-              );
-            })}
-
-            <Link
-              to="/category/all"
-              className={`shrink-0 flex items-center gap-0.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide transition-all duration-150 border whitespace-nowrap ml-1 ${
-                isDarkMode
-                  ? 'bg-transparent border-white/[0.06] text-white/35 hover:text-white/60 hover:border-white/[0.12]'
-                  : 'bg-transparent border-black/[0.06] text-black/35 hover:text-black/55 hover:border-black/[0.12]'
-              }`}
-              aria-label="All categories"
-            >
-              More
-              <ChevronRight className="w-3 h-3" />
-            </Link>
           </div>
         </div>
 
