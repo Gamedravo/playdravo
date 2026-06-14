@@ -199,10 +199,11 @@ export function gameMatchesCategory(game: Game, category: string): boolean {
   if (category === '3 Player') return hasPlayerTag(game, 3);
   if (category === '4 Player') return hasPlayerTag(game, 4);
 
-  if (category === 'Girls') {
+  if (category === 'Girls Games' || category === 'Girls') {
     const girlsKeywords = /\b(girls?|fashion|dress[\s-]?up|shopping|shopaholic|makeup|beauty|salon|princess|cooking|baking|cute|kawaii|unicorn|pony|mermaid|barbie|bratz|doll|jewel|jewelry|floral|flower|wedding|prom|celebrity|influencer|spa)\b/i;
     return (
       game.category === 'Girls' ||
+      game.category === 'Girls Games' ||
       (game.tags ?? []).some((tag) => girlsKeywords.test(tag)) ||
       girlsKeywords.test(game.title ?? '') ||
       girlsKeywords.test(game.description ?? '')

@@ -950,19 +950,27 @@
 
   /* —— Curated category browse — 2-row horizontal scroll carousel —— */
   .category-chip-grid {
-    display: grid;
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px; /* prevent clipped box-shadows */
+    padding-bottom: 4px;
   }
-  .category-chip-grid::-webkit-scrollbar { display: none; }
-  .category-chip-grid { scrollbar-width: none; }
+
+  @media (max-width: 639px) {
+    .category-chip-grid {
+      display: grid;
+      grid-template-rows: repeat(2, auto);
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      flex-wrap: unset;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-chip-grid::-webkit-scrollbar { display: none; }
+    .category-chip-grid { scrollbar-width: none; }
+  }
 
   .category-chip {
     @apply flex flex-row items-center gap-2.5 rounded-xl border px-3 text-left cursor-pointer whitespace-nowrap;

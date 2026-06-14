@@ -140,4 +140,8 @@ export interface ContactMessage {
 export type Tag = string;
 export type Theme = 'dark' | 'light';
 
-export type Category = 'All' | 'Favorites' | 'Trending' | 'Mobile Games' | 'Best On Mobile' | 'Casual' | 'Action' | 'Puzzle' | 'Simulator' | 'Obby' | 'Adventure' | 'Sports' | 'Strategy' | 'Multiplayer' | 'Arcade' | 'Horror' | '1 Player' | '2 Player' | '3 Player' | '4 Player';
+export type Category =
+  | 'All' | 'Favorites' | 'Recommended' | 'History' | 'Trending'
+  | 'Action' | 'Adventure' | 'Racing' | 'Sports' | 'Puzzle'
+  | 'Multiplayer' | 'Shooter' | 'Casual' | 'Simulator' | 'Driving'
+  | 'Strategy' | 'Girls Games' | 'Mobile Games' | 'Fighting' | 'Arcade';
