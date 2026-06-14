@@ -297,16 +297,22 @@ export const GameCard = memo(function GameCard({
       aria-label={`Play ${game.title}`}
     >
       <div
-        className={`game-card-shell relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow,filter] duration-250 ease-out ${
+        className={`game-card-shell relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border transition-[transform,border-color,box-shadow] duration-[240ms] ease-out will-change-transform ${
           isDarkMode
-            ? 'border-white/[0.07] bg-[#0c0c14] shadow-[0_4px_16px_rgba(0,0,0,0.5)] group-hover:shadow-[0_24px_60px_rgba(124,58,237,0.32),0_8px_28px_rgba(0,0,0,0.55),0_0_0_1px_rgba(251,191,36,0.10)] group-hover:border-violet-400/50'
-            : 'border-black/[0.08] bg-white shadow-[0_4px_16px_rgba(15,23,42,0.10)] group-hover:shadow-[0_20px_48px_rgba(124,58,237,0.22),0_4px_16px_rgba(251,191,36,0.10)] group-hover:border-violet-400/40'
-        } group-hover:-translate-y-2 group-hover:scale-[1.03] active:scale-[0.97] active:-translate-y-0`}
+            ? 'border-white/[0.07] bg-[#0c0c14] shadow-[0_4px_16px_rgba(0,0,0,0.5)] group-hover:shadow-[0_28px_70px_rgba(124,58,237,0.42),0_12px_32px_rgba(251,146,60,0.20),0_0_0_1px_rgba(124,58,237,0.32)] group-hover:border-violet-500/55'
+            : 'border-black/[0.08] bg-white shadow-[0_4px_16px_rgba(15,23,42,0.10)] group-hover:shadow-[0_24px_56px_rgba(124,58,237,0.30),0_8px_20px_rgba(251,146,60,0.16),0_0_0_1px_rgba(124,58,237,0.22)] group-hover:border-violet-400/50'
+        } group-hover:-translate-y-2 group-hover:scale-[1.04] active:scale-[0.97] active:-translate-y-0`}
       >
-        {/* Premium hover sheen — orange-purple diagonal */}
+        {/* Premium hover sheen — orange-purple diagonal, more vivid */}
         <div
           className="pointer-events-none absolute inset-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.13) 0%, transparent 40%, rgba(251,191,36,0.10) 100%)' }}
+          style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.18) 0%, transparent 45%, rgba(251,146,60,0.14) 100%)' }}
+        />
+
+        {/* Bottom accent glow line — branded purple-to-orange */}
+        <div
+          className="pointer-events-none absolute bottom-0 inset-x-0 h-[2px] z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(124,58,237,0.85) 30%, rgba(251,146,60,0.70) 70%, transparent 100%)' }}
         />
 
         {/* Image / video area */}
@@ -368,21 +374,39 @@ export const GameCard = memo(function GameCard({
           <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Play button overlay on hover — fades + scales in */}
+        {/* Play button overlay on hover — fades + scales in with pulsing ring */}
         <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md border border-white/25 scale-75 group-hover:scale-100 transition-transform duration-[250ms] ease-out"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,255,255,0.88))',
-              boxShadow: '0 4px 28px rgba(0,0,0,0.65), 0 0 0 3px rgba(124,58,237,0.20)',
-            }}
-          >
-            <Play className="w-[18px] h-[18px] text-black fill-black ml-0.5" />
+          <div className="relative flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-[280ms] ease-out">
+            {/* Outer pulse ring */}
+            <div
+              className="absolute w-16 h-16 rounded-full opacity-0 group-hover:opacity-100 animate-ping"
+              style={{
+                background: 'transparent',
+                boxShadow: '0 0 0 2px rgba(124,58,237,0.45)',
+                animationDuration: '1.4s',
+                animationDelay: '0.15s',
+              }}
+            />
+            {/* Inner ring */}
+            <div
+              className="absolute w-14 h-14 rounded-full opacity-0 group-hover:opacity-60"
+              style={{ boxShadow: '0 0 0 1.5px rgba(124,58,237,0.35)' }}
+            />
+            {/* Play button */}
+            <div
+              className="relative w-13 h-13 w-[52px] h-[52px] rounded-full flex items-center justify-center backdrop-blur-md border border-white/30"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(235,230,255,0.92) 100%)',
+                boxShadow: '0 6px 32px rgba(0,0,0,0.70), 0 0 0 3px rgba(124,58,237,0.28), 0 0 24px rgba(124,58,237,0.40)',
+              }}
+            >
+              <Play className="w-[20px] h-[20px] text-violet-700 fill-violet-700 ml-0.5" />
+            </div>
           </div>
         </div>
 
-        {/* Info overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/97 via-black/75 to-transparent pt-16 z-20 pointer-events-none">
+        {/* Info overlay — lifts slightly on hover */}
+        <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/97 via-black/75 to-transparent pt-16 z-20 pointer-events-none translate-y-0 group-hover:-translate-y-1 transition-transform duration-[240ms] ease-out">
           <h3 className="text-white font-black text-[13px] leading-tight line-clamp-2 mb-2 group-hover:text-violet-200 transition-colors duration-200">
             <HighlightText text={game.title} query={searchQuery} />
           </h3>
