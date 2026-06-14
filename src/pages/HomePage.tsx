@@ -67,6 +67,7 @@ interface HomePageProps {
 import { useHorizontalScroll } from '../hooks/useHorizontalScroll';
 import { buildHomepageShelves } from '../utils/recommendations';
 import { HOMEPAGE_CATEGORY_CHIPS, countGamesForChip } from '../lib/homepageCategories';
+import { GAME_CATEGORIES } from '../lib/categories';
 import { buildCuratedHomepageBlocks, pickFeaturedSpotlight, densifyShelf } from '../lib/homepageCuration';
 import { FeaturedSpotlight } from '../components/FeaturedSpotlight';
 import { HomePageShelf } from '../components/HomePageShelf';
@@ -195,17 +196,7 @@ export const HomePage = React.memo(function HomePage({
     return 0;
   };
 
-  const curatedCategoryOrder = React.useMemo(
-    () => ['action', 'adventure', 'racing', 'sports', 'puzzle', 'multiplayer', 'shooter', 'casual', 'driving', 'simulation', 'strategy', 'girls', 'mobile', 'fighting', 'arcade'],
-    []
-  );
-
-  const curatedCategories = React.useMemo(
-    () => curatedCategoryOrder
-      .map((id) => HOMEPAGE_CATEGORY_CHIPS.find((chip) => chip.id === id))
-      .filter((chip): chip is (typeof HOMEPAGE_CATEGORY_CHIPS)[number] => Boolean(chip)),
-    [curatedCategoryOrder]
-  );
+  const curatedCategories = React.useMemo(() => GAME_CATEGORIES, []);
 
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
@@ -634,8 +625,8 @@ export const HomePage = React.memo(function HomePage({
                   }}
                   className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
-                  <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                  <span className="category-chip-label">{cat.title}</span>
+                  <span className="category-chip-icon" aria-hidden>{cat.emoji}</span>
+                  <span className="category-chip-label">{cat.label}</span>
                 </button>
               ))}
             </div>

@@ -10,36 +10,26 @@ const CAN_FETCH_EXTERNAL_CATALOGS = typeof window === 'undefined';
 export const CATALOG_SOURCE = 'onlinegames.io + gamepix' as const;
 
 export const CATEGORY_LIST = [
-
   'All',
   'Favorites',
-
   'Recommended',
   'History',
   'Trending',
-  'Mods',
-  'Mobile Games',
-  'Best On Mobile',
   'Action',
   'Adventure',
-  'Arcade',
-  'Card',
-  'Casual',
-  'Educational',
-  'Fighting',
-  'Girls',
-  'Horror',
-  'Multiplayer',
-  '1 Player',
-  '2 Player',
-  '3 Player',
-  '4 Player',
-  'Platformer',
-  'Puzzle',
   'Racing',
-  'Simulator',
   'Sports',
-  'Strategy'
+  'Puzzle',
+  'Multiplayer',
+  'Shooter',
+  'Casual',
+  'Simulator',
+  'Driving',
+  'Strategy',
+  'Girls Games',
+  'Mobile Games',
+  'Fighting',
+  'Arcade',
 ];
 
 export const TAGS_LIST: string[] = [

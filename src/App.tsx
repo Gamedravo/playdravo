@@ -74,6 +74,7 @@ import { appToast } from './lib/appToast';
 import { ToastGameModeSync } from './components/ToastGameModeSync';
 import { Analytics } from './lib/analytics';
 import { GAMES as STATIC_GAMES, CATEGORY_LIST as CATEGORIES, TAGS_LIST, fetchOnlineGamesCatalog, gameMatchesCategory } from './games';
+import { GAME_CATEGORIES, MAIN_NAV_LABELS } from './lib/categories';
 import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import { api } from './lib/api';
@@ -526,31 +527,15 @@ function AppContent() {
   ];
 
   const categoryGroups = useMemo(() => {
-    const mainMenu = ['All', 'Favorites', 'Recommended', 'History', 'Trending'];
-    const mobile = ['Mobile Games', 'Best On Mobile'];
-    const multiplayer = ['Multiplayer'];
-    
-    // Any category not in mainMenu, mobile, or multiplayer goes into general Categories
-    const excludeFromCategories = [...mainMenu, ...mobile, ...multiplayer, '1 Player', '2 Player', '3 Player', '4 Player'];
-    const gameCategories = CATEGORIES.filter(c => !excludeFromCategories.includes(c)).sort();
-
     return [
       {
         title: 'Main Menu',
-        items: mainMenu.filter(cat => CATEGORIES.includes(cat))
-      },
-      {
-        title: 'Mobile',
-        items: mobile.filter(cat => CATEGORIES.includes(cat))
+        items: [...MAIN_NAV_LABELS],
       },
       {
         title: 'Categories',
-        items: gameCategories
+        items: GAME_CATEGORIES.map((c) => c.label),
       },
-      {
-        title: 'Multiplayer',
-        items: multiplayer.filter(cat => CATEGORIES.includes(cat))
-      }
     ];
   }, []);
 
