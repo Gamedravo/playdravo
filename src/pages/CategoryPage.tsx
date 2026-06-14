@@ -77,20 +77,71 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
         keywords={`${categoryName} games, free ${categoryName} games online, play ${categoryName} games, browser ${categoryName} games, GameDravo`}
         canonicalUrl={`https://gamedravo.com/category/${categoryId}`}
         url={`https://gamedravo.com/category/${categoryId}`}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          name: `${categoryName} Games – GameDravo`,
-          description: `Browse and play ${categoryGames.length}+ free ${categoryName} games instantly in your browser.`,
-          url: `https://gamedravo.com/category/${categoryId}`,
-          breadcrumb: {
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: `${categoryName} Games – GameDravo`,
+            description: `Browse and play ${categoryGames.length}+ free ${categoryName} games instantly in your browser. No download required.`,
+            url: `https://gamedravo.com/category/${categoryId}`,
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'GameDravo',
+              url: 'https://gamedravo.com',
+            },
+            about: {
+              '@type': 'Thing',
+              name: `${categoryName} Games`,
+            },
+          },
+          {
+            '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://gamedravo.com' },
               { '@type': 'ListItem', position: 2, name: `${categoryName} Games`, item: `https://gamedravo.com/category/${categoryId}` },
             ],
           },
-        }}
+          ...(categoryGames.length > 0 ? [{
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `Top ${categoryName} Games on GameDravo`,
+            description: `The best free ${categoryName} browser games — play instantly, no download.`,
+            url: `https://gamedravo.com/category/${categoryId}`,
+            numberOfItems: Math.min(categoryGames.length, 10),
+            itemListElement: categoryGames.slice(0, 10).map((g, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: g.title,
+              url: `https://gamedravo.com/games/${g.id}`,
+              image: g.thumbnail,
+              ...(g.rating && g.ratingCount && g.ratingCount >= 3 ? {
+                item: {
+                  '@type': 'VideoGame',
+                  name: g.title,
+                  url: `https://gamedravo.com/games/${g.id}`,
+                  image: g.thumbnail,
+                  aggregateRating: {
+                    '@type': 'AggregateRating',
+                    ratingValue: g.rating.toFixed(1),
+                    ratingCount: g.ratingCount,
+                    bestRating: '5',
+                    worstRating: '1',
+                  },
+                  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+                },
+              } : {
+                item: {
+                  '@type': 'VideoGame',
+                  name: g.title,
+                  url: `https://gamedravo.com/games/${g.id}`,
+                  image: g.thumbnail,
+                  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+                },
+              }),
+            })),
+          }] : []),
+        ]}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8">

@@ -414,28 +414,60 @@ export const GamePage: React.FC<GamePageProps> = ({
         image={game.thumbnail}
         canonicalUrl={`https://gamedravo.com/games/${game.id}`}
         url={`https://gamedravo.com/games/${game.id}`}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'VideoGame',
-          name: game.title,
-          description: game.description || `Play ${game.title} online for free on GameDravo.`,
-          url: `https://gamedravo.com/games/${game.id}`,
-          image: game.thumbnail,
-          genre: game.category,
-          operatingSystem: 'Web Browser',
-          applicationCategory: 'Game',
-          gamePlatform: 'Web Browser',
-          playMode: 'SinglePlayer',
-          ...(game.rating && game.ratingCount ? {
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: game.rating.toFixed(1),
-              ratingCount: game.ratingCount,
-              bestRating: '5',
-              worstRating: '1',
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': ['VideoGame', 'SoftwareApplication'],
+            name: game.title,
+            description: game.description || `Play ${game.title} online for free on GameDravo.`,
+            url: `https://gamedravo.com/games/${game.id}`,
+            image: game.thumbnail,
+            genre: game.category,
+            keywords: game.tags ? game.tags.slice(0, 8).join(', ') : game.category,
+            operatingSystem: 'Web Browser',
+            applicationCategory: 'GameApplication',
+            gamePlatform: ['Web Browser', 'Desktop', 'Mobile'],
+            playMode: (game.tags?.some(t => /multi.?player|2.?player|co.?op/i.test(t)) || /multiplayer/i.test(game.category))
+              ? 'MultiPlayer'
+              : 'SinglePlayer',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+              availability: 'https://schema.org/InStock',
+              category: 'free',
             },
-          } : {}),
-          breadcrumb: {
+            author: {
+              '@type': 'Organization',
+              name: game.developer || 'GameDravo',
+              url: 'https://gamedravo.com',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'GameDravo',
+              url: 'https://gamedravo.com',
+            },
+            ...(game.rating && game.ratingCount && game.ratingCount >= 3 ? {
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: game.rating.toFixed(1),
+                ratingCount: game.ratingCount,
+                bestRating: '5',
+                worstRating: '1',
+              },
+            } : {}),
+            ...(game.plays > 0 ? {
+              interactionStatistic: {
+                '@type': 'InteractionCounter',
+                interactionType: 'https://schema.org/PlayAction',
+                userInteractionCount: game.plays,
+              },
+            } : {}),
+            ...(game.contentRating ? { contentRating: game.contentRating } : {}),
+            ...(game.screenshots?.length ? { screenshot: game.screenshots[0] } : {}),
+          },
+          {
+            '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://gamedravo.com' },
@@ -443,7 +475,7 @@ export const GamePage: React.FC<GamePageProps> = ({
               { '@type': 'ListItem', position: 3, name: game.title, item: `https://gamedravo.com/games/${game.id}` },
             ],
           },
-        }}
+        ]}
       />
 
       <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-3 md:py-4">
