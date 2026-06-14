@@ -104,7 +104,7 @@ export const Header = memo(function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full px-2 md:px-3 pt-2 pb-0">
-      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 overflow-hidden ${
+      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 ${
         isDarkMode
           ? `bg-[#09090f]/90 border-white/[0.07] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.04)]' : 'shadow-[0_4px_24px_rgba(0,0,0,0.35)]'}`
           : `bg-white/92 border-black/[0.06] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]' : 'shadow-[0_4px_18px_rgba(0,0,0,0.07)]'}`

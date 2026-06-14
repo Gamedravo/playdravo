@@ -71,7 +71,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
     };
   }, [isOpen, onClose]);
 
-  if (!user || (!userProfile && user)) return null;
+  if (!user) return null;
 
   const menuItems = [
     { 
@@ -145,7 +145,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                     <div className="relative group">
                       <div className="w-24 h-24 lg:w-16 lg:h-16 rounded-full overflow-hidden border-2 border-accent shadow-lg shadow-accent/20">
                         <img 
-                          src={userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} 
+                          src={userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} 
                           alt="Avatar" 
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
@@ -157,10 +157,10 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                       <div className="flex flex-col gap-3 w-full">
                         <div className="flex flex-col gap-1">
                           <h3 className={`text-xl lg:text-lg font-bold tracking-tight truncate ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                            {userProfile.displayName || 'Gamer'}
+                            {userProfile?.displayName || 'Gamer'}
                           </h3>
                           <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 bg-accent/20 text-accent text-[10px] font-bold rounded-lg uppercase tracking-widest border border-accent/20">{t('levelPrefix') || 'Lv.'} {Math.floor((userProfile.xp || 0) / 1000) + 1}</span>
+                            <span className="px-2 py-0.5 bg-accent/20 text-accent text-[10px] font-bold rounded-lg uppercase tracking-widest border border-accent/20">{t('levelPrefix') || 'Lv.'} {Math.floor((userProfile?.xp || 0) / 1000) + 1}</span>
                             <span className={`text-[10px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>{t('beginner') || 'Beginner'}</span>
                           </div>
                         </div>
@@ -170,13 +170,13 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                           <div className="flex justify-between items-end mb-1">
                             <span className={`text-[9px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>XP</span>
                             <span className={`text-[10px] font-bold ${isDarkMode ? 'text-white/80' : 'text-black/80'}`}>
-                              {(userProfile.xp || 0) % 1000} / 1000
+                              {(userProfile?.xp || 0) % 1000} / 1000
                             </span>
                           </div>
                           <div className={`h-1.5 w-full rounded-full overflow-hidden ${isDarkMode ? 'bg-white/10' : 'bg-black/10'}`}>
                             <div 
                               className="h-full bg-accent rounded-full transition-all duration-1000 ease-out" 
-                              style={{ width: `${((userProfile.xp || 0) % 1000) / 10}%` }}
+                              style={{ width: `${((userProfile?.xp || 0) % 1000) / 10}%` }}
                             />
                           </div>
                         </div>
@@ -194,7 +194,7 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                     className={`p-3 rounded-2xl flex flex-col items-start justify-center border transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-md ${isDarkMode ? 'bg-white/5 hover:bg-white/10 border-white/10' : 'bg-black/5 hover:bg-black/10 border-black/10'}`}
                   >
                     <span className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">{t('favorites') || 'Favorites'}</span>
-                    <span className="text-xl font-black text-accent">{userProfile.favorites?.length || 0}</span>
+                    <span className="text-xl font-black text-accent">{userProfile?.favorites?.length || 0}</span>
                   </button>
                   <button 
                     onClick={() => {
@@ -204,15 +204,15 @@ export const ProfileDropdown = memo(function ProfileDropdown({
                     className={`p-3 rounded-2xl flex flex-col items-start justify-center border transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-md ${isDarkMode ? 'bg-white/5 hover:bg-white/10 border-white/10' : 'bg-black/5 hover:bg-black/10 border-black/10'}`}
                   >
                     <span className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">{t('totalSessions') || 'Total Sessions'}</span>
-                    <span className="text-xl font-black">{Math.max(userProfile.playHistory?.length || 0, userProfile.totalPlaytime ? Math.floor(userProfile.totalPlaytime / 600) : 0)}</span>
+                    <span className="text-xl font-black">{Math.max(userProfile?.playHistory?.length || 0, userProfile?.totalPlaytime ? Math.floor(userProfile.totalPlaytime / 600) : 0)}</span>
                   </button>
                   <div className={`p-3 rounded-2xl flex flex-col items-start justify-center border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
                     <span className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">{t('topGenre') || 'Top Genre'}</span>
-                    <span className="text-sm font-black truncate">{userProfile.preferredCategories?.[0] || 'Arcade'}</span>
+                    <span className="text-sm font-black truncate">{userProfile?.preferredCategories?.[0] || 'Arcade'}</span>
                   </div>
                   <div className={`p-3 rounded-2xl flex flex-col items-start justify-center border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
                     <span className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-1">{t('memberSince') || 'Member Since'}</span>
-                    <span className="text-sm font-black">{userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString(undefined, {month: 'short', year: 'numeric'}) : 'Nov 2023'}</span>
+                    <span className="text-sm font-black">{userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString(undefined, {month: 'short', year: 'numeric'}) : 'Nov 2023'}</span>
                   </div>
                 </div>
 
