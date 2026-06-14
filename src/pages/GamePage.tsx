@@ -391,7 +391,7 @@ export const GamePage: React.FC<GamePageProps> = ({
     }
   };
 
-  const enablePseudoFullScreen = () => {
+  const enablePseudoFullScreen = (silent = false) => {
     setIsPseudoFullScreen(true);
     const scrollY = window.scrollY;
     document.documentElement.style.overscrollBehavior = 'none';
@@ -402,7 +402,9 @@ export const GamePage: React.FC<GamePageProps> = ({
     document.body.style.overscrollBehavior = 'none';
     document.body.style.userSelect = 'none';
     (document.body.style as any).webkitUserSelect = 'none';
-    appToast.info("Entering theater mode (native fullscreen not supported on this device)");
+    if (!silent) {
+      appToast.info("Entering theater mode (native fullscreen not supported on this device)");
+    }
   };
 
   return (
@@ -538,6 +540,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                             return;
                           }
                           setIsPlaying(true);
+                          if (isMobile) {
+                            enablePseudoFullScreen(true);
+                          }
                           window.dispatchEvent(new CustomEvent('add-xp', { 
                             detail: { amount: 50, reason: `Played ${game.title}` } 
                           }));
@@ -765,17 +770,8 @@ export const GamePage: React.FC<GamePageProps> = ({
                           <span className="text-white/90 font-medium tracking-wide text-[11px] sm:text-sm drop-shadow-md truncate pointer-events-none">{game.title}</span>
                         </div>
                         
-                        {/* Right: Reload */}
-                        <div className="flex-1 flex justify-end pointer-events-auto">
-                          <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => setReloadKey(prev => prev + 1)}
-                            className="p-2 sm:p-2.5 bg-black/55 hover:bg-black/70 text-white rounded-full border border-white/10 transition-colors shadow-sm"
-                          >
-                            <RefreshCw className="w-5 h-5" />
-                          </motion.button>
-                        </div>
+                        {/* Right: Spacer (keeps title centered) */}
+                        <div className="flex-1" />
                       </div>
                     </>
                   )}
@@ -1241,7 +1237,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                   onClick={() => {
                     setShowMobileWarning(false);
                     setIsPlaying(true);
-                    enablePseudoFullScreen();
+                    enablePseudoFullScreen(true);
                   }}
                   className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold tracking-widest uppercase transition-colors"
                 >
