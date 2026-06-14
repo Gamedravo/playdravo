@@ -70,6 +70,7 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
 
     const data = await response.json();
     onlineGamesCatalogCache = { data, timestamp: Date.now() };
+    setImmediate(maybeFireIndexNow);
     return res.json(data);
   } catch (error) {
     console.error('OnlineGames catalog proxy failed:', error);
@@ -118,6 +119,7 @@ app.get('/api/gamepix-catalog', async (req, res) => {
 
     const data = pages.flat().slice(0, limit);
     gamePixCatalogCache = { data, timestamp: Date.now(), limit };
+    setImmediate(maybeFireIndexNow);
     return res.json(data);
   } catch (error) {
     console.error('GamePix catalog proxy failed:', error);
@@ -126,6 +128,102 @@ app.get('/api/gamepix-catalog', async (req, res) => {
   }
 });
 
+
+// ─── IndexNow URL Submission ──────────────────────────────────────────────────
+// Notifies Bing, Yandex, and other IndexNow-compatible engines about new/updated
+// URLs.  Fires once per server session after both catalogs are warm.
+
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY || '';
+const INDEXNOW_HOST = 'gamedravo.com';
+const INDEXNOW_SITE = 'https://gamedravo.com';
+let indexNowSubmitted = false; // fire once per server process
+
+async function submitIndexNow(urls: string[]): Promise<void> {
+  if (!INDEXNOW_KEY || urls.length === 0) return;
+  const BATCH = 10_000; // IndexNow hard limit per request
+  try {
+    for (let i = 0; i < urls.length; i += BATCH) {
+      const batch = urls.slice(i, i + BATCH);
+      const res = await fetch('https://api.indexnow.org/indexnow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({
+          host: INDEXNOW_HOST,
+          key: INDEXNOW_KEY,
+          keyLocation: `${INDEXNOW_SITE}/${INDEXNOW_KEY}.txt`,
+          urlList: batch,
+        }),
+      });
+      if (res.ok || res.status === 202) {
+        console.log(`[IndexNow] Submitted ${batch.length} URLs (batch ${Math.floor(i / BATCH) + 1}) → HTTP ${res.status}`);
+      } else {
+        console.warn(`[IndexNow] Submission failed: HTTP ${res.status} ${await res.text()}`);
+      }
+    }
+  } catch (err) {
+    console.warn('[IndexNow] Submission error:', err);
+  }
+}
+
+function buildIndexNowUrls(): string[] {
+  const urls: string[] = [`${INDEXNOW_SITE}/`];
+  // Category pages
+  const categorySlugs = [
+    'trending', 'new-arrivals', 'top-rated', 'recommended',
+    'action', 'adventure', 'arcade', 'board', 'card', 'casual',
+    'clicker', 'driving', 'educational', 'fighting', 'horror',
+    'idle', 'mobile', 'mobile-games', 'best-on-mobile',
+    'multiplayer', 'puzzle', 'racing', 'retro', 'sandbox',
+    'shooter', 'simulator', 'sports', 'strategy', 'survival', 'word',
+    '1-player', '2-player', '3-player', '4-player',
+  ];
+  for (const slug of categorySlugs) urls.push(`${INDEXNOW_SITE}/category/${slug}`);
+  // Game pages from warm caches
+  if (onlineGamesCatalogCache?.data) {
+    for (const g of onlineGamesCatalogCache.data as Array<{ title?: string }>) {
+      if (g.title) {
+        const id = g.title.toLowerCase().normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '').slice(0, 72) || 'game';
+        urls.push(`${INDEXNOW_SITE}/games/${id}`);
+      }
+    }
+  }
+  if (gamePixCatalogCache?.data) {
+    for (const g of gamePixCatalogCache.data as Array<{ namespace?: string; title?: string }>) {
+      if (g.title) {
+        const base = (g.namespace || g.title).toLowerCase().normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '').slice(0, 72) || 'game';
+        urls.push(`${INDEXNOW_SITE}/games/gamepix-${base}`);
+      }
+    }
+  }
+  return urls;
+}
+
+function maybeFireIndexNow(): void {
+  if (indexNowSubmitted) return;
+  if (!onlineGamesCatalogCache?.data || !gamePixCatalogCache?.data) return;
+  indexNowSubmitted = true;
+  const urls = buildIndexNowUrls();
+  console.log(`[IndexNow] Both catalogs warm — submitting ${urls.length} URLs…`);
+  submitIndexNow(urls).catch(() => {});
+}
+
+// Admin endpoint: manually re-trigger IndexNow submission
+app.post('/api/admin/indexnow', async (_req, res) => {
+  if (!INDEXNOW_KEY) {
+    return res.status(503).json({ error: 'INDEXNOW_KEY not configured' });
+  }
+  indexNowSubmitted = false; // reset so next warm triggers re-submission
+  const urls = buildIndexNowUrls();
+  if (urls.length === 0) {
+    return res.status(202).json({ message: 'Caches cold — nothing to submit yet', submitted: 0 });
+  }
+  await submitIndexNow(urls);
+  return res.json({ message: 'Submitted', submitted: urls.length });
+});
 
 // Check Embed Compatibility Route
 app.post("/api/check-embed", async (req, res) => {
