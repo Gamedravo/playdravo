@@ -342,15 +342,6 @@ export const GameCard = memo(function GameCard({
           />
         </div>
 
-        {/* Preview indicator */}
-        {hasRichPreview && (
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-            <div className="flex items-center gap-0.5 bg-black/65 backdrop-blur-sm px-2 py-0.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-white text-[8px] font-bold uppercase tracking-wider">Preview</span>
-            </div>
-          </div>
-        )}
 
         {/* Top badges */}
         <div className="absolute top-2 left-2 z-30 flex flex-col gap-1 pointer-events-none">
