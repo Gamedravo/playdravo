@@ -1,0 +1,123 @@
+Mobile Game Experience Redesign
+
+Current mobile game pages do not provide a true fullscreen gaming experience.
+
+Issues Found:
+
+### 1. Header Too Large
+
+Current:
+
+* Header remains visible during gameplay.
+* Search bar takes unnecessary space.
+* Notification button remains visible.
+* Login/Profile area can be partially off-screen.
+* Reduces available game space.
+
+Required:
+
+* Hide the main website header when entering a game.
+* Game page should have its own lightweight mobile game interface.
+
+### 2. Login / Notification Overflow
+
+Current:
+
+* Notification and login/profile controls are pushed outside the visible area on smaller devices.
+
+Required:
+
+* Ensure all header controls remain inside the viewport.
+* Mobile layout must never overflow horizontally.
+* Test on iPhone Safari and Android Chrome.
+
+### 3. Fullscreen Game Mode
+
+Desired behavior:
+
+When opening a game:
+
+* Hide homepage navigation.
+* Hide search bar.
+* Hide category navigation.
+* Hide unnecessary UI.
+
+Show only:
+
+* Back button
+* Game title (optional)
+* Game area
+
+The game should become the primary focus.
+
+### 4. Remove Refresh Button
+
+Current:
+
+* Refresh button overlaps important game content.
+* Can interfere with ad close buttons and game controls.
+
+Required:
+
+* Remove the floating refresh button from mobile game pages.
+* Do not place controls on top of ads or game UI.
+
+### 5. Poki-Style Mobile Experience
+
+Goal:
+
+Create a dedicated mobile game mode similar to modern browser gaming platforms.
+
+Requirements:
+
+Top Bar:
+
+* Small Back button.
+* Optional game title.
+* Nothing else.
+
+Example:
+
+[← Back]     Tekken 3
+
+or
+
+[← Back]
+
+No search bar.
+No notifications.
+No login button.
+No category menu.
+
+### 6. Lock Page Scrolling During Gameplay
+
+When the game loads:
+
+* Prevent body scrolling.
+* Prevent page movement while playing.
+* Game container should occupy available screen space.
+* User should not accidentally scroll the website while playing.
+
+Desired Result:
+The user feels like they launched an app, not a webpage.
+
+### 7. Game Container
+
+Requirements:
+
+* Fill maximum available height.
+* Responsive to device orientation.
+* Proper safe-area support for iPhone.
+* No unnecessary padding or margins.
+
+### 8. Mobile UX Goal
+
+Homepage:
+Full website navigation.
+
+Game page:
+Minimal UI.
+
+Focus entirely on gameplay.
+
+The experience should feel closer to a native mobile gaming app than a traditional website page.
