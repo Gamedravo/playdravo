@@ -409,6 +409,47 @@ export const GamePage: React.FC<GamePageProps> = ({
 
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
+
+      {/* ── Minimal Game Mode Bar ─────────────────────────────────────────────
+          Replaces the full site header on game pages. Shows only a back button
+          and the game title. Hidden in pseudo-fullscreen (which has its own overlay). */}
+      {!isPseudoFullScreen && (
+        <div className={`sticky top-0 z-50 flex items-center gap-3 px-3 py-2 border-b backdrop-blur-xl ${
+          isDarkMode
+            ? 'bg-[#09090f]/90 border-white/[0.07]'
+            : 'bg-white/92 border-black/[0.06]'
+        }`}>
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            className={`flex items-center justify-center w-8 h-8 rounded-xl border shrink-0 transition-colors active:scale-95 ${
+              isDarkMode
+                ? 'bg-white/[0.05] border-white/[0.08] hover:bg-white/[0.12] text-white/70 hover:text-white'
+                : 'bg-black/[0.04] border-black/[0.08] hover:bg-black/[0.09] text-black/60 hover:text-black'
+            }`}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </motion.button>
+
+          {game && (
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className="w-6 h-6 rounded-lg overflow-hidden shrink-0 border border-white/10">
+                <GameThumbnail src={game.thumbnail} alt="" category={game.category} className="w-full h-full object-cover" />
+              </div>
+              <span className={`text-sm font-semibold truncate ${isDarkMode ? 'text-white/90' : 'text-black/90'}`}>
+                {game.title}
+              </span>
+              <span className={`hidden sm:inline text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-md shrink-0 ${
+                isDarkMode ? 'bg-white/[0.07] text-white/40' : 'bg-black/[0.06] text-black/40'
+              }`}>
+                {game.category}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       <SEO
         title={`${game.title} – Free Online ${game.category} Game | GameDravo`}
         description={`Play ${game.title} free online — no download, no sign-up. ${game.description ? game.description.substring(0, 120).trim() + '…' : `A free ${game.category} game you can play instantly in your browser on GameDravo.`}`}
@@ -481,8 +522,8 @@ export const GamePage: React.FC<GamePageProps> = ({
       />
 
       <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-3 md:py-4">
-        {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-3 md:mb-4 opacity-70">
+        {/* Breadcrumbs — desktop only (mobile uses GameModeBar for navigation) */}
+        <nav aria-label="Breadcrumb" className="hidden md:flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-3 md:mb-4 opacity-70">
           <Link to="/" className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">Home</Link>
           <ChevronRight className="w-3 h-3" aria-hidden="true" />
           <Link to={getCategoryPath(game.category)} className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">{game.category}</Link>

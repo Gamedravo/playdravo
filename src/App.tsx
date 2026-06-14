@@ -1086,46 +1086,50 @@ function AppContent() {
         />
 
         <div className={`flex-1 flex flex-col overflow-hidden`}>
-          {/* Header - Redesigned to match GameDravo style */}
-          <Header
-            isDarkMode={isDarkMode}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            userProfile={userProfile}
-            setIsLoginModalOpen={setIsLoginModalOpen}
-            logout={replitLogout}
-            accentColor={accentColor}
-            setIsCommandPaletteOpen={setIsCommandPaletteOpen}
-            openAccountSettings={openAccountSettings}
-            setIsUsernameModalOpen={setIsUsernameModalOpen}
-            setIsHelpCenterOpen={setIsHelpCenterOpen}
-            setIsSubmitModalOpen={setIsSubmitModalOpen}
-            isProfileDropdownOpen={isProfileDropdownOpen}
-            setIsProfileDropdownOpen={setIsProfileDropdownOpen}
-            user={user}
-            searchInputRef={searchInputRef}
-            setSelectedCategory={setSelectedCategory}
-            language={language}
-            setLanguage={setLanguage}
-            t={t}
-          />
+          {/* Header - hidden on game pages to give the game full screen space */}
+          {!location.pathname.startsWith('/games/') && (
+            <>
+              <Header
+                isDarkMode={isDarkMode}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                userProfile={userProfile}
+                setIsLoginModalOpen={setIsLoginModalOpen}
+                logout={replitLogout}
+                accentColor={accentColor}
+                setIsCommandPaletteOpen={setIsCommandPaletteOpen}
+                openAccountSettings={openAccountSettings}
+                setIsUsernameModalOpen={setIsUsernameModalOpen}
+                setIsHelpCenterOpen={setIsHelpCenterOpen}
+                setIsSubmitModalOpen={setIsSubmitModalOpen}
+                isProfileDropdownOpen={isProfileDropdownOpen}
+                setIsProfileDropdownOpen={setIsProfileDropdownOpen}
+                user={user}
+                searchInputRef={searchInputRef}
+                setSelectedCategory={setSelectedCategory}
+                language={language}
+                setLanguage={setLanguage}
+                t={t}
+              />
 
-          {/* Mobile Profile Dropdown - Mounted in document flow to avoid Header backdrop-blur clipping bug on iOS Safari */}
-          <div className="md:hidden relative z-[100] px-4">
-            <ProfileDropdown 
-              isOpen={isProfileDropdownOpen}
-              onClose={() => setIsProfileDropdownOpen(false)}
-              user={user}
-              userProfile={userProfile}
-              isDarkMode={isDarkMode}
-              logout={replitLogout}
-              openAccountSettings={openAccountSettings}
-              setIsUsernameModalOpen={setIsUsernameModalOpen}
-              setIsHelpCenterOpen={setIsHelpCenterOpen}
-              setSelectedCategory={setSelectedCategory}
-              t={t}
-            />
-          </div>
+              {/* Mobile Profile Dropdown - Mounted in document flow to avoid Header backdrop-blur clipping bug on iOS Safari */}
+              <div className="md:hidden relative z-[100] px-4">
+                <ProfileDropdown 
+                  isOpen={isProfileDropdownOpen}
+                  onClose={() => setIsProfileDropdownOpen(false)}
+                  user={user}
+                  userProfile={userProfile}
+                  isDarkMode={isDarkMode}
+                  logout={replitLogout}
+                  openAccountSettings={openAccountSettings}
+                  setIsUsernameModalOpen={setIsUsernameModalOpen}
+                  setIsHelpCenterOpen={setIsHelpCenterOpen}
+                  setSelectedCategory={setSelectedCategory}
+                  t={t}
+                />
+              </div>
+            </>
+          )}
 
           <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 pb-6 md:px-5 md:pt-3'} relative`}>
             {/* Search Page - rendered in portal-like overlay to prevent flicker */}
