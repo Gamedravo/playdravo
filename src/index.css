@@ -950,23 +950,23 @@
 
   /* —— Curated category browse — 2-row horizontal scroll carousel —— */
   .category-chip-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.4rem;
     padding-bottom: 4px;
   }
 
   @media (max-width: 639px) {
     .category-chip-grid {
-      display: grid;
+      grid-template-columns: unset;
       grid-template-rows: repeat(2, auto);
       grid-auto-flow: column;
       grid-auto-columns: max-content;
-      flex-wrap: unset;
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
+      gap: 0.375rem;
     }
     .category-chip-grid::-webkit-scrollbar { display: none; }
     .category-chip-grid { scrollbar-width: none; }
