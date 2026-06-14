@@ -1,5 +1,12 @@
 User-agent: *
 Allow: /
+# Public read-only API endpoints needed for JavaScript rendering
+Allow: /api/games/stats
+Allow: /api/gamepix-catalog
+Allow: /api/onlinegames-catalog
+Allow: /api/game-requests
+Allow: /api/previews/manifest
+# Block raw API JSON pages from being indexed and protect sensitive routes
 Disallow: /api/
 Disallow: /admin/
 
