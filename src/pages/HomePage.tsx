@@ -609,7 +609,7 @@ export const HomePage = React.memo(function HomePage({
 
 <SectionErrorBoundary sectionName="Popular Categories Ticker">
         {selectedCategory === 'All' && !searchQuery && (
-          <LazyShelf eager minHeight={280}>
+          <LazyShelf eager minHeight={130}>
           <section className="shelf-section">
             <div className="shelf-header">
               <div className="section-heading-stack">
@@ -621,7 +621,7 @@ export const HomePage = React.memo(function HomePage({
               </div>
             </div>
 
-            <div className="category-chip-grid">
+            <div className="category-chip-grid" ref={categoriesRef}>
               {curatedCategories.map((cat) => (
                 <button
                   key={`cat-chip-${cat.slug}`}
@@ -635,12 +635,7 @@ export const HomePage = React.memo(function HomePage({
                   className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
                   <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="category-chip-label">{cat.title}</span>
-                    {categoryCounts[cat.id] !== undefined && categoryCounts[cat.id] > 0 && (
-                      <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} games</span>
-                    )}
-                  </div>
+                  <span className="category-chip-label">{cat.title}</span>
                 </button>
               ))}
             </div>

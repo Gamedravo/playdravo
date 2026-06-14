@@ -948,40 +948,32 @@
     @apply w-[88px] sm:w-[96px] md:w-[104px];
   }
 
-  /* —— Curated category browse — responsive grid —— */
+  /* —— Curated category browse — 2-row horizontal scroll carousel —— */
   .category-chip-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.625rem;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px; /* prevent clipped box-shadows */
   }
-
-  @media (min-width: 480px) {
-    .category-chip-grid { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
-  }
-
-  @media (min-width: 768px) {
-    .category-chip-grid { grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
-  }
-
-  @media (min-width: 1280px) {
-    .category-chip-grid { grid-template-columns: repeat(5, 1fr); gap: 1rem; }
-  }
+  .category-chip-grid::-webkit-scrollbar { display: none; }
+  .category-chip-grid { scrollbar-width: none; }
 
   .category-chip {
-    @apply flex w-full min-h-[110px] flex-col items-start justify-between rounded-2xl border p-3.5 text-left cursor-pointer;
-    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-  }
-
-  @media (min-width: 640px) {
-    .category-chip { min-height: 122px; padding: 1rem; }
-  }
-
-  @media (min-width: 1024px) {
-    .category-chip { min-height: 130px; }
+    @apply flex flex-row items-center gap-2.5 rounded-xl border px-3 text-left cursor-pointer whitespace-nowrap;
+    height: 46px;
+    min-width: 0;
+    scroll-snap-align: start;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
 
   .category-chip:hover {
-    transform: translateY(-4px) scale(1.03);
+    transform: translateY(-2px) scale(1.04);
   }
 
   .category-chip:active {
@@ -990,50 +982,37 @@
 
   .category-chip--dark {
     @apply border-white/[0.08] bg-white/[0.03];
-    box-shadow: 0 6px 24px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.06);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.05);
   }
 
   .category-chip--dark:hover {
     @apply bg-white/[0.07] border-white/[0.18];
-    box-shadow: 0 14px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.09);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
   }
 
   .category-chip--light {
     @apply border-black/[0.07] bg-white/80;
-    box-shadow: 0 4px 20px rgba(89,74,120,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+    box-shadow: 0 2px 12px rgba(89,74,120,0.07), inset 0 1px 0 rgba(255,255,255,0.9);
   }
 
   .category-chip--light:hover {
     @apply bg-white border-black/[0.13];
-    box-shadow: 0 12px 36px rgba(89,74,120,0.15), inset 0 1px 0 rgba(255,255,255,1);
+    box-shadow: 0 8px 24px rgba(89,74,120,0.13), inset 0 1px 0 rgba(255,255,255,1);
   }
 
   .category-chip-icon {
-    @apply text-[34px] leading-none select-none;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.22));
-    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
-  }
-
-  @media (min-width: 640px) {
-    .category-chip-icon { font-size: 38px; }
+    @apply text-[22px] leading-none select-none shrink-0;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.20));
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.15s ease;
   }
 
   .category-chip:hover .category-chip-icon {
-    transform: scale(1.15);
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.32));
+    transform: scale(1.18);
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.30));
   }
 
   .category-chip-label {
-    @apply text-[13px] font-black tracking-tight leading-tight line-clamp-2;
-  }
-
-  @media (min-width: 640px) {
-    .category-chip-label { font-size: 14px; }
-  }
-
-  .category-chip-count {
-    @apply text-[10px] font-semibold leading-none;
-    opacity: 0.45;
+    @apply text-[13px] font-bold tracking-tight leading-none;
   }
 
   .category-view-all {
