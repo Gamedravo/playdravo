@@ -13,6 +13,7 @@ export default defineConfig(({mode}) => {
       },
     },
     build: {
+      sourcemap: false,
       chunkSizeWarningLimit: 600,
       rollupOptions: {
         output: {
@@ -38,6 +39,9 @@ export default defineConfig(({mode}) => {
       watch: {
         ignored: ['**/.local/**', '**/node_modules/**', '**/.git/**'],
       },
+    },
+    optimizeDeps: {
+      exclude: [],
     },
   };
 });
