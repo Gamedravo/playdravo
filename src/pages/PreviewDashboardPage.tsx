@@ -90,6 +90,16 @@ async function deletePreview(gameId: string): Promise<boolean> {
   return res.ok;
 }
 
+interface ProbeState {
+  running: boolean;
+  total: number;
+  done: number;
+  found: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+  manifestSize: number;
+}
+
 export function PreviewDashboardPage({ games }: Props) {
   const [manifest, setManifest] = useState<PreviewManifest>({});
   const [rows, setRows] = useState<GameRow[]>([]);
@@ -100,6 +110,7 @@ export function PreviewDashboardPage({ games }: Props) {
   const [bulkProgress, setBulkProgress] = useState(0);
   const [bulkTotal, setBulkTotal] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [probeState, setProbeState] = useState<ProbeState | null>(null);
   const abortRef = useRef(false);
 
   const refreshManifest = useCallback(async () => {
@@ -107,6 +118,26 @@ export function PreviewDashboardPage({ games }: Props) {
     const m = await fetchPreviewManifest();
     setManifest(m);
   }, []);
+
+  const refreshProbeStatus = useCallback(async () => {
+    try {
+      const r = await fetch('/api/previews/probe-status');
+      if (r.ok) setProbeState(await r.json());
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    refreshProbeStatus();
+  }, [refreshProbeStatus]);
+
+  useEffect(() => {
+    if (!probeState?.running) return;
+    const t = setInterval(() => {
+      refreshProbeStatus();
+      refreshManifest();
+    }, 3000);
+    return () => clearInterval(t);
+  }, [probeState?.running, refreshProbeStatus, refreshManifest]);
 
   useEffect(() => {
     refreshManifest();
@@ -211,8 +242,18 @@ export function PreviewDashboardPage({ games }: Props) {
       return 0;
     });
 
-  const withCount = Object.keys(manifest).length;
-  const coverage = games.length > 0 ? Math.round((withCount / games.length) * 100) : 0;
+  const manifestCount = Object.keys(manifest).length;
+  const screenshotCycleCount = games.filter(
+    (g) => !manifest[g.id] && (g.screenshots?.length ?? 0) >= 2,
+  ).length;
+  const canvasCount = games.filter(
+    (g) => !manifest[g.id] && (g.screenshots?.length ?? 0) < 2,
+  ).length;
+  const totalCovered = games.length; // 100% — every game has at least canvas
+
+  const probePercent = probeState && probeState.total > 0
+    ? Math.round((probeState.done / probeState.total) * 100)
+    : 0;
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-dark)] text-white px-4 py-8 max-w-7xl mx-auto">
@@ -225,17 +266,17 @@ export function PreviewDashboardPage({ games }: Props) {
           <h1 className="text-2xl font-black tracking-tight text-white">Preview Dashboard</h1>
         </div>
         <p className="text-sm text-white/50">
-          Automatically discover and store hover preview videos / GIFs for game cards.
+          3-tier animated hover previews: manifest mp4/gif → screenshot cycling → canvas animation.
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {/* Coverage breakdown */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         {[
-          { label: 'Total Games', value: games.length, icon: <BarChart2 className="w-4 h-4" />, color: 'text-white/70' },
-          { label: 'With Preview', value: withCount, icon: <CheckCircle className="w-4 h-4" />, color: 'text-green-400' },
-          { label: 'Coverage', value: `${coverage}%`, icon: <Zap className="w-4 h-4" />, color: 'text-purple-400' },
-          { label: 'Missing', value: games.length - withCount, icon: <XCircle className="w-4 h-4" />, color: 'text-amber-400' },
+          { label: 'Total Games', value: games.length, icon: <BarChart2 className="w-4 h-4" />, color: 'text-white/70', sub: null },
+          { label: 'Video / GIF', value: manifestCount, icon: <Video className="w-4 h-4" />, color: 'text-green-400', sub: 'Manifest' },
+          { label: 'Screenshot Cycle', value: screenshotCycleCount, icon: <Zap className="w-4 h-4" />, color: 'text-cyan-400', sub: 'Thumbnail animation' },
+          { label: 'Canvas Fallback', value: canvasCount, icon: <CheckCircle className="w-4 h-4" />, color: 'text-purple-400', sub: 'Every game covered' },
         ].map((s) => (
           <div key={s.label} className="bg-white/5 border border-white/10 rounded-xl p-4">
             <div className={`flex items-center gap-2 text-xs font-medium mb-1 ${s.color}`}>
@@ -243,9 +284,80 @@ export function PreviewDashboardPage({ games }: Props) {
               {s.label}
             </div>
             <div className="text-2xl font-black">{s.value}</div>
+            {s.sub && <div className="text-xs text-white/40 mt-1">{s.sub}</div>}
           </div>
         ))}
       </div>
+
+      {/* Coverage bar */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
+        <div className="flex items-center justify-between text-xs text-white/60 mb-2">
+          <span className="font-medium">Hover Preview Coverage</span>
+          <span className="font-bold text-white">{totalCovered}/{games.length} — 100%</span>
+        </div>
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden flex">
+          {manifestCount > 0 && (
+            <div
+              className="h-full bg-green-500 transition-all"
+              style={{ width: `${(manifestCount / games.length) * 100}%` }}
+              title={`${manifestCount} mp4/gif previews`}
+            />
+          )}
+          <div
+            className="h-full bg-cyan-500 transition-all"
+            style={{ width: `${(screenshotCycleCount / games.length) * 100}%` }}
+            title={`${screenshotCycleCount} screenshot cycling`}
+          />
+          <div
+            className="h-full bg-purple-600 transition-all"
+            style={{ width: `${(canvasCount / games.length) * 100}%` }}
+            title={`${canvasCount} canvas animation`}
+          />
+        </div>
+        <div className="flex gap-4 mt-2 text-xs text-white/40">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500 inline-block" />Video/GIF</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500 inline-block" />Screenshot Cycle</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-purple-600 inline-block" />Canvas Anim</span>
+        </div>
+      </div>
+
+      {/* Auto-probe status */}
+      {probeState && (
+        <div className={`bg-white/5 border rounded-xl p-4 mb-6 ${probeState.running ? 'border-cyan-500/40' : 'border-white/10'}`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              {probeState.running ? (
+                <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+              ) : (
+                <CheckCircle className="w-4 h-4 text-white/50" />
+              )}
+              <span>{probeState.running ? 'Auto-Probe Running…' : 'Auto-Probe Complete'}</span>
+            </div>
+            <button
+              className="text-xs text-white/40 hover:text-white/70 transition-colors"
+              onClick={() => { refreshProbeStatus(); refreshManifest(); }}
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          {probeState.running && (
+            <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-2">
+              <div
+                className="h-full bg-cyan-500 transition-all duration-500"
+                style={{ width: `${probePercent}%` }}
+              />
+            </div>
+          )}
+          <div className="flex gap-4 text-xs text-white/50">
+            <span>Scanned: <span className="text-white font-medium">{probeState.done}/{probeState.total}</span></span>
+            <span>Found: <span className={`font-medium ${probeState.found > 0 ? 'text-green-400' : 'text-white'}`}>{probeState.found} previews</span></span>
+            <span>Manifest: <span className="text-white font-medium">{probeState.manifestSize}</span></span>
+            {probeState.finishedAt && (
+              <span>Finished: <span className="text-white font-medium">{new Date(probeState.finishedAt).toLocaleTimeString()}</span></span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3 mb-5">

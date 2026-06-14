@@ -1,4 +1,5 @@
 import type { Game } from '../types';
+import type { PreviewEntry } from '../hooks/usePreviewManifest';
 
 export type PreviewMediaKind = 'mp4' | 'gif' | 'youtube' | 'thumbnail' | 'none';
 
@@ -31,6 +32,7 @@ function madKidGamesThumb2(thumbnail: string): string | null {
 
 /**
  * Ordered preview candidates for a game card hover effect:
+ *   0. manifest entry (server-probed CDN asset — highest priority)
  *   1. explicit previewVideoUrl  → mp4 (HTML5 video)
  *   2. explicit previewGifUrl    → gif (animated img)
  *   3. trailerUrl (YouTube)      → youtube iframe (muted autoplay)
@@ -43,6 +45,7 @@ export function getPreviewMediaCandidates(
     Game,
     'id' | 'thumbnail' | 'previewVideoUrl' | 'previewGifUrl' | 'trailerUrl' | 'screenshots'
   >,
+  manifestEntry?: PreviewEntry,
 ): PreviewMediaCandidate[] {
   const out: PreviewMediaCandidate[] = [];
   const seen = new Set<string>();
@@ -52,6 +55,12 @@ export function getPreviewMediaCandidates(
     seen.add(url);
     out.push({ kind, url });
   };
+
+  // 0. Manifest entry — server-probed CDN asset (mp4/webm/gif)
+  if (manifestEntry) {
+    const kind: PreviewMediaKind = manifestEntry.kind === 'webm' ? 'mp4' : manifestEntry.kind;
+    add(kind, manifestEntry.url);
+  }
 
   // 1. Explicit video (mp4 / webm)
   add('mp4', game.previewVideoUrl);

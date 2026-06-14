@@ -29,7 +29,7 @@ export interface PreviewEntry {
 
 type Manifest = Record<string, PreviewEntry>;
 
-function loadManifest(): Manifest {
+export function loadManifest(): Manifest {
   try {
     if (fs.existsSync(MANIFEST_FILE)) {
       return JSON.parse(fs.readFileSync(MANIFEST_FILE, 'utf-8'));
@@ -235,6 +235,212 @@ router.delete('/:gameId', (req, res) => {
   delete manifest[gameId];
   saveManifest(manifest);
   res.json({ ok: true });
+});
+
+// ─── Auto-Probe Pipeline ─────────────────────────────────────────────────────
+
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 72) || 'game';
+}
+
+async function headOk(url: string): Promise<boolean> {
+  try {
+    const r = await fetch(url, {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(3_500),
+      headers: {
+        'User-Agent': 'GameDravo-Preview/1.0',
+        Referer: 'https://www.onlinegames.io/',
+      },
+    });
+    const ct = r.headers.get('content-type') ?? '';
+    return r.ok && r.status === 200 && !ct.startsWith('text/html');
+  } catch {
+    return false;
+  }
+}
+
+interface RawOnlineGame {
+  title: string;
+  embed: string;
+  image: string;
+}
+
+function extractEmbedSlug(embedUrl: string): string | null {
+  try {
+    const parts = new URL(embedUrl).pathname.split('/').filter(Boolean);
+    // Remove trailing 'index.html' or similar
+    const last = parts[parts.length - 1];
+    if (last && last.includes('.')) parts.pop();
+    return parts[parts.length - 1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function cdnCandidatesForOnlineGame(
+  embedUrl: string,
+  titleSlug: string,
+): { url: string; kind: 'mp4' | 'gif' }[] {
+  const candidates: { url: string; kind: 'mp4' | 'gif' }[] = [];
+  try {
+    const u = new URL(embedUrl);
+    const parts = u.pathname.split('/').filter(Boolean);
+    const last = parts[parts.length - 1];
+    if (last && last.includes('.')) parts.pop();
+    const embedSlug = parts[parts.length - 1] ?? titleSlug;
+    const base = `${u.protocol}//${u.host}/${parts.join('/')}/`;
+
+    candidates.push(
+      { url: `${base}preview.mp4`, kind: 'mp4' },
+      { url: `${base}gameplay.mp4`, kind: 'mp4' },
+      { url: `${base}video.mp4`, kind: 'mp4' },
+      { url: `${base}preview.gif`, kind: 'gif' },
+      { url: `https://www.onlinegames.io/media/cache/preview/${embedSlug}.mp4`, kind: 'mp4' },
+      { url: `https://www.onlinegames.io/media/cache/preview/${embedSlug}.gif`, kind: 'gif' },
+      { url: `https://cdn.onlinegames.io/preview/${embedSlug}.mp4`, kind: 'mp4' },
+    );
+  } catch {
+    // malformed URL
+  }
+  return candidates;
+}
+
+async function probeOnlineGame(
+  rawGame: RawOnlineGame,
+): Promise<{ gameId: string; url: string; kind: 'mp4' | 'gif'; title: string } | null> {
+  const gameId = slugify(rawGame.title);
+
+  // Strategy 1: Fast HEAD checks against known CDN patterns
+  const cdnCandidates = cdnCandidatesForOnlineGame(rawGame.embed, gameId);
+  for (const { url, kind } of cdnCandidates) {
+    if (await headOk(url)) {
+      return { gameId, url, kind, title: rawGame.title };
+    }
+  }
+
+  // Strategy 2: Scrape the OnlineGames.io listing page for og:video / embedded videos
+  const embedSlug = extractEmbedSlug(rawGame.embed);
+  if (embedSlug) {
+    try {
+      const scraped = await scrapeGamePage(`https://www.onlinegames.io/${embedSlug}/`);
+      const hit = scraped.find((c) => c.kind === 'mp4' || c.kind === 'webm' || c.kind === 'gif');
+      if (hit) {
+        const kind: 'mp4' | 'gif' = hit.kind === 'gif' ? 'gif' : 'mp4';
+        return { gameId, url: hit.url, kind, title: rawGame.title };
+      }
+    } catch {
+      // Non-fatal: listing page scrape failed
+    }
+  }
+
+  return null;
+}
+
+// ─── Auto-probe state ────────────────────────────────────────────────────────
+
+interface ProbeState {
+  running: boolean;
+  total: number;
+  done: number;
+  found: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+const probeState: ProbeState = {
+  running: false,
+  total: 0,
+  done: 0,
+  found: 0,
+  startedAt: null,
+  finishedAt: null,
+};
+
+/**
+ * Background batch CDN probe for all OnlineGames.io games.
+ * Skips games already in the manifest.
+ * Rate-limited: CONCURRENCY parallel probes, DELAY_MS between batches.
+ */
+export async function startAutoProbe(rawGames: RawOnlineGame[]): Promise<void> {
+  if (probeState.running) return;
+
+  const manifest = loadManifest();
+  const toProbe = rawGames.filter((g) => g.title && g.embed && !manifest[slugify(g.title)]);
+
+  probeState.running = true;
+  probeState.total = toProbe.length;
+  probeState.done = 0;
+  probeState.found = 0;
+  probeState.startedAt = new Date().toISOString();
+  probeState.finishedAt = null;
+
+  const CONCURRENCY = 6;
+  const DELAY_MS = 250;
+
+  try {
+    for (let i = 0; i < toProbe.length; i += CONCURRENCY) {
+      const batch = toProbe.slice(i, i + CONCURRENCY);
+      const results = await Promise.all(batch.map(probeOnlineGame));
+
+      const m = loadManifest(); // re-read to avoid overwrite races
+      let batchFound = 0;
+      for (const r of results) {
+        if (r && !m[r.gameId]) {
+          m[r.gameId] = {
+            url: r.url,
+            kind: r.kind,
+            source: 'scraped',
+            capturedAt: new Date().toISOString(),
+            gameTitle: r.title,
+          };
+          batchFound++;
+        }
+      }
+      if (batchFound > 0) saveManifest(m);
+
+      probeState.done += batch.length;
+      probeState.found += batchFound;
+
+      if (i + CONCURRENCY < toProbe.length) {
+        await new Promise((r) => setTimeout(r, DELAY_MS));
+      }
+    }
+  } finally {
+    probeState.running = false;
+    probeState.finishedAt = new Date().toISOString();
+    const m = loadManifest();
+    console.log(
+      `[AutoProbe] Done — scanned ${probeState.done} games, found ${probeState.found} previews, manifest total: ${Object.keys(m).length}`,
+    );
+  }
+}
+
+// GET /api/previews/probe-status
+router.get('/probe-status', (_req, res) => {
+  res.json({
+    ...probeState,
+    manifestSize: Object.keys(loadManifest()).length,
+  });
+});
+
+// POST /api/previews/auto-probe  — trigger manually (admin)
+router.post('/auto-probe', async (req, res) => {
+  if (probeState.running) {
+    return res.status(409).json({ error: 'Probe already running', state: probeState });
+  }
+  const { games } = req.body ?? {};
+  if (!Array.isArray(games) || games.length === 0) {
+    return res.status(400).json({ error: 'games array required' });
+  }
+  res.json({ ok: true, queued: games.length, message: 'Auto-probe started in background' });
+  startAutoProbe(games as RawOnlineGame[]).catch(() => {});
 });
 
 export default router;

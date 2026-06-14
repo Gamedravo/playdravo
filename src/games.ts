@@ -337,12 +337,20 @@ function gamePixGameToGame(rawGame: RawGamePixGame): Game {
   const plays = seededPlays(id);
   const orientation = rawGame.orientation === 'landscape' || rawGame.orientation === 'portrait' ? rawGame.orientation : 'any';
 
+  const primaryThumb = (rawGame.banner_image || rawGame.image || '').trim();
+  const secondaryThumb = (rawGame.image || '').trim();
+  const screenshots: string[] | undefined =
+    primaryThumb && secondaryThumb && primaryThumb !== secondaryThumb
+      ? [primaryThumb, secondaryThumb]
+      : undefined;
+
   return {
     id,
     title: rawGame.title.trim(),
     category: inferCategory(tags),
     url: rawGame.url.trim(),
-    thumbnail: (rawGame.banner_image || rawGame.image || '').trim(),
+    thumbnail: primaryThumb,
+    screenshots,
     description: (rawGame.description || `${rawGame.title} is a fast-loading HTML5 game you can play instantly.`).trim().slice(0, 500),
     rating,
     plays,

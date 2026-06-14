@@ -8,7 +8,7 @@ import compression from "compression";
 import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/index.js";
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
-import previewRoutes from "./server/routes/previews.js";
+import previewRoutes, { startAutoProbe, loadManifest } from "./server/routes/previews.js";
 import { db } from "./server/db.js";
 import { gameStats } from "./shared/models/auth.js";
 
@@ -49,6 +49,7 @@ const ONLINE_GAMES_CATALOG_CACHE_TTL = 1000 * 60 * 60;
 const GAMEPIX_CATALOG_CACHE_TTL = 1000 * 60 * 60 * 6;
 let gamePixFailureUntil = 0;
 const GAMEPIX_FAILURE_BACKOFF_TTL = 1000 * 60 * 5; // 5 min backoff on failure
+let autoProbeStarted = false;
 
 app.get('/api/onlinegames-catalog', async (_req, res) => {
   try {
@@ -73,6 +74,7 @@ app.get('/api/onlinegames-catalog', async (_req, res) => {
     const data = await response.json();
     onlineGamesCatalogCache = { data, timestamp: Date.now() };
     setImmediate(maybeFireIndexNow);
+    setImmediate(maybeStartAutoProbe);
     return res.json(data);
   } catch (error) {
     console.error('OnlineGames catalog proxy failed:', error);
@@ -211,6 +213,23 @@ function maybeFireIndexNow(): void {
   const urls = buildIndexNowUrls();
   console.log(`[IndexNow] Both catalogs warm — submitting ${urls.length} URLs…`);
   submitIndexNow(urls).catch(() => {});
+}
+
+function maybeStartAutoProbe(): void {
+  if (autoProbeStarted) return;
+  if (!onlineGamesCatalogCache?.data) return;
+  autoProbeStarted = true;
+  const rawGames = onlineGamesCatalogCache.data as Array<{ title: string; embed: string; image: string }>;
+  const manifest = loadManifest();
+  const uncovered = rawGames.filter((g) => g.title && g.embed).length;
+  const alreadyInManifest = rawGames.filter((g) => {
+    const id = (g.title ?? '').toLowerCase().normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '').slice(0, 72) || 'game';
+    return !!manifest[id];
+  }).length;
+  console.log(`[AutoProbe] OnlineGames catalog warm — ${uncovered} games, ${alreadyInManifest} already in manifest. Starting CDN probe…`);
+  startAutoProbe(rawGames).catch((err) => console.warn('[AutoProbe] Error:', err));
 }
 
 // Admin endpoint: manually re-trigger IndexNow submission

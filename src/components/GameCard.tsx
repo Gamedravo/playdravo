@@ -5,6 +5,8 @@ import { Game } from '../types';
 import { GameThumbnail } from './GameThumbnail';
 import { HighlightText } from './HighlightText';
 import { getPreviewMediaCandidates, type PreviewMediaCandidate } from '../lib/gamePreviewMedia';
+import { usePreviewManifest } from '../hooks/usePreviewManifest';
+import { GameplayPreview } from './GameplayPreview';
 
 interface GameCardProps {
   game: Game;
@@ -138,10 +140,14 @@ function InlineCardPreview({
   game,
   active,
   candidates,
+  category,
+  isDarkMode,
 }: {
   game: Pick<Game, 'id' | 'title'>;
   active: boolean;
   candidates: PreviewMediaCandidate[];
+  category: string;
+  isDarkMode: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [candidateIndex, setCandidateIndex] = useState(0);
@@ -160,6 +166,7 @@ function InlineCardPreview({
   const richCurrent: PreviewMediaCandidate | undefined = richCandidates[candidateIndex];
   const useRich = richCandidates.length > 0;
   const useThumbnailCycle = !useRich && thumbnailCandidates.length > 1;
+  const useCanvasFallback = !useRich && !useThumbnailCycle;
 
   useEffect(() => {
     setCandidateIndex(0);
@@ -190,6 +197,10 @@ function InlineCardPreview({
 
   if (useThumbnailCycle) {
     return <ThumbnailCycler candidates={thumbnailCandidates} active={active} />;
+  }
+
+  if (useCanvasFallback) {
+    return <GameplayPreview category={category} isDarkMode={isDarkMode} gameTitle={game.title} showLabel={false} />;
   }
 
   if (!richCurrent) return null;
@@ -253,17 +264,21 @@ export const GameCard = memo(function GameCard({
   const hoverSupported = useDesktopHover();
   const cardPreviewId = useId();
   const activeCardId = useActivePreviewCardId();
+  const manifest = usePreviewManifest();
 
   const previewCandidates = useMemo(() => {
-    const all = getPreviewMediaCandidates(game);
-    const rich = all.filter((c) => c.kind === 'mp4' || c.kind === 'gif' || c.kind === 'youtube');
-    const thumbs = all.filter((c) => c.kind === 'thumbnail');
-    if (rich.length > 0) return all;
-    if (thumbs.length > 1) return all;
-    return [];
-  }, [game]);
+    const manifestEntry = manifest[game.id];
+    return getPreviewMediaCandidates(game, manifestEntry);
+  }, [game, manifest]);
 
-  const hasPreview = previewCandidates.length > 0;
+  // Show "Preview" badge only when there's real discovered media (not canvas fallback)
+  const hasRichPreview = useMemo(() => {
+    const rich = previewCandidates.filter((c) => c.kind === 'mp4' || c.kind === 'gif' || c.kind === 'youtube');
+    const thumbs = previewCandidates.filter((c) => c.kind === 'thumbnail');
+    return rich.length > 0 || thumbs.length > 1;
+  }, [previewCandidates]);
+
+  // Always activate hover preview (canvas fallback ensures every game has something)
   const previewActive = hoverSupported && activeCardId === cardPreviewId;
 
   useEffect(() => {
@@ -272,7 +287,7 @@ export const GameCard = memo(function GameCard({
   }, [cardPreviewId, hoverSupported]);
 
   const startPreview = () => {
-    if (hoverSupported && hasPreview) {
+    if (hoverSupported) {
       setActivePreviewCard(cardPreviewId);
     }
   };
@@ -326,11 +341,17 @@ export const GameCard = memo(function GameCard({
             priority={priority}
             className="h-full w-full object-cover object-center transition-[transform,filter] duration-500 ease-out group-hover:scale-[1.06] group-hover:brightness-[1.08]"
           />
-          <InlineCardPreview game={game} active={previewActive} candidates={previewCandidates} />
+          <InlineCardPreview
+            game={game}
+            active={previewActive}
+            candidates={previewCandidates}
+            category={game.category}
+            isDarkMode={isDarkMode}
+          />
         </div>
 
         {/* Preview indicator */}
-        {hasPreview && (
+        {hasRichPreview && (
           <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
             <div className="flex items-center gap-0.5 bg-black/65 backdrop-blur-sm px-2 py-0.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
