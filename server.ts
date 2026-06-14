@@ -9,6 +9,8 @@ import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/in
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
 import previewRoutes from "./server/routes/previews.js";
+import { db } from "./server/db.js";
+import { gameStats } from "./shared/models/auth.js";
 
 dotenv.config();
 
@@ -255,6 +257,159 @@ app.get('/html-sitemap', (_req, res) => {
   }
 });
 
+// ─── Dynamic XML Sitemap ──────────────────────────────────────────────────────
+// Registered top-level (before Vite + static serving) so it works in both dev
+// and production.  Reuses the in-memory catalog caches already maintained above
+// and enriches <lastmod> from game_stats.updatedAt in the DB.
+
+const SITEMAP_CATEGORY_SLUGS = [
+  'trending', 'new-arrivals', 'top-rated', 'recommended',
+  'action', 'adventure', 'arcade', 'board', 'card', 'casual',
+  'clicker', 'driving', 'educational', 'fighting', 'horror',
+  'idle', 'mobile', 'mobile-games', 'best-on-mobile',
+  'multiplayer', 'puzzle', 'racing', 'retro', 'sandbox',
+  'shooter', 'simulator', 'sports', 'strategy', 'survival', 'word',
+  '1-player', '2-player', '3-player', '4-player',
+];
+
+function sitemapSlugify(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 72) || 'game';
+}
+
+function xmlEscape(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+
+app.get('/sitemap.xml', async (_req, res) => {
+  const SITE = 'https://gamedravo.com';
+  const today = new Date().toISOString().slice(0, 10);
+
+  try {
+    // ── 1. Build lastmod map from DB ──────────────────────────────────────────
+    const statsRows = await db.select({
+      id: gameStats.id,
+      updatedAt: gameStats.updatedAt,
+    }).from(gameStats);
+    const lastmodMap = new Map<string, string>();
+    for (const row of statsRows) {
+      if (row.updatedAt) {
+        lastmodMap.set(row.id, new Date(row.updatedAt).toISOString().slice(0, 10));
+      }
+    }
+
+    // ── 2. Collect game IDs from caches ──────────────────────────────────────
+    interface GameEntry { id: string; thumb?: string; lastmod: string }
+    const gameMap = new Map<string, GameEntry>();
+
+    const addGame = (id: string, thumb?: string) => {
+      if (!gameMap.has(id)) {
+        gameMap.set(id, {
+          id,
+          thumb,
+          lastmod: lastmodMap.get(id) ?? today,
+        });
+      }
+    };
+
+    if (onlineGamesCatalogCache?.data) {
+      const raw = onlineGamesCatalogCache.data as Array<{ title?: string; image?: string }>;
+      for (const g of raw) {
+        if (g.title) addGame(sitemapSlugify(g.title), g.image);
+      }
+    }
+
+    if (gamePixCatalogCache?.data) {
+      const raw = gamePixCatalogCache.data as Array<{ namespace?: string; title?: string; banner_image?: string; image?: string }>;
+      for (const g of raw) {
+        if (g.title) {
+          const id = `gamepix-${sitemapSlugify(g.namespace || g.title)}`;
+          addGame(id, g.banner_image || g.image);
+        }
+      }
+    }
+
+    // If both caches are cold (server just restarted), fall back to static file
+    if (gameMap.size === 0) {
+      const staticPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+      if (fs.existsSync(staticPath)) {
+        res.type('application/xml');
+        return res.sendFile(staticPath);
+      }
+    }
+
+    // ── 3. Build XML ──────────────────────────────────────────────────────────
+    const url = (
+      loc: string,
+      opts: { lastmod?: string; changefreq?: string; priority?: string; image?: string } = {}
+    ) => {
+      const { lastmod = today, changefreq = 'weekly', priority = '0.7', image } = opts;
+      const imgTag = image
+        ? `\n    <image:image><image:loc>${xmlEscape(image)}</image:loc></image:image>`
+        : '';
+      return `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>${imgTag}\n  </url>`;
+    };
+
+    const lines: string[] = [
+      `<?xml version="1.0" encoding="UTF-8"?>`,
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
+      `        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`,
+    ];
+
+    // Static pages
+    lines.push(url(`${SITE}/`, { changefreq: 'daily', priority: '1.0' }));
+    for (const [slug, opts] of [
+      ['/search',        { priority: '0.7', changefreq: 'daily'   }],
+      ['/html-sitemap',  { priority: '0.5', changefreq: 'weekly'  }],
+      ['/about',         { priority: '0.5', changefreq: 'monthly' }],
+      ['/contact',       { priority: '0.5', changefreq: 'monthly' }],
+      ['/submit-game',   { priority: '0.5', changefreq: 'monthly' }],
+      ['/support',       { priority: '0.4', changefreq: 'monthly' }],
+      ['/privacy',       { priority: '0.3', changefreq: 'yearly'  }],
+      ['/terms',         { priority: '0.3', changefreq: 'yearly'  }],
+      ['/cookies',       { priority: '0.3', changefreq: 'yearly'  }],
+    ] as [string, Record<string, string>][]) {
+      lines.push(url(`${SITE}${slug}`, opts));
+    }
+
+    // Category pages
+    for (const slug of SITEMAP_CATEGORY_SLUGS) {
+      lines.push(url(`${SITE}/category/${slug}`, { changefreq: 'daily', priority: '0.9' }));
+    }
+
+    // Game pages — sorted by lastmod desc so freshest entries appear first
+    const games = Array.from(gameMap.values()).sort((a, b) => b.lastmod.localeCompare(a.lastmod));
+    for (const g of games) {
+      lines.push(url(`${SITE}/games/${g.id}`, {
+        lastmod: g.lastmod,
+        changefreq: 'weekly',
+        priority: '0.8',
+        image: g.thumb,
+      }));
+    }
+
+    lines.push('</urlset>');
+
+    res.set('Content-Type', 'application/xml');
+    res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+    return res.send(lines.join('\n'));
+  } catch (err) {
+    console.error('Sitemap generation failed:', err);
+    // Hard fallback to static file
+    const staticPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+    if (fs.existsSync(staticPath)) {
+      res.type('application/xml');
+      return res.sendFile(staticPath);
+    }
+    return res.status(500).type('application/xml').send('<?xml version="1.0"?><error>Sitemap temporarily unavailable</error>');
+  }
+});
+
 async function startServer() {
   // Wire up Replit Auth (session + passport + OIDC routes)
   await setupAuth(app);
@@ -353,11 +508,6 @@ async function startServer() {
       return next();
     });
 
-    app.get('/sitemap.xml', (_req, res) => {
-      res.type('application/xml');
-      const f = fs.existsSync(path.join(distPath, 'sitemap.xml')) ? path.join(distPath, 'sitemap.xml') : path.join(process.cwd(), 'public', 'sitemap.xml');
-      return res.sendFile(f);
-    });
     app.get('/robots.txt', (_req, res) => {
       res.type('text/plain');
       const f = fs.existsSync(path.join(distPath, 'robots.txt')) ? path.join(distPath, 'robots.txt') : path.join(process.cwd(), 'public', 'robots.txt');
