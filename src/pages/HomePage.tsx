@@ -112,7 +112,6 @@ export const HomePage = React.memo(function HomePage({
   // Mystery Match State
   const [isFindingMysteryMatch, setIsFindingMysteryMatch] = React.useState(false);
   const [mysteryMatchTitle, setMysteryMatchTitle] = React.useState('');
-  const [showAllCategories, setShowAllCategories] = React.useState(false);
   const [featuredRotationTick, setFeaturedRotationTick] = React.useState(0);
 
   React.useEffect(() => {
@@ -197,11 +196,9 @@ export const HomePage = React.memo(function HomePage({
   };
 
   const curatedCategoryOrder = React.useMemo(
-    () => ['action', 'adventure', 'racing', 'sports', 'puzzle', 'arcade', 'multiplayer', 'strategy', 'shooter', 'casual', 'simulation', 'mobile'],
+    () => ['action', 'adventure', 'racing', 'sports', 'puzzle', 'multiplayer', 'shooter', 'casual', 'driving', 'simulation', 'strategy', 'girls', 'mobile', 'fighting', 'arcade'],
     []
   );
-
-  const curatedCategoryIds = React.useMemo(() => new Set(curatedCategoryOrder), [curatedCategoryOrder]);
 
   const curatedCategories = React.useMemo(
     () => curatedCategoryOrder
@@ -209,13 +206,6 @@ export const HomePage = React.memo(function HomePage({
       .filter((chip): chip is (typeof HOMEPAGE_CATEGORY_CHIPS)[number] => Boolean(chip)),
     [curatedCategoryOrder]
   );
-
-  const extraCategories = React.useMemo(
-    () => HOMEPAGE_CATEGORY_CHIPS.filter((chip) => !curatedCategoryIds.has(chip.id)),
-    [curatedCategoryIds]
-  );
-
-  const exploreCategories = showAllCategories ? [...curatedCategories, ...extraCategories] : curatedCategories;
 
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
@@ -629,39 +619,10 @@ export const HomePage = React.memo(function HomePage({
                 </div>
                 <h3 className="section-title">Browse by genre</h3>
               </div>
-              <div className="flex items-center gap-2">
-                {!showAllCategories && (
-                  <>
-                    <button onClick={() => handleScroll(categoriesRef, 'left')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => handleScroll(categoriesRef, 'right')} className={`p-2 rounded-lg border transition-all active:scale-95 cursor-pointer ${isDarkMode ? 'border-white/10 hover:border-accent bg-black/40 text-white/60 hover:text-accent' : 'border-black/10 hover:border-accent text-black/60 hover:text-accent'}`}>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={() => setShowAllCategories(v => !v)}
-                  className="text-sm font-bold text-accent hover:opacity-70 transition-opacity"
-                >
-                  {showAllCategories ? 'Collapse' : 'Show all'}
-                </button>
-              </div>
             </div>
 
-            {/* Horizontal strip */}
-            <AnimatePresence initial={false}>
-            {!showAllCategories && (
-              <motion.div
-                key="cats-strip"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                style={{ overflow: 'hidden' }}
-              >
-            <div className="category-chip-grid" ref={categoriesRef}>
-              {exploreCategories.map((cat) => (
+            <div className="category-chip-grid">
+              {curatedCategories.map((cat) => (
                 <button
                   key={`cat-chip-${cat.slug}`}
                   type="button"
@@ -674,56 +635,15 @@ export const HomePage = React.memo(function HomePage({
                   className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
                 >
                   <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-0.5">
                     <span className="category-chip-label">{cat.title}</span>
-                    {categoryCounts[cat.id] !== undefined && (
-                      <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} Games</span>
+                    {categoryCounts[cat.id] !== undefined && categoryCounts[cat.id] > 0 && (
+                      <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} games</span>
                     )}
                   </div>
                 </button>
               ))}
             </div>
-              </motion.div>
-            )}
-            </AnimatePresence>
-
-            {/* Expanded wrap grid */}
-            <AnimatePresence initial={false}>
-            {showAllCategories && (
-              <motion.div
-                key="cats-grid"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                style={{ overflow: 'hidden' }}
-              >
-                <div className="flex flex-wrap gap-3">
-                  {[...exploreCategories, ...extraCategories.filter(c => !exploreCategories.some(e => e.slug === c.slug))].map((cat) => (
-                    <button
-                      key={`cat-chip-all-${cat.slug}`}
-                      type="button"
-                      onClick={() => {
-                        const main = document.querySelector('main');
-                        if (main) main.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                        else window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                        navigate(`/category/${cat.slug}`);
-                      }}
-                      className={`category-chip bg-gradient-to-br ${cat.bg} ${isDarkMode ? 'category-chip--dark' : 'category-chip--light'}`}
-                    >
-                      <span className="category-chip-icon" aria-hidden>{cat.icon}</span>
-                      <div className="flex flex-col">
-                        <span className="category-chip-label">{cat.title}</span>
-                        {categoryCounts[cat.id] !== undefined && (
-                          <span className="category-chip-count">{categoryCounts[cat.id].toLocaleString()} Games</span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-            </AnimatePresence>
 
           </section>
           </LazyShelf>

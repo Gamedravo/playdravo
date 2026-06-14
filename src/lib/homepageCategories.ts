@@ -37,6 +37,7 @@ export const HOMEPAGE_CATEGORY_CHIPS: HomepageCategoryChip[] = [
   { id: 'educational', title: 'Educational', icon: '📚', slug: 'educational', matchers: [/\beducational\b/i, /\bbrain\b/i], bg: 'from-indigo-500/10 to-blue-500/5 hover:border-indigo-500/30' },
   { id: 'board', title: 'Board Games', icon: '♟️', slug: 'board', matchers: [/\bboard\b/i, /\bchess\b/i], bg: 'from-amber-500/10 to-orange-500/5 hover:border-amber-500/30' },
   { id: 'card', title: 'Card Games', icon: '🃏', slug: 'card', matchers: [/\bcard\b/i, /\bsolitaire\b/i], bg: 'from-red-500/10 to-pink-500/5 hover:border-red-500/30' },
+  { id: 'girls', title: 'Girls Games', icon: '💅', slug: 'girls', matchers: [/\bgirls?\b/i, /\bfashion\b/i, /\bdress[\s-]?up\b/i, /\bmakeup\b/i, /\bbeauty\b/i, /\bsalon\b/i, /\bprincess\b/i, /\bbarbie\b/i], bg: 'from-pink-500/10 to-rose-500/5 hover:border-pink-500/30' },
 ];
 
 function haystack(game: Game): string {
