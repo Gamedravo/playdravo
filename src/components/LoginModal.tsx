@@ -1,17 +1,6 @@
-import { useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShieldCheck, ArrowLeft, Loader2, Zap } from 'lucide-react';
+import { X, ShieldCheck, Zap } from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
-import { AuthProviderButtons, type AuthMethodId, type OAuthProviderId } from './AuthProviderButtons';
-import {
-  resetPassword,
-  signInWithEmail,
-  signInWithGithub,
-  signInWithGoogle,
-  signInWithMicrosoft,
-  signUpWithEmail,
-} from '../firebase';
-import { handleAuthError } from '../lib/authErrors';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -45,75 +34,8 @@ function ScanLine() {
 }
 
 export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
-  const [activeMethod, setActiveMethod] = useState<'email' | null>(null);
-  const [loadingProvider, setLoadingProvider] = useState<AuthMethodId | null>(null);
-  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-
-  const inputClass = `w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${
-    isDarkMode
-      ? 'bg-white/[0.04] border-white/[0.1] focus:border-cyan-400/50 placeholder:text-white/30 text-white'
-      : 'bg-black/[0.03] border-black/10 focus:border-cyan-500/50 placeholder:text-black/35'
-  }`;
-
-  const runAuth = async (provider: AuthMethodId, action: () => Promise<unknown>) => {
-    setLoadingProvider(provider);
-    setMessage(null);
-    try {
-      await action();
-      onClose();
-    } catch (error) {
-      const err = error as { message?: string };
-      setMessage(err.message || 'Login failed. Please try again.');
-      handleAuthError(error, provider, t);
-    } finally {
-      setLoadingProvider(null);
-    }
-  };
-
-  const handleOAuth = (provider: OAuthProviderId) => {
-    const providers = {
-      google: signInWithGoogle,
-      microsoft: signInWithMicrosoft,
-      github: signInWithGithub,
-    };
-    runAuth(provider, providers[provider]);
-  };
-
-  const handleEmailSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const normalizedEmail = email.trim();
-    if (!normalizedEmail || !password) {
-      setMessage('Enter your email and password to continue.');
-      return;
-    }
-    runAuth('email', () =>
-      isCreatingAccount
-        ? signUpWithEmail(normalizedEmail, password)
-        : signInWithEmail(normalizedEmail, password)
-    );
-  };
-
-  const handlePasswordReset = async () => {
-    const normalizedEmail = email.trim();
-    if (!normalizedEmail) {
-      setMessage('Enter your email first, then request a reset link.');
-      return;
-    }
-    setLoadingProvider('email');
-    setMessage(null);
-    try {
-      await resetPassword(normalizedEmail);
-      setMessage('Password reset email sent. Check your inbox.');
-    } catch (error) {
-      const err = error as { message?: string };
-      setMessage(err.message || 'Could not send reset email.');
-      handleAuthError(error, 'email', t);
-    } finally {
-      setLoadingProvider(null);
-    }
+  const handleLogin = () => {
+    window.location.href = '/api/login';
   };
 
   return (
@@ -231,21 +153,19 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                       transition={{ delay: 0.1, duration: 0.25 }}
                     >
                       <h3 className="text-xl font-black tracking-tight">
-                        {isCreatingAccount ? 'Create Account' : t('login') || 'Sign In'}
+                        {t('login') || 'Sign In'}
                       </h3>
                       {isDarkMode && (
                         <div className="flex items-center justify-center gap-1.5 mt-1">
                           <Zap className="w-3 h-3 text-cyan-400" />
                           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-400/70">
-                            {isCreatingAccount ? 'Join GameDravo' : 'Secure Access'}
+                            Secure Access
                           </p>
                         </div>
                       )}
                       {!isDarkMode && (
                         <p className="mt-1 text-sm text-black/55">
-                          {isCreatingAccount
-                            ? 'Register to save favorites, track history, and personalize GameDravo.'
-                            : 'Welcome back. Sign in to continue your GameDravo session.'}
+                          Welcome back. Sign in to continue your GameDravo session.
                         </p>
                       )}
                     </motion.div>
@@ -257,132 +177,27 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                       style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.25), rgba(124,58,237,0.2), transparent)' }} />
                   )}
 
-                  {/* Toggle card */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15, duration: 0.25 }}
-                    className={`rounded-2xl border p-3 flex items-center justify-between gap-3 ${
-                      isDarkMode
-                        ? 'border-white/[0.07] bg-white/[0.03]'
-                        : 'border-black/10 bg-black/[0.03]'
-                    }`}
-                  >
-                    <div>
-                      <p className="text-sm font-bold">
-                        {isCreatingAccount ? 'Already registered?' : 'Not registered yet?'}
-                      </p>
-                      <p className={`text-xs ${isDarkMode ? 'text-white/45' : 'text-black/50'}`}>
-                        {isCreatingAccount ? 'Switch back to login.' : 'Create a free account in seconds.'}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => { setIsCreatingAccount((v) => !v); setMessage(null); }}
-                      className="shrink-0 rounded-xl px-4 py-2 text-xs font-bold text-white transition-all hover:brightness-110 active:scale-95"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(34,211,238,0.9), rgba(124,58,237,0.9))',
-                        boxShadow: isDarkMode ? '0 0 16px rgba(34,211,238,0.2)' : 'none',
-                      }}
-                    >
-                      {isCreatingAccount ? 'Sign in' : 'Register'}
-                    </button>
-                  </motion.div>
-
-                  {/* Auth content */}
+                  {/* Sign in button */}
                   <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.25 }}
+                    className="flex flex-col gap-3"
                   >
-                    {activeMethod === 'email' ? (
-                      <form className="flex flex-col gap-3" onSubmit={handleEmailSubmit}>
-                        <button
-                          type="button"
-                          onClick={() => setActiveMethod(null)}
-                          className={`self-start inline-flex items-center gap-2 text-xs font-semibold transition-colors ${
-                            isDarkMode ? 'text-white/55 hover:text-cyan-400' : 'text-black/60 hover:text-black'
-                          }`}
-                        >
-                          <ArrowLeft className="w-3.5 h-3.5" />
-                          {isCreatingAccount ? 'Back to register options' : 'Back to login options'}
-                        </button>
-                        <input
-                          className={inputClass}
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email address"
-                          autoComplete="email"
-                        />
-                        <input
-                          className={inputClass}
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Password"
-                          autoComplete={isCreatingAccount ? 'new-password' : 'current-password'}
-                        />
-                        <button
-                          type="submit"
-                          disabled={loadingProvider === 'email'}
-                          className="w-full rounded-xl py-3 text-sm font-black text-black transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-                          style={{
-                            background: 'linear-gradient(135deg, rgb(34,211,238), rgb(124,58,237))',
-                            boxShadow: isDarkMode ? '0 0 24px rgba(34,211,238,0.25)' : 'none',
-                          }}
-                        >
-                          {loadingProvider === 'email' ? (
-                            <span className="inline-flex items-center gap-2 justify-center">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              Please wait…
-                            </span>
-                          ) : isCreatingAccount ? 'Create account' : 'Sign in with email'}
-                        </button>
-                        <div className="flex items-center justify-between gap-3 text-xs font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => { setIsCreatingAccount((v) => !v); setMessage(null); }}
-                            className={`transition-colors ${isDarkMode ? 'text-cyan-400/80 hover:text-cyan-400' : 'text-accent hover:opacity-80'}`}
-                          >
-                            {isCreatingAccount ? 'Already registered? Sign in' : 'Not registered yet? Register'}
-                          </button>
-                          {!isCreatingAccount && (
-                            <button
-                              type="button"
-                              onClick={handlePasswordReset}
-                              className={`transition-colors ${isDarkMode ? 'text-white/45 hover:text-white' : 'text-black/55 hover:text-black'}`}
-                            >
-                              Forgot password?
-                            </button>
-                          )}
-                        </div>
-                      </form>
-                    ) : (
-                      <AuthProviderButtons
-                        isDarkMode={isDarkMode}
-                        loadingProvider={loadingProvider}
-                        activeMethod={activeMethod}
-                        onOAuth={handleOAuth}
-                        onEmail={() => setActiveMethod('email')}
-                      />
-                    )}
-                  </motion.div>
-
-                  {/* Message */}
-                  {message && (
-                    <motion.p
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`rounded-xl border px-3 py-2.5 text-xs ${
-                        isDarkMode
-                          ? 'border-cyan-400/20 bg-cyan-400/[0.05] text-white/70'
-                          : 'border-black/10 bg-black/[0.03] text-black/65'
-                      }`}
+                    <button
+                      onClick={handleLogin}
+                      className="w-full rounded-xl py-3.5 text-sm font-black text-black transition-all hover:brightness-110 active:scale-[0.98]"
+                      style={{
+                        background: 'linear-gradient(135deg, rgb(34,211,238), rgb(124,58,237))',
+                        boxShadow: isDarkMode ? '0 0 24px rgba(34,211,238,0.25)' : 'none',
+                      }}
                     >
-                      {message}
-                    </motion.p>
-                  )}
+                      Log in
+                    </button>
+                    <p className={`text-center text-xs ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
+                      You'll be redirected to sign in securely.
+                    </p>
+                  </motion.div>
 
                   {/* Footer */}
                   <div className="flex items-center justify-center gap-2 pt-1">

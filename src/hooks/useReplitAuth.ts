@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged, getRedirectResult, type User } from 'firebase/auth';
-import { auth, logout as firebaseLogout, persistencePromise } from '../firebase';
 
 export interface ReplitUser {
   id: string;
@@ -20,98 +18,41 @@ interface UseReplitAuthReturn {
   logout: () => void;
 }
 
-let sharedRedirectUser: User | null = null;
-let sharedRedirectPromise: Promise<void> | null = null;
-
-function processRedirectResult(): Promise<void> {
-  if (!sharedRedirectPromise) {
-    sharedRedirectPromise = getRedirectResult(auth)
-      .then((result) => {
-        sharedRedirectUser = result?.user ?? null;
-        if (sharedRedirectUser) {
-          console.log('[OAuth] Redirect sign-in successful:', sharedRedirectUser.uid);
-        }
-      })
-      .catch((error: { code?: string; message?: string }) => {
-        if (error.code === 'auth/unauthorized-domain') {
-          console.error(
-            '[OAuth] This domain is not authorized in Firebase Console.\n' +
-            'Go to Firebase Console → Authentication → Settings → Authorized domains\n' +
-            'and add: ' + window.location.hostname
-          );
-        } else if (error.code && error.code !== 'auth/no-auth-event') {
-          console.error('[OAuth] Redirect error:', error.code, error.message);
-        }
-      });
-  }
-
-  return sharedRedirectPromise;
-}
-
-function toAppUser(firebaseUser: typeof auth.currentUser): ReplitUser | null {
-  if (!firebaseUser) return null;
-
-  const [firstName, ...lastNameParts] = (firebaseUser.displayName || '').split(' ').filter(Boolean);
-
-  return {
-    id: firebaseUser.uid,
-    email: firebaseUser.email,
-    firstName: firstName || null,
-    lastName: lastNameParts.join(' ') || null,
-    profileImageUrl: firebaseUser.photoURL,
-    username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || null,
-  };
-}
-
 export function useReplitAuth(): UseReplitAuthReturn {
   const [user, setUser] = useState<ReplitUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    let unsubscribe: (() => void) | undefined;
-
-    const finishLoading = (firebaseUser: User | null) => {
-      if (!isMounted) return;
-      setUser(toAppUser(firebaseUser));
-      setIsLoading(false);
-    };
-
-    const startAuthListener = async () => {
-      await persistencePromise;
-      if (!isMounted) return;
-
-      const redirectPromise = processRedirectResult();
-      let firstCall = true;
-
-      unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-        if (firstCall && !firebaseUser) {
-          firstCall = false;
-          redirectPromise.then(() => {
-            finishLoading(auth.currentUser ?? sharedRedirectUser);
+    fetch('/api/auth/user')
+      .then((res) => {
+        if (res.ok) return res.json();
+        return null;
+      })
+      .then((data) => {
+        if (data && data.id) {
+          setUser({
+            id: data.id,
+            email: data.email ?? null,
+            firstName: data.firstName ?? null,
+            lastName: data.lastName ?? null,
+            profileImageUrl: data.profileImageUrl ?? null,
+            username: data.username ?? null,
+            role: data.role ?? null,
           });
-          return;
+        } else {
+          setUser(null);
         }
-
-        firstCall = false;
-        finishLoading(firebaseUser ?? sharedRedirectUser);
-      });
-    };
-
-    startAuthListener();
-
-    return () => {
-      isMounted = false;
-      unsubscribe?.();
-    };
+      })
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const login = () => {
-    window.dispatchEvent(new CustomEvent('open-login-modal'));
+    window.location.href = '/api/login';
   };
 
   const logout = () => {
-    firebaseLogout().catch(console.error);
+    window.location.href = '/api/logout';
   };
 
   return {

@@ -18,7 +18,6 @@ import {
 import { toast } from 'sonner';
 import { ModalShell } from './ui/ModalShell';
 import { type ReplitUser } from '../hooks/useReplitAuth';
-import { auth, logout, requestEmailChange, resetPassword, verifyUserEmail } from '../firebase';
 
 type AccountView = 'main' | 'email' | 'password' | 'logout-all' | 'delete' | 'notifications' | 'privacy';
 
@@ -45,12 +44,11 @@ export function AccountSettingsModal({
   const [newEmail, setNewEmail] = useState('');
   const [isWorking, setIsWorking] = useState(false);
 
-  const firebaseUser = auth.currentUser;
-  const email = user?.email || firebaseUser?.email || '';
+  const email = user?.email || '';
   const displayName = useMemo(() => {
     const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
-    return firebaseUser?.displayName || fullName || user?.username || 'GameDravo Player';
-  }, [firebaseUser?.displayName, user?.firstName, user?.lastName, user?.username]);
+    return fullName || user?.username || 'GameDravo Player';
+  }, [user?.firstName, user?.lastName, user?.username]);
 
   const [notifications, setNotifications] = useState({
 
@@ -98,45 +96,22 @@ export function AccountSettingsModal({
     }
   };
 
-  const handleLogout = async () => {
-    await runAccountAction(async () => {
-      await logout();
-      handleClose();
-    }, 'Logged out successfully.');
+  const handleLogout = () => {
+    handleClose();
+    window.location.href = '/api/logout';
   };
 
-  const handlePasswordReset = async () => {
-    if (!email) {
-      toast.error('No email address is attached to this account.');
-      return;
-    }
-
-    await runAccountAction(
-      () => resetPassword(email),
-      'Password change email sent. Check your inbox.'
-    );
+  const handlePasswordReset = () => {
+    toast.info('To change your password, please use your Replit account settings.');
   };
 
-  const handleEmailChange = async (event: React.FormEvent) => {
+  const handleEmailChange = (event: React.FormEvent) => {
     event.preventDefault();
-    const normalizedEmail = newEmail.trim();
-    if (!normalizedEmail) {
-      toast.error('Enter your new email address.');
-      return;
-    }
-
-    await runAccountAction(
-      () => requestEmailChange(normalizedEmail),
-      'Verification link sent. Open it to finish changing your email.'
-    );
-    setNewEmail('');
+    toast.info('To change your email, please use your Replit account settings.');
   };
 
-  const handleVerifyEmail = async () => {
-    await runAccountAction(
-      () => verifyUserEmail(),
-      'Verification email sent. Check your inbox.'
-    );
+  const handleVerifyEmail = () => {
+    toast.info('Email verification is managed through your Replit account.');
   };
 
   const ToggleItem = ({ title, desc, value, onChange }: { title: string; desc: string; value: boolean; onChange: (v: boolean) => void }) => (
@@ -209,7 +184,7 @@ export function AccountSettingsModal({
           <AccountAction icon={<UserPen className="w-5 h-5 text-accent" />} title="Change Username" desc="Edit the gamer tag shown on GameDravo" onClick={() => onEditUsername?.()} />
           <AccountAction icon={<Mail className="w-5 h-5 text-accent" />} title="Change Email" desc={email ? `Current email: ${email}` : 'Add or update your login email'} onClick={() => setView('email')} />
           <AccountAction icon={<KeyRound className="w-5 h-5 text-accent" />} title="Change Password" desc="Send a secure password change email" onClick={() => setView('password')} />
-          <AccountAction icon={<ShieldCheck className="w-5 h-5 text-accent" />} title="Verify Email" desc={firebaseUser?.emailVerified ? 'Your email is already verified' : 'Send a verification email'} onClick={handleVerifyEmail} />
+          <AccountAction icon={<ShieldCheck className="w-5 h-5 text-accent" />} title="Verify Email" desc="Manage email verification via Replit account" onClick={handleVerifyEmail} />
         </div>
       </section>
 

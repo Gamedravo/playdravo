@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
-import { updateProfile as updateFirebaseProfile } from 'firebase/auth';
 import { GameDravoMark } from './GameDravoLogo';
 import { toast } from 'sonner';
 import { ModalShell } from './ui/ModalShell';
 import { api } from '../lib/api';
-import { auth } from '../firebase';
 
 interface UsernameSetupModalProps {
 
@@ -40,10 +38,6 @@ export function UsernameSetupModal({ isOpen, onClose, userId, onComplete, isDark
 
     setIsSubmitting(true);
     try {
-      if (auth.currentUser) {
-        await updateFirebaseProfile(auth.currentUser, { displayName: nextUsername });
-      }
-
       const localProfileKey = `gamedravo:userProfile:${userId}`;
       const existingLocalProfile = JSON.parse(localStorage.getItem(localProfileKey) || 'null') || {};
       localStorage.setItem(
