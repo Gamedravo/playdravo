@@ -29,7 +29,7 @@ export const HeaderBrand = memo(function HeaderBrand({ onHome }: HeaderBrandProp
       showWordmark
       onClick={goHome}
       className={shouldShowBrand ? '' : 'hidden'}
-      wordmarkClassName="brand-wordmark hidden sm:flex"
+      wordmarkClassName="brand-wordmark flex"
     />
   );
 });
