@@ -46,6 +46,8 @@ import { api } from '../lib/api';
 import { GameThumbnail } from '../components/GameThumbnail';
 import { Analytics } from '../lib/analytics';
 import { getCategoryPath } from '../utils/categoryRoutes';
+import { generateFAQSchema } from '../lib/gameContent';
+import { GameContentSection } from '../components/GameContentSection';
 
 const safeFormatDate = (createdAt: any) => {
   try {
@@ -518,6 +520,7 @@ export const GamePage: React.FC<GamePageProps> = ({
               { '@type': 'ListItem', position: 3, name: game.title, item: `https://gamedravo.com/games/${game.id}` },
             ],
           },
+          generateFAQSchema(game),
         ]}
       />
 
@@ -1170,6 +1173,9 @@ export const GamePage: React.FC<GamePageProps> = ({
                 })}
               </div>
             </section>
+
+            {/* ── Rich Game Content (SEO + AdSense value) ── */}
+            <GameContentSection game={game} isDarkMode={isDarkMode} />
 
             {/* Related Games Grid */}
             <section className="space-y-4 md:space-y-6">

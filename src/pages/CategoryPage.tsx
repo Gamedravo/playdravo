@@ -72,8 +72,8 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
   return (
     <div className="min-h-screen">
       <SEO
-        title={`Play ${categoryName} Games Online Free – GameDravo`}
-        description={`Play the best free ${categoryName} games online on GameDravo. Browse ${categoryGames.length}+ ${categoryName} games — no download, no sign-up. Instant browser play.`}
+        title={`Best Free ${categoryName} Games Online – Play ${categoryGames.length > 0 ? `${categoryGames.length}+` : 'Instantly'} | GameDravo`}
+        description={`Discover and play ${categoryGames.length}+ free ${categoryName} games online on GameDravo. Top-rated ${categoryName} games with instant browser play — no download, no sign-up required.`}
         keywords={`${categoryName} games, free ${categoryName} games online, play ${categoryName} games, browser ${categoryName} games, GameDravo`}
         canonicalUrl={`https://gamedravo.com/category/${categoryId}`}
         url={`https://gamedravo.com/category/${categoryId}`}

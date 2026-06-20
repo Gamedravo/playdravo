@@ -314,8 +314,8 @@ export const HomePage = React.memo(function HomePage({
   return (
     <div className="homepage-stack">
       <SEO
-        title="Lightweight Futuristic Browser Games – Play Instantly"
-        description="GameDravo is a lightweight futuristic gaming portal built for instant play: fast browser games, clean discovery, no downloads, and mobile-friendly action, puzzle, arcade, sports, and strategy games."
+        title="GameDravo – Play Free Browser Games Instantly, No Download"
+        description="GameDravo is your free browser gaming hub — 1,000+ instant-play HTML5 games across action, puzzle, racing, sports, arcade, and strategy. No download, no sign-up. Play on mobile or desktop."
         keywords="futuristic browser games, lightweight online games, no download games, instant play games, free HTML5 games, mobile games, arcade games, puzzle games"
         canonicalUrl="https://gamedravo.com/"
         url="https://gamedravo.com/"

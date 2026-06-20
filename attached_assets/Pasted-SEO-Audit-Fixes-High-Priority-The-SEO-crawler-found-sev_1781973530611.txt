@@ -1,0 +1,124 @@
+SEO Audit Fixes – High Priority
+
+The SEO crawler found several critical issues that need to be fixed before focusing on traffic growth and AdSense approval.
+
+1. Canonical URL / HTTP Redirect Issue
+Problem:
+- Homepage has no canonical URL or proper HTTP → HTTPS redirect.
+
+Fix:
+- Force all traffic:
+  http://gamedravo.com → https://gamedravo.com
+  www.gamedravo.com → https://gamedravo.com
+- Add canonical tag on every page:
+  <link rel="canonical" href="CURRENT_PAGE_URL" />
+- Ensure only one indexable version of each page exists.
+
+2. Duplicate Title Tags (19 Pages)
+Problem:
+- Multiple pages are using identical <title> tags.
+
+Fix:
+Every page must have a unique title.
+
+Examples:
+Homepage:
+GameDravo – Play Free Online Games Instantly
+
+Category:
+Action Games – Play Free Action Games | GameDravo
+
+Game Page:
+Tekken 3 – Play Online Free | GameDravo
+
+Game Page:
+Shadow Fight 2 – Play Online Free | GameDravo
+
+No two pages should share the same title.
+
+3. Duplicate Meta Descriptions (19 Pages)
+Problem:
+- Many pages use the same description.
+
+Fix:
+Generate unique meta descriptions automatically.
+
+Examples:
+
+Tekken 3:
+Play Tekken 3 online free in your browser. No downloads required.
+
+Shadow Fight 2:
+Battle enemies and master martial arts in Shadow Fight 2. Play instantly.
+
+Action Category:
+Discover the best free action games playable instantly on GameDravo.
+
+4. Duplicate Content (19 Pages)
+Problem:
+- Pages are too similar and appear duplicated to search engines.
+
+Fix:
+Each game page must contain unique content:
+- Unique game description
+- Gameplay overview
+- Controls section
+- Tips section
+- Features section
+
+Minimum target:
+200–500 words unique content per game page.
+
+5. Orphaned Sitemap Pages (862 Pages)
+Problem:
+- Pages exist in sitemap but are not linked internally.
+
+Fix:
+- Every game page must be reachable through:
+  Homepage
+  Categories
+  Related Games
+  Search
+- Remove dead pages from sitemap.
+- Remove pages that return errors.
+- Ensure all sitemap URLs are internally linked.
+
+6. Structured Data
+Add schema markup:
+
+Homepage:
+- WebSite
+- Organization
+
+Game Pages:
+- VideoGame schema
+- Breadcrumb schema
+
+Category Pages:
+- CollectionPage schema
+
+7. Internal Linking
+Add:
+- Related Games section
+- Similar Games section
+- Category navigation
+- Breadcrumb navigation
+
+Every game page should link to multiple other game pages.
+
+8. AdSense Preparation
+Current AdSense issue is "Low Value Content".
+
+To improve approval chances:
+- Unique game descriptions
+- Unique titles
+- Unique meta descriptions
+- Blog articles
+- About page
+- Contact page
+- Privacy Policy
+- Terms of Service
+- FAQ page
+
+Goal:
+Reduce SEO errors from 58 to near 0 and prepare GameDravo for better Google indexing, rankings, and AdSense approval.
