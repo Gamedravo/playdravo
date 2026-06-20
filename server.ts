@@ -22,12 +22,15 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
-// HTTP → HTTPS redirect — only fires when proxy explicitly sets x-forwarded-proto: http
-// (never triggers on direct localhost requests since that header isn't present locally)
+// Single-hop redirect: HTTP → HTTPS AND www → non-www in one step
+// Combining both conditions avoids a two-hop redirect chain for http://www.gamedravo.com/
 app.use((req, res, next) => {
   const proto = req.headers['x-forwarded-proto'] as string | undefined;
-  if (proto === 'http') {
-    return res.redirect(301, `https://${req.hostname}${req.originalUrl}`);
+  const host = String(req.headers.host || '').toLowerCase();
+  const isHttp = proto === 'http';
+  const isWww = host === 'www.gamedravo.com' || host.startsWith('www.gamedravo.com:');
+  if (isHttp || isWww) {
+    return res.redirect(301, `https://gamedravo.com${req.originalUrl}`);
   }
   next();
 });
@@ -601,6 +604,29 @@ async function startServer() {
     return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ').replace(/\r/g, '');
   }
 
+  function escapeAttr(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function buildSocialMeta(title: string, description: string, url: string, type = 'website'): string {
+    const image = 'https://gamedravo.com/logo.svg';
+    const t = escapeAttr(title);
+    const d = escapeAttr(description);
+    return [
+      `<meta property="og:type" content="${type}" />`,
+      `<meta property="og:site_name" content="GameDravo" />`,
+      `<meta property="og:title" content="${t}" />`,
+      `<meta property="og:description" content="${d}" />`,
+      `<meta property="og:url" content="${url}" />`,
+      `<meta property="og:image" content="${image}" />`,
+      `<meta name="twitter:card" content="summary_large_image" />`,
+      `<meta name="twitter:site" content="@GameDravo" />`,
+      `<meta name="twitter:title" content="${t}" />`,
+      `<meta name="twitter:description" content="${d}" />`,
+      `<meta name="twitter:image" content="${image}" />`,
+    ].join('\n');
+  }
+
   function buildGameJsonLd(gameSlug: string, canonicalUrl: string): string {
     const t = escapeJson(slugToTitle(gameSlug));
     const desc = escapeJson(`Play ${slugToTitle(gameSlug)} for free in your browser on GameDravo. No download required. Instant HTML5 gameplay — no plugins, no installation.`);
@@ -686,8 +712,14 @@ async function startServer() {
       html = html.replace(/(<title>)[^<]*(<\/title>)/, `$1${meta.title}$2`);
       html = html.replace(/(<meta name="description" content=")[^"]*(")/,  `$1${meta.description}$2`);
     }
-    if (jsonLd) {
-      html = html.replace('</head>', `${jsonLd}\n</head>`);
+    // Inject OG + Twitter Card + JSON-LD tags before </head> — all server-side so crawlers see them
+    const resolvedTitle = meta?.title || 'GameDravo | Free Browser Games, No Download';
+    const resolvedDesc = meta?.description || 'GameDravo is a lightweight futuristic gaming portal for instant no-download browser games.';
+    const ogType = gameMatch ? 'game' : 'website';
+    const socialTags = buildSocialMeta(resolvedTitle, resolvedDesc, canonical, ogType);
+    const headInjection = [socialTags, jsonLd].filter(Boolean).join('\n');
+    if (headInjection) {
+      html = html.replace('</head>', `${headInjection}\n</head>`);
     }
     // Replace the noscript H1 "GameDravo" with a page-specific heading for non-JS crawlers
     if (noscriptH1) {
@@ -718,14 +750,6 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-
-    app.use((req, res, next) => {
-      const host = String(req.headers.host || '').toLowerCase();
-      if (host === 'www.gamedravo.com' || host.startsWith('www.gamedravo.com:')) {
-        return res.redirect(301, `https://gamedravo.com${req.originalUrl || '/'}`);
-      }
-      return next();
-    });
 
     app.get('/robots.txt', (_req, res) => {
       res.type('text/plain');
