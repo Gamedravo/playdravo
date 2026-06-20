@@ -4,9 +4,9 @@ import {
   LogIn,
   ChevronDown,
   Bell,
-  RotateCcw,
 } from 'lucide-react';
 import { HeaderBrand } from './HeaderBrand';
+import { GameDravoLogo } from './GameDravoLogo';
 import { UserProfile, Language } from '../types';
 import { type ReplitUser } from '../hooks/useReplitAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -151,13 +151,14 @@ export const Header = memo(function Header({
 
           {/* Center: Brand on mobile (centered), search on desktop */}
           <div className="flex-1 flex items-center justify-center md:justify-start min-w-0 md:px-6 lg:px-10">
-            {/* Mobile brand — centered, always visible */}
+            {/* Mobile brand — centered, tapping logo refreshes the page */}
             <div className="flex md:hidden items-center justify-center">
-              <HeaderBrand
-                onHome={() => {
-                  if (setSelectedCategory) setSelectedCategory('All');
-                  if (setSearchQuery) setSearchQuery('');
-                }}
+              <GameDravoLogo
+                size="sm"
+                showWordmark
+                onClick={handleRefresh}
+                className={isRefreshing ? '[&_.brand-mark-img]:animate-spin' : ''}
+                wordmarkClassName="brand-wordmark flex"
               />
             </div>
 
@@ -213,15 +214,6 @@ export const Header = memo(function Header({
                 variant="dropdown"
               />
             </div>
-
-            {/* Refresh button — mobile only */}
-            <button
-              onClick={handleRefresh}
-              aria-label="Refresh page"
-              className={`md:hidden ${iconBtn}`}
-            >
-              <RotateCcw className={`w-[15px] h-[15px] transition-transform duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </button>
 
             {/* Notifications bell */}
             <button
