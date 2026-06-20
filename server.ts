@@ -597,15 +597,91 @@ async function startServer() {
     return `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>GameDravo — Free Browser Games</h1><p>GameDravo is a free, lightweight gaming portal offering hundreds of instant-play browser games with no downloads required. Play action, puzzle, arcade, racing, sports, strategy, adventure, multiplayer, simulator, and casual games directly in your browser on desktop or mobile. Discover trending games, new arrivals, top-rated picks, and our curated recommendations. GameDravo is fast, free, and always online — no Flash, no plugins, just pure HTML5 gaming.</p><nav><a href="/">Home</a> <a href="/about">About</a> <a href="/contact">Contact</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="/cookies">Cookies</a> <a href="/html-sitemap">All Games</a></nav>${gameLinksHtml ? `<nav aria-label="All Games">${gameLinksHtml}</nav>` : ''}</div>`;
   }
 
+  function escapeJson(s: string): string {
+    return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ').replace(/\r/g, '');
+  }
+
+  function buildGameJsonLd(gameSlug: string, canonicalUrl: string): string {
+    const t = escapeJson(slugToTitle(gameSlug));
+    const desc = escapeJson(`Play ${slugToTitle(gameSlug)} for free in your browser on GameDravo. No download required. Instant HTML5 gameplay — no plugins, no installation.`);
+    const videoGameSchema = {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": t,
+      "description": desc,
+      "url": canonicalUrl,
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "GameDravo", "url": "https://gamedravo.com" }
+    };
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "GameDravo", "item": "https://gamedravo.com" },
+        { "@type": "ListItem", "position": 2, "name": "All Games", "item": "https://gamedravo.com/html-sitemap" },
+        { "@type": "ListItem", "position": 3, "name": t, "item": canonicalUrl }
+      ]
+    };
+    return `<script type="application/ld+json">${JSON.stringify(videoGameSchema)}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`;
+  }
+
+  function buildCategoryJsonLd(catSlug: string, canonicalUrl: string): string {
+    const n = catSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    const collectionSchema = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": `Free ${n} Games Online`,
+      "description": `Play free ${n.toLowerCase()} games online on GameDravo. No download required. Instant play on desktop and mobile.`,
+      "url": canonicalUrl,
+      "isPartOf": { "@type": "WebSite", "name": "GameDravo", "url": "https://gamedravo.com" }
+    };
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "GameDravo", "item": "https://gamedravo.com" },
+        { "@type": "ListItem", "position": 2, "name": `${n} Games`, "item": canonicalUrl }
+      ]
+    };
+    return `<script type="application/ld+json">${JSON.stringify(collectionSchema)}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`;
+  }
+
+  function buildHomeJsonLd(): string {
+    const websiteSchema = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GameDravo",
+      "url": "https://gamedravo.com",
+      "description": "GameDravo is a free lightweight browser gaming portal offering 800+ instant-play HTML5 games — no download required.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": "https://gamedravo.com/search?q={search_term_string}" },
+        "query-input": "required name=search_term_string"
+      }
+    };
+    const orgSchema = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "GameDravo",
+      "url": "https://gamedravo.com",
+      "logo": "https://gamedravo.com/favicon.ico",
+      "sameAs": []
+    };
+    return `<script type="application/ld+json">${JSON.stringify(websiteSchema)}</script>\n<script type="application/ld+json">${JSON.stringify(orgSchema)}</script>`;
+  }
+
   function injectSeoMeta(html: string, routePath: string): string {
-    const canonical = `${SITE_ORIGIN}${routePath === '/' ? '' : routePath}/`;
+    const canonical = `${SITE_ORIGIN}${routePath === '/' ? '' : routePath}`;
     const gameMatch = routePath.match(/^\/games\/(.+)$/);
     const catMatch = routePath.match(/^\/category\/(.+)$/);
     let dynMeta: { title: string; description: string } | null = null;
     let dynBody = '';
+    let jsonLd = '';
     if (gameMatch) {
       const t = slugToTitle(gameMatch[1]);
-      dynMeta = { title: `Play ${t} Free Online — GameDravo`, description: `Play ${t} for free in your browser on GameDravo. No download required. Instant HTML5 gameplay — no plugins, no installation.` };
+      dynMeta = { title: `${t} – Play Free Online | GameDravo`, description: `Play ${t} free in your browser — no download, no installation. Instant HTML5 game on GameDravo.` };
       // Inject links to 24 nearby game pages for crawlable internal linking
       const allGamePaths = getSitemapGamePaths();
       const idx = allGamePaths.findIndex(p => p === routePath);
@@ -614,11 +690,15 @@ async function startServer() {
         : allGamePaths.slice(0, 24);
       const nearbyLinks = nearby.map(p => `<a href="${p}">${slugToTitle(p.replace('/games/',''))}</a>`).join(' ');
       dynBody = `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>Play ${t} Free Online</h1><p>Play ${t} for free on GameDravo — no download or installation required. Open your browser and start playing instantly on desktop or mobile. ${t} is an HTML5 browser game available on GameDravo, your home for free instant-play games. Browse hundreds of free games including action, puzzle, arcade, racing, sports, strategy, multiplayer, and casual titles. No Flash, no plugins — just pure HTML5 fun.</p><nav><a href="/">Home</a> <a href="/html-sitemap">All Games</a> <a href="/category/action">Action</a> <a href="/category/puzzle">Puzzle</a> <a href="/category/arcade">Arcade</a> <a href="/category/racing">Racing</a> <a href="/category/sports">Sports</a></nav>${nearbyLinks ? `<nav aria-label="More Games">${nearbyLinks}</nav>` : ''}</div>`;
+      jsonLd = buildGameJsonLd(gameMatch[1], canonical);
     } else if (catMatch) {
       const n = catMatch[1].replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
       const nl = n.toLowerCase();
-      dynMeta = { title: `Free ${n} Games Online — GameDravo`, description: `Play free ${nl} games online on GameDravo. No download required. Discover the best ${nl} browser games — instant play on desktop and mobile.` };
+      dynMeta = { title: `${n} Games – Play Free Online | GameDravo`, description: `Play free ${nl} games online on GameDravo. No download required. Discover the best ${nl} browser games — instant play on desktop and mobile.` };
       dynBody = `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>Free ${n} Games Online</h1><p>Play free ${nl} games online on GameDravo. Browse our curated collection of the best ${nl} browser games — no download, no installation, no Flash required. Instant play on desktop and mobile. GameDravo offers hundreds of free HTML5 games across every category: action, puzzle, arcade, racing, sports, strategy, adventure, multiplayer, simulator, and casual games. Find your next favourite ${nl} game on GameDravo today.</p><nav><a href="/">Home</a> <a href="/html-sitemap">All Games</a> <a href="/category/action">Action</a> <a href="/category/puzzle">Puzzle</a> <a href="/category/arcade">Arcade</a> <a href="/category/racing">Racing</a> <a href="/category/sports">Sports</a> <a href="/category/strategy">Strategy</a></nav></div>`;
+      jsonLd = buildCategoryJsonLd(catMatch[1], canonical);
+    } else if (routePath === '/') {
+      jsonLd = buildHomeJsonLd();
     }
     const meta = ROUTE_META[routePath] || dynMeta;
     // Homepage body is built dynamically to include all game links
@@ -627,6 +707,9 @@ async function startServer() {
     if (meta) {
       html = html.replace(/(<title>)[^<]*(<\/title>)/, `$1${meta.title}$2`);
       html = html.replace(/(<meta name="description" content=")[^"]*(")/,  `$1${meta.description}$2`);
+    }
+    if (jsonLd) {
+      html = html.replace('</head>', `${jsonLd}\n</head>`);
     }
     html = html.replace('<!-- SEO_STATIC_BODY -->', bodyContent);
     return html;
