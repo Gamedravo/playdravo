@@ -17,8 +17,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const requestedLimit = Number(req.query.limit || 600);
-  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 600) : 600;
+  const requestedLimit = Number(req.query.limit || 1200);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 1200) : 1200;
   const pageSize = 200;
   const maxPages = Math.ceil(limit / pageSize);
 

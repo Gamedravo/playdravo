@@ -2,8 +2,9 @@ import { Game } from './types';
 
 const ONLINE_GAMES_API_URL = '/api/onlinegames-catalog';
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
-const GAMEPIX_TARGET_CATALOG_SIZE = 600;
-const GAMEPIX_API_URL = `/api/gamepix-catalog?limit=${GAMEPIX_TARGET_CATALOG_SIZE}`;
+const GAMEPIX_FETCH_LIMIT = 1200;
+const CATALOG_SIZE_LIMIT = 2000;
+const GAMEPIX_API_URL = `/api/gamepix-catalog?limit=${GAMEPIX_FETCH_LIMIT}`;
 const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
 const CAN_FETCH_EXTERNAL_CATALOGS = typeof window === 'undefined';
 
@@ -440,7 +441,7 @@ async function fetchGamePixRemote(): Promise<Game[]> {
   } catch {
     if (!CAN_FETCH_EXTERNAL_CATALOGS) return [];
     try {
-      const rawGames = await fetchRawGamePixFeed(GAMEPIX_TARGET_CATALOG_SIZE);
+      const rawGames = await fetchRawGamePixFeed(GAMEPIX_FETCH_LIMIT);
       return rawGames.filter(isSafeGamePixGame).map(gamePixGameToGame);
     } catch {
       return [];
@@ -494,7 +495,7 @@ async function _fetchCatalogRemote(): Promise<Game[]> {
       !game.adsInjected &&
       !game.popupRisk &&
       !game.redirectRisk;
-  }).slice(0, GAMEPIX_TARGET_CATALOG_SIZE);
+  }).slice(0, CATALOG_SIZE_LIMIT);
 }
 
 export const GAMES: Game[] = [
