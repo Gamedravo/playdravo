@@ -45,6 +45,22 @@ const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGa
 const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
 let onlineGamesCatalogCache: { data: unknown; timestamp: number } | null = null;
 let gamePixCatalogCache: { data: unknown; timestamp: number; limit: number } | null = null;
+
+// ─── Sitemap game path cache (for static SEO body injection) ──────────────────
+let _sitemapGamePaths: string[] | null = null;
+function getSitemapGamePaths(): string[] {
+  if (_sitemapGamePaths !== null) return _sitemapGamePaths;
+  try {
+    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+    if (!fs.existsSync(sitemapPath)) { _sitemapGamePaths = []; return []; }
+    const xml = fs.readFileSync(sitemapPath, 'utf8');
+    _sitemapGamePaths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+      .map(m => m[1])
+      .filter((u: string) => u.includes('/games/'))
+      .map((u: string) => u.replace(/^https?:\/\/[^/]+/, ''));
+    return _sitemapGamePaths;
+  } catch { _sitemapGamePaths = []; return []; }
+}
 const ONLINE_GAMES_CATALOG_CACHE_TTL = 1000 * 60 * 60;
 const GAMEPIX_CATALOG_CACHE_TTL = 1000 * 60 * 60 * 6;
 let gamePixFailureUntil = 0;
@@ -573,6 +589,14 @@ async function startServer() {
   const slugToTitle = (slug: string): string =>
     slug.replace(/^gamepix-/, '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
+  function buildHomeBody(): string {
+    const gamePaths = getSitemapGamePaths();
+    const gameLinksHtml = gamePaths
+      .map(p => `<a href="${p}">${slugToTitle(p.replace('/games/', ''))}</a>`)
+      .join(' ');
+    return `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>GameDravo — Free Browser Games</h1><p>GameDravo is a free, lightweight gaming portal offering hundreds of instant-play browser games with no downloads required. Play action, puzzle, arcade, racing, sports, strategy, adventure, multiplayer, simulator, and casual games directly in your browser on desktop or mobile. Discover trending games, new arrivals, top-rated picks, and our curated recommendations. GameDravo is fast, free, and always online — no Flash, no plugins, just pure HTML5 gaming.</p><nav><a href="/">Home</a> <a href="/about">About</a> <a href="/contact">Contact</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="/cookies">Cookies</a> <a href="/html-sitemap">All Games</a></nav>${gameLinksHtml ? `<nav aria-label="All Games">${gameLinksHtml}</nav>` : ''}</div>`;
+  }
+
   function injectSeoMeta(html: string, routePath: string): string {
     const canonical = `${SITE_ORIGIN}${routePath === '/' ? '' : routePath}/`;
     const gameMatch = routePath.match(/^\/games\/(.+)$/);
@@ -582,7 +606,14 @@ async function startServer() {
     if (gameMatch) {
       const t = slugToTitle(gameMatch[1]);
       dynMeta = { title: `Play ${t} Free Online — GameDravo`, description: `Play ${t} for free in your browser on GameDravo. No download required. Instant HTML5 gameplay — no plugins, no installation.` };
-      dynBody = `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>Play ${t} Free Online</h1><p>Play ${t} for free on GameDravo — no download or installation required. Open your browser and start playing instantly on desktop or mobile. ${t} is an HTML5 browser game available on GameDravo, your home for free instant-play games. Browse hundreds of free games including action, puzzle, arcade, racing, sports, strategy, multiplayer, and casual titles. No Flash, no plugins — just pure HTML5 fun.</p><nav><a href="/">Home</a> <a href="/html-sitemap">All Games</a> <a href="/category/action">Action</a> <a href="/category/puzzle">Puzzle</a> <a href="/category/arcade">Arcade</a> <a href="/category/racing">Racing</a> <a href="/category/sports">Sports</a></nav></div>`;
+      // Inject links to 24 nearby game pages for crawlable internal linking
+      const allGamePaths = getSitemapGamePaths();
+      const idx = allGamePaths.findIndex(p => p === routePath);
+      const nearby = idx >= 0
+        ? [...allGamePaths.slice(Math.max(0, idx - 12), idx), ...allGamePaths.slice(idx + 1, idx + 13)]
+        : allGamePaths.slice(0, 24);
+      const nearbyLinks = nearby.map(p => `<a href="${p}">${slugToTitle(p.replace('/games/',''))}</a>`).join(' ');
+      dynBody = `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>Play ${t} Free Online</h1><p>Play ${t} for free on GameDravo — no download or installation required. Open your browser and start playing instantly on desktop or mobile. ${t} is an HTML5 browser game available on GameDravo, your home for free instant-play games. Browse hundreds of free games including action, puzzle, arcade, racing, sports, strategy, multiplayer, and casual titles. No Flash, no plugins — just pure HTML5 fun.</p><nav><a href="/">Home</a> <a href="/html-sitemap">All Games</a> <a href="/category/action">Action</a> <a href="/category/puzzle">Puzzle</a> <a href="/category/arcade">Arcade</a> <a href="/category/racing">Racing</a> <a href="/category/sports">Sports</a></nav>${nearbyLinks ? `<nav aria-label="More Games">${nearbyLinks}</nav>` : ''}</div>`;
     } else if (catMatch) {
       const n = catMatch[1].replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
       const nl = n.toLowerCase();
@@ -590,7 +621,8 @@ async function startServer() {
       dynBody = `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>Free ${n} Games Online</h1><p>Play free ${nl} games online on GameDravo. Browse our curated collection of the best ${nl} browser games — no download, no installation, no Flash required. Instant play on desktop and mobile. GameDravo offers hundreds of free HTML5 games across every category: action, puzzle, arcade, racing, sports, strategy, adventure, multiplayer, simulator, and casual games. Find your next favourite ${nl} game on GameDravo today.</p><nav><a href="/">Home</a> <a href="/html-sitemap">All Games</a> <a href="/category/action">Action</a> <a href="/category/puzzle">Puzzle</a> <a href="/category/arcade">Arcade</a> <a href="/category/racing">Racing</a> <a href="/category/sports">Sports</a> <a href="/category/strategy">Strategy</a></nav></div>`;
     }
     const meta = ROUTE_META[routePath] || dynMeta;
-    const bodyContent = ROUTE_BODY[routePath] || dynBody;
+    // Homepage body is built dynamically to include all game links
+    const bodyContent = routePath === '/' ? buildHomeBody() : (ROUTE_BODY[routePath] || dynBody);
     html = html.replace(/<!-- Per-page canonical injected server-side or by React Helmet -->/, `<link rel="canonical" href="${canonical}" />`);
     if (meta) {
       html = html.replace(/(<title>)[^<]*(<\/title>)/, `$1${meta.title}$2`);
@@ -632,7 +664,7 @@ async function startServer() {
       const f = fs.existsSync(path.join(distPath, 'robots.txt')) ? path.join(distPath, 'robots.txt') : path.join(process.cwd(), 'public', 'robots.txt');
       return res.sendFile(f);
     });
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { index: false }));
 
     app.get('*', (req, res) => {
       const htmlPath = path.join(distPath, 'index.html');
