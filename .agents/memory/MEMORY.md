@@ -1,4 +1,4 @@
-- [API routing order](api-routing-order.md) — Express API routes must be registered BEFORE Vite middleware or Vite's SPA fallback intercepts them
+- [API routing order](api-routing-order.md) — Auth routes must be registered AFTER session middleware (inside startServer, after setupAuth); all API routes must be BEFORE Vite middleware
 - [Firebase migration](firebase-migration.md) — Firebase/Firestore replaced with PostgreSQL + REST API; Firebase files remain as stubs but are unused
 - [GameDravo theme system](gamedravo-theme.md) — Dark navy/purple theme (#080B16 bg, #7C3AED accent); HeaderBrand hides itself when sidebar is open to avoid duplicate logos
 - [Preview capture system](preview-capture.md) — Phase 2 preview pipeline: server-side scraper + manifest JSON; frontend merges on startup; admin at /admin/previews

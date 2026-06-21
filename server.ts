@@ -40,13 +40,8 @@ app.use((req, res, next) => {
 // Serve locally-stored game preview files (written at runtime, not part of dist build)
 app.use('/previews', express.static(path.join(process.cwd(), 'public/previews')));
 
-// Mount API routes early (before Vite middleware) so they aren't intercepted by SPA fallback.
-// /api/previews must come BEFORE /api so Express doesn't have to traverse all of apiRoutes
-// before reaching the previews handler (and to avoid any future apiRoutes wildcard shadowing it).
+// Serve preview files early — no session needed
 app.use("/api/previews", previewRoutes);
-app.use("/api/auth/email", emailAuthRoutes);
-app.use("/api/auth/firebase", firebaseAuthRoutes);
-app.use("/api", apiRoutes);
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
 const GAMEPIX_CATALOG_URL = 'https://feeds.gamepix.com/v2/json/';
@@ -554,7 +549,13 @@ app.get('/sitemap.xml', async (_req, res) => {
 
 async function startServer() {
   // Wire up Replit Auth (session + passport + OIDC routes)
+  // MUST be first — registers session + passport middleware that all routes below depend on
   await setupAuth(app);
+
+  // Mount API routes AFTER session middleware so req.session is available
+  app.use("/api/auth/email", emailAuthRoutes);
+  app.use("/api/auth/firebase", firebaseAuthRoutes);
+  app.use("/api", apiRoutes);
 
   // Auth API routes
   app.get("/api/auth/user", async (req: any, res) => {
