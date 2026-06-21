@@ -127,7 +127,7 @@ function ThumbnailCycler({
       src={url}
       alt=""
       className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none animate-fade-in"
-      loading="eager"
+      loading="lazy"
       decoding="async"
       referrerPolicy="no-referrer"
       aria-hidden

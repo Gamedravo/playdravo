@@ -332,22 +332,36 @@ function AppContent() {
   
   useEffect(() => {
     let cancelled = false;
+    let idleHandle: number | ReturnType<typeof setTimeout>;
 
-    fetchOnlineGamesCatalog()
-      .then((remoteGames) => {
-        if (cancelled) return;
-        if (remoteGames.length > baseGamesRef.current.length) {
-          const processed = remoteGames.map(withSafetyMetadata);
-          baseGamesRef.current = processed;
-          setGames(processed);
-        }
-      })
-      .catch((error) => {
-        console.warn('Online games catalog failed to load:', error);
-      });
+    const doFetch = () => {
+      fetchOnlineGamesCatalog()
+        .then((remoteGames) => {
+          if (cancelled) return;
+          if (remoteGames.length > baseGamesRef.current.length) {
+            const processed = remoteGames.map(withSafetyMetadata);
+            baseGamesRef.current = processed;
+            setGames(processed);
+          }
+        })
+        .catch((error) => {
+          console.warn('Online games catalog failed to load:', error);
+        });
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleHandle = (window as any).requestIdleCallback(doFetch, { timeout: 3000 });
+    } else {
+      idleHandle = setTimeout(doFetch, 200);
+    }
 
     return () => {
       cancelled = true;
+      if (typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleHandle as number);
+      } else {
+        clearTimeout(idleHandle as ReturnType<typeof setTimeout>);
+      }
     };
   }, []);
 
