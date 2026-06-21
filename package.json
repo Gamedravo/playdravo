@@ -2,7 +2,7 @@
   "name": "react-example",
   "private": true,
   "version": "0.0.0",
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "npm@10.8.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -46,7 +46,7 @@
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
-    "esbuild": "^0.28.1",
+    "esbuild": "0.25.12",
     "express": "^4.22.2",
     "express-session": "^1.19.0",
     "firebase": "^12.14.0",
@@ -79,5 +79,12 @@
     "tsx": "^4.22.4",
     "typescript": "~5.8.2",
     "vite": "^6.4.3"
+  },
+  "overrides": {
+    "@esbuild/linux-x64": "0.25.12",
+    "@esbuild/linux-arm64": "0.25.12",
+    "@esbuild/darwin-x64": "0.25.12",
+    "@esbuild/darwin-arm64": "0.25.12",
+    "@esbuild/win32-x64": "0.25.12"
   }
 }
