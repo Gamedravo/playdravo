@@ -31,11 +31,7 @@ import {
   Calendar,
   Monitor,
   Tag,
-  Trophy,
-  Shield,
-  Award,
   CheckCircle,
-  Gamepad2,
   ShieldCheck
 } from 'lucide-react';
 import { Game } from '../types';
@@ -106,7 +102,6 @@ export const GamePage: React.FC<GamePageProps> = ({
   const playerShellRef = useRef<HTMLDivElement>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [liked, setLiked] = useState<boolean | null>(null);
-  const [claimedAchievements, setClaimedAchievements] = useState<string[]>([]);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   const [showMobileWarning, setShowMobileWarning] = useState(false);
   const [embedStatus, setEmbedStatus] = useState<{ checked: boolean, embeddable: boolean, reason?: string, error?: boolean }>({ checked: false, embeddable: true });
@@ -175,43 +170,6 @@ export const GamePage: React.FC<GamePageProps> = ({
     }
   }, [isPlaying, iframeLoaded]);
 
-  // Load claimed achievements on mount
-  useEffect(() => {
-    if (gameId) {
-      const saved = localStorage.getItem(`topg_achievements_${gameId}`);
-      if (saved) {
-        try {
-          setClaimedAchievements(JSON.parse(saved));
-        } catch (e) {
-          console.error(e);
-        }
-      } else {
-        setClaimedAchievements([]);
-      }
-    }
-  }, [gameId]);
-
-  // Handle claiming achievements
-  const handleClaimAchievement = async (achievementId: string, points: number, acName: string) => {
-    if (claimedAchievements.includes(achievementId)) return;
-    const updated = [...claimedAchievements, achievementId];
-    setClaimedAchievements(updated);
-    localStorage.setItem(`topg_achievements_${gameId}`, JSON.stringify(updated));
-
-    // Grant XP via global event (handles local state + Firestore sync for XP/level)
-    window.dispatchEvent(new CustomEvent('add-xp', { 
-      detail: { amount: points, reason: `Achievement: ${acName}` } 
-    }));
-
-    // Toast reward feedback - compact, bottom-positioned
-    appToast.achievement(`${acName}`, points);
-  };
-
-  const getGameAchievements = (gameTitle: string) => [
-    { id: 'ac-session-1', name: 'First Play', desc: `Play ${gameTitle} for the first time.`, points: 50, icon: <Gamepad2 className="w-5 h-5 text-purple-400" /> },
-    { id: 'ac-session-2', name: 'Learning the Ropes', desc: 'Master the basic controls and mechanics.', points: 100, icon: <Shield className="w-5 h-5 text-blue-400" /> },
-    { id: 'ac-session-3', name: 'High Score', desc: `Reach a new personal best in ${gameTitle}.`, points: 250, icon: <Award className="w-5 h-5 text-amber-500 animate-pulse" /> }
-  ];
 
   useEffect(() => {
     setIsPlaying(false);
@@ -1108,79 +1066,6 @@ export const GamePage: React.FC<GamePageProps> = ({
               </div>
             </div>
 
-            {/* Game Milestones & Badges Tray */}
-            <section className="space-y-6 pt-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-accent/20 rounded-xl text-accent shrink-0">
-                    <Trophy className="w-5.5 h-5.5" />
-                  </div>
-                  <div>
-                    <h3 className={`text-base sm:text-lg font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-black'}`}>Achievements</h3>
-                    <p className={`text-xs ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>Complete challenges in {game.title} to earn XP.</p>
-                  </div>
-                </div>
-                <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase border ${
-                  claimedAchievements.length === 3 
-                    ? 'bg-green-500/10 text-green-500 border-green-500/20' 
-                    : 'bg-accent/10 text-accent border-accent/20'
-                }`}>
-                  {claimedAchievements.length} / 3 Completed
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {getGameAchievements(game.title).map((ac, idx) => {
-                  const isClaimed = claimedAchievements.includes(ac.id);
-                  return (
-                    <div 
-                      key={ac.id}
-                      className={`p-5 rounded-2xl border transition-all duration-300 flex flex-col justify-between ${
-                        isClaimed 
-                          ? isDarkMode ? 'bg-[#151525]/30 border-green-500/20 opacity-80' : 'bg-green-500/5 border-green-500/20 opacity-80'
-                          : isDarkMode ? 'bg-white/[0.02] border-white/5 hover:border-white/10' : 'bg-black/[0.02] border-black/5 hover:border-black/10'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`p-2 rounded-lg ${isClaimed ? 'bg-green-500/10 text-green-500' : 'bg-white/5 opacity-85'}`}>
-                            {ac.icon}
-                          </div>
-                          <span className={`text-[9px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full ${
-                            isClaimed ? 'bg-green-500/10 text-green-500' : 'bg-accent/10 text-accent'
-                          }`}>
-                            +{ac.points} XP
-                          </span>
-                        </div>
-                        <h4 className={`text-xs font-bold tracking-tight mb-1 ${isDarkMode ? 'text-white' : 'text-black'}`}>{ac.name}</h4>
-                        <p className={`text-[10px] leading-relaxed mb-4 ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>{ac.desc}</p>
-                      </div>
-
-                      <motion.button
-                        whileHover={!isClaimed ? { scale: 1.02 } : {}}
-                        whileTap={!isClaimed ? { scale: 0.98 } : {}}
-                        disabled={isClaimed}
-                        onClick={() => handleClaimAchievement(ac.id, ac.points, ac.name)}
-                        className={`w-full py-2.5 rounded-xl text-[10px] font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-1.5 ${
-                          isClaimed 
-                            ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default'
-                            : 'bg-accent hover:bg-accent/90 text-white'
-                        }`}
-                      >
-                        {isClaimed ? (
-                          <>
-                            <CheckCircle className="w-3.5 h-3.5" />
-                            Claimed
-                          </>
-                        ) : (
-                          'Claim Badge'
-                        )}
-                      </motion.button>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
 
             {/* ── Rich Game Content (SEO + AdSense value) ── */}
             <GameContentSection game={game} isDarkMode={isDarkMode} />

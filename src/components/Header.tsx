@@ -126,7 +126,7 @@ export const Header = memo(function Header({
         paddingTop: 'max(0.5rem, env(safe-area-inset-top))',
       }}
     >
-      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 overflow-hidden ${
+      <div className={`rounded-2xl border backdrop-blur-xl transition-all duration-200 ${
         isDarkMode
           ? `bg-[#09090f]/90 border-white/[0.07] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.04)]' : 'shadow-[0_4px_24px_rgba(0,0,0,0.35)]'}`
           : `bg-white/92 border-black/[0.06] ${scrolled ? 'shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.04)]' : 'shadow-[0_4px_18px_rgba(0,0,0,0.07)]'}`
