@@ -560,9 +560,9 @@ async function startServer() {
   // Auth API routes
   app.get("/api/auth/user", async (req: any, res) => {
     try {
-      // Support both Replit OIDC and email/password sessions
       const oidcUserId = req.isAuthenticated?.() ? req.user?.claims?.sub : null;
       const emailUserId = req.session?.emailUserId;
+      console.log("[AUTH] /api/auth/user — sid:", req.session?.id, "oidc:", oidcUserId, "email:", emailUserId, "session keys:", Object.keys(req.session || {}));
       const userId = oidcUserId || emailUserId;
       if (!userId) return res.status(401).json({ message: "Unauthorized" });
       const user = await authStorage.getUser(userId);
