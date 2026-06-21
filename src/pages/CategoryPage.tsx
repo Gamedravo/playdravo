@@ -362,11 +362,24 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[10px] font-semibold tracking-wide mb-8 opacity-60">
-          <Link to="/" className="hover:text-accent transition-colors">Home</Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-accent">{breadcrumbLabel}</span>
-        </div>
+        <nav aria-label="breadcrumb" className="mb-8">
+          <ol className="flex items-center gap-2 text-[10px] font-semibold tracking-wide">
+            <li>
+              <Link
+                to="/"
+                className={`transition-colors hover:text-accent ${isDarkMode ? 'text-white/50 hover:text-accent' : 'text-black/50 hover:text-accent'}`}
+              >
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">
+              <ChevronRight className={`w-3 h-3 ${isDarkMode ? 'text-white/30' : 'text-black/30'}`} />
+            </li>
+            <li aria-current="page" className="text-accent">
+              {breadcrumbLabel}
+            </li>
+          </ol>
+        </nav>
 
         {/* Category Hero */}
         <div className="relative mb-12 overflow-hidden rounded-3xl border"
