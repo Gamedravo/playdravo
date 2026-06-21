@@ -7,8 +7,6 @@ import {
 } from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
 import { GoogleIcon, MicrosoftIcon, GitHubIcon } from '../lib/authProviders';
-import { signInWithGoogle, signInWithMicrosoft, signInWithGithub } from '../firebase';
-import { isAuthCancelError } from '../lib/oauthSignIn';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -88,48 +86,9 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     }
   }, [isOpen]);
 
-  const handleOAuth = async (provider: 'google' | 'microsoft' | 'github') => {
-    setError('');
+  const handleOAuth = (provider: 'google' | 'microsoft' | 'github') => {
     setLoading(provider);
-    try {
-      const signIn =
-        provider === 'google' ? signInWithGoogle :
-        provider === 'microsoft' ? signInWithMicrosoft :
-        signInWithGithub;
-
-      const credential = await signIn();
-      const idToken = await credential.user.getIdToken();
-
-      const res = await fetch('/api/auth/firebase/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-        credentials: 'include',
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.message || 'Sign-in failed. Please try again.');
-        return;
-      }
-
-      setSuccess('Welcome to GameDravo!');
-      setTimeout(() => { onClose(); window.location.reload(); }, 700);
-    } catch (err: any) {
-      if (!isAuthCancelError(err)) {
-        const code: string = err?.code || '';
-        if (code === 'auth/unauthorized-domain') {
-          setError(
-            `This preview URL is not authorized in Firebase. Error: ${code}. ` +
-            `To fix: go to Firebase Console → Authentication → Settings → Authorized domains → add this site's domain.`
-          );
-        } else {
-          setError(`${err?.message || 'Sign-in failed.'} (${code || 'unknown'})`);
-        }
-      }
-    } finally {
-      setLoading(null);
-    }
+    window.location.href = `/api/auth/${provider}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

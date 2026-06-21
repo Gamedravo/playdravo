@@ -10,6 +10,7 @@ import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
 import emailAuthRoutes from "./server/routes/emailAuth.js";
 import firebaseAuthRoutes from "./server/routes/firebaseAuth.js";
+import oauthRoutes from "./server/routes/oauthRoutes.js";
 import previewRoutes, { startAutoProbe, loadManifest } from "./server/routes/previews.js";
 import { db } from "./server/db.js";
 import { gameStats } from "./shared/models/auth.js";
@@ -555,6 +556,7 @@ async function startServer() {
   // Mount API routes AFTER session middleware so req.session is available
   app.use("/api/auth/email", emailAuthRoutes);
   app.use("/api/auth/firebase", firebaseAuthRoutes);
+  app.use("/api/auth", oauthRoutes);
   app.use("/api", apiRoutes);
 
   // Auth API routes

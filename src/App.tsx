@@ -541,6 +541,18 @@ function AppContent() {
     ];
   }, []);
 
+  // Handle oauth_error URL param from server-side OAuth callback failures
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const oauthError = params.get('oauth_error');
+    if (oauthError) {
+      appToast.error(decodeURIComponent(oauthError));
+      params.delete('oauth_error');
+      const newSearch = params.toString();
+      window.history.replaceState({}, '', newSearch ? `?${newSearch}` : window.location.pathname);
+    }
+  }, []);
+
   // Sync Firebase auth state → server session.
   // onAuthStateChanged reads from localStorage (persistent), so it works after
   // both popup AND redirect flows, even when iframe sessionStorage is wiped.
