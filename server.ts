@@ -8,6 +8,7 @@ import compression from "compression";
 import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/index.js";
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
+import emailAuthRoutes from "./server/routes/emailAuth.js";
 import previewRoutes, { startAutoProbe, loadManifest } from "./server/routes/previews.js";
 import { db } from "./server/db.js";
 import { gameStats } from "./shared/models/auth.js";
@@ -42,6 +43,7 @@ app.use('/previews', express.static(path.join(process.cwd(), 'public/previews'))
 // /api/previews must come BEFORE /api so Express doesn't have to traverse all of apiRoutes
 // before reaching the previews handler (and to avoid any future apiRoutes wildcard shadowing it).
 app.use("/api/previews", previewRoutes);
+app.use("/api/auth/email", emailAuthRoutes);
 app.use("/api", apiRoutes);
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
@@ -553,10 +555,15 @@ async function startServer() {
   await setupAuth(app);
 
   // Auth API routes
-  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+  app.get("/api/auth/user", async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub;
+      // Support both Replit OIDC and email/password sessions
+      const oidcUserId = req.isAuthenticated?.() ? req.user?.claims?.sub : null;
+      const emailUserId = req.session?.emailUserId;
+      const userId = oidcUserId || emailUserId;
+      if (!userId) return res.status(401).json({ message: "Unauthorized" });
       const user = await authStorage.getUser(userId);
+      if (!user) return res.status(401).json({ message: "Unauthorized" });
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);

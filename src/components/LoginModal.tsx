@@ -1,7 +1,12 @@
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShieldCheck, Zap } from 'lucide-react';
+import {
+  X, Eye, EyeOff, Mail, Lock, User,
+  Sword, Shield, Star, Zap, Trophy, Crown,
+  Gamepad2, Flame, ChevronRight, Loader2
+} from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
-import { AUTH_PROVIDER_CARDS } from '../lib/authProviders';
+import { GoogleIcon, MicrosoftIcon, GitHubIcon } from '../lib/authProviders';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -10,33 +15,110 @@ interface LoginModalProps {
   t: (key: string) => string;
 }
 
-function HudCorner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
-  const styles: Record<string, string> = {
-    tl: 'top-3 left-3 border-t-2 border-l-2',
-    tr: 'top-3 right-3 border-t-2 border-r-2',
-    bl: 'bottom-3 left-3 border-b-2 border-l-2',
-    br: 'bottom-3 right-3 border-b-2 border-r-2',
-  };
+const FLOATING_ICONS = [
+  { Icon: Sword,    x: 8,  y: 15, size: 22, delay: 0,    duration: 7,  color: '#7c3aed' },
+  { Icon: Shield,   x: 88, y: 20, size: 18, delay: 1.2,  duration: 8,  color: '#06b6d4' },
+  { Icon: Star,     x: 20, y: 70, size: 14, delay: 2,    duration: 6,  color: '#f59e0b' },
+  { Icon: Trophy,   x: 80, y: 65, size: 20, delay: 0.5,  duration: 9,  color: '#7c3aed' },
+  { Icon: Crown,    x: 50, y: 8,  size: 16, delay: 3,    duration: 7,  color: '#f59e0b' },
+  { Icon: Flame,    x: 5,  y: 45, size: 18, delay: 1.5,  duration: 8,  color: '#ef4444' },
+  { Icon: Zap,      x: 93, y: 45, size: 15, delay: 2.5,  duration: 6,  color: '#06b6d4' },
+  { Icon: Gamepad2, x: 55, y: 90, size: 20, delay: 0.8,  duration: 9,  color: '#7c3aed' },
+  { Icon: Star,     x: 35, y: 85, size: 12, delay: 3.5,  duration: 7,  color: '#06b6d4' },
+  { Icon: Sword,    x: 75, y: 88, size: 16, delay: 1.8,  duration: 8,  color: '#f59e0b' },
+];
+
+function FloatingIcons() {
   return (
-    <div className={`absolute w-4 h-4 pointer-events-none border-cyan-400/60 rounded-sm ${styles[pos]}`} />
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {FLOATING_ICONS.map(({ Icon, x, y, size, delay, duration, color }, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{ left: `${x}%`, top: `${y}%` }}
+          animate={{
+            y: [0, -18, 0],
+            rotate: [0, i % 2 === 0 ? 12 : -12, 0],
+            opacity: [0.18, 0.45, 0.18],
+          }}
+          transition={{
+            duration,
+            delay,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <Icon style={{ color, width: size, height: size, filter: `drop-shadow(0 0 6px ${color})` }} strokeWidth={1.5} />
+        </motion.div>
+      ))}
+    </div>
   );
 }
 
-function ScanLine() {
+function GlowOrb({ x, y, color, size }: { x: string; y: string; color: string; size: number }) {
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 h-px z-10"
-      style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.4), transparent)' }}
-      initial={{ top: '0%' }}
-      animate={{ top: '100%' }}
-      transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 2.5 }}
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        left: x, top: y,
+        width: size, height: size,
+        background: `radial-gradient(circle, ${color}, transparent 70%)`,
+        filter: 'blur(40px)',
+        transform: 'translate(-50%, -50%)',
+      }}
+      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.55, 0.3] }}
+      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
     />
   );
 }
 
+type Tab = 'signin' | 'register';
+
 export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
-  const handleLogin = () => {
-    window.location.href = '/api/login';
+  const [tab, setTab] = useState<Tab>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setEmail(''); setPassword(''); setUsername('');
+      setError(''); setSuccess(''); setLoading(false); setTab('signin');
+    }
+  }, [isOpen]);
+
+  const handleOAuth = () => { window.location.href = '/api/login'; };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(''); setSuccess('');
+    if (!email || !password) { setError('Email and password are required.'); return; }
+    setLoading(true);
+    try {
+      const endpoint = tab === 'register' ? '/api/auth/email/register' : '/api/auth/email/login';
+      const body: Record<string, string> = { email, password };
+      if (tab === 'register' && username) body.username = username;
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.message || 'Something went wrong.'); return; }
+
+      setSuccess(tab === 'register' ? 'Account created! Welcome to GameDravo.' : 'Welcome back!');
+      setTimeout(() => { onClose(); window.location.reload(); }, 900);
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,178 +127,294 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
         <div className="fixed inset-0 z-[2000] flex">
           {/* Backdrop */}
           <motion.div
-            key="login-modal-overlay"
+            key="lm-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
             className="fixed inset-0 z-[1900]"
-            style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(0,5,20,0.97) 0%, rgba(0,0,0,0.97) 100%)' }}
+            style={{ background: 'radial-gradient(ellipse at 40% 50%, rgba(7,5,30,0.97) 0%, rgba(0,0,0,0.98) 100%)' }}
+            onClick={onClose}
           />
 
-          {/* Backdrop grid */}
+          {/* Grid overlay */}
           <div
-            className="pointer-events-none fixed inset-0 z-[1901] opacity-[0.03]"
+            className="pointer-events-none fixed inset-0 z-[1901]"
             style={{
-              backgroundImage:
-                'linear-gradient(rgba(34,211,238,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)',
-              backgroundSize: '60px 60px',
+              backgroundImage: 'linear-gradient(rgba(124,58,237,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.07) 1px, transparent 1px)',
+              backgroundSize: '48px 48px',
             }}
           />
 
-          {/* Glow orbs */}
+          {/* Background glow orbs */}
           <div className="pointer-events-none fixed inset-0 z-[1902] overflow-hidden">
-            <motion.div
-              animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute rounded-full"
-              style={{ width: 500, height: 500, top: '10%', left: '20%', background: 'radial-gradient(circle, rgba(124,58,237,0.3), transparent 70%)', filter: 'blur(50px)' }}
-            />
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.2, 0.12] }}
-              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-              className="absolute rounded-full"
-              style={{ width: 380, height: 380, bottom: '10%', right: '15%', background: 'radial-gradient(circle, rgba(34,211,238,0.25), transparent 70%)', filter: 'blur(40px)' }}
-            />
+            <GlowOrb x="20%" y="30%" color="rgba(124,58,237,0.4)" size={400} />
+            <GlowOrb x="80%" y="70%" color="rgba(6,182,212,0.3)" size={320} />
+            <GlowOrb x="60%" y="20%" color="rgba(239,68,68,0.2)" size={260} />
           </div>
 
-          {/* Click-outside */}
-          <div className="relative z-[2000] w-full h-full overflow-y-auto" onClick={onClose}>
-            <div className="min-h-[100dvh] flex items-center justify-center p-4">
-              <motion.div
-                key="login-modal-container"
-                onClick={(e) => e.stopPropagation()}
-                initial={{ opacity: 0, scale: 0.92, y: 16 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.93, y: 10 }}
-                transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full max-w-lg flex flex-col overflow-hidden m-auto"
-                style={{
-                  background: isDarkMode
-                    ? 'linear-gradient(145deg, rgba(5,7,18,0.99) 0%, rgba(8,10,24,0.99) 100%)'
-                    : 'linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%)',
-                  border: isDarkMode ? '1px solid rgba(34,211,238,0.18)' : '1px solid rgba(124,58,237,0.15)',
-                  borderRadius: '1.5rem',
-                  boxShadow: isDarkMode
-                    ? '0 0 0 1px rgba(124,58,237,0.1), 0 0 50px rgba(34,211,238,0.08), 0 0 100px rgba(124,58,237,0.06), 0 40px 80px rgba(0,0,0,0.7)'
-                    : '0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(124,58,237,0.08)',
-                }}
+          {/* Floating game icons */}
+          <div className="pointer-events-none fixed inset-0 z-[1903]">
+            <FloatingIcons />
+          </div>
+
+          {/* Modal */}
+          <div className="relative z-[2000] w-full h-full overflow-y-auto flex items-center justify-center p-4" onClick={onClose}>
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.88, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 16 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-md"
+              style={{
+                background: 'linear-gradient(145deg, rgba(10,8,30,0.97) 0%, rgba(14,10,38,0.97) 100%)',
+                border: '1px solid rgba(124,58,237,0.3)',
+                borderRadius: '1.5rem',
+                boxShadow: '0 0 0 1px rgba(124,58,237,0.1), 0 0 60px rgba(124,58,237,0.15), 0 0 120px rgba(6,182,212,0.08), 0 40px 80px rgba(0,0,0,0.8)',
+              }}
+            >
+              {/* Top neon bar */}
+              <div className="absolute inset-x-0 top-0 h-[2px] rounded-t-3xl"
+                style={{ background: 'linear-gradient(90deg, transparent, #7c3aed, #06b6d4, #7c3aed, transparent)' }} />
+
+              {/* Corner accents */}
+              {['top-3 left-3 border-t-2 border-l-2', 'top-3 right-3 border-t-2 border-r-2', 'bottom-3 left-3 border-b-2 border-l-2', 'bottom-3 right-3 border-b-2 border-r-2'].map((cls, i) => (
+                <div key={i} className={`absolute w-4 h-4 pointer-events-none rounded-sm ${cls}`}
+                  style={{ borderColor: 'rgba(6,182,212,0.4)' }} />
+              ))}
+
+              {/* Close button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); onClose(); }}
+                className="absolute top-4 right-4 z-10 w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 text-white/40 hover:text-white"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                aria-label="Close"
               >
-                {/* HUD corners */}
-                <HudCorner pos="tl" />
-                <HudCorner pos="tr" />
-                <HudCorner pos="bl" />
-                <HudCorner pos="br" />
+                <X className="w-4 h-4" />
+              </button>
 
-                {/* Scan line */}
-                {isDarkMode && <ScanLine />}
-
-                {/* Top neon line */}
-                <div className="absolute inset-x-0 top-0 h-px"
-                  style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.6), rgba(124,58,237,0.4), transparent)' }} />
-
-                {/* Close button */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); onClose(); }}
-                  className={`absolute top-4 right-4 z-[60] w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-105 ${
-                    isDarkMode
-                      ? 'bg-white/[0.05] border border-white/[0.08] hover:bg-cyan-400/10 hover:border-cyan-400/30 text-white/50 hover:text-cyan-400'
-                      : 'bg-black/[0.04] border border-black/10 hover:bg-black/10 text-black/50 hover:text-black'
-                  }`}
-                  aria-label="Close login modal"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-
-                <div className="p-8 flex flex-col gap-5">
-                  {/* Header */}
-                  <div className="flex flex-col items-center gap-3 text-center">
-                    <motion.div
-                      initial={{ scale: 0.7, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.05, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                      className="relative"
-                    >
-                      {isDarkMode && (
-                        <motion.div
-                          animate={{ opacity: [0.3, 0.6, 0.3] }}
-                          transition={{ duration: 3, repeat: Infinity }}
-                          className="absolute inset-0 rounded-2xl blur-xl"
-                          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.3), transparent 70%)' }}
-                        />
-                      )}
-                      <GameDravoMark size={48} />
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1, duration: 0.25 }}
-                    >
-                      <h3 className="text-xl font-black tracking-tight">
-                        {t('login') || 'Sign In'}
-                      </h3>
-                      {isDarkMode && (
-                        <div className="flex items-center justify-center gap-1.5 mt-1">
-                          <Zap className="w-3 h-3 text-cyan-400" />
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-400/70">
-                            Secure Access
-                          </p>
-                        </div>
-                      )}
-                      {!isDarkMode && (
-                        <p className="mt-1 text-sm text-black/55">
-                          Welcome back. Sign in to continue your GameDravo session.
-                        </p>
-                      )}
-                    </motion.div>
-                  </div>
-
-                  {/* Divider */}
-                  {isDarkMode && (
-                    <div className="w-full h-px"
-                      style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.25), rgba(124,58,237,0.2), transparent)' }} />
-                  )}
-
-                  {/* Provider buttons */}
+              <div className="p-7 flex flex-col gap-5">
+                {/* Header */}
+                <div className="flex flex-col items-center gap-3">
                   <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15, duration: 0.25 }}
-                    className="flex flex-col gap-2.5"
+                    className="relative"
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    {AUTH_PROVIDER_CARDS.map((provider, i) => (
-                      <motion.button
-                        key={provider.id}
-                        onClick={handleLogin}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 + i * 0.06, duration: 0.22 }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
-                          isDarkMode
-                            ? 'bg-white/[0.05] border border-white/[0.09] hover:bg-white/[0.09] hover:border-white/[0.16] text-white/90'
-                            : 'bg-black/[0.03] border border-black/[0.09] hover:bg-black/[0.07] text-black/85'
-                        }`}
-                      >
-                        <span className="shrink-0">{provider.icon}</span>
-                        <span className="flex-1 text-left">{provider.label}</span>
-                      </motion.button>
-                    ))}
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl blur-xl"
+                      style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.6), transparent 70%)' }}
+                      animate={{ opacity: [0.4, 0.8, 0.4] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    />
+                    <GameDravoMark size={52} />
                   </motion.div>
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-center gap-2 pt-1">
-                    <ShieldCheck className={`w-4 h-4 ${isDarkMode ? 'text-cyan-400' : 'text-accent'}`} />
-                    <p className={`text-[9px] font-bold uppercase tracking-widest ${isDarkMode ? 'text-white/35' : 'text-black/40'}`}>
-                      Secure Authentication
+                  <motion.div
+                    className="text-center"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.12, duration: 0.28 }}
+                  >
+                    <h2 className="text-2xl font-black tracking-tight text-white">
+                      {tab === 'signin' ? 'Welcome Back' : 'Join GameDravo'}
+                    </h2>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] mt-1" style={{ color: '#06b6d4' }}>
+                      {tab === 'signin' ? '⚡ Ready to play?' : '🎮 Create your account'}
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
-              </motion.div>
-            </div>
+
+                {/* Tab switcher */}
+                <div className="flex rounded-xl p-1 gap-1" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  {(['signin', 'register'] as Tab[]).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => { setTab(t); setError(''); }}
+                      className="flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all relative"
+                      style={{
+                        color: tab === t ? '#fff' : 'rgba(255,255,255,0.35)',
+                        background: tab === t ? 'linear-gradient(135deg, #7c3aed, #5b21b6)' : 'transparent',
+                        boxShadow: tab === t ? '0 0 20px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.1)' : 'none',
+                      }}
+                    >
+                      {t === 'signin' ? 'Sign In' : 'Sign Up'}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                  <AnimatePresence mode="wait">
+                    {tab === 'register' && (
+                      <motion.div
+                        key="username-field"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <InputField
+                          icon={<User className="w-4 h-4" />}
+                          placeholder="Username (optional)"
+                          value={username}
+                          onChange={setUsername}
+                          type="text"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <InputField
+                    icon={<Mail className="w-4 h-4" />}
+                    placeholder="Email address"
+                    value={email}
+                    onChange={setEmail}
+                    type="email"
+                  />
+
+                  <div className="relative">
+                    <InputField
+                      icon={<Lock className="w-4 h-4" />}
+                      placeholder={tab === 'register' ? 'Password (min 6 chars)' : 'Password'}
+                      value={password}
+                      onChange={setPassword}
+                      type={showPw ? 'text' : 'password'}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPw(!showPw)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+                    >
+                      {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  {/* Error / success */}
+                  <AnimatePresence>
+                    {error && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="text-xs font-semibold px-3 py-2 rounded-lg"
+                        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171' }}
+                      >
+                        {error}
+                      </motion.p>
+                    )}
+                    {success && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="text-xs font-semibold px-3 py-2 rounded-lg"
+                        style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)', color: '#4ade80' }}
+                      >
+                        {success}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Submit */}
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative w-full py-3.5 rounded-xl font-black text-sm uppercase tracking-widest text-white overflow-hidden transition-all disabled:opacity-60"
+                    style={{
+                      background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #06b6d4 100%)',
+                      boxShadow: '0 0 30px rgba(124,58,237,0.5), inset 0 1px 0 rgba(255,255,255,0.15)',
+                    }}
+                  >
+                    <motion.div
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)' }}
+                      animate={{ x: ['-100%', '200%'] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+                    />
+                    <span className="relative flex items-center justify-center gap-2">
+                      {loading
+                        ? <Loader2 className="w-4 h-4 animate-spin" />
+                        : tab === 'signin'
+                          ? <><Zap className="w-4 h-4" /> Enter the Arena</>
+                          : <><Crown className="w-4 h-4" /> Create Account</>
+                      }
+                    </span>
+                  </motion.button>
+                </form>
+
+                {/* Divider */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/25">or continue with</span>
+                  <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                </div>
+
+                {/* OAuth buttons */}
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { icon: <GoogleIcon className="w-4 h-4" />, label: 'Google' },
+                    { icon: <MicrosoftIcon className="w-4 h-4" />, label: 'Microsoft' },
+                    { icon: <GitHubIcon className="w-4 h-4" />, label: 'GitHub' },
+                  ].map(({ icon, label }) => (
+                    <button
+                      key={label}
+                      onClick={handleOAuth}
+                      className="flex flex-col items-center gap-1.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 text-white/50 hover:text-white/80"
+                      style={{
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                      }}
+                      title={`Continue with ${label}`}
+                    >
+                      {icon}
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Guest note */}
+                <p className="text-center text-[10px] text-white/20 font-medium">
+                  Free to play — no payment required
+                </p>
+              </div>
+            </motion.div>
           </div>
         </div>
       )}
     </AnimatePresence>
+  );
+}
+
+function InputField({ icon, placeholder, value, onChange, type }: {
+  icon: React.ReactNode;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  type: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div
+      className="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all"
+      style={{
+        background: 'rgba(255,255,255,0.04)',
+        border: `1px solid ${focused ? 'rgba(124,58,237,0.6)' : 'rgba(255,255,255,0.08)'}`,
+        boxShadow: focused ? '0 0 0 3px rgba(124,58,237,0.12), 0 0 20px rgba(124,58,237,0.15)' : 'none',
+      }}
+    >
+      <span style={{ color: focused ? '#7c3aed' : 'rgba(255,255,255,0.25)' }} className="transition-colors shrink-0">
+        {icon}
+      </span>
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="flex-1 bg-transparent text-sm text-white placeholder-white/20 outline-none font-medium"
+        autoComplete={type === 'password' ? 'current-password' : type === 'email' ? 'email' : 'username'}
+      />
+    </div>
   );
 }
