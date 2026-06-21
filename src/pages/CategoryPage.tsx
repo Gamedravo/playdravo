@@ -234,6 +234,7 @@ interface CategoryPageProps {
   handleGameClick: (game: Game) => void;
   favorites: string[];
   toggleFavorite: (gameId: string) => void;
+  setSelectedCategory: (cat: string) => void;
 }
 
 export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({ 
@@ -242,7 +243,8 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
   games, 
   handleGameClick,
   favorites,
-  toggleFavorite
+  toggleFavorite,
+  setSelectedCategory,
 }) => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [sortBy, setSortBy] = useState<'plays' | 'rating' | 'title' | 'latest'>(() =>
@@ -367,6 +369,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
             <li>
               <Link
                 to="/"
+                onClick={() => setSelectedCategory('All')}
                 className={`transition-colors hover:text-accent ${isDarkMode ? 'text-white/50 hover:text-accent' : 'text-black/50 hover:text-accent'}`}
               >
                 Home

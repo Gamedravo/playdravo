@@ -1215,6 +1215,7 @@ function AppContent() {
                       handleGameClick={handleGameClick}
                       favorites={favorites}
                       toggleFavorite={toggleFavorite}
+                      setSelectedCategory={setSelectedCategory}
                     />
                   </PageLayout>
                   </LazyRoute>
