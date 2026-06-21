@@ -6,6 +6,7 @@ Allow: /api/gamepix-catalog
 Allow: /api/onlinegames-catalog
 Allow: /api/game-requests
 Allow: /api/previews/manifest
+Allow: /api/auth/user
 # Block raw API JSON pages from being indexed and protect sensitive routes
 Disallow: /api/
 Disallow: /admin/
