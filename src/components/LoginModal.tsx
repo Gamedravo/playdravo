@@ -365,8 +365,9 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
           style={{
             position: 'fixed', inset: 0, zIndex: 2000,
             background: '#03000a',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
             overflowY: 'auto',
+            overflowX: 'hidden',
           }}
         >
           {/* ── Background layers ── */}
@@ -425,7 +426,10 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
           <div style={{
             position: 'relative', zIndex: 2,
             display: 'flex', flexDirection: 'column', alignItems: 'center',
-            width: '100%', maxWidth: 420, padding: '24px 20px',
+            width: '100%', maxWidth: 420,
+            padding: '72px 20px 32px',
+            minHeight: '100vh',
+            boxSizing: 'border-box',
           }}>
 
             {/* ══ LOGO + BRAND ══ */}
