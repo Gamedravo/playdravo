@@ -37,7 +37,7 @@ export default defineConfig(({mode}) => {
       port: 5000,
       allowedHosts: true,
       watch: {
-        ignored: ['**/.local/**', '**/node_modules/**', '**/.git/**'],
+        ignored: ['**/.local/**', '**/node_modules/**', '**/.git/**', '**/.cache/**', '**/public/sitemap.xml'],
       },
     },
     optimizeDeps: {
