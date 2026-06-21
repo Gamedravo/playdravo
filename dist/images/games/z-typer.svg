@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-z-typer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-z-typer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-z-typer)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-z-typer)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#f43f5e" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Modern matrix text console coordinate system -->
+        <line x1="0" y1="360" x2="512" y2="360" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.3" />
+        <pattern id="matrix-typer" width="40" height="40" patternUnits="userSpaceOnUse">
+          <rect width="40" height="40" fill="none" stroke="#10b981" stroke-width="1" stroke-opacity="0.04" />
+        </pattern>
+        <rect width="512" height="512" fill="url(#matrix-typer)" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(0, 0)">
+          <!-- Falling Hostile Spaceship Words -->
+          <!-- Word 1: "EXPLODE" in magenta capsule at the top -->
+          <g transform="translate(140, 100)">
+            <rect x="-56" y="-18" width="112" height="32" rx="8" fill="#1e1b4b" stroke="#ec4899" stroke-width="2.5" />
+            <text x="0" y="-1" fill="#ec4899" font-family="monospace" font-weight="black" font-size="15" tracking="widester" text-anchor="middle" dominant-baseline="central">EXPLODE</text>
+            <!-- Threat indicator arrow -->
+            <polygon points="-75,0 -65,-8 -65,8" fill="#ec4899" />
+          </g>
+
+          <!-- Word 2: "ATTACK" in hot-pink capsule being blasted -->
+          <g transform="translate(360, 150)">
+            <!-- Highlighted/Typed letters: "A-T-T" typed in neon green, rest "A-C-K" in cyan -->
+            <rect x="-50" y="-18" width="100" height="32" rx="8" fill="#0f172a" stroke="#00ffff" stroke-width="2.5" filter="drop-shadow(0 0 8px #00ffff)" />
+            <!-- Typed part -->
+            <text x="-15" y="-1" fill="#10b981" font-family="monospace" font-weight="black" font-size="15" text-anchor="middle" dominant-baseline="central">ATT</text>
+            <!-- Remainder part -->
+            <text x="22" y="-1" fill="#ffffff" font-family="monospace" font-weight="black" font-size="15" text-anchor="middle" dominant-baseline="central">ACK</text>
+            <circle cx="-38" cy="0" r="4.5" fill="#10b981" />
+          </g>
+
+          <!-- Word 3: "LASER" getting completely vaporized -->
+          <g transform="translate(256, 250)">
+            <rect x="-42" y="-18" width="84" height="32" rx="8" fill="#111827" stroke="#10b981" stroke-width="3" filter="drop-shadow(0 0 12px #10b981)" />
+            <text x="0" y="-1" fill="#ffffff" font-family="monospace" font-weight="black" font-size="16" letter-spacing="4" text-anchor="middle" dominant-baseline="central">LASER</text>
+            <!-- Spark explosions around word -->
+            <circle cx="-50" cy="-22" r="3" fill="#eab308" />
+            <circle cx="55" cy="18" r="4" fill="#eab308" />
+            <circle cx="45" cy="-25" r="2.5" fill="#f43f5e" />
+          </g>
+
+          <!-- Player's central tactical keyboard/laser vessel at the bottom -->
+          <g transform="translate(256, 420)">
+            <!-- Thruster wings shape -->
+            <polygon points="-45,28 0,-32 45,28 0,16" fill="#1f2937" stroke="#10b981" stroke-width="3.5" />
+            <polygon points="-20,12 0,-20 20,12" fill="#10b981" fill-opacity="0.8" />
+            <circle cx="0" cy="5" r="8" fill="#ffffff" />
+            
+            <!-- Dual neon green shooting beams hitting "LASER" directly -->
+            <line x1="-15" y1="-10" x2="0" y2="-152" stroke="#10b981" stroke-width="4" filter="drop-shadow(0 0 8px #10b981)" />
+            <line x1="15" y1="-10" x2="0" y2="-152" stroke="#10b981" stroke-width="4" filter="drop-shadow(0 0 8px #10b981)" />
+
+            <!-- Engine plasma jet -->
+            <polygon points="-10,26 0,48 10,26" fill="#ea580c" />
+            <polygon points="-5,26 0,38 5,26" fill="#facc15" />
+          </g>
+
+          <!-- Cyberpunk overlay HUD elements -->
+          <text x="35" y="475" fill="#10b981" font-family="monospace" font-weight="black" font-size="12" opacity="0.85">WPM: 82</text>
+          <text x="400" y="475" fill="#10b981" font-family="monospace" font-weight="bold" font-size="12" opacity="0.85">ACC: 98%</text>
+          <rect x="120" y="465" width="220" height="12" rx="4" fill="#111827" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.5" />
+          <rect x="122" y="467" width="168" height="8" rx="2.5" fill="#10b981" />
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-z-typer)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-z-typer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

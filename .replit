@@ -42,9 +42,12 @@ externalPort = 3000
 [deployment]
 deploymentTarget = "autoscale"
 run = ["node", "dist/server.cjs"]
-build = ["npm", "run", "build:server"]
+build = ["echo", "pre-built"]
 
 [userenv]
 
 [userenv.shared]
 INDEXNOW_KEY = "7fa9fffe660db9907ab0431e6522d228"
+
+[userenv.production]
+NPM_CONFIG_OMIT = "dev"

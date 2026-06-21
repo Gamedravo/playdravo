@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-hexgl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-hexgl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-hexgl)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-hexgl)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#8b5cf6" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <pattern id="hex-cyber-racer" width="40" height="69.28" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 20 11.54 L 0 0 L 0 23.09 L 20 34.64 L 40 23.09 Z M 20 34.64 L 0 46.18 L 0 69.28 L 20 57.73 Q 40 69.28 40 69.28 L 40 46.18 Z" fill="none" stroke="#6366f1" stroke-width="1.2" stroke-opacity="0.08" />
+        </pattern>
+        <rect width="512" height="512" fill="url(#hex-cyber-racer)" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#ec4899" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Techno neon tube visual guides -->
+          <path d="M -180,110 L -40,-120 L 40,-120 L 180,110" fill="none" stroke="#ec4899" stroke-width="4.5" stroke-opacity="0.5" />
+          <path d="M -150,110 L -20,-120 L 20,-120 L 150,110" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="14,10" stroke-opacity="0.4" />
+
+          <!-- Futuristic sleek anti-gravity racer capsule (hexa style) -->
+          <g transform="translate(0, 20)">
+            <!-- Double wings -->
+            <polygon points="-110,35 -20,-15 0,-40 20,-15 110,35 0,10" fill="#ec4899" fill-opacity="0.25" stroke="#ec4899" stroke-width="4" />
+            <!-- Floating fuselage cockpit -->
+            <polygon points="-24,10 0,-75 24,10 0,32" fill="#ffffff" stroke="#8b5cf6" stroke-width="4" />
+            <polygon points="-12,-15 0,-55 12,-15" fill="#06b6d4" />
+            <!-- Dual Cyan thrust flames glowing neon -->
+            <polygon points="-24,20 -14,48 -34,48" fill="#00f0ff" opacity="0.85" />
+            <polygon points="24,20 14,48 34,48" fill="#00f0ff" opacity="0.85" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-hexgl)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-hexgl" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

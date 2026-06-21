@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-spider-solitaire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-spider-solitaire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-spider-solitaire)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-spider-solitaire)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#06b6d4" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- High-contrast felt casino layout -->
+        <rect x="15" y="15" width="482" height="482" fill="#1b5e20" rx="30" />
+        <rect x="25" y="25" width="462" height="462" fill="none" stroke="#2e7d32" stroke-width="8" rx="22" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#10b981" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Layered stacks of cascade card sheets -->
+          <g transform="translate(-85, -45) rotate(-8)">
+            <rect x="-55" y="-85" width="110" height="170" rx="8" fill="#ffffff" stroke="#111" stroke-width="3" />
+            <!-- Suit symbol (Black spade) -->
+            <path d="M 0,-30 C -12,-16 0,0 0,16 C 0,0 12,-16 0,-30" fill="#1a202c" />
+            <path d="M -5,14 L 5,14 L 2,30 L -2,30 Z" fill="#1a202c" />
+            <!-- Large stylish Rank letter -->
+            <text x="-34" y="-55" fill="#1a202c" font-family="'Times New Roman', Times, serif" font-weight="900" font-size="28" text-anchor="middle">A</text>
+          </g>
+
+          <g transform="translate(30, -15) rotate(5)">
+            <!-- Gorgeous crimson Back graphic representing stacked decks -->
+            <rect x="-55" y="-85" width="110" height="170" rx="8" fill="#f44336" stroke="#ffffff" stroke-width="3" filter="drop-shadow(0px 6px 12px rgba(0,0,0,0.45))" />
+            <rect x="-45" y="-75" width="90" height="150" fill="none" stroke="#ffebee" stroke-width="4" stroke-dasharray="8,6" />
+            <circle cx="0" cy="0" r="24" fill="none" stroke="#ffebee" stroke-width="3.5" />
+            <polygon points="0,-16 6,-2 18,-2 10,6 14,18 0,10 -14,18 -10,6 -18,-2 -6,-2" fill="#ffebee" />
+          </g>
+          
+          <g transform="translate(105, 30) rotate(14)">
+            <rect x="-55" y="-85" width="110" height="170" rx="8" fill="#ffffff" stroke="#111" stroke-width="3" filter="drop-shadow(0px 8px 16px rgba(0,0,0,0.5))" />
+            <!-- King card face representation -->
+            <text x="-32" y="-55" fill="#e53e3e" font-family="'Times New Roman', Times, serif" font-weight="900" font-size="28" text-anchor="middle">K</text>
+            <!-- Red heart suit icon -->
+            <path d="M 0,-15 C -15,-30 -30,-5 0,22 C 30,-5 15,-30 0,-15 Z" fill="#e53e3e" transform="scale(0.85)" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-spider-solitaire)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-spider-solitaire" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+# Public read-only API endpoints needed for JavaScript rendering
+Allow: /api/games/stats
+Allow: /api/gamepix-catalog
+Allow: /api/onlinegames-catalog
+Allow: /api/game-requests
+Allow: /api/previews/manifest
+Allow: /api/auth/user
+# Block raw API JSON pages from being indexed and protect sensitive routes
+Disallow: /api/
+Disallow: /admin/
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+Sitemap: https://gamedravo.com/sitemap.xml

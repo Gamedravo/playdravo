@@ -1,0 +1,35 @@
+# GameDravo
+
+> GameDravo is a free, lightweight, futuristic browser gaming portal for instant HTML5 game play — no downloads, no sign-ups required.
+
+## What is GameDravo?
+
+GameDravo hosts 1,000+ free browser games across categories including Action, Adventure, Arcade, Casual, Horror, Puzzle, Simulator, Sports, Strategy, Multiplayer, and Mobile. All games are playable instantly in any modern browser on desktop, tablet, or mobile.
+
+## Key Features
+
+- Instant play — no downloads, no installs
+- 1,000+ HTML5 games
+- Favorites, play history, and personalized recommendations
+- Dark and light mode
+- Mobile-optimized game discovery
+- Multi-language support
+
+## Pages
+
+- / — Homepage with featured games, trending, and recommended sections
+- /search — Search all available games
+- /category/:id — Browse games by category (action, puzzle, arcade, etc.)
+- /games/:id — Individual game page with full-screen play
+- /about — About GameDravo
+- /privacy — Privacy Policy
+- /terms — Terms of Service
+- /cookies — Cookie Policy
+- /contact — Contact form
+- /support — Help Center
+- /report-bug — Bug report form
+- /status — System status page
+
+## Contact
+
+For inquiries, visit https://gamedravo.com/contact

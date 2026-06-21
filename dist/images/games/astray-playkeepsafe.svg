@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-astray-playkeepsafe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-astray-playkeepsafe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-astray-playkeepsafe)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-astray-playkeepsafe)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#f43f5e" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <pattern id="maze-mesh" width="30" height="30" patternUnits="userSpaceOnUse">
+          <rect width="30" height="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.04" />
+        </pattern>
+        <rect width="512" height="512" fill="url(#maze-mesh)" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 210)">
+          <!-- Glowing high-walled red perspective isometric labyrinth puzzle -->
+          <g stroke="#ec4899" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.88">
+            <path d="M -150,-110 H 150 V 110 H -150 Z" />
+            <path d="M -90,-110 V 20 H -10 V -50 H 70 V 70" />
+            <path d="M -150,-20 H -90" />
+            <path d="M -10,20 V 70 H 110" />
+            <path d="M 70,-110 V -50" />
+            <path d="M 150,-20 H 70" />
+          </g>
+
+          <!-- Shiny turquoise player orb sphere rolling in the corridors -->
+          <g transform="translate(30, -10)" filter="drop-shadow(0 4px 12px #06b6d4)">
+            <circle cx="0" cy="0" r="26" fill="url(#turquoise-metallic)" />
+            <!-- Metallic specular highlight -->
+            <circle cx="-8" cy="-8" r="9" fill="#ffffff" fill-opacity="0.5" filter="blur(2px)" />
+            <circle cx="-10" cy="-10" r="4" fill="#ffffff" />
+          </g>
+        </g>
+        <defs>
+          <radialGradient id="turquoise-metallic" cx="40%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="40%" stop-color="#06b6d4" />
+            <stop offset="100%" stop-color="#083344" />
+          </radialGradient>
+        </defs>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-astray-playkeepsafe)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-astray-playkeepsafe" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad-keepy-up" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070712" />
+      <stop offset="50%" stop-color="#0f0e21" />
+      <stop offset="100%" stop-color="#04040a" />
+    </linearGradient>
+    <linearGradient id="glow-grad-keepy-up" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Velvet Space Background -->
+  <rect width="512" height="512" fill="url(#bg-grad-keepy-up)" />
+
+  <!-- Radial lighting corona -->
+  <circle cx="256" cy="220" r="230" fill="url(#glow-grad-keepy-up)" filter="blur(36px)" />
+  <circle cx="256" cy="220" r="115" fill="#7c3aed" fill-opacity="0.18" filter="blur(48px)" />
+
+  <!-- Dedicated Procedural Grid Background -->
+  
+        <!-- Sports Stadium lights and grass checker layout -->
+        <rect x="25" y="25" width="462" height="422" fill="#22c55e" rx="16" />
+        <g opacity="0.12" fill="#15803d">
+           <rect x="25" y="25" width="231" height="422" />
+           <rect x="25" y="223" width="462" height="110" />
+        </g>
+        <!-- Radiant lens flares -->
+        <line x1="45" y1="45" x2="256" y2="200" stroke="#ffffff" stroke-width="2" opacity="0.4" />
+        <line x1="467" y1="45" x2="256" y2="200" stroke="#ffffff" stroke-width="2" opacity="0.4" />
+      
+
+  <!-- Extremely fine, premium border frames -->
+  <rect x="18" y="18" width="476" height="476" rx="34" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-opacity="0.18" />
+  <rect x="22" y="22" width="468" height="468" rx="30" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.06" />
+
+  <!-- Detached High-Fidelity Custom Theme Art Core -->
+  
+        <g transform="translate(256, 195)">
+          <!-- Concentric kicking momentum soundwaves -->
+          <circle cx="0" cy="0" r="110" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-dasharray="10 14" opacity="0.75" />
+
+          <!-- Super high-fidelity soccer/football ball floating with speed segments -->
+          <g transform="translate(0, -5) rotate(18)">
+            <!-- Ball sphere -->
+            <circle cx="0" cy="0" r="56" fill="#ffffff" stroke="#121212" stroke-width="4" filter="drop-shadow(0 12px 24px rgba(0,0,0,0.4))" />
+            <!-- Football pentagon shapes -->
+            <polygon points="0,-18 17,-6 10,14 -10,14 -17,-6" fill="#111" />
+            <!-- Connection lines to outer sphere -->
+            <line x1="0" y1="-18" x2="0" y2="-56" stroke="#111" stroke-width="4" />
+            <line x1="17" y1="-6" x2="48" y2="-28" stroke="#111" stroke-width="4" />
+            <line x1="-17" y1="-6" x2="-48" y2="-28" stroke="#111" stroke-width="4" />
+            <line x1="10" y1="14" x2="33" y2="45" stroke="#111" stroke-width="4" />
+            <line x1="-10" y1="14" x2="-33" y2="45" stroke="#111" stroke-width="4" />
+          </g>
+
+          <!-- Red soccer cleat boot kicking from the corner -->
+          <g transform="translate(-110, 105) rotate(22)">
+             <path d="M -50,-10 L 10,-40 C 25,-48 45,-10 32,25 L -45,35 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="3" />
+             <!-- White stripes and cleats -->
+             <path d="M -10,-24 Q 0,0 -20,22 M -18,-26 Q -10,2 -28,24" stroke="#ffffff" stroke-width="3.5" fill="none" />
+             <rect x="-35" y="32" width="12" height="8" fill="#ffffff" />
+             <rect x="-10" y="34" width="12" height="8" fill="#ffffff" />
+          </g>
+        </g>
+      
+
+  <!-- Ambient Bottom Shadow Blend to maximize overlaying HTML text readabilities -->
+  <rect x="18" y="290" width="476" height="204" fill="url(#vignette-keepy-up)" rx="34" style="mix-blend-mode: multiply;" />
+  <defs>
+    <linearGradient id="vignette-keepy-up" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.98" />
+    </linearGradient>
+  </defs>
+</svg>

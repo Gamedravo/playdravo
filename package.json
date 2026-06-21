@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsx scripts/generate-sitemap.ts && vite build",
-    "build:server": "tsx scripts/generate-sitemap.ts && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build:server": "tsx scripts/generate-sitemap.ts && vite build && esbuild server.ts --bundle --platform=node --format=cjs --external:pg-native --sourcemap --outfile=dist/server.cjs",
     "build:static": "tsx scripts/generate-sitemap.ts && vite build",
     "deploy": "npm run build && wrangler deploy",
     "preview": "npm run build && wrangler dev",
@@ -26,7 +26,8 @@
     "audit:production": "node scripts/production-health-audit.mjs",
     "db:push": "drizzle-kit push"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@google/genai": "^2.9.0",
     "@tailwindcss/vite": "^4.3.1",
     "@types/compression": "^1.8.1",
