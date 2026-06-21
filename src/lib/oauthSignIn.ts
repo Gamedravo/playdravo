@@ -29,7 +29,10 @@ function shouldFallbackToRedirect(error: unknown): boolean {
   const code = (error as { code?: string })?.code;
   return (
     code === 'auth/popup-blocked' ||
-    code === 'auth/operation-not-supported-in-this-environment'
+    code === 'auth/operation-not-supported-in-this-environment' ||
+    code === 'auth/unauthorized-domain' ||
+    code === 'auth/cross-origin-anonymous-model' ||
+    code === 'auth/web-storage-unsupported'
   );
 }
 

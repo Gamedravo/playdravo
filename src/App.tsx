@@ -547,17 +547,26 @@ function AppContent() {
       if (!credential) return;
       try {
         const idToken = await credential.user.getIdToken();
-        await fetch('/api/auth/firebase/token', {
+        const res = await fetch('/api/auth/firebase/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken }),
           credentials: 'include',
         });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          appToast.error(data.message || 'Sign-in failed. Please try again.');
+          return;
+        }
         window.location.reload();
       } catch {
-        // Silent — user is still Firebase-auth'd on the client
+        appToast.error('Sign-in failed. Please try again.');
       }
-    }).catch(() => {});
+    }).catch((err: any) => {
+      if (err?.code && err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+        appToast.error('Google sign-in failed. Try the Login button instead.');
+      }
+    });
   }, []);
 
   // Auth initialization with Replit Auth
