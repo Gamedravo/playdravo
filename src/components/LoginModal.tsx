@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   X, Eye, EyeOff, Mail, Lock, User,
   Sword, Shield, Star, Zap, Trophy, Crown,
-  Gamepad2, Flame, ChevronRight, Loader2
+  Gamepad2, Flame, Loader2
 } from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
 import { GoogleIcon, MicrosoftIcon, GitHubIcon } from '../lib/authProviders';
+import { signInWithGoogle, signInWithMicrosoft, signInWithGithub } from '../firebase';
+import { isAuthCancelError } from '../lib/oauthSignIn';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -75,24 +77,58 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [showPw, setShowPw] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
       setEmail(''); setPassword(''); setUsername('');
-      setError(''); setSuccess(''); setLoading(false); setTab('signin');
+      setError(''); setSuccess(''); setLoading(null); setTab('signin');
     }
   }, [isOpen]);
 
-  const handleOAuth = () => { window.location.href = '/api/login'; };
+  const handleOAuth = async (provider: 'google' | 'microsoft' | 'github') => {
+    setError('');
+    setLoading(provider);
+    try {
+      const signIn =
+        provider === 'google' ? signInWithGoogle :
+        provider === 'microsoft' ? signInWithMicrosoft :
+        signInWithGithub;
+
+      const credential = await signIn();
+      const idToken = await credential.user.getIdToken();
+
+      const res = await fetch('/api/auth/firebase/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.message || 'Sign-in failed. Please try again.');
+        return;
+      }
+
+      setSuccess('Welcome to GameDravo!');
+      setTimeout(() => { onClose(); window.location.reload(); }, 700);
+    } catch (err: any) {
+      if (!isAuthCancelError(err)) {
+        setError(err?.message || 'Sign-in failed. Please try again.');
+      }
+    } finally {
+      setLoading(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(''); setSuccess('');
     if (!email || !password) { setError('Email and password are required.'); return; }
-    setLoading(true);
+    setLoading('email');
     try {
       const endpoint = tab === 'register' ? '/api/auth/email/register' : '/api/auth/email/login';
       const body: Record<string, string> = { email, password };
@@ -112,7 +148,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
     } catch {
       setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
@@ -312,7 +348,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                   {/* Submit */}
                   <motion.button
                     type="submit"
-                    disabled={loading}
+                    disabled={!!loading}
                     whileTap={{ scale: 0.97 }}
                     className="relative w-full py-3.5 rounded-xl font-black text-sm uppercase tracking-widest text-white overflow-hidden transition-all disabled:opacity-60"
                     style={{
@@ -346,22 +382,23 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
 
                 {/* OAuth buttons */}
                 <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { icon: <GoogleIcon className="w-4 h-4" />, label: 'Google' },
-                    { icon: <MicrosoftIcon className="w-4 h-4" />, label: 'Microsoft' },
-                    { icon: <GitHubIcon className="w-4 h-4" />, label: 'GitHub' },
-                  ].map(({ icon, label }) => (
+                  {([
+                    { icon: <GoogleIcon className="w-4 h-4" />, label: 'Google', id: 'google' },
+                    { icon: <MicrosoftIcon className="w-4 h-4" />, label: 'Microsoft', id: 'microsoft' },
+                    { icon: <GitHubIcon className="w-4 h-4" />, label: 'GitHub', id: 'github' },
+                  ] as const).map(({ icon, label, id }) => (
                     <button
                       key={label}
-                      onClick={handleOAuth}
-                      className="flex flex-col items-center gap-1.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 text-white/50 hover:text-white/80"
+                      onClick={() => handleOAuth(id)}
+                      disabled={!!loading}
+                      className="flex flex-col items-center gap-1.5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-wait text-white/50 hover:text-white/80"
                       style={{
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        background: loading === id ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${loading === id ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.08)'}`,
                       }}
                       title={`Continue with ${label}`}
                     >
-                      {icon}
+                      {loading === id ? <Loader2 className="w-4 h-4 animate-spin text-purple-400" /> : icon}
                       {label}
                     </button>
                   ))}

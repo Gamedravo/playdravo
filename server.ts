@@ -9,6 +9,7 @@ import { setupAuth, isAuthenticated } from "./server/replit_integrations/auth/in
 import { authStorage } from "./server/replit_integrations/auth/storage.js";
 import apiRoutes from "./server/routes/api.js";
 import emailAuthRoutes from "./server/routes/emailAuth.js";
+import firebaseAuthRoutes from "./server/routes/firebaseAuth.js";
 import previewRoutes, { startAutoProbe, loadManifest } from "./server/routes/previews.js";
 import { db } from "./server/db.js";
 import { gameStats } from "./shared/models/auth.js";
@@ -44,6 +45,7 @@ app.use('/previews', express.static(path.join(process.cwd(), 'public/previews'))
 // before reaching the previews handler (and to avoid any future apiRoutes wildcard shadowing it).
 app.use("/api/previews", previewRoutes);
 app.use("/api/auth/email", emailAuthRoutes);
+app.use("/api/auth/firebase", firebaseAuthRoutes);
 app.use("/api", apiRoutes);
 
 const ONLINE_GAMES_CATALOG_URL = 'https://www.onlinegames.io/media/plugins/genGames/embed.json';
