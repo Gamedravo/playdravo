@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShieldCheck, Zap } from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
+import { GoogleIcon, MicrosoftIcon, GitHubIcon } from '../lib/authProviders';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -32,6 +33,24 @@ function ScanLine() {
     />
   );
 }
+
+const PROVIDERS = [
+  {
+    id: 'google',
+    label: 'Continue with Google',
+    icon: <GoogleIcon className="w-[18px] h-[18px]" />,
+  },
+  {
+    id: 'microsoft',
+    label: 'Continue with Microsoft',
+    icon: <MicrosoftIcon className="w-[18px] h-[18px]" />,
+  },
+  {
+    id: 'github',
+    label: 'Continue with GitHub',
+    icon: <GitHubIcon className="w-[18px] h-[18px]" />,
+  },
+] as const;
 
 export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
   const handleLogin = () => {
@@ -177,26 +196,30 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                       style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.25), rgba(124,58,237,0.2), transparent)' }} />
                   )}
 
-                  {/* Sign in button */}
+                  {/* Provider buttons */}
                   <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.25 }}
-                    className="flex flex-col gap-3"
+                    transition={{ delay: 0.15, duration: 0.25 }}
+                    className="flex flex-col gap-2.5"
                   >
-                    <button
-                      onClick={handleLogin}
-                      className="w-full rounded-xl py-3.5 text-sm font-black text-black transition-all hover:brightness-110 active:scale-[0.98]"
-                      style={{
-                        background: 'linear-gradient(135deg, rgb(34,211,238), rgb(124,58,237))',
-                        boxShadow: isDarkMode ? '0 0 24px rgba(34,211,238,0.25)' : 'none',
-                      }}
-                    >
-                      Log in
-                    </button>
-                    <p className={`text-center text-xs ${isDarkMode ? 'text-white/40' : 'text-black/40'}`}>
-                      You'll be redirected to sign in securely.
-                    </p>
+                    {PROVIDERS.map((provider, i) => (
+                      <motion.button
+                        key={provider.id}
+                        onClick={handleLogin}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 + i * 0.06, duration: 0.22 }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
+                          isDarkMode
+                            ? 'bg-white/[0.05] border border-white/[0.09] hover:bg-white/[0.09] hover:border-white/[0.16] text-white/90'
+                            : 'bg-black/[0.03] border border-black/[0.09] hover:bg-black/[0.07] text-black/85'
+                        }`}
+                      >
+                        <span className="shrink-0">{provider.icon}</span>
+                        <span className="flex-1 text-left">{provider.label}</span>
+                      </motion.button>
+                    ))}
                   </motion.div>
 
                   {/* Footer */}

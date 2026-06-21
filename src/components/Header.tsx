@@ -191,11 +191,6 @@ export const Header = memo(function Header({
                         isDarkMode ? 'text-white placeholder:text-white/28' : 'text-black placeholder:text-black/38'
                       }`}
                     />
-                    <div className="mr-3.5 hidden lg:flex items-center gap-1 shrink-0 select-none pointer-events-none">
-                      <kbd className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold border ${
-                        isDarkMode ? 'bg-white/[0.06] border-white/[0.12] text-white/30' : 'bg-black/[0.05] border-black/[0.10] text-black/35'
-                      }`}>⌘K</kbd>
-                    </div>
                   </div>
                 </div>
               )}
