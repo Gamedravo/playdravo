@@ -748,7 +748,15 @@ export const GamePage: React.FC<GamePageProps> = ({
                     <iframe
                       key={reloadKey}
                       ref={iframeRef}
-                      src={game.url}
+                      src={(() => {
+                        const u = game.url;
+                        if (u && u.startsWith('https://html5.gamedistribution.com/')) {
+                          const referrer = encodeURIComponent(`https://www.gamedravo.com/games/${game.id}`);
+                          const sep = u.includes('?') ? '&' : '?';
+                          return `${u.replace(/\/$/, '')}${sep}gd_sdk_referrer_url=${referrer}`;
+                        }
+                        return u;
+                      })()}
                       className={`w-full border-0 touch-auto touch-manipulation transition-opacity duration-700 ${iframeLoaded ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${isPseudoFullScreen ? 'h-[100dvh]' : 'h-full min-h-[240px]'}`}
                       sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"
                       allow="autoplay; fullscreen; gamepad; keyboard *"

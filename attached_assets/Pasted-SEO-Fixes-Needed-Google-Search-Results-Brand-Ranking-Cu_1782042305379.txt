@@ -1,0 +1,86 @@
+SEO Fixes Needed – Google Search Results & Brand Ranking
+
+Current situation:
+
+Google is indexing GameDravo correctly. The site is not deindexed, and multiple pages are appearing in search results. However, there are several SEO issues preventing GameDravo from ranking strongly for its own brand name ("gamedravo") and reducing overall search performance.
+
+Issues Found:
+
+1. Duplicate Meta Descriptions
+   Many pages are using the same description:
+
+"GameDravo is a lightweight futuristic gaming portal..."
+
+Each page must have a unique meta description.
+
+Examples:
+
+* Tekken 3 page → description about Tekken 3
+* Traffic Rider page → description about Traffic Rider
+* Racing category page → description about racing games
+
+2. Duplicate Titles
+   Several pages have similar or repeated title structures.
+
+Every page must have a unique title.
+
+Examples:
+
+* Tekken 3 – Play Online Free | GameDravo
+* Traffic Rider – Play Online Free | GameDravo
+* Racing Games – Free Racing Games | GameDravo
+
+3. Thin / Repeated Content
+   Many pages appear too similar to Google.
+
+Add unique content to:
+
+* Game pages
+* Category pages
+* Collections
+
+Each game page should contain:
+
+* Description
+* Gameplay overview
+* Controls
+* Features
+* Tips
+
+4. Strengthen Brand Signals
+   Improve homepage SEO so Google understands that "GameDravo" is the brand.
+
+Homepage title:
+GameDravo – Play Free Online Browser Games Instantly
+
+Homepage description:
+Play hundreds of free online browser games instantly. Action, racing, puzzle, sports, fighting and more on GameDravo.
+
+5. Structured Data
+   Add:
+
+* Organization Schema
+* WebSite Schema
+* VideoGame Schema on game pages
+* Breadcrumb Schema
+
+6. Internal Linking
+   Increase links between:
+
+* Related games
+* Similar games
+* Categories
+* Trending games
+
+This helps Google discover and understand page relationships.
+
+7. Sitemap Cleanup
+   Remove invalid URLs and ensure every sitemap URL is linked internally.
+
+Expected Result:
+
+* Stronger ranking for "gamedravo"
+* Better indexing
+* Higher search visibility
+* Improved AdSense approval chances
+* Better organic traffic growth
