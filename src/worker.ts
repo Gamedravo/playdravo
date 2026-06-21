@@ -81,6 +81,18 @@ const bugReportSubmissions: BugReportSubmission[] = [];
 const contactMessageSubmissions: ContactMessageSubmission[] = [];
 const chatMessageSubmissions: ChatMessageSubmission[] = [];
 
+interface EmailUser {
+  id: string;
+  email: string;
+  passwordHash: string;
+  displayName: string;
+  username: string | null;
+  usernameSet: boolean;
+  createdAt: string;
+}
+const emailUsers = new Map<string, EmailUser>();
+const emailSessions = new Map<string, { userId: string; expiresAt: number }>();
+
 export default {
   async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const url = new URL(request.url);
@@ -154,6 +166,10 @@ export default {
 
     if (url.pathname === '/api/chat') {
       return handleChat(request);
+    }
+
+    if (url.pathname.startsWith('/api/auth/email/')) {
+      return handleEmailAuth(request, url);
     }
 
     if (url.pathname.startsWith('/api/')) {
@@ -295,7 +311,20 @@ async function handleAuthUser(request: Request): Promise<Response> {
     return methodNotAllowed();
   }
 
-  return Response.json(null, { headers: noStoreJsonHeaders() });
+  const cookies = parseCookies(request);
+  const sessionId = cookies['gd_session'];
+  if (sessionId) {
+    const session = emailSessions.get(sessionId);
+    if (session && session.expiresAt > Date.now()) {
+      const user = emailUsers.get(session.userId);
+      if (user) {
+        const { passwordHash: _, ...safe } = user;
+        return Response.json(safe, { headers: noStoreJsonHeaders() });
+      }
+    }
+  }
+
+  return Response.json(null, { status: 401, headers: noStoreJsonHeaders() });
 }
 
 async function handleFirebaseToken(request: Request): Promise<Response> {
@@ -728,6 +757,121 @@ async function proxyJsonCatalog(
     console.error('Catalog proxy failed:', error);
     return Response.json({ error: errorMessage }, { status: 502, headers: corsHeaders() });
   }
+}
+
+async function handleEmailAuth(request: Request, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  const action = url.pathname.replace('/api/auth/email/', '');
+
+  if (action === 'register' && request.method === 'POST') {
+    const body = await readJsonBody(request);
+    const email = cleanText(body?.email, 200)?.toLowerCase();
+    const password = typeof body?.password === 'string' ? body.password : '';
+    const username = cleanText(body?.username, 40);
+    if (!email || !password) {
+      return Response.json({ message: 'Email and password are required' }, { status: 400, headers: noStoreJsonHeaders() });
+    }
+    if (password.length < 6) {
+      return Response.json({ message: 'Password must be at least 6 characters' }, { status: 400, headers: noStoreJsonHeaders() });
+    }
+    const existing = [...emailUsers.values()].find(u => u.email === email);
+    if (existing) {
+      return Response.json({ message: 'An account with this email already exists' }, { status: 409, headers: noStoreJsonHeaders() });
+    }
+    const passwordHash = await hashPasswordCrypto(password);
+    const displayName = username || email.split('@')[0];
+    const id = crypto.randomUUID();
+    const user: EmailUser = { id, email, passwordHash, displayName, username: username || null, usernameSet: !!username, createdAt: new Date().toISOString() };
+    emailUsers.set(id, user);
+    const sessionId = crypto.randomUUID();
+    emailSessions.set(sessionId, { userId: id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 });
+    const { passwordHash: _, ...safe } = user;
+    const headers = { ...noStoreJsonHeaders(), 'Set-Cookie': `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}` };
+    return Response.json({ ok: true, user: safe }, { headers });
+  }
+
+  if (action === 'login' && request.method === 'POST') {
+    const body = await readJsonBody(request);
+    const email = cleanText(body?.email, 200)?.toLowerCase();
+    const password = typeof body?.password === 'string' ? body.password : '';
+    if (!email || !password) {
+      return Response.json({ message: 'Email and password are required' }, { status: 400, headers: noStoreJsonHeaders() });
+    }
+    const user = [...emailUsers.values()].find(u => u.email === email);
+    if (!user || !user.passwordHash) {
+      return Response.json({ message: 'Invalid email or password' }, { status: 401, headers: noStoreJsonHeaders() });
+    }
+    const valid = await verifyPasswordCrypto(password, user.passwordHash);
+    if (!valid) {
+      return Response.json({ message: 'Invalid email or password' }, { status: 401, headers: noStoreJsonHeaders() });
+    }
+    const sessionId = crypto.randomUUID();
+    emailSessions.set(sessionId, { userId: user.id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 });
+    const { passwordHash: _, ...safe } = user;
+    const headers = { ...noStoreJsonHeaders(), 'Set-Cookie': `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}` };
+    return Response.json({ ok: true, user: safe }, { headers });
+  }
+
+  if (action === 'logout' && request.method === 'POST') {
+    const cookies = parseCookies(request);
+    const sessionId = cookies['gd_session'];
+    if (sessionId) emailSessions.delete(sessionId);
+    const headers = { ...noStoreJsonHeaders(), 'Set-Cookie': 'gd_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0' };
+    return Response.json({ ok: true }, { headers });
+  }
+
+  if (action === 'me' && request.method === 'GET') {
+    const cookies = parseCookies(request);
+    const sessionId = cookies['gd_session'];
+    if (!sessionId) return Response.json({ message: 'Not authenticated' }, { status: 401, headers: noStoreJsonHeaders() });
+    const session = emailSessions.get(sessionId);
+    if (!session || session.expiresAt <= Date.now()) {
+      return Response.json({ message: 'Not authenticated' }, { status: 401, headers: noStoreJsonHeaders() });
+    }
+    const user = emailUsers.get(session.userId);
+    if (!user) return Response.json({ message: 'User not found' }, { status: 401, headers: noStoreJsonHeaders() });
+    const { passwordHash: _, ...safe } = user;
+    return Response.json(safe, { headers: noStoreJsonHeaders() });
+  }
+
+  return Response.json({ message: 'API route not found' }, { status: 404, headers: noStoreJsonHeaders() });
+}
+
+async function hashPasswordCrypto(password: string): Promise<string> {
+  const enc = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const derived = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100_000, hash: 'SHA-256' }, keyMaterial, 256);
+  const toHex = (buf: Uint8Array) => Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${toHex(salt)}.${toHex(new Uint8Array(derived))}`;
+}
+
+async function verifyPasswordCrypto(password: string, stored: string): Promise<boolean> {
+  try {
+    const [saltHex, hashHex] = stored.split('.');
+    if (!saltHex || !hashHex) return false;
+    const salt = new Uint8Array((saltHex.match(/.{2}/g) || []).map(h => parseInt(h, 16)));
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+    const derived = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 100_000, hash: 'SHA-256' }, keyMaterial, 256);
+    const computedHex = Array.from(new Uint8Array(derived)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return computedHex === hashHex;
+  } catch {
+    return false;
+  }
+}
+
+function parseCookies(request: Request): Record<string, string> {
+  const header = request.headers.get('Cookie') || '';
+  return Object.fromEntries(
+    header.split(';')
+      .map(c => c.trim().split('='))
+      .filter(([k]) => k)
+      .map(([k, ...v]) => [k.trim(), v.join('=').trim()])
+  );
 }
 
 async function readJsonBody(request: Request): Promise<Record<string, unknown> | null> {
