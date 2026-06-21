@@ -722,7 +722,10 @@ export const GamePage: React.FC<GamePageProps> = ({
                       title={game.title}
                       scrolling="no"
                       referrerPolicy="no-referrer"
-                      onLoad={() => setIframeLoaded(true)}
+                      onLoad={() => {
+                        setIframeLoaded(true);
+                        setTimeout(() => iframeRef.current?.focus(), 100);
+                      }}
                       onError={(e) => {
                         console.warn('Iframe error event trigged', e);
                         setLoadingTimeout(true);

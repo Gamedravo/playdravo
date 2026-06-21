@@ -385,56 +385,47 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
         </nav>
 
         {/* Category Hero */}
-        <div className="relative mb-12 overflow-hidden rounded-3xl border"
+        <div className="relative mb-12 overflow-hidden rounded-2xl border"
           style={{
             borderColor: `${meta.color}25`,
             background: `radial-gradient(ellipse at top left, ${meta.color}12 0%, transparent 60%)`,
           }}
         >
-          <div className="px-8 py-10 md:px-12 md:py-12">
-            <div className="flex items-start gap-6">
+          <div className="px-4 py-6 sm:px-8 sm:py-10 md:px-12 md:py-12">
+            <div className="flex items-center gap-4 sm:gap-6">
               {/* Icon badge */}
               <div
-                className="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center border"
+                className="shrink-0 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center border"
                 style={{
                   background: `${meta.color}18`,
                   borderColor: `${meta.color}35`,
                 }}
               >
                 <IconComponent
-                  className="w-8 h-8 md:w-10 md:h-10"
+                  className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"
                   style={{ color: meta.color }}
                 />
               </div>
 
               {/* Text */}
-              <div className="space-y-3 min-w-0">
-                <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-none">
+              <div className="space-y-2 sm:space-y-3 min-w-0">
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight leading-none">
                   {meta.label}{' '}
                   <span style={{ color: meta.color }}>Games</span>
                 </h1>
-                <p className={`text-sm md:text-base max-w-2xl font-medium leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
+                <p className={`text-xs sm:text-sm md:text-base max-w-2xl font-medium leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
                   {meta.description}
                 </p>
-                <div className="flex items-center gap-2 pt-1">
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border"
-                    style={{ borderColor: `${meta.color}40`, color: meta.color, background: `${meta.color}12` }}
-                  >
-                    Free to Play
-                  </span>
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border"
-                    style={{ borderColor: `${meta.color}40`, color: meta.color, background: `${meta.color}12` }}
-                  >
-                    No Download
-                  </span>
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border"
-                    style={{ borderColor: `${meta.color}40`, color: meta.color, background: `${meta.color}12` }}
-                  >
-                    Instant Play
-                  </span>
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-0.5">
+                  {['Free to Play', 'No Download', 'Instant Play'].map(label => (
+                    <span
+                      key={label}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-widest border"
+                      style={{ borderColor: `${meta.color}40`, color: meta.color, background: `${meta.color}12` }}
+                    >
+                      {label}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
