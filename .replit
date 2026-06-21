@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web", "python-3.11"]
+modules = ["nodejs-20", "web", "python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
 stack = "BEST_EFFORT_FALLBACK"
@@ -28,7 +28,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx tsx server.ts"
+args = "node node_modules/tsx/dist/cli.mjs server.ts"
 waitForPort = 5000
 
 [[ports]]
