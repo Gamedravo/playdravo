@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShieldCheck, Zap } from 'lucide-react';
 import { GameDravoMark } from './GameDravoLogo';
-import { GoogleIcon, MicrosoftIcon, GitHubIcon } from '../lib/authProviders';
+import { AUTH_PROVIDER_CARDS } from '../lib/authProviders';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -33,24 +33,6 @@ function ScanLine() {
     />
   );
 }
-
-const PROVIDERS = [
-  {
-    id: 'google',
-    label: 'Continue with Google',
-    icon: <GoogleIcon className="w-[18px] h-[18px]" />,
-  },
-  {
-    id: 'microsoft',
-    label: 'Continue with Microsoft',
-    icon: <MicrosoftIcon className="w-[18px] h-[18px]" />,
-  },
-  {
-    id: 'github',
-    label: 'Continue with GitHub',
-    icon: <GitHubIcon className="w-[18px] h-[18px]" />,
-  },
-] as const;
 
 export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) {
   const handleLogin = () => {
@@ -203,7 +185,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
                     transition={{ delay: 0.15, duration: 0.25 }}
                     className="flex flex-col gap-2.5"
                   >
-                    {PROVIDERS.map((provider, i) => (
+                    {AUTH_PROVIDER_CARDS.map((provider, i) => (
                       <motion.button
                         key={provider.id}
                         onClick={handleLogin}
