@@ -75,5 +75,8 @@
     "zod": "^4.4.3",
     "zod-validation-error": "^5.0.0"
   },
-  "overrides": {}
+  "overrides": {},
+  "engines": {
+    "node": ">=20"
+  }
 }
