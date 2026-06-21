@@ -564,11 +564,6 @@ export const HomePage = React.memo(function HomePage({
                   <img src={trendHero.thumbnail} alt="" className="trend-matrix-hero-art" loading="eager" fetchPriority="high" />
                   <div className="trend-matrix-hero-glass" aria-hidden />
                   <div className="trend-matrix-hero-rank">#01</div>
-                  <div className="trend-matrix-wave" aria-hidden>
-                    {Array.from({ length: 18 }).map((_, index) => (
-                      <span key={`wave-${index}`} style={{ height: `${18 + ((index * 13) % 58)}%` }} />
-                    ))}
-                  </div>
                   <div className="trend-matrix-hero-body">
                     <div className="trend-matrix-live-pill">
                       <span />

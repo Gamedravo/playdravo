@@ -1587,19 +1587,6 @@
     @apply absolute left-4 top-4 z-10 rounded-full border border-white/20 bg-black/55 px-3 py-1.5 text-xs font-bold text-white/85 backdrop-blur-xl;
   }
 
-  .trend-matrix-wave {
-    @apply absolute right-4 top-4 z-10 hidden h-16 items-end gap-1 rounded-2xl border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-xl sm:flex;
-  }
-
-  .trend-matrix-wave span {
-    @apply block w-1 rounded-full;
-    background: rgba(124,58,237,0.8);
-    box-shadow: 0 0 8px rgba(124,58,237,0.6);
-    animation: trend-wave 1.4s ease-in-out infinite alternate;
-  }
-
-  .trend-matrix-wave span:nth-child(2n) { animation-delay: -0.4s; }
-  .trend-matrix-wave span:nth-child(3n) { animation-delay: -0.8s; background: rgba(167,139,250,0.78); }
 
   .trend-matrix-hero-body {
     @apply absolute inset-x-0 bottom-0 z-10 flex flex-col items-start gap-3 p-5;
@@ -1715,10 +1702,6 @@
   100% { background-position: 58px 58px, -58px 58px; }
 }
 
-@keyframes trend-wave {
-  0% { transform: scaleY(0.55); opacity: 0.5; }
-  100% { transform: scaleY(1); opacity: 1; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .featured-spotlight-aura,
@@ -1729,7 +1712,6 @@
   .featured-floating-chip,
   .featured-hero-badge::before,
   .trend-matrix-bg,
-  .trend-matrix-wave span,
   .trend-matrix-live-pill span {
     animation: none !important;
   }
