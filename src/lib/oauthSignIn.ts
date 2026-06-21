@@ -27,10 +27,11 @@ export function isAuthCancelError(error: unknown): boolean {
 
 function shouldFallbackToRedirect(error: unknown): boolean {
   const code = (error as { code?: string })?.code;
+  // Only redirect for popup-blocked errors. Do NOT redirect for auth/unauthorized-domain
+  // because the redirect flow is also blocked when the domain isn't authorized.
   return (
     code === 'auth/popup-blocked' ||
     code === 'auth/operation-not-supported-in-this-environment' ||
-    code === 'auth/unauthorized-domain' ||
     code === 'auth/cross-origin-anonymous-model' ||
     code === 'auth/web-storage-unsupported'
   );

@@ -117,7 +117,15 @@ export function LoginModal({ isOpen, onClose, isDarkMode, t }: LoginModalProps) 
       setTimeout(() => { onClose(); window.location.reload(); }, 700);
     } catch (err: any) {
       if (!isAuthCancelError(err)) {
-        setError(err?.message || 'Sign-in failed. Please try again.');
+        const code: string = err?.code || '';
+        if (code === 'auth/unauthorized-domain') {
+          setError(
+            `This preview URL is not authorized in Firebase. Error: ${code}. ` +
+            `To fix: go to Firebase Console → Authentication → Settings → Authorized domains → add this site's domain.`
+          );
+        } else {
+          setError(`${err?.message || 'Sign-in failed.'} (${code || 'unknown'})`);
+        }
       }
     } finally {
       setLoading(null);

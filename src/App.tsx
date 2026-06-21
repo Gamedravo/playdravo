@@ -80,7 +80,7 @@ import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, 
 import { api } from './lib/api';
 import { useReplitAuth, type ReplitUser } from './hooks/useReplitAuth';
 import { auth } from './firebase';
-import { getRedirectResult } from 'firebase/auth';
+import { getRedirectResult, onAuthStateChanged } from 'firebase/auth';
 import { NotificationsProvider, useNotifications } from './components/NotificationsProvider';
 import { SEO } from './components/SEO';
 import { Sidebar } from './components/Sidebar';
@@ -541,32 +541,68 @@ function AppContent() {
     ];
   }, []);
 
-  // Handle Firebase redirect result on page load (fallback when popup is blocked)
+  // Sync Firebase auth state → server session.
+  // onAuthStateChanged reads from localStorage (persistent), so it works after
+  // both popup AND redirect flows, even when iframe sessionStorage is wiped.
   useEffect(() => {
-    getRedirectResult(auth).then(async (credential) => {
-      if (!credential) return;
+    let syncing = false;
+
+    // Process any pending redirect result. Show errors visibly instead of swallowing them.
+    getRedirectResult(auth).then(async (result) => {
+      if (!result) return;
+      // Redirect completed — onAuthStateChanged will handle the token exchange
+    }).catch((err: any) => {
+      const code: string = err?.code || '';
+      if (code && code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
+        if (code === 'auth/unauthorized-domain') {
+          appToast.error(
+            `Firebase: this domain isn't authorized. Go to Firebase Console → Authentication → Settings → Authorized domains and add this site.`
+          );
+        } else {
+          appToast.error(`Sign-in error (${code}): ${err?.message || 'Unknown error'}`);
+        }
+      }
+    });
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser || syncing) return;
+
+      // Check if the server already has a session for this user
       try {
-        const idToken = await credential.user.getIdToken();
+        const sessionResp = await fetch('/api/auth/user', { credentials: 'include' });
+        if (sessionResp.ok) {
+          const sessionUser = await sessionResp.json();
+          // Already have a valid server session — no action needed
+          if (sessionUser?.id) return;
+        }
+      } catch {
+        // Ignore — proceed to sync
+      }
+
+      // Firebase knows this user but the server session doesn't exist yet → exchange token
+      syncing = true;
+      try {
+        const idToken = await firebaseUser.getIdToken(true);
         const res = await fetch('/api/auth/firebase/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ idToken }),
           credentials: 'include',
         });
-        if (!res.ok) {
+        if (res.ok) {
+          window.location.reload();
+        } else {
           const data = await res.json().catch(() => ({}));
           appToast.error(data.message || 'Sign-in failed. Please try again.');
-          return;
         }
-        window.location.reload();
       } catch {
         appToast.error('Sign-in failed. Please try again.');
-      }
-    }).catch((err: any) => {
-      if (err?.code && err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
-        appToast.error('Google sign-in failed. Try the Login button instead.');
+      } finally {
+        syncing = false;
       }
     });
+
+    return () => unsubscribe();
   }, []);
 
   // Auth initialization with Replit Auth
