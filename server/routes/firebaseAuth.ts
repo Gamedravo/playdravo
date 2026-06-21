@@ -70,7 +70,13 @@ router.post("/token", async (req: any, res) => {
     }
 
     req.session.emailUserId = uid;
-    res.json({ ok: true });
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session save error:", err);
+        return res.status(500).json({ message: "Session could not be saved" });
+      }
+      res.json({ ok: true });
+    });
   } catch (err) {
     console.error("Firebase auth error:", err);
     res.status(500).json({ message: "Authentication failed" });

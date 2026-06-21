@@ -59,7 +59,13 @@ router.post("/register", async (req: any, res) => {
       .returning();
 
     req.session.emailUserId = user.id;
-    res.json({ ok: true, user: sanitize(user) });
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error("Session save error:", saveErr);
+        return res.status(500).json({ message: "Session could not be saved" });
+      }
+      res.json({ ok: true, user: sanitize(user) });
+    });
   } catch (err) {
     console.error("Register error:", err);
     res.status(500).json({ message: "Registration failed" });
@@ -84,7 +90,13 @@ router.post("/login", async (req: any, res) => {
     }
 
     req.session.emailUserId = user.id;
-    res.json({ ok: true, user: sanitize(user) });
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error("Session save error:", saveErr);
+        return res.status(500).json({ message: "Session could not be saved" });
+      }
+      res.json({ ok: true, user: sanitize(user) });
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Login failed" });
