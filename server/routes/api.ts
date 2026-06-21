@@ -13,7 +13,8 @@ const router = Router();
 
 router.patch("/user/profile", async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub || req.body._userId;
+    // Support Replit OIDC users, email/Firebase session users, and explicit _userId body param
+    const userId = req.user?.claims?.sub || req.session?.emailUserId || req.body._userId;
     if (!userId || typeof userId !== "string") {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -72,7 +73,7 @@ router.get("/games/stats", async (_req, res) => {
 router.get("/games/:gameId/rating", isAuthenticated, async (req: any, res) => {
   try {
     const { gameId } = req.params;
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const [rating] = await db.select()
       .from(gameRatings)
       .where(and(eq(gameRatings.gameId, gameId), eq(gameRatings.userId, userId)));
@@ -86,7 +87,7 @@ router.get("/games/:gameId/rating", isAuthenticated, async (req: any, res) => {
 router.post("/games/:gameId/rate", isAuthenticated, async (req: any, res) => {
   try {
     const { gameId } = req.params;
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const { value } = req.body;
 
     if (typeof value !== "number" || value < 1 || value > 5) {
@@ -149,7 +150,7 @@ router.get("/games/:gameId/mods", async (req, res) => {
 router.post("/games/:gameId/mods", isAuthenticated, async (req: any, res) => {
   try {
     const { gameId } = req.params;
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const [userRecord] = await db.select().from(users).where(eq(users.id, userId));
     const { title, description, version } = req.body;
     if (!title?.trim()) return res.status(400).json({ message: "Title is required" });
@@ -187,7 +188,7 @@ router.get("/game-requests", async (_req, res) => {
 
 router.post("/game-requests", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const [userRecord] = await db.select().from(users).where(eq(users.id, userId));
     const { gameName, description, link } = req.body;
     if (!gameName?.trim()) return res.status(400).json({ message: "Game name is required" });
@@ -252,7 +253,7 @@ router.delete("/game-requests/:id", isAuthenticated, async (req: any, res) => {
 
 router.post("/bug-reports", async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const { gameName, description, email } = req.body;
     if (!description?.trim()) return res.status(400).json({ message: "Description is required" });
 
@@ -303,7 +304,7 @@ router.delete("/bug-reports/:id", isAuthenticated, async (req: any, res) => {
 
 router.post("/contact-messages", async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const { subject, message, email } = req.body;
     if (!subject?.trim() || !message?.trim()) return res.status(400).json({ message: "Subject and message are required" });
 
@@ -354,7 +355,7 @@ router.delete("/contact-messages/:id", isAuthenticated, async (req: any, res) =>
 
 router.post("/game-reports", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const { gameId, gameTitle, reason } = req.body;
     if (!reason?.trim()) return res.status(400).json({ message: "Reason is required" });
 
@@ -388,7 +389,7 @@ router.get("/chat", isAuthenticated, async (_req, res) => {
 
 router.post("/chat", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.claims?.sub || req.session?.emailUserId;
     const [userRecord] = await db.select().from(users).where(eq(users.id, userId));
     const { text } = req.body;
     if (!text?.trim()) return res.status(400).json({ message: "Text is required" });

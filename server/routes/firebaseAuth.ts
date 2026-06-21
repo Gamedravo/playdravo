@@ -69,14 +69,12 @@ router.post("/token", async (req: any, res) => {
       }).where(eq(users.id, uid));
     }
 
-    console.log("[AUTH] Firebase login uid:", uid, "session id:", req.session.id, "session exists:", !!req.session);
     req.session.emailUserId = uid;
     req.session.save((err) => {
       if (err) {
-        console.error("[AUTH] Session save FAILED:", err);
+        console.error("Session save error:", err);
         return res.status(500).json({ message: "Session could not be saved" });
       }
-      console.log("[AUTH] Session saved OK, sid:", req.session.id, "emailUserId:", req.session.emailUserId);
       res.json({ ok: true });
     });
   } catch (err) {

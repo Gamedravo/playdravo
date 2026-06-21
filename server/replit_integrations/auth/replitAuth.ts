@@ -127,6 +127,11 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // Allow email/Firebase session users through without OIDC token checks
+  if ((req as any).session?.emailUserId) {
+    return next();
+  }
+
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user?.expires_at) {
