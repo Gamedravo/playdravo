@@ -25,13 +25,18 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
-// Single-hop redirect: HTTP → HTTPS AND www → non-www in one step
-// Combining both conditions avoids a two-hop redirect chain for http://www.gamedravo.com/
+// www → non-www redirect (always safe).
+// HTTP → HTTPS redirect ONLY for the real production domain and ONLY when proto is
+// explicitly "http" — skipped for Replit dev/preview domains where the internal proxy
+// already terminates TLS and may forward as HTTP, which would cause an infinite loop.
 app.use((req, res, next) => {
   const proto = req.headers['x-forwarded-proto'] as string | undefined;
   const host = String(req.headers.host || '').toLowerCase();
+  const isWww = host === 'www.gamedravo.com';
+  const isProductionDomain = host === 'gamedravo.com' || isWww;
+  // Never redirect Replit dev/preview domains (*.replit.dev, *.repl.co, localhost, etc.)
+  if (!isProductionDomain) return next();
   const isHttp = proto === 'http';
-  const isWww = host === 'www.gamedravo.com' || host.startsWith('www.gamedravo.com:');
   if (isHttp || isWww) {
     return res.redirect(301, `https://gamedravo.com${req.originalUrl}`);
   }

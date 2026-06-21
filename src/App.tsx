@@ -593,6 +593,14 @@ function AppContent() {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser || syncing) return;
 
+      // If we just completed a token exchange and reloaded, don't sync again immediately.
+      // This breaks the reload loop: sync → reload → onAuthStateChanged → sync → ...
+      const syncedAt = sessionStorage.getItem('firebase_synced_at');
+      if (syncedAt && Date.now() - parseInt(syncedAt, 10) < 10_000) {
+        sessionStorage.removeItem('firebase_synced_at');
+        return;
+      }
+
       // Check if the server already has a session for this user
       try {
         const sessionResp = await fetch('/api/auth/user', { credentials: 'include' });
@@ -616,6 +624,8 @@ function AppContent() {
           credentials: 'include',
         });
         if (res.ok) {
+          // Mark sync time before reloading so the next load skips re-syncing
+          sessionStorage.setItem('firebase_synced_at', Date.now().toString());
           window.location.reload();
         } else {
           const data = await res.json().catch(() => ({}));
