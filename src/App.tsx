@@ -79,6 +79,8 @@ import { buildRecommendations } from './utils/recommendations';
 import { Game, Mod, ChatMessage, UserProfile, GameRequest, BugReport, Category, Tag, Theme } from './types';
 import { api } from './lib/api';
 import { useReplitAuth, type ReplitUser } from './hooks/useReplitAuth';
+import { auth } from './firebase';
+import { getRedirectResult } from 'firebase/auth';
 import { NotificationsProvider, useNotifications } from './components/NotificationsProvider';
 import { SEO } from './components/SEO';
 import { Sidebar } from './components/Sidebar';
@@ -537,6 +539,25 @@ function AppContent() {
         items: GAME_CATEGORIES.map((c) => c.label),
       },
     ];
+  }, []);
+
+  // Handle Firebase redirect result on page load (fallback when popup is blocked)
+  useEffect(() => {
+    getRedirectResult(auth).then(async (credential) => {
+      if (!credential) return;
+      try {
+        const idToken = await credential.user.getIdToken();
+        await fetch('/api/auth/firebase/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken }),
+          credentials: 'include',
+        });
+        window.location.reload();
+      } catch {
+        // Silent — user is still Firebase-auth'd on the client
+      }
+    }).catch(() => {});
   }, []);
 
   // Auth initialization with Replit Auth

@@ -120,6 +120,10 @@ export default {
       return handleAuthUser(request);
     }
 
+    if (url.pathname === '/api/auth/firebase/token') {
+      return handleFirebaseToken(request);
+    }
+
     if (url.pathname === '/api/user/profile') {
       return handleUserProfile(request);
     }
@@ -292,6 +296,55 @@ async function handleAuthUser(request: Request): Promise<Response> {
   }
 
   return Response.json(null, { headers: noStoreJsonHeaders() });
+}
+
+async function handleFirebaseToken(request: Request): Promise<Response> {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'POST') {
+    return methodNotAllowed();
+  }
+
+  const body = await readJsonBody(request);
+  const idToken = body?.idToken;
+  if (!idToken || typeof idToken !== 'string') {
+    return Response.json({ message: 'idToken is required' }, { status: 400, headers: noStoreJsonHeaders() });
+  }
+
+  try {
+    const verifyRes = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDSGAiHaQnDwPJILJBUCySQOs-WuCSTXG0`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      }
+    );
+
+    if (!verifyRes.ok) {
+      return Response.json({ message: 'Invalid or expired token' }, { status: 401, headers: noStoreJsonHeaders() });
+    }
+
+    const data = await verifyRes.json();
+    const fbUser = data?.users?.[0];
+    if (!fbUser) {
+      return Response.json({ message: 'Token verification failed' }, { status: 401, headers: noStoreJsonHeaders() });
+    }
+
+    return Response.json({
+      ok: true,
+      user: {
+        uid: fbUser.localId,
+        email: fbUser.email || null,
+        displayName: fbUser.displayName || null,
+        photoURL: fbUser.photoUrl || null,
+      },
+    }, { headers: noStoreJsonHeaders() });
+  } catch {
+    return Response.json({ message: 'Token verification error' }, { status: 500, headers: noStoreJsonHeaders() });
+  }
 }
 
 async function handleUserProfile(request: Request): Promise<Response> {
