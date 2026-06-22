@@ -18,33 +18,59 @@ interface UseReplitAuthReturn {
   logout: () => void;
 }
 
+function readLocalFirebaseUser(): ReplitUser | null {
+  try {
+    const user = JSON.parse(localStorage.getItem('gamedravo:firebaseUser') || 'null');
+    return user?.id ? user : null;
+  } catch {
+    return null;
+  }
+}
+
 export function useReplitAuth(): UseReplitAuthReturn {
   const [user, setUser] = useState<ReplitUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/auth/user')
-      .then((res) => {
-        if (res.ok) return res.json();
-        return null;
-      })
-      .then((data) => {
-        if (data && data.id) {
-          setUser({
-            id: data.id,
-            email: data.email ?? null,
-            firstName: data.firstName ?? null,
-            lastName: data.lastName ?? null,
-            profileImageUrl: data.profileImageUrl ?? null,
-            username: data.username ?? null,
-            role: data.role ?? null,
-          });
-        } else {
-          setUser(null);
-        }
-      })
-      .catch(() => setUser(null))
-      .finally(() => setIsLoading(false));
+    let cancelled = false;
+
+    const loadUser = () => {
+      fetch('/api/auth/user')
+        .then((res) => {
+          if (res.ok) return res.json();
+          return null;
+        })
+        .then((data) => {
+          if (cancelled) return;
+          if (data && data.id) {
+            setUser({
+              id: data.id,
+              email: data.email ?? null,
+              firstName: data.firstName ?? null,
+              lastName: data.lastName ?? null,
+              profileImageUrl: data.profileImageUrl ?? null,
+              username: data.username ?? null,
+              role: data.role ?? null,
+            });
+          } else {
+            setUser(readLocalFirebaseUser());
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setUser(readLocalFirebaseUser());
+        })
+        .finally(() => {
+          if (!cancelled) setIsLoading(false);
+        });
+    };
+
+    loadUser();
+    window.addEventListener('gamedravo:auth-updated', loadUser);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('gamedravo:auth-updated', loadUser);
+    };
   }, []);
 
   const login = () => {
@@ -52,6 +78,7 @@ export function useReplitAuth(): UseReplitAuthReturn {
   };
 
   const logout = () => {
+    localStorage.removeItem('gamedravo:firebaseUser');
     window.location.href = '/api/logout';
   };
 

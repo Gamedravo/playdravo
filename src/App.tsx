@@ -593,8 +593,11 @@ function AppContent() {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser || syncing) return;
 
-      // If we just completed a token exchange and reloaded, don't sync again immediately.
-      // This breaks the reload loop: sync → reload → onAuthStateChanged → sync → ...
+      // If we already cached this user locally, skip the token exchange entirely
+      const cachedFirebaseUser = JSON.parse(localStorage.getItem('gamedravo:firebaseUser') || 'null');
+      if (cachedFirebaseUser?.id === firebaseUser.uid) return;
+
+      // Debounce: if we just ran a sync within the last 10s, skip
       const syncedAt = sessionStorage.getItem('firebase_synced_at');
       if (syncedAt && Date.now() - parseInt(syncedAt, 10) < 10_000) {
         sessionStorage.removeItem('firebase_synced_at');
@@ -613,7 +616,7 @@ function AppContent() {
         // Ignore — proceed to sync
       }
 
-      // Firebase knows this user but the server session doesn't exist yet → exchange token
+      // Firebase knows this user but the server session doesn't exist yet → verify token once.
       syncing = true;
       try {
         const idToken = await firebaseUser.getIdToken(true);
@@ -624,9 +627,21 @@ function AppContent() {
           credentials: 'include',
         });
         if (res.ok) {
-          // Mark sync time before reloading so the next load skips re-syncing
           sessionStorage.setItem('firebase_synced_at', Date.now().toString());
-          window.location.reload();
+          const data = await res.json().catch(() => ({}));
+          const verifiedUser = data.user;
+          if (verifiedUser?.uid) {
+            localStorage.setItem('gamedravo:firebaseUser', JSON.stringify({
+              id: verifiedUser.uid,
+              email: verifiedUser.email || null,
+              firstName: verifiedUser.displayName || null,
+              lastName: null,
+              profileImageUrl: verifiedUser.photoURL || null,
+              username: verifiedUser.email ? verifiedUser.email.split('@')[0] : 'Player',
+              role: 'user',
+            }));
+            window.dispatchEvent(new Event('gamedravo:auth-updated'));
+          }
         } else {
           const data = await res.json().catch(() => ({}));
           appToast.error(data.message || 'Sign-in failed. Please try again.');

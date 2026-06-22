@@ -192,14 +192,191 @@ async function serveStaticAsset(request: Request, env: WorkerEnv): Promise<Respo
   const response = await env.ASSETS.fetch(request);
   const url = new URL(request.url);
   const headers = new Headers(response.headers);
+  const isHtml = url.pathname === '/' || headers.get('Content-Type')?.includes('text/html');
 
   if (/\.(?:js|css|mjs|woff2?|png|jpe?g|webp|gif|svg|ico)$/i.test(url.pathname)) {
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-  } else if (url.pathname === '/' || headers.get('Content-Type')?.includes('text/html')) {
+  } else if (isHtml) {
     headers.set('Cache-Control', 'public, max-age=300, must-revalidate');
   }
 
+  if (isHtml && response.ok) {
+    const html = await response.text();
+    return new Response(injectSeoHtml(html, url.pathname), { status: response.status, statusText: response.statusText, headers });
+  }
+
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
+const SITE_ORIGIN = 'https://gamedravo.com';
+
+const STATIC_ROUTE_META: Record<string, { title: string; description: string; h1: string }> = {
+  '/': {
+    title: 'GameDravo – Play Free Browser Games Instantly, No Download',
+    description: 'Play free browser games instantly on GameDravo. Discover action, puzzle, arcade, racing, sports, strategy, and mobile HTML5 games with no download required.',
+    h1: 'GameDravo — Free Browser Games',
+  },
+  '/about': {
+    title: 'About GameDravo | Free Instant Browser Games',
+    description: 'Learn about GameDravo, a lightweight futuristic portal for free instant no-download browser games across action, puzzle, arcade, sports, strategy, and more.',
+    h1: 'About GameDravo',
+  },
+  '/contact': {
+    title: 'Contact GameDravo | Get in Touch',
+    description: 'Contact the GameDravo team for support, partnerships, game submissions, bug reports, or general enquiries about our browser gaming platform.',
+    h1: 'Contact GameDravo',
+  },
+  '/support': {
+    title: 'Support | GameDravo',
+    description: 'Get help with GameDravo, report issues, request games, and find support for your free browser gaming experience.',
+    h1: 'GameDravo Support',
+  },
+  '/submit-game': {
+    title: 'Submit a Game | GameDravo',
+    description: 'Submit your HTML5 browser game to GameDravo for review and potential listing on our free instant-play gaming platform.',
+    h1: 'Submit a Game to GameDravo',
+  },
+  '/privacy': {
+    title: 'Privacy Policy | GameDravo',
+    description: 'Read the GameDravo Privacy Policy to understand how we collect, use, and protect personal data on our free browser gaming platform.',
+    h1: 'Privacy Policy — GameDravo',
+  },
+  '/terms': {
+    title: 'Terms of Service | GameDravo',
+    description: 'Review the GameDravo Terms of Service, including rules and guidelines for using our free browser gaming platform.',
+    h1: 'Terms of Service — GameDravo',
+  },
+  '/cookies': {
+    title: 'Cookie Policy | GameDravo',
+    description: 'Learn how GameDravo uses cookies to save preferences, improve performance, and keep our free browser gaming platform secure.',
+    h1: 'Cookie Policy — GameDravo',
+  },
+  '/html-sitemap': {
+    title: 'Game Index | GameDravo',
+    description: 'Browse the GameDravo game index and discover free browser games by title and category.',
+    h1: 'GameDravo Game Index',
+  },
+  '/status': {
+    title: 'System Status | GameDravo',
+    description: 'Check GameDravo system status, platform availability, and browser game service health.',
+    h1: 'GameDravo System Status',
+  },
+  '/report-bug': {
+    title: 'Report a Bug | GameDravo',
+    description: 'Report bugs, broken games, or technical issues to help improve the GameDravo browser gaming experience.',
+    h1: 'Report a GameDravo Bug',
+  },
+};
+
+function injectSeoHtml(html: string, rawPath: string): string {
+  const path = normalizePath(rawPath);
+  const gameSlug = path.match(/^\/games\/([^/?#]+)$/)?.[1];
+  const categorySlug = path.match(/^\/category\/([^/?#]+)$/)?.[1];
+  const supportSlug = path.match(/^\/support\/([^/?#]+)$/)?.[1];
+  const canonicalPath = path === '/' ? '/' : path.replace(/\/+$/, '');
+  const canonical = `${SITE_ORIGIN}${canonicalPath === '/' ? '/' : canonicalPath}`;
+
+  let meta = STATIC_ROUTE_META[canonicalPath];
+  let body = '';
+  let type = 'website';
+
+  if (gameSlug) {
+    const name = titleFromSlug(gameSlug);
+    meta = {
+      title: `${name} – Play Online Free | GameDravo`,
+      description: `Play ${name} free online on GameDravo. No download, no sign-up, instant HTML5 browser gameplay on desktop and mobile.`,
+      h1: `Play ${name} Online Free`,
+    };
+    type = 'game';
+    body = staticSeoBody(meta.h1, `${name} is a free browser game on GameDravo. Play instantly with no download or installation. Explore more action, puzzle, arcade, racing, sports, strategy, multiplayer, and mobile games across GameDravo.`, ['/html-sitemap', '/category/action', '/category/puzzle', '/category/racing', '/category/sports']);
+  } else if (categorySlug) {
+    const name = titleFromSlug(categorySlug);
+    meta = {
+      title: `${name} Games – Free Online ${name} Games | GameDravo`,
+      description: `Play free ${name.toLowerCase()} games online on GameDravo. No download required — instant browser gameplay on desktop and mobile.`,
+      h1: `Free ${name} Games Online`,
+    };
+    body = staticSeoBody(meta.h1, `Browse free ${name.toLowerCase()} games on GameDravo. Play instantly in your browser with no download, no Flash, and no installation.`, ['/', '/html-sitemap', '/category/action', '/category/puzzle', '/category/racing', '/category/sports']);
+  } else if (supportSlug) {
+    const name = titleFromSlug(supportSlug);
+    meta = {
+      title: `${name} Support | GameDravo`,
+      description: `Read GameDravo support guidance for ${name.toLowerCase()} and get help with your browser gaming experience.`,
+      h1: `${name} Support`,
+    };
+  }
+
+  if (!meta) return html;
+
+  if (!body) {
+    body = staticSeoBody(meta.h1, meta.description, ['/', '/html-sitemap', '/about', '/contact', '/support']);
+  }
+
+  const escapedTitle = escapeHtml(meta.title);
+  const escapedDescription = escapeHtml(meta.description);
+  html = html
+    .replace(/<title>[^<]*<\/title>/, `<title>${escapedTitle}</title>`)
+    .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${escapedDescription}" />`)
+    .replace(/<!-- Per-page canonical injected server-side or by React Helmet -->/, `<link rel="canonical" href="${canonical}" />`)
+    .replace('<!-- SEO_STATIC_BODY -->', body);
+
+  const socialTags = [
+    `<meta property="og:type" content="${type}" />`,
+    `<meta property="og:site_name" content="GameDravo" />`,
+    `<meta property="og:title" content="${escapedTitle}" />`,
+    `<meta property="og:description" content="${escapedDescription}" />`,
+    `<meta property="og:url" content="${canonical}" />`,
+    `<meta property="og:image" content="${SITE_ORIGIN}/logo.svg" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
+    `<meta name="twitter:title" content="${escapedTitle}" />`,
+    `<meta name="twitter:description" content="${escapedDescription}" />`,
+    `<meta name="twitter:image" content="${SITE_ORIGIN}/logo.svg" />`,
+    buildJsonLd(meta, canonical, type),
+  ].join('\n');
+
+  return html.replace('</head>', `${socialTags}\n</head>`);
+}
+
+function normalizePath(path: string): string {
+  const cleaned = decodeURIComponent(path.split('?')[0] || '/');
+  return cleaned.length > 1 ? cleaned.replace(/\/+$/, '') : '/';
+}
+
+function titleFromSlug(slug: string): string {
+  return slug.replace(/^gamepix-/, '').replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function staticSeoBody(h1: string, text: string, links: string[]): string {
+  const nav = links.map((href) => `<a href="${href}">${titleFromSlug(href.split('/').filter(Boolean).pop() || 'home')}</a>`).join(' ');
+  return `<div style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true"><h1>${escapeHtml(h1)}</h1><p>${escapeHtml(text)}</p><nav>${nav}</nav></div>`;
+}
+
+function buildJsonLd(meta: { title: string; description: string }, canonical: string, type: string): string {
+  const schema = type === 'game'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'VideoGame',
+        name: meta.title.replace(' – Play Online Free | GameDravo', ''),
+        description: meta.description,
+        url: canonical,
+        applicationCategory: 'GameApplication',
+        operatingSystem: 'Web Browser',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        publisher: { '@type': 'Organization', name: 'GameDravo', url: SITE_ORIGIN },
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: meta.title,
+        description: meta.description,
+        url: canonical,
+        isPartOf: { '@type': 'WebSite', name: 'GameDravo', url: SITE_ORIGIN },
+      };
+  return `<script type="application/ld+json">${JSON.stringify(schema)}</script>`;
 }
 
 async function handleOnlineGamesCatalog(request: Request): Promise<Response> {

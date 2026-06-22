@@ -1,10 +1,11 @@
 import pLimit from "p-limit";
-import pRetry from "p-retry";
+import pRetry, { AbortError } from "p-retry";
 
 /**
  * Batch Processing Utilities for Gemini
  *
  * Supported models: gemini-2.5-flash (fast), gemini-2.5-pro (advanced reasoning), gemini-2.5-flash-image (image generation)
+
  *
  * USAGE:
  * ```typescript
@@ -95,12 +96,13 @@ export async function batchProcess<T, R>(
             if (isRateLimitError(error)) {
               throw error;
             }
-            throw new pRetry.AbortError(
+            throw new AbortError(
               error instanceof Error ? error : new Error(String(error))
             );
           }
         },
         { retries, minTimeout, maxTimeout, factor: 2 }
+
       )
     )
   );
@@ -136,13 +138,14 @@ export async function batchProcessWithSSE<T, R>(
         factor: 2,
         onFailedAttempt: (error) => {
           if (!isRateLimitError(error)) {
-            throw new pRetry.AbortError(
+            throw new AbortError(
               error instanceof Error ? error : new Error(String(error))
             );
           }
         },
       });
       results.push(result);
+
       sendEvent({ type: "progress", index, result });
     } catch (error) {
       errors++;

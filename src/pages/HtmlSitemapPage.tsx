@@ -7,76 +7,83 @@ interface HtmlSitemapPageProps {
   t: (key: string) => string;
 }
 
-function toLabel(slug: string): string {
-  return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+function toLabel(path: string): string {
+  if (path === '/') return 'Home';
+  return path
+    .split('/')
+    .filter(Boolean)
+    .pop()!
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function toPath(url: string): string {
+  return url.replace(/^https?:\/\/[^/]+/, '') || '/';
 }
 
 export function HtmlSitemapPage({ isDarkMode }: HtmlSitemapPageProps) {
-  const [gameUrls, setGameUrls] = useState<string[]>([]);
+  const [urls, setUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/sitemap.xml')
-      .then((r) => r.text())
+      .then((response) => response.text())
       .then((xml) => {
-        const matches = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-        const games = matches.filter((u) => u.includes('/games/'));
-        setGameUrls(games);
+        const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => toPath(match[1]));
+        setUrls(paths);
       })
-      .catch(() => setGameUrls([]))
+      .catch(() => setUrls([]))
       .finally(() => setLoading(false));
   }, []);
+
+  const categoryUrls = urls.filter((url) => url.startsWith('/category/'));
+  const pageUrls = urls.filter((url) => !url.startsWith('/category/'));
+
+  const linkClass = `block px-2 py-1 rounded hover:underline ${isDarkMode ? 'hover:text-accent' : 'hover:text-blue-600'} truncate`;
 
   return (
     <>
       <SEO
-        title="Game Index | GameDravo"
-        description="Browse the complete GameDravo game index — every free browser game available on our platform, listed alphabetically."
+        title="Site Index | GameDravo"
+        description="Browse the GameDravo site index — key pages and game categories available on our free browser gaming platform."
         canonicalUrl="/html-sitemap"
       />
       <div className={`min-h-screen p-6 ${isDarkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Game Index</h1>
+          <h1 className="text-3xl font-bold mb-2">GameDravo Site Index</h1>
           <p className="mb-6 text-sm opacity-60">
-            Complete list of all {gameUrls.length > 0 ? gameUrls.length : '800+'} free browser games on GameDravo. No download required.
+            Browse canonical GameDravo pages and category hubs included in the XML sitemap.
           </p>
 
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold mb-3">Quick Links</h2>
-            <div className="flex flex-wrap gap-3 text-sm">
-              {['/', '/about', '/contact', '/privacy', '/terms', '/cookies'].map((path) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={`px-3 py-1 rounded-full border ${isDarkMode ? 'border-gray-700 hover:border-accent' : 'border-gray-300 hover:border-blue-500'} transition-colors`}
-                >
-                  {path === '/' ? 'Home' : path.replace('/', '').replace(/\b\w/g, (c) => c.toUpperCase())}
-                </Link>
-              ))}
-            </div>
-          </div>
-
           {loading ? (
-            <p className="opacity-50">Loading game list…</p>
+            <p className="opacity-50">Loading site index…</p>
           ) : (
-            <div>
-              <h2 className="text-lg font-semibold mb-4">All Games ({gameUrls.length})</h2>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 text-sm">
-                {gameUrls.map((url) => {
-                  const slug = url.replace('https://gamedravo.com/games/', '');
-                  return (
-                    <li key={slug}>
-                      <Link
-                        to={`/games/${slug}`}
-                        className={`block px-2 py-1 rounded hover:underline ${isDarkMode ? 'hover:text-accent' : 'hover:text-blue-600'} truncate`}
-                        title={toLabel(slug)}
-                      >
-                        {toLabel(slug)}
+            <div className="space-y-8">
+              <section>
+                <h2 className="text-lg font-semibold mb-4">Site Pages ({pageUrls.length})</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 text-sm">
+                  {pageUrls.map((path) => (
+                    <li key={path}>
+                      <Link to={path} className={linkClass} title={toLabel(path)}>
+                        {toLabel(path)}
                       </Link>
                     </li>
-                  );
-                })}
-              </ul>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-lg font-semibold mb-4">Game Categories ({categoryUrls.length})</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1 text-sm">
+                  {categoryUrls.map((path) => (
+                    <li key={path}>
+                      <Link to={path} className={linkClass} title={toLabel(path)}>
+                        {toLabel(path)} Games
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             </div>
           )}
         </div>

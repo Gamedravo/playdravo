@@ -347,11 +347,12 @@ app.get('/html-sitemap', (_req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Games Index | GameDravo</title>
-  <meta name="description" content="Complete index of all ${gamePaths.length} free browser games on GameDravo. Browse every game by title — no download required.">
+  <title>Site Index | GameDravo</title>
+  <meta name="description" content="Canonical index of public GameDravo pages and game category hubs.">
   <link rel="canonical" href="https://gamedravo.com/html-sitemap">
   <style>
     *{box-sizing:border-box}body{font-family:system-ui,sans-serif;max-width:1200px;margin:0 auto;padding:24px 16px;color:#1a202c;background:#f7fafc}
+
     h1{font-size:1.8rem;font-weight:900;margin:0 0 8px}p.sub{color:#4a5568;margin:0 0 24px}
     nav{margin-bottom:32px;display:flex;flex-wrap:wrap;gap:10px}nav a{color:#2b6cb0;font-weight:600;text-decoration:none}nav a:hover{text-decoration:underline}
     h2{font-size:1.1rem;font-weight:700;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
@@ -374,8 +375,8 @@ app.get('/html-sitemap', (_req, res) => {
     <a href="/category/adventure">Adventure</a>
   </nav>
 
-  <h1>GameDravo — All Games Index</h1>
-  <p class="sub">Browse all <strong>${gamePaths.length}</strong> free browser games available on GameDravo. Click any title to play instantly — no download required.</p>
+  <h1>GameDravo — Site Index</h1>
+  <p class="sub">Browse canonical GameDravo pages and category hubs included in the XML sitemap.</p>
 
   <h2>Site Pages <span class="count">${staticPaths.length} pages</span></h2>
   <ul class="static-list">
@@ -384,12 +385,7 @@ app.get('/html-sitemap', (_req, res) => {
 
   <h2>Game Categories <span class="count">${categoryPaths.length} categories</span></h2>
   <ul class="static-list">
-    ${categoryPaths.map(p => `<li><a href="${p}">${toLabel(p, '/category/')}</a></li>`).join('\n    ')}
-  </ul>
-
-  <h2>All Games <span class="count">${gamePaths.length} games</span></h2>
-  <ul>
-    ${gamePaths.map(p => `<li><a href="${p}">${toLabel(p, '/games/')}</a></li>`).join('\n    ')}
+    ${categoryPaths.map(p => `<li><a href="${p}">${toLabel(p, '/category/')} Games</a></li>`).join('\n    ')}
   </ul>
 </body>
 </html>`;
@@ -513,6 +509,8 @@ app.get('/sitemap.xml', async (_req, res) => {
       ['/contact',       { priority: '0.5', changefreq: 'monthly' }],
       ['/submit-game',   { priority: '0.5', changefreq: 'monthly' }],
       ['/support',       { priority: '0.4', changefreq: 'monthly' }],
+      ['/status',        { priority: '0.4', changefreq: 'weekly'  }],
+      ['/report-bug',    { priority: '0.4', changefreq: 'monthly' }],
       ['/privacy',       { priority: '0.3', changefreq: 'yearly'  }],
       ['/terms',         { priority: '0.3', changefreq: 'yearly'  }],
       ['/cookies',       { priority: '0.3', changefreq: 'yearly'  }],
@@ -525,16 +523,10 @@ app.get('/sitemap.xml', async (_req, res) => {
       lines.push(url(`${SITE}/category/${slug}`, { changefreq: 'daily', priority: '0.9' }));
     }
 
-    // Game pages — sorted by lastmod desc so freshest entries appear first
-    const games = Array.from(gameMap.values()).sort((a, b) => b.lastmod.localeCompare(a.lastmod));
-    for (const g of games) {
-      lines.push(url(`${SITE}/games/${g.id}`, {
-        lastmod: g.lastmod,
-        changefreq: 'weekly',
-        priority: '0.8',
-        image: g.thumb,
-      }));
-    }
+    // Individual game pages are intentionally excluded from the XML sitemap.
+    // They are still playable and indexable when discovered naturally, but keeping
+    // the XML sitemap focused on stable hub/category pages prevents large batches
+    // of thin duplicate SPA URLs from being submitted to crawlers.
 
     lines.push('</urlset>');
 

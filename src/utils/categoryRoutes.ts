@@ -64,7 +64,7 @@ export function getCategoryDisplayName(slug: string, fallbackGames: Game[]): str
       return 'Mobile Games';
     default: {
       const chip = HOMEPAGE_CATEGORY_CHIPS.find((c) => c.slug === lower);
-      if (chip) return chip.title;
+      if (chip) return chip.label;
       const label = SLUG_TO_LABEL[lower];
       if (label) return label;
       if (fallbackGames.length > 0) return fallbackGames[0].category;
@@ -73,6 +73,7 @@ export function getCategoryDisplayName(slug: string, fallbackGames: Game[]): str
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ');
     }
+
   }
 }
 
