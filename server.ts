@@ -556,6 +556,16 @@ async function startServer() {
   app.use("/api/auth", oauthRoutes);
   app.use("/api", apiRoutes);
 
+  // Fallback logout — destroys the session when Replit OIDC is not available
+  // (i.e. in production deployments where REPL_ID is not set).
+  // The Replit OIDC logout route overrides this when OIDC is configured.
+  app.get("/api/logout", (req: any, res) => {
+    req.session?.destroy(() => {
+      res.clearCookie("connect.sid");
+      res.redirect("/");
+    });
+  });
+
   // Auth API routes
   app.get("/api/auth/user", async (req: any, res) => {
     try {
