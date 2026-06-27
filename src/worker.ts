@@ -187,15 +187,30 @@ export default {
     }
 
     if (url.pathname === '/api/auth/google' || url.pathname === '/api/auth/google/callback') {
-      return handleOAuthGoogle(request, url, env);
+      try {
+        return await handleOAuthGoogle(request, url, env);
+      } catch (err) {
+        console.error('[Worker] handleOAuthGoogle threw:', err instanceof Error ? err.stack : String(err));
+        return new Response(null, { status: 302, headers: { Location: `/?oauth_error=${encodeURIComponent('Google sign-in failed. Please try again.')}` } });
+      }
     }
 
     if (url.pathname === '/api/auth/github' || url.pathname === '/api/auth/github/callback') {
-      return handleOAuthGithub(request, url, env);
+      try {
+        return await handleOAuthGithub(request, url, env);
+      } catch (err) {
+        console.error('[Worker] handleOAuthGithub threw:', err instanceof Error ? err.stack : String(err));
+        return new Response(null, { status: 302, headers: { Location: `/?oauth_error=${encodeURIComponent('GitHub sign-in failed. Please try again.')}` } });
+      }
     }
 
     if (url.pathname === '/api/auth/microsoft' || url.pathname === '/api/auth/microsoft/callback') {
-      return handleOAuthMicrosoft(request, url, env);
+      try {
+        return await handleOAuthMicrosoft(request, url, env);
+      } catch (err) {
+        console.error('[Worker] handleOAuthMicrosoft threw:', err instanceof Error ? err.stack : String(err));
+        return new Response(null, { status: 302, headers: { Location: `/?oauth_error=${encodeURIComponent('Microsoft sign-in failed. Please try again.')}` } });
+      }
     }
 
     if (url.pathname.startsWith('/api/')) {
@@ -937,8 +952,11 @@ function handleLogout(request: Request): Response {
   return new Response(null, { status: 302, headers });
 }
 
-function oauthRedirect(url: string, errorMsg: string): Response {
-  return Response.redirect(`/?oauth_error=${encodeURIComponent(errorMsg)}`, 302);
+function oauthRedirect(_url: string, errorMsg: string): Response {
+  return new Response(null, {
+    status: 302,
+    headers: { Location: `/?oauth_error=${encodeURIComponent(errorMsg)}` },
+  });
 }
 
 function oauthInitResponse(redirectUrl: string, state: string): Response {
