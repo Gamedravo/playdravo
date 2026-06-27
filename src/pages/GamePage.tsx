@@ -5,7 +5,6 @@ import {
   X, 
   Maximize2, 
   Minimize2,
-  Share2, 
   ThumbsUp, 
   ThumbsDown,
   Heart, 
@@ -15,20 +14,13 @@ import {
   Star, 
   Clock, 
   Zap,
-  MessageSquare,
-  RotateCcw,
-  RefreshCw,
   ArrowLeft,
-  Download,
-  Code,
   User as UserIcon,
   Info,
   ExternalLink,
-  MoreHorizontal,
   LayoutGrid,
   Sparkles,
   Smartphone,
-  Calendar,
   Monitor,
   Tag,
   CheckCircle,
@@ -104,57 +96,12 @@ export const GamePage: React.FC<GamePageProps> = ({
   const [liked, setLiked] = useState<boolean | null>(null);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
   const [showMobileWarning, setShowMobileWarning] = useState(false);
-  const [embedStatus, setEmbedStatus] = useState<{ checked: boolean, embeddable: boolean, reason?: string, error?: boolean }>({ checked: false, embeddable: true });
-
   // Reset states when game changes
   useEffect(() => {
     setIsPlaying(false);
     setIframeLoaded(false);
     setLoadingTimeout(false);
-    setEmbedStatus({ checked: false, embeddable: true });
   }, [gameId]);
-
-  // Check embed compatibility
-  useEffect(() => {
-    // Hard-block risky embeds (ads/popups/redirects) from running inside GameDravo.
-    // These sources can open popups or navigate away from the portal.
-    if (game?.adsInjected || game?.popupRisk || game?.redirectRisk) {
-      setEmbedStatus({
-        checked: true,
-        embeddable: false,
-        reason: 'Blocked: this game source is flagged as unsafe (ads/popups/redirects).',
-      });
-      return;
-    }
-
-    if (game?.url && !embedStatus.checked) {
-      const checkEmbed = async () => {
-        try {
-          const res = await fetch('/api/check-embed', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: game.url })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setEmbedStatus({
-              checked: true,
-              embeddable: data.embeddable,
-              reason: data.reason,
-              error: data.error
-            });
-          } else {
-            setEmbedStatus({ checked: true, embeddable: true });
-          }
-        } catch (e) {
-          console.warn('Could not check embed status:', e);
-          // Default to true if check fails to not falsely block games
-          setEmbedStatus({ checked: true, embeddable: true });
-        }
-      };
-      checkEmbed();
-    }
-  }, [game?.url, game?.adsInjected, embedStatus.checked]);
 
   // Monitor loading timeout
   useEffect(() => {
@@ -281,11 +228,6 @@ export const GamePage: React.FC<GamePageProps> = ({
     toggleFavorite(game.id);
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    appToast.success(t('linkCopied'));
-  };
-
   const disablePseudoFullScreen = () => {
     setIsPseudoFullScreen(false);
     if (window.innerWidth < 1024) {
@@ -368,7 +310,7 @@ export const GamePage: React.FC<GamePageProps> = ({
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
+    <div className={`transition-colors duration-200 ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-gray-50'}`}>
 
       {/* ── Minimal Game Mode Bar ─────────────────────────────────────────────
           Replaces the full site header on game pages. Shows only a back button
@@ -482,7 +424,7 @@ export const GamePage: React.FC<GamePageProps> = ({
         ]}
       />
 
-      <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-3 md:py-4">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 pb-3 md:pb-4">
         {/* Breadcrumbs — desktop only (mobile uses GameModeBar for navigation) */}
         <nav aria-label="Breadcrumb" className="hidden md:flex items-center gap-2 text-xs font-semibold tracking-tight uppercase mb-3 md:mb-4 opacity-70">
           <Link to="/" className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded px-1">Home</Link>
@@ -635,7 +577,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                 </div>
               ) : (
                 <div ref={playerShellRef} className="relative w-full h-full bg-black touch-auto">
-                  {(!iframeLoaded || !embedStatus.embeddable) && (
+                  {!iframeLoaded && (
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a0a0a] px-4 pointer-events-auto">
                       <div className="absolute inset-0 shimmer-overlay opacity-20" />
                       <div className="relative z-30 flex flex-col items-center gap-6 max-w-sm text-center">
@@ -643,29 +585,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                           <GameThumbnail src={game.thumbnail} alt={game.title} category={game.category} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex flex-col items-center gap-3">
-                          {!embedStatus.embeddable ? (
-                            <div className="space-y-4">
-                              <span className="text-sm font-semibold text-red-400 block leading-relaxed">
-                                This game is disabled for safety (ads/popups/redirects).
-                              </span>
-                              <span className="text-[10px] text-white/50 block uppercase tracking-wider mb-2">
-                                Disabled on GameDravo
-                              </span>
-                              <div className="flex justify-center gap-3 pt-2">
-                                <button 
-                                  onClick={() => {
-                                    setIsPlaying(false);
-                                    if (isPseudoFullScreen) {
-                                      disablePseudoFullScreen();
-                                    }
-                                  }}
-                                  className="px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[11px] font-bold uppercase transition focus:outline-none focus:ring-2 focus:ring-white/20 focus:ring-offset-2 focus:ring-offset-black"
-                                >
-                                  Back
-                                </button>
-                              </div>
-                            </div>
-                          ) : !loadingTimeout ? (
+                          {!loadingTimeout ? (
                             <div className="w-full max-w-xs space-y-3">
                               <div className="h-2 rounded-full bg-white/10 overflow-hidden">
                                 <div className="h-full w-1/3 rounded-full bg-accent/60 animate-[loader-slide_1s_ease-in-out_infinite]" />
@@ -702,8 +622,7 @@ export const GamePage: React.FC<GamePageProps> = ({
                       </div>
                     </div>
                   )}
-                  {embedStatus.embeddable && (
-                    <iframe
+                  <iframe
                       key={reloadKey}
                       ref={iframeRef}
                       src={(() => {
@@ -731,9 +650,6 @@ export const GamePage: React.FC<GamePageProps> = ({
                         setLoadingTimeout(true);
                       }}
                     />
-                  )}
-                  
-
 
                   {/* Pseudo Full Screen Mobile / Desktop Top Bar */}
                   {isPseudoFullScreen && (
@@ -877,19 +793,8 @@ export const GamePage: React.FC<GamePageProps> = ({
                 <div className="flex items-center gap-1 sm:gap-2">
                   {[
                     { id: 'favorite', icon: Heart, onClick: handleToggleFavorite, active: isFavorite, color: 'text-red-500', mobileVisible: true },
-                    { id: 'share', icon: Share2, onClick: handleShare, mobileVisible: true },
                     { id: 'fullscreen', icon: Maximize2, onClick: toggleFullScreen, mobileVisible: true },
-                    { id: 'embed', icon: Code, onClick: () => {
-                      const embedCode = `<iframe src="${window.location.origin}/games/${game.id}" width="800" height="600" frameborder="0" scrolling="no" allowfullscreen></iframe>`;
-                      navigator.clipboard.writeText(embedCode);
-                      appToast.success('Embed code copied to clipboard!');
-                      Analytics.trackShare(game.id);
-                    }, mobileVisible: false },
                     { id: 'new-tab', icon: ExternalLink, onClick: () => {
-                      if (game.adsInjected || game.popupRisk || game.redirectRisk) {
-                        appToast.error('This game is disabled due to safety risks.');
-                        return;
-                      }
                       Analytics.trackGameOpen(game.id, game.title);
                       window.open(game.url, '_blank');
                     }, mobileVisible: false },
