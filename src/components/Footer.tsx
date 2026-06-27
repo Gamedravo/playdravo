@@ -37,7 +37,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
   };
 
   return (
-    <footer className={`mt-8 border-t transition-colors relative overflow-hidden rounded-2xl mb-4 ${
+    <footer className={`mt-8 border-t transition-colors relative overflow-hidden rounded-2xl ${
       isDarkMode 
         ? 'bg-gradient-to-b from-[#111122]/80 to-[#0e0e1a]/95 border-white/5 text-white/70' 
         : 'bg-gradient-to-b from-slate-50/80 to-slate-100/95 border-black/5 text-black/70'
@@ -46,7 +46,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
       <div className="absolute inset-0 opacity-[0.015] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:24px_24px]" />
       
       {/* Core Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-12 md:py-16 relative z-10 grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12">
+      <div className="max-w-6xl mx-auto px-6 py-8 md:py-16 relative z-10 grid grid-cols-2 md:grid-cols-12 gap-8 md:gap-12">
         {/* Brand Column */}
         <div className="col-span-2 md:col-span-4 space-y-6">
           <GameDravoLogo size="sm" showWordmark href="/" className="group" />

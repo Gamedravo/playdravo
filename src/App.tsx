@@ -1251,7 +1251,7 @@ function AppContent() {
             </>
           )}
 
-          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 pb-6 md:px-5 md:pt-3'} relative`}>
+          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 md:px-5 md:pt-3'} relative`} style={{ paddingBottom: isSearchActive || activeGame ? undefined : 'env(safe-area-inset-bottom)' }}>
             {/* Search Page - rendered in portal-like overlay to prevent flicker */}
             {searchMounted && (
               <div
@@ -1272,7 +1272,7 @@ function AppContent() {
               </div>
             )}
             {/* Main content - use CSS to hide instead of unmounting to prevent flicker */}
-            <div className={`relative min-h-full transition-opacity duration-150 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'} main-content-container`}>
+            <div className={`relative transition-opacity duration-150 ${isSearchActive ? 'opacity-0 pointer-events-none' : 'opacity-100'} main-content-container`}>
             <Routes>
                 <Route path="/" element={
                   <PageLayout>
@@ -1709,7 +1709,7 @@ function AppContent() {
         )}
 
         {/* Floating Actions */}
-        <div className="fixed bottom-10 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col gap-4">
+        <div className="fixed bottom-6 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col gap-4" style={{ bottom: 'max(24px, env(safe-area-inset-bottom, 24px))' }}>
           <AnimatePresence>
             {showScrollTop && (
               <motion.button

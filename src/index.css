@@ -306,7 +306,7 @@
   }
 
   .homepage-stack {
-    @apply flex flex-col gap-6 px-0 pb-6;
+    @apply flex flex-col gap-6 px-0;
   }
 
   .homepage-section {
