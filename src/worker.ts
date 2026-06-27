@@ -7,6 +7,12 @@ interface WorkerEnv {
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
+  GITHUB_CLIENT_ID?: string;
+  GITHUB_CLIENT_SECRET?: string;
+  MICROSOFT_CLIENT_ID?: string;
+  MICROSOFT_CLIENT_SECRET?: string;
 }
 
 type SubmissionStatus = 'pending' | 'approved' | 'rejected';
@@ -170,6 +176,18 @@ export default {
 
     if (url.pathname.startsWith('/api/auth/email/')) {
       return handleEmailAuth(request, url);
+    }
+
+    if (url.pathname === '/api/auth/google' || url.pathname === '/api/auth/google/callback') {
+      return handleOAuthGoogle(request, url, env);
+    }
+
+    if (url.pathname === '/api/auth/github' || url.pathname === '/api/auth/github/callback') {
+      return handleOAuthGithub(request, url, env);
+    }
+
+    if (url.pathname === '/api/auth/microsoft' || url.pathname === '/api/auth/microsoft/callback') {
+      return handleOAuthMicrosoft(request, url, env);
     }
 
     if (url.pathname.startsWith('/api/')) {
@@ -891,6 +909,242 @@ async function handleChat(request: Request): Promise<Response> {
   }
 
   return methodNotAllowed();
+}
+
+function oauthRedirect(url: string, errorMsg: string): Response {
+  return Response.redirect(`/?oauth_error=${encodeURIComponent(errorMsg)}`, 302);
+}
+
+function oauthInitResponse(redirectUrl: string, state: string): Response {
+  const maxAge = 10 * 60;
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: redirectUrl,
+      'Set-Cookie': `oauth_state=${state}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`,
+    },
+  });
+}
+
+function oauthSuccessResponse(sessionId: string): Response {
+  const maxAge = 7 * 24 * 60 * 60;
+  const headers = new Headers({ Location: '/' });
+  headers.append('Set-Cookie', `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`);
+  headers.append('Set-Cookie', `oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+  return new Response(null, { status: 302, headers });
+}
+
+function upsertOAuthWorkerUser(provider: string, oauthId: string, email: string | null, displayName: string | null, photoUrl: string | null): string {
+  const id = `${provider}_${oauthId}`;
+  const fallback = displayName || (email ? email.split('@')[0] : 'Player');
+  const existing = emailUsers.get(id);
+  if (existing) {
+    if (displayName) existing.displayName = displayName;
+    emailUsers.set(id, existing);
+  } else {
+    emailUsers.set(id, {
+      id,
+      email: email || '',
+      passwordHash: '',
+      displayName: fallback,
+      username: null,
+      usernameSet: false,
+      createdAt: new Date().toISOString(),
+    });
+  }
+  const sessionId = crypto.randomUUID();
+  emailSessions.set(sessionId, { userId: id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 });
+  return sessionId;
+}
+
+async function handleOAuthGoogle(request: Request, url: URL, env: WorkerEnv): Promise<Response> {
+  const clientId = env.GOOGLE_CLIENT_ID;
+  const clientSecret = env.GOOGLE_CLIENT_SECRET;
+  const base = `${url.protocol}//${url.host}`;
+
+  if (url.pathname === '/api/auth/google') {
+    if (!clientId) {
+      return oauthRedirect('/', 'Google OAuth is not configured.');
+    }
+    const state = crypto.randomUUID();
+    const params = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'code',
+      redirect_uri: `${base}/api/auth/google/callback`,
+      scope: 'openid email profile',
+      state,
+      access_type: 'online',
+    });
+    return oauthInitResponse(`https://accounts.google.com/o/oauth2/v2/auth?${params}`, state);
+  }
+
+  if (url.pathname === '/api/auth/google/callback') {
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state');
+    const error = url.searchParams.get('error');
+    const cookies = parseCookies(request);
+    const savedState = cookies['oauth_state'];
+
+    if (error) return oauthRedirect('/', String(error));
+    if (!code || !state || state !== savedState) {
+      return oauthRedirect('/', 'OAuth state mismatch. Please try again.');
+    }
+    if (!clientId || !clientSecret) {
+      return oauthRedirect('/', 'Google OAuth is not configured.');
+    }
+
+    try {
+      const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ code, client_id: clientId, client_secret: clientSecret, redirect_uri: `${base}/api/auth/google/callback`, grant_type: 'authorization_code' }),
+      });
+      const tokenData = await tokenRes.json() as any;
+      if (tokenData.error || !tokenData.access_token) {
+        return oauthRedirect('/', tokenData.error_description || tokenData.error || 'Token exchange failed');
+      }
+
+      const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      });
+      const profile = await profileRes.json() as any;
+
+      const sessionId = upsertOAuthWorkerUser('google', String(profile.id || Date.now()), profile.email || null, profile.name || null, profile.picture || null);
+      return oauthSuccessResponse(sessionId);
+    } catch {
+      return oauthRedirect('/', 'Google sign-in failed. Please try again.');
+    }
+  }
+
+  return Response.json({ message: 'Not found' }, { status: 404 });
+}
+
+async function handleOAuthGithub(request: Request, url: URL, env: WorkerEnv): Promise<Response> {
+  const clientId = env.GITHUB_CLIENT_ID;
+  const clientSecret = env.GITHUB_CLIENT_SECRET;
+  const base = `${url.protocol}//${url.host}`;
+
+  if (url.pathname === '/api/auth/github') {
+    if (!clientId) {
+      return oauthRedirect('/', 'GitHub OAuth is not configured.');
+    }
+    const state = crypto.randomUUID();
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: `${base}/api/auth/github/callback`,
+      scope: 'read:user user:email',
+      state,
+    });
+    return oauthInitResponse(`https://github.com/login/oauth/authorize?${params}`, state);
+  }
+
+  if (url.pathname === '/api/auth/github/callback') {
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state');
+    const error = url.searchParams.get('error');
+    const cookies = parseCookies(request);
+    const savedState = cookies['oauth_state'];
+
+    if (error) return oauthRedirect('/', String(error));
+    if (!code || !state || state !== savedState) {
+      return oauthRedirect('/', 'OAuth state mismatch. Please try again.');
+    }
+    if (!clientId || !clientSecret) {
+      return oauthRedirect('/', 'GitHub OAuth is not configured.');
+    }
+
+    try {
+      const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ client_id: clientId, client_secret: clientSecret, code, redirect_uri: `${base}/api/auth/github/callback` }),
+      });
+      const tokenData = await tokenRes.json() as any;
+      if (tokenData.error || !tokenData.access_token) {
+        return oauthRedirect('/', tokenData.error_description || tokenData.error || 'Token exchange failed');
+      }
+
+      const headers = { Authorization: `Bearer ${tokenData.access_token}`, Accept: 'application/json' };
+      const [userRes, emailsRes] = await Promise.all([
+        fetch('https://api.github.com/user', { headers }),
+        fetch('https://api.github.com/user/emails', { headers }),
+      ]);
+      const ghUser = await userRes.json() as any;
+      const emailList = await emailsRes.json() as any;
+      const primaryEmail: string | null = ghUser.email || (Array.isArray(emailList) ? (emailList.find((e: any) => e.primary && e.verified)?.email ?? null) : null);
+
+      const sessionId = upsertOAuthWorkerUser('github', String(ghUser.id), primaryEmail, ghUser.name || ghUser.login || null, ghUser.avatar_url || null);
+      return oauthSuccessResponse(sessionId);
+    } catch {
+      return oauthRedirect('/', 'GitHub sign-in failed. Please try again.');
+    }
+  }
+
+  return Response.json({ message: 'Not found' }, { status: 404 });
+}
+
+async function handleOAuthMicrosoft(request: Request, url: URL, env: WorkerEnv): Promise<Response> {
+  const clientId = env.MICROSOFT_CLIENT_ID;
+  const clientSecret = env.MICROSOFT_CLIENT_SECRET;
+  const base = `${url.protocol}//${url.host}`;
+
+  if (url.pathname === '/api/auth/microsoft') {
+    if (!clientId) {
+      return oauthRedirect('/', 'Microsoft OAuth is not configured.');
+    }
+    const state = crypto.randomUUID();
+    const params = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'code',
+      redirect_uri: `${base}/api/auth/microsoft/callback`,
+      scope: 'openid email profile User.Read',
+      state,
+      response_mode: 'query',
+    });
+    return oauthInitResponse(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params}`, state);
+  }
+
+  if (url.pathname === '/api/auth/microsoft/callback') {
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state');
+    const error = url.searchParams.get('error');
+    const errorDesc = url.searchParams.get('error_description');
+    const cookies = parseCookies(request);
+    const savedState = cookies['oauth_state'];
+
+    if (error) return oauthRedirect('/', String(errorDesc || error));
+    if (!code || !state || state !== savedState) {
+      return oauthRedirect('/', 'OAuth state mismatch. Please try again.');
+    }
+    if (!clientId || !clientSecret) {
+      return oauthRedirect('/', 'Microsoft OAuth is not configured.');
+    }
+
+    try {
+      const tokenRes = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, code, redirect_uri: `${base}/api/auth/microsoft/callback`, grant_type: 'authorization_code', scope: 'openid email profile User.Read' }),
+      });
+      const tokenData = await tokenRes.json() as any;
+      if (tokenData.error || !tokenData.access_token) {
+        return oauthRedirect('/', tokenData.error_description || tokenData.error || 'Token exchange failed');
+      }
+
+      const profileRes = await fetch('https://graph.microsoft.com/v1.0/me', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}`, Accept: 'application/json' },
+      });
+      const profile = await profileRes.json() as any;
+      const email: string | null = profile.mail || profile.userPrincipalName || null;
+
+      const sessionId = upsertOAuthWorkerUser('microsoft', String(profile.id || Date.now()), email, profile.displayName || null, null);
+      return oauthSuccessResponse(sessionId);
+    } catch {
+      return oauthRedirect('/', 'Microsoft sign-in failed. Please try again.');
+    }
+  }
+
+  return Response.json({ message: 'Not found' }, { status: 404 });
 }
 
 async function proxyJsonCatalog(
