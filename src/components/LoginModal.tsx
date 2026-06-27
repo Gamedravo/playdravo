@@ -304,6 +304,7 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
   const [username, setUsername] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
+  const [rememberOAuth, setRememberOAuth] = useState(true);
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -327,6 +328,8 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
     setLoading(provider);
     setError('');
 
+    document.cookie = `gd_remember=${rememberOAuth ? '1' : '0'}; Path=/; SameSite=Lax; Max-Age=600`;
+
     const w = 500, h = 620;
     const left = Math.round(window.screenX + (window.outerWidth - w) / 2);
     const top = Math.round(window.screenY + (window.outerHeight - h) / 2.5);
@@ -342,8 +345,11 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
       return;
     }
 
+    let oauthCompleted = false;
+
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type !== 'oauth-complete') return;
+      oauthCompleted = true;
       window.removeEventListener('message', handleMessage);
       clearInterval(pollTimer);
       setLoading(null);
@@ -361,6 +367,9 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
         clearInterval(pollTimer);
         window.removeEventListener('message', handleMessage);
         setLoading(null);
+        if (!oauthCompleted) {
+          setError('Login window was closed. Please try again.');
+        }
       }
     }, 400);
   };
@@ -373,8 +382,9 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
     setLoading('email');
     try {
       const endpoint = tab === 'register' ? '/api/auth/email/register' : '/api/auth/email/login';
-      const body: Record<string, string> = { email, password };
+      const body: Record<string, string | boolean> = { email, password };
       if (tab === 'register' && username) body.username = username;
+      if (tab === 'signin') body.remember = remember;
       const res = await fetch(endpoint, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body), credentials: 'include',
@@ -654,6 +664,15 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
                   or continue with
                 </span>
                 <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+              </div>
+
+              {/* Remember device (OAuth) */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+                <button type="button" onClick={() => setRememberOAuth(!rememberOAuth)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.45)', fontSize: 12.5, padding: 0 }}>
+                  {rememberOAuth ? <CheckSquare size={15} color="#a855f7" /> : <Square size={15} />}
+                  Keep me signed in for 30 days
+                </button>
               </div>
 
               {/* OAuth buttons */}

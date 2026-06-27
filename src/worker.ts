@@ -1009,11 +1009,12 @@ function oauthInitResponse(redirectUrl: string, state: string): Response {
   });
 }
 
-function oauthSuccessResponse(sessionId: string): Response {
-  const maxAge = 7 * 24 * 60 * 60;
+function oauthSuccessResponse(sessionId: string, remember: boolean = true): Response {
+  const maxAge = remember ? 30 * 24 * 60 * 60 : 7 * 24 * 60 * 60;
   const headers = new Headers({ Location: '/oauth-complete?status=success' });
   headers.append('Set-Cookie', `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`);
   headers.append('Set-Cookie', `oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+  headers.append('Set-Cookie', `gd_remember=; Path=/; SameSite=Lax; Max-Age=0`);
   return new Response(null, { status: 302, headers });
 }
 
@@ -1093,7 +1094,8 @@ async function handleOAuthGoogle(request: Request, url: URL, env: WorkerEnv): Pr
       const profile = await profileRes.json() as any;
 
       const sessionId = upsertOAuthWorkerUser('google', String(profile.id || Date.now()), profile.email || null, profile.name || null, profile.picture || null);
-      return oauthSuccessResponse(sessionId);
+      const remember = parseCookies(request)['gd_remember'] !== '0';
+      return oauthSuccessResponse(sessionId, remember);
     } catch {
       return oauthRedirect('/', 'Google sign-in failed. Please try again.');
     }
@@ -1157,7 +1159,8 @@ async function handleOAuthGithub(request: Request, url: URL, env: WorkerEnv): Pr
       const primaryEmail: string | null = ghUser.email || (Array.isArray(emailList) ? (emailList.find((e: any) => e.primary && e.verified)?.email ?? null) : null);
 
       const sessionId = upsertOAuthWorkerUser('github', String(ghUser.id), primaryEmail, ghUser.name || ghUser.login || null, ghUser.avatar_url || null);
-      return oauthSuccessResponse(sessionId);
+      const remember = parseCookies(request)['gd_remember'] !== '0';
+      return oauthSuccessResponse(sessionId, remember);
     } catch {
       return oauthRedirect('/', 'GitHub sign-in failed. Please try again.');
     }
@@ -1221,7 +1224,8 @@ async function handleOAuthMicrosoft(request: Request, url: URL, env: WorkerEnv):
       const email: string | null = profile.mail || profile.userPrincipalName || null;
 
       const sessionId = upsertOAuthWorkerUser('microsoft', String(profile.id || Date.now()), email, profile.displayName || null, null);
-      return oauthSuccessResponse(sessionId);
+      const remember = parseCookies(request)['gd_remember'] !== '0';
+      return oauthSuccessResponse(sessionId, remember);
     } catch {
       return oauthRedirect('/', 'Microsoft sign-in failed. Please try again.');
     }
@@ -1322,10 +1326,12 @@ async function handleEmailAuth(request: Request, url: URL): Promise<Response> {
     if (!valid) {
       return Response.json({ message: 'Invalid email or password' }, { status: 401, headers: noStoreJsonHeaders() });
     }
+    const remember = body?.remember === true;
+    const sessionDays = remember ? 30 : 7;
     const sessionId = crypto.randomUUID();
-    emailSessions.set(sessionId, { userId: user.id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 });
+    emailSessions.set(sessionId, { userId: user.id, expiresAt: Date.now() + sessionDays * 24 * 60 * 60 * 1000 });
     const { passwordHash: _, ...safe } = user;
-    const headers = { ...noStoreJsonHeaders(), 'Set-Cookie': `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}` };
+    const headers = { ...noStoreJsonHeaders(), 'Set-Cookie': `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${sessionDays * 24 * 60 * 60}` };
     return Response.json({ ok: true, user: safe }, { headers });
   }
 
