@@ -27,7 +27,6 @@
     "audit:production": "node scripts/production-health-audit.mjs",
     "db:push": "drizzle-kit push"
   },
-  "dependencies": {},
   "devDependencies": {
     "@google/genai": "^2.9.0",
     "@tailwindcss/vite": "^4.3.1",
@@ -74,6 +73,7 @@
     "tsx": "^4.22.4",
     "typescript": "~5.8.2",
     "vite": "^6.4.3",
+    "wrangler": "^4.86.0",
     "zod": "^4.4.3",
     "zod-validation-error": "^5.0.0"
   },
