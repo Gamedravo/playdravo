@@ -150,7 +150,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
       </div>
 
       {/* Footer Bottom Credentials Bar */}
-      <div className={`border-t px-6 py-6 transition-all duration-300 ${
+      <div className={`border-t px-6 py-4 transition-all duration-300 ${
         isDarkMode ? 'border-white/5 bg-black/20' : 'border-black/5 bg-black/[0.01]'
       }`}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">

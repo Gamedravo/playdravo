@@ -48,7 +48,7 @@ export function HtmlSitemapPage({ isDarkMode }: HtmlSitemapPageProps) {
         description="Browse the GameDravo site index — key pages and game categories available on our free browser gaming platform."
         canonicalUrl="/html-sitemap"
       />
-      <div className={`min-h-screen p-6 ${isDarkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+      <div className={`p-6 ${isDarkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
         <div className="max-w-5xl mx-auto">
           <h1 className="text-3xl font-bold mb-2">GameDravo Site Index</h1>
           <p className="mb-6 text-sm opacity-60">

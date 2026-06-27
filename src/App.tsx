@@ -1251,7 +1251,7 @@ function AppContent() {
             </>
           )}
 
-          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 md:px-5 md:pt-3'} relative`} style={{ paddingBottom: isSearchActive || activeGame ? undefined : 'env(safe-area-inset-bottom)' }}>
+          <main ref={mainRef} className={`flex-1 overflow-y-auto ${isDarkMode ? 'bg-bg-dark' : 'bg-[#F0F2FF]'} ${isSearchActive ? 'pt-2 px-0' : activeGame ? 'pt-2 px-0 md:px-5 md:pt-3' : 'pt-2 px-3 md:px-5 md:pt-3'} relative`}>
             {/* Search Page - rendered in portal-like overlay to prevent flicker */}
             {searchMounted && (
               <div

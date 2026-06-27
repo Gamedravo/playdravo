@@ -288,7 +288,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
   const breadcrumbLabel = `${meta.label} Games`;
 
   return (
-    <div className="min-h-screen">
+    <div>
       <SEO
         title={meta.seoTitle}
         description={meta.seoDescription}

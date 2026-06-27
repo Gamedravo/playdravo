@@ -256,7 +256,7 @@ export function PreviewDashboardPage({ games }: Props) {
     : 0;
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-dark)] text-white px-4 py-8 max-w-7xl mx-auto">
+    <div className="bg-[var(--color-bg-dark)] text-white px-4 py-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
