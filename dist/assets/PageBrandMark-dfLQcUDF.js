@@ -1,1 +1,0 @@
-import{j as r}from"./vendor-react-CQeFXaZh.js";import{u as s,j as a}from"./index-BkE-7CWl.js";function t({className:e=""}){return s()?r.jsx(a,{size:"sm",showWordmark:!0,href:"/",className:`hidden md:inline-flex self-start sm:self-auto shrink-0 ${e}`}):null}export{t as P};
