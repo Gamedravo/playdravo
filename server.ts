@@ -337,10 +337,31 @@ app.get('/html-sitemap', (_req, res) => {
 
     const gamePaths = allUrls.filter(u => u.includes('/games/')).map(toPath);
     const categoryPaths = allUrls.filter(u => u.includes('/category/')).map(toPath);
-    const staticPaths = allUrls.filter(u => !u.includes('/games/') && !u.includes('/category/')).map(toPath);
+    const blogPaths = allUrls.filter(u => u.includes('/blog/')).map(toPath);
+    const staticPaths = allUrls
+      .filter(u => !u.includes('/games/') && !u.includes('/category/') && !u.includes('/blog/'))
+      .map(toPath);
 
     const toLabel = (p: string, prefix: string) =>
       p.replace(prefix, '').replace(/^gamepix-/, '').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) || 'Home';
+
+    // Blog posts are always listed (dynamic endpoint has them even if static file is stale)
+    const BLOG_ENTRIES = [
+      { path: '/blog/best-browser-games-2026',    label: 'The 15 Best Browser Games (2026)' },
+      { path: '/blog/action-games-guide',          label: 'Action Games Guide' },
+      { path: '/blog/multiplayer-browser-games',   label: 'Multiplayer Browser Games' },
+      { path: '/blog/puzzle-games-brain-training', label: 'Puzzle Games & Brain Training' },
+      { path: '/blog/racing-games-guide',          label: 'Racing Games Guide' },
+      { path: '/blog/html5-gaming-future',         label: 'The Future of HTML5 Gaming' },
+      { path: '/blog/mobile-browser-gaming-guide', label: 'Mobile Browser Gaming Guide' },
+    ];
+    // Merge with any blog paths already in the static sitemap (deduplicate)
+    const knownBlogPaths = new Set(BLOG_ENTRIES.map(e => e.path));
+    for (const p of blogPaths) {
+      if (!knownBlogPaths.has(p)) {
+        BLOG_ENTRIES.push({ path: p, label: toLabel(p, '/blog/') });
+      }
+    }
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -348,11 +369,10 @@ app.get('/html-sitemap', (_req, res) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Index | GameDravo</title>
-  <meta name="description" content="Canonical index of public GameDravo pages and game category hubs.">
+  <meta name="description" content="Canonical index of public GameDravo pages, blog articles, and game category hubs.">
   <link rel="canonical" href="https://gamedravo.com/html-sitemap">
   <style>
     *{box-sizing:border-box}body{font-family:system-ui,sans-serif;max-width:1200px;margin:0 auto;padding:24px 16px;color:#1a202c;background:#f7fafc}
-
     h1{font-size:1.8rem;font-weight:900;margin:0 0 8px}p.sub{color:#4a5568;margin:0 0 24px}
     nav{margin-bottom:32px;display:flex;flex-wrap:wrap;gap:10px}nav a{color:#2b6cb0;font-weight:600;text-decoration:none}nav a:hover{text-decoration:underline}
     h2{font-size:1.1rem;font-weight:700;margin:32px 0 12px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
@@ -365,6 +385,7 @@ app.get('/html-sitemap', (_req, res) => {
 <body>
   <nav>
     <a href="/">← GameDravo Home</a>
+    <a href="/blog">Blog &amp; Guides</a>
     <a href="/category/action">Action</a>
     <a href="/category/puzzle">Puzzle</a>
     <a href="/category/racing">Racing</a>
@@ -376,11 +397,16 @@ app.get('/html-sitemap', (_req, res) => {
   </nav>
 
   <h1>GameDravo — Site Index</h1>
-  <p class="sub">Browse canonical GameDravo pages and category hubs included in the XML sitemap.</p>
+  <p class="sub">Browse canonical GameDravo pages, guides, and category hubs included in the XML sitemap.</p>
 
   <h2>Site Pages <span class="count">${staticPaths.length} pages</span></h2>
   <ul class="static-list">
     ${staticPaths.map(p => `<li><a href="${p}">${toLabel(p, '/')}</a></li>`).join('\n    ')}
+  </ul>
+
+  <h2>Gaming Guides &amp; Articles <span class="count">${BLOG_ENTRIES.length} articles</span></h2>
+  <ul class="static-list">
+    ${BLOG_ENTRIES.map(e => `<li><a href="${e.path}">${e.label}</a></li>`).join('\n    ')}
   </ul>
 
   <h2>Game Categories <span class="count">${categoryPaths.length} categories</span></h2>
@@ -504,6 +530,7 @@ app.get('/sitemap.xml', async (_req, res) => {
     lines.push(url(`${SITE}/`, { changefreq: 'daily', priority: '1.0' }));
     for (const [slug, opts] of [
       ['/search',        { priority: '0.7', changefreq: 'daily'   }],
+      ['/blog',          { priority: '0.8', changefreq: 'weekly'  }],
       ['/html-sitemap',  { priority: '0.5', changefreq: 'weekly'  }],
       ['/about',         { priority: '0.5', changefreq: 'monthly' }],
       ['/contact',       { priority: '0.5', changefreq: 'monthly' }],
@@ -516,6 +543,20 @@ app.get('/sitemap.xml', async (_req, res) => {
       ['/cookies',       { priority: '0.3', changefreq: 'yearly'  }],
     ] as [string, Record<string, string>][]) {
       lines.push(url(`${SITE}${slug}`, opts));
+    }
+
+    // Blog posts
+    const BLOG_SLUGS = [
+      'best-browser-games-2026',
+      'action-games-guide',
+      'multiplayer-browser-games',
+      'puzzle-games-brain-training',
+      'racing-games-guide',
+      'html5-gaming-future',
+      'mobile-browser-gaming-guide',
+    ];
+    for (const slug of BLOG_SLUGS) {
+      lines.push(url(`${SITE}/blog/${slug}`, { changefreq: 'monthly', priority: '0.8' }));
     }
 
     // Category pages
