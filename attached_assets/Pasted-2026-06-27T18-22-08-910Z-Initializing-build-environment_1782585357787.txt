@@ -1,0 +1,21 @@
+2026-06-27T18:22:08.910Z	Initializing build environment...
+2026-06-27T18:22:09.964Z	Success: Finished initializing build environment
+2026-06-27T18:22:10.559Z	Cloning repository...
+2026-06-27T18:22:12.902Z	Detected the following tools from environment: pnpm@10.11.1, npm@10.9.2, nodejs@22.16.0
+2026-06-27T18:22:12.903Z	Restoring from dependencies cache
+2026-06-27T18:22:12.905Z	Restoring from build output cache
+2026-06-27T18:22:08.910Z	Initializing build environment...
+2026-06-27T18:22:09.964Z	Success: Finished initializing build environment
+2026-06-27T18:22:10.559Z	Cloning repository...
+2026-06-27T18:22:12.902Z	Detected the following tools from environment: pnpm@10.11.1, npm@10.9.2, nodejs@22.16.0
+2026-06-27T18:22:12.903Z	Restoring from dependencies cache
+2026-06-27T18:22:12.905Z	Restoring from build output cache
+2026-06-27T18:22:17.866Z	Success: Dependencies restored from build cache.
+2026-06-27T18:22:17.868Z	Installing project dependencies: pnpm install --frozen-lockfile
+2026-06-27T18:22:19.050Z	 ERR_PNPM_OUTDATED_LOCKFILE  Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up to date with package.json
+2026-06-27T18:22:19.050Z	
+2026-06-27T18:22:19.050Z	Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile"
+2026-06-27T18:22:19.050Z	
+2026-06-27T18:22:19.051Z	    Failure reason:
+2026-06-27T18:22:19.051Z	    specifiers in the lockfile ({"@google/genai":"^2.9.0","@tailwindcss/vite":"^4.3.1","@types/compression":"^1.8.1","@types/connect-pg-simple":"^7.0.3","@types/cors":"^2.8.19","@types/express":"^4.17.25","@types/express-session":"^1.19.0","@types/node":"^22.20.0","@types/passport":"^1.0.17","@types/pg":"^8.20.0","@types/react":"^19.2.17","@types/react-dom":"^19.2.3","@vitejs/plugin-react":"^5.2.0","autoprefixer":"^10.5.0","clsx":"^2.1.1","compression":"^1.8.1","connect-pg-simple":"^10.0.0","cors":"^2.8.6","dotenv":"^17.4.2","drizzle-kit":"^0.31.10","drizzle-orm":"^0.45.2","drizzle-zod":"^0.8.3","esbuild":"^0.25.12","express":"^4.22.2","express-session":"^1.19.0","firebase":"^12.15.0","lru-cache":"^11.5.1","lucide-react":"^0.546.0","motion":"^12.40.0","openid-client":"^6.8.4","p-limit":"^7.3.0","p-retry":"^8.0.0","passport":"^0.7.0","pg":"^8.22.0","react":"^19.2.7","react-dom":"^19.2.7","react-helmet-async":"^3.0.0","react-markdown":"^10.1.0","react-router-dom":"^7.18.0","sonner":"^2.0.7","tailwind-merge":"^3.6.0","tailwindcss":"^4.3.1","tsx":"^4.22.4","typescript":"~5.8.2","vite":"^6.4.3","zod":"^4.4.3","zod-validation-error":"^5.0.0"}) don't match specs in package.json ({"@google/genai":"^2.9.0","@tailwindcss/vite":"^4.3.1","@types/compression":"^1.8.1","@types/connect-pg-simple":"^7.0.3","@types/cors":"^2.8.19","@types/express":"^4.17.25","@types/express-session":"^1.19.0","@types/node":"^22.20.0","@types/passport":"^1.0.17","@types/pg":"^8.20.0","@types/react":"^19.2.17","@types/react-dom":"^19.2.3","@vitejs/plugin-react":"^5.2.0","autoprefixer":"^10.5.0","clsx":"^2.1.1","compression":"^1.8.1","connect-pg-simple":"^10.0.0","cors":"^2.8.6","dotenv":"^17.4.2","drizzle-kit":"^0.31.10","drizzle-orm":"^0.45.2","drizzle-zod":"^0.8.3","esbuild":"^0.25.12","express":"^4.22.2","express-session":"^1.19.0","firebase":"^12.15.0","lru-cache":"^11.5.1","lucide-react":"^0.546.0","motion":"^12.40.0","openid-client":"^6.8.4","p-limit":"^7.3.0","p-retry":"^8.0.0","passport":"^0.7.0","pg":"^8.22.0","react":"^19.2.7","react-dom":"^19.2.7","react-helmet-async":"^3.0.0","react-markdown":"^10.1.0","react-router-dom":"^7.18.0","sonner":"^2.0.7","tailwind-merge":"^3.6.0","tailwindcss":"^4.3.1","tsx":"^4.22.4","typescript":"~5.8.2","vite":"^6.4.3","wrangler":"^4.86.0","zod":"^4.4.3","zod-validation-error":"^5.0.0"})
+2026-06-27T18:22:19.076Z	Failed: error occurred while installing tools or dependencies
