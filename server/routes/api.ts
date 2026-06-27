@@ -6,6 +6,7 @@ import {
 } from "../../shared/models/auth";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { isAuthenticated } from "../replit_integrations/auth/index";
+import { sendEmail } from "../utils/replitmail";
 
 const router = Router();
 
@@ -204,6 +205,21 @@ router.post("/game-requests", isAuthenticated, async (req: any, res) => {
       votes: 0,
     }).returning();
     res.json(request);
+
+    sendEmail({
+      subject: `🎮 New Game Request: ${gameName.trim()}`,
+      html: `
+        <h2>New Game Request on GameDravo</h2>
+        <table style="border-collapse:collapse;width:100%;font-family:sans-serif">
+          <tr><td style="padding:8px;font-weight:bold;color:#555">Game</td><td style="padding:8px">${gameName.trim()}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;color:#555">Requested by</td><td style="padding:8px">${userRecord?.displayName || userRecord?.username || "Anonymous"} (${userRecord?.email || "no email"})</td></tr>
+          ${description?.trim() ? `<tr><td style="padding:8px;font-weight:bold;color:#555">Description</td><td style="padding:8px">${description.trim()}</td></tr>` : ""}
+          ${link?.trim() ? `<tr><td style="padding:8px;font-weight:bold;color:#555">Link</td><td style="padding:8px"><a href="${link.trim()}">${link.trim()}</a></td></tr>` : ""}
+        </table>
+        <p style="margin-top:16px"><a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}/admin/game-requests` : "/admin/game-requests"}" style="background:#7C3AED;color:#fff;padding:10px 20px;text-decoration:none;border-radius:8px">View in Admin Panel</a></p>
+      `,
+      text: `New Game Request: ${gameName.trim()}\nFrom: ${userRecord?.displayName || "Anonymous"} (${userRecord?.email || "no email"})\n${description?.trim() ? `Description: ${description.trim()}\n` : ""}${link?.trim() ? `Link: ${link.trim()}` : ""}`,
+    }).catch(err => console.error("Admin email failed (game request):", err));
   } catch (error) {
     console.error("Error creating game request:", error);
     res.status(500).json({ message: "Failed to submit game request" });
@@ -264,6 +280,20 @@ router.post("/bug-reports", async (req: any, res) => {
       description: description.trim(),
     }).returning();
     res.json(report);
+
+    sendEmail({
+      subject: `🐛 New Bug Report${gameName?.trim() ? `: ${gameName.trim()}` : ""}`,
+      html: `
+        <h2>New Bug Report on GameDravo</h2>
+        <table style="border-collapse:collapse;width:100%;font-family:sans-serif">
+          ${gameName?.trim() ? `<tr><td style="padding:8px;font-weight:bold;color:#555">Game</td><td style="padding:8px">${gameName.trim()}</td></tr>` : ""}
+          ${email?.trim() ? `<tr><td style="padding:8px;font-weight:bold;color:#555">Reporter email</td><td style="padding:8px">${email.trim()}</td></tr>` : ""}
+          <tr><td style="padding:8px;font-weight:bold;color:#555">Description</td><td style="padding:8px">${description.trim()}</td></tr>
+        </table>
+        <p style="margin-top:16px"><a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}/admin/bug-reports` : "/admin/bug-reports"}" style="background:#7C3AED;color:#fff;padding:10px 20px;text-decoration:none;border-radius:8px">View in Admin Panel</a></p>
+      `,
+      text: `New Bug Report${gameName?.trim() ? ` for ${gameName.trim()}` : ""}\n${email?.trim() ? `Reporter: ${email.trim()}\n` : ""}Description: ${description.trim()}`,
+    }).catch(err => console.error("Admin email failed (bug report):", err));
   } catch (error) {
     console.error("Error creating bug report:", error);
     res.status(500).json({ message: "Failed to submit bug report" });
@@ -315,6 +345,20 @@ router.post("/contact-messages", async (req: any, res) => {
       message: message.trim(),
     }).returning();
     res.json(msg);
+
+    sendEmail({
+      subject: `📩 New Support Ticket: ${subject.trim()}`,
+      html: `
+        <h2>New Support Ticket on GameDravo</h2>
+        <table style="border-collapse:collapse;width:100%;font-family:sans-serif">
+          <tr><td style="padding:8px;font-weight:bold;color:#555">Subject</td><td style="padding:8px">${subject.trim()}</td></tr>
+          ${email?.trim() ? `<tr><td style="padding:8px;font-weight:bold;color:#555">From</td><td style="padding:8px">${email.trim()}</td></tr>` : ""}
+          <tr><td style="padding:8px;font-weight:bold;color:#555">Message</td><td style="padding:8px;white-space:pre-wrap">${message.trim()}</td></tr>
+        </table>
+        <p style="margin-top:16px"><a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}/admin/support-tickets` : "/admin/support-tickets"}" style="background:#7C3AED;color:#fff;padding:10px 20px;text-decoration:none;border-radius:8px">View in Admin Panel</a></p>
+      `,
+      text: `New Support Ticket: ${subject.trim()}\n${email?.trim() ? `From: ${email.trim()}\n` : ""}Message:\n${message.trim()}`,
+    }).catch(err => console.error("Admin email failed (contact message):", err));
   } catch (error) {
     console.error("Error creating contact message:", error);
     res.status(500).json({ message: "Failed to submit message" });
