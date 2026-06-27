@@ -119,6 +119,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isDarkMode, t, type }) =
             <Link to="/admin/bug-reports" className={`px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide transition-all ${type === 'bug-reports' ? 'bg-accent text-bg-dark' : (isDarkMode ? 'bg-white/5 text-white/60 hover:bg-white/10' : 'bg-black/5 text-black/60 hover:bg-black/10')}`}>Bug Reports</Link>
             <Link to="/admin/game-requests" className={`px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide transition-all ${type === 'game-requests' ? 'bg-accent text-bg-dark' : (isDarkMode ? 'bg-white/5 text-white/60 hover:bg-white/10' : 'bg-black/5 text-black/60 hover:bg-black/10')}`}>Game Requests</Link>
             <Link to="/admin/support-tickets" className={`px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide transition-all ${type === 'support-tickets' ? 'bg-accent text-bg-dark' : (isDarkMode ? 'bg-white/5 text-white/60 hover:bg-white/10' : 'bg-black/5 text-black/60 hover:bg-black/10')}`}>Support Tickets</Link>
+            <Link to="/admin/oauth-setup" className={`px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide transition-all ${isDarkMode ? 'bg-white/5 text-white/60 hover:bg-white/10' : 'bg-black/5 text-black/60 hover:bg-black/10'}`}>OAuth Setup</Link>
           </div>
         </div>
 

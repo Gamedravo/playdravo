@@ -182,6 +182,10 @@ export default {
       return handleLogout(request);
     }
 
+    if (url.pathname === '/api/admin/oauth-status') {
+      return handleOAuthStatus(env);
+    }
+
     if (url.pathname === '/api/auth/google' || url.pathname === '/api/auth/google/callback') {
       return handleOAuthGoogle(request, url, env);
     }
@@ -913,6 +917,14 @@ async function handleChat(request: Request): Promise<Response> {
   }
 
   return methodNotAllowed();
+}
+
+function handleOAuthStatus(env: WorkerEnv): Response {
+  return Response.json({
+    google: { clientId: !!env.GOOGLE_CLIENT_ID, clientSecret: !!env.GOOGLE_CLIENT_SECRET },
+    github: { clientId: !!env.GITHUB_CLIENT_ID, clientSecret: !!env.GITHUB_CLIENT_SECRET },
+    microsoft: { clientId: !!env.MICROSOFT_CLIENT_ID, clientSecret: !!env.MICROSOFT_CLIENT_SECRET },
+  }, { headers: noStoreJsonHeaders() });
 }
 
 function handleLogout(request: Request): Response {

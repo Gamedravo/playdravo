@@ -106,6 +106,7 @@ const CommandPalette = lazy(() => import('./components/CommandPalette').then((m)
 const PreferencesModal = lazy(() => import('./components/PreferencesModal').then((m) => ({ default: m.PreferencesModal })));
 const CategoryPage = lazy(() => import('./pages/CategoryPage').then((module) => ({ default: module.CategoryPage })));
 const AdminPanel = lazy(() => import('./pages/AdminPanel').then((module) => ({ default: module.AdminPanel })));
+const OAuthSetupPage = lazy(() => import('./pages/OAuthSetupPage').then(m => ({ default: m.OAuthSetupPage })));
 const SupportPage = lazy(() => import('./pages/SupportPage').then(module => ({ default: module.SupportPage })));
 const LibraryPage = lazy(() => import('./pages/LibraryPage').then(module => ({ default: module.LibraryPage })));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(module => ({ default: module.PrivacyPage })));
@@ -1431,6 +1432,23 @@ function AppContent() {
                     <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                     <PageLayout>
                       <PreviewDashboardPage games={games} />
+                    </PageLayout>
+                    </LazyRoute>
+                  ) : (
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="text-center">
+                        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                        <h2 className="text-2xl font-bold tracking-tight">{t('unauthorizedAdmin')}</h2>
+                        <Link to="/" className="mt-6 px-8 py-3 bg-accent text-bg-dark font-bold rounded-xl uppercase tracking-widest text-xs inline-block">Return Home</Link>
+                      </div>
+                    </div>
+                  )
+                } />
+                <Route path="/admin/oauth-setup" element={
+                  userProfile?.role === 'admin' ? (
+                    <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                    <PageLayout>
+                      <OAuthSetupPage isDarkMode={isDarkMode} />
                     </PageLayout>
                     </LazyRoute>
                   ) : (
