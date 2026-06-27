@@ -325,7 +325,44 @@ export function LoginModal({ isOpen, onClose, isDarkMode: _, t: __ }: LoginModal
 
   const handleOAuth = (provider: 'google' | 'microsoft' | 'github') => {
     setLoading(provider);
-    window.location.href = `/api/auth/${provider}`;
+    setError('');
+
+    const w = 500, h = 620;
+    const left = Math.round(window.screenX + (window.outerWidth - w) / 2);
+    const top = Math.round(window.screenY + (window.outerHeight - h) / 2.5);
+
+    const popup = window.open(
+      `/api/auth/${provider}`,
+      `oauth_${provider}`,
+      `width=${w},height=${h},left=${left},top=${top},toolbar=no,menubar=no,location=yes,status=no,scrollbars=yes`,
+    );
+
+    if (!popup) {
+      window.location.href = `/api/auth/${provider}`;
+      return;
+    }
+
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type !== 'oauth-complete') return;
+      window.removeEventListener('message', handleMessage);
+      clearInterval(pollTimer);
+      setLoading(null);
+      if (e.data.status === 'success') {
+        onClose();
+        window.location.reload();
+      } else {
+        setError(e.data.msg || 'Sign-in failed. Please try again.');
+      }
+    };
+    window.addEventListener('message', handleMessage);
+
+    const pollTimer = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(pollTimer);
+        window.removeEventListener('message', handleMessage);
+        setLoading(null);
+      }
+    }, 400);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

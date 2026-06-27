@@ -186,6 +186,45 @@ export default {
       return handleOAuthStatus(env);
     }
 
+    if (url.pathname === '/oauth-complete') {
+      const status = url.searchParams.get('status') ?? 'error';
+      const msg = url.searchParams.get('msg') ?? '';
+      const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>GameDravo – Signing In</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,sans-serif;background:#080B16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px}
+  .spinner{width:36px;height:36px;border:3px solid rgba(124,58,237,0.3);border-top-color:#7C3AED;border-radius:50%;animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  p{font-size:14px;color:rgba(255,255,255,0.5)}
+</style>
+</head>
+<body>
+<div class="spinner"></div>
+<p>Signing you in…</p>
+<script>
+(function(){
+  var status=${JSON.stringify(status)};
+  var msg=${JSON.stringify(msg)};
+  function done(){
+    if(window.opener){
+      try{window.opener.postMessage({type:'oauth-complete',status:status,msg:msg},'*');}catch(e){}
+      setTimeout(function(){window.close();},300);
+    } else {
+      window.location.href=status==='success'?'/':'/?oauth_error='+encodeURIComponent(msg);
+    }
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',done);}else{done();}
+})();
+</script>
+</body>
+</html>`;
+      return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+    }
+
     if (url.pathname === '/api/auth/google' || url.pathname === '/api/auth/google/callback') {
       try {
         return await handleOAuthGoogle(request, url, env);
@@ -955,7 +994,7 @@ function handleLogout(request: Request): Response {
 function oauthRedirect(_url: string, errorMsg: string): Response {
   return new Response(null, {
     status: 302,
-    headers: { Location: `/?oauth_error=${encodeURIComponent(errorMsg)}` },
+    headers: { Location: `/oauth-complete?status=error&msg=${encodeURIComponent(errorMsg)}` },
   });
 }
 
@@ -972,7 +1011,7 @@ function oauthInitResponse(redirectUrl: string, state: string): Response {
 
 function oauthSuccessResponse(sessionId: string): Response {
   const maxAge = 7 * 24 * 60 * 60;
-  const headers = new Headers({ Location: '/' });
+  const headers = new Headers({ Location: '/oauth-complete?status=success' });
   headers.append('Set-Cookie', `gd_session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`);
   headers.append('Set-Cookie', `oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
   return new Response(null, { status: 302, headers });
