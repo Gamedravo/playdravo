@@ -438,7 +438,7 @@ async function handleGamePixCatalog(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const requestedLimit = Number(url.searchParams.get('limit') || 600);
   const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(Math.floor(requestedLimit), 1), 600) : 600;
-  const pageSize = 200;
+  const pageSize = 96; // GamePix max allowed: 12, 24, 48, 96
   const maxPages = Math.ceil(limit / pageSize);
 
   const pageResults = await Promise.allSettled(
