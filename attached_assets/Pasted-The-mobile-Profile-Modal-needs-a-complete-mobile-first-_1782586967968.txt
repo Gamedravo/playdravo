@@ -1,0 +1,45 @@
+The mobile Profile Modal needs a complete mobile-first redesign. Keep the same GameDravo visual style, but optimize it for phones instead of simply shrinking the desktop layout.
+
+Issues with the current design:
+
+* The modal is too narrow and leaves large empty margins on both sides.
+* The avatar is oversized and pushes important information downward.
+* There is too much vertical spacing, forcing unnecessary scrolling.
+* The stats cards feel bulky and waste space.
+* The action buttons at the bottom don't align well on small screens.
+* The overall layout doesn't feel like a premium mobile gaming app.
+
+Please redesign the mobile modal with these improvements:
+
+1. Make the modal approximately 94–96% of the screen width with comfortable side padding instead of a narrow centered card.
+
+2. Reduce the avatar size by around 20–25% while keeping the online indicator properly positioned.
+
+3. Reduce excessive spacing between sections so more information is visible without scrolling.
+
+4. Make the username, level badge, and XP section more compact and better aligned.
+
+5. Redesign the statistics cards (Favorites, Sessions, Top Genre, Member Since):
+
+   * Smaller cards
+   * Equal heights
+   * 2×2 responsive grid
+   * Better spacing
+   * Larger values
+   * Less empty padding
+
+6. Improve the XP progress section with a cleaner modern progress bar that spans more of the available width.
+
+7. Make the "Manage Account" button full width and easier to tap.
+
+8. Place the Edit Profile button beside it with matching height and proper alignment.
+
+9. Improve the close button by reducing its size slightly and positioning it consistently within the modal padding.
+
+10. Add subtle entrance animation, card hover/tap feedback, and smoother transitions while keeping performance excellent.
+
+11. Respect iPhone safe areas so nothing overlaps the notch, Dynamic Island, or browser controls.
+
+12. Keep the existing purple GameDravo branding, glassmorphism, shadows, gradients, and premium gaming aesthetic.
+
+The goal is to make the profile modal feel like a polished native gaming app (Discord, Xbox, Steam Mobile quality) rather than a scaled-down desktop popup.
