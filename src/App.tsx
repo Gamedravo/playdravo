@@ -1709,7 +1709,7 @@ function AppContent() {
         )}
 
         {/* Floating Actions */}
-        <div className="fixed bottom-6 right-4 md:bottom-8 md:right-8 z-[100] flex flex-col gap-4" style={{ bottom: 'max(24px, env(safe-area-inset-bottom, 24px))' }}>
+        <div className="hidden md:flex fixed bottom-8 right-8 z-[100] flex-col gap-4">
           <AnimatePresence>
             {showScrollTop && (
               <motion.button
