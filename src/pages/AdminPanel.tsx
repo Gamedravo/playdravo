@@ -17,6 +17,7 @@ import {
 import { api } from '../lib/api';
 import { BugReport, GameRequest, ContactMessage } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
+import { AdminReplyModal } from '../components/AdminReplyModal';
 
 interface AdminPanelProps {
   isDarkMode: boolean;
@@ -30,6 +31,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isDarkMode, t, type }) =
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'unread'>('newest');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [replyTicket, setReplyTicket] = useState<any | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -189,9 +191,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isDarkMode, t, type }) =
                         <CheckCircle2 className="w-5 h-5" />
                       </button>
                       {sub.email && (
-                        <a href={`mailto:${sub.email}?subject=Re: ${type === 'support-tickets' ? sub.subject : sub.gameName}`} title="Reply via Email" className={`p-3 rounded-xl transition-all flex items-center justify-center ${isDarkMode ? 'bg-white/5 hover:bg-blue-500/20 text-white/40 hover:text-blue-500' : 'bg-black/5 hover:bg-blue-500/20 text-black/40 hover:text-blue-500'}`}>
+                        <button
+                          onClick={() => {
+                            setReplyTicket(sub);
+                            if (!sub.read) toggleReadStatus(sub.id, false);
+                          }}
+                          title="Reply via Email"
+                          className={`p-3 rounded-xl transition-all flex items-center justify-center ${isDarkMode ? 'bg-white/5 hover:bg-blue-500/20 text-white/40 hover:text-blue-500' : 'bg-black/5 hover:bg-blue-500/20 text-black/40 hover:text-blue-500'}`}
+                        >
                           <Reply className="w-5 h-5" />
-                        </a>
+                        </button>
                       )}
                       {deletingId === sub.id ? (
                         <div className="flex flex-col gap-1">
@@ -211,6 +220,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ isDarkMode, t, type }) =
           )}
         </div>
       </div>
+
+      {replyTicket && (
+        <AdminReplyModal
+          isDarkMode={isDarkMode}
+          ticket={replyTicket}
+          type={type}
+          onClose={() => setReplyTicket(null)}
+        />
+      )}
     </div>
   );
 };
