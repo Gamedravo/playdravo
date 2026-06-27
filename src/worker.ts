@@ -178,6 +178,10 @@ export default {
       return handleEmailAuth(request, url);
     }
 
+    if (url.pathname === '/api/logout') {
+      return handleLogout(request);
+    }
+
     if (url.pathname === '/api/auth/google' || url.pathname === '/api/auth/google/callback') {
       return handleOAuthGoogle(request, url, env);
     }
@@ -909,6 +913,16 @@ async function handleChat(request: Request): Promise<Response> {
   }
 
   return methodNotAllowed();
+}
+
+function handleLogout(request: Request): Response {
+  const cookies = parseCookies(request);
+  const sessionId = cookies['gd_session'];
+  if (sessionId) emailSessions.delete(sessionId);
+  const headers = new Headers({ Location: '/' });
+  headers.append('Set-Cookie', 'gd_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+  headers.append('Set-Cookie', 'connect.sid=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+  return new Response(null, { status: 302, headers });
 }
 
 function oauthRedirect(url: string, errorMsg: string): Response {
