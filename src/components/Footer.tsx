@@ -21,6 +21,7 @@ export function Footer({ isDarkMode, t }: FooterProps) {
     ],
     company: [
       { label: "About GameDravo", path: "/about" },
+      { label: "Blog & Guides", path: "/blog" },
       { label: "Contact", path: "/contact" },
       { label: "Support Center", path: "/support" }
     ],

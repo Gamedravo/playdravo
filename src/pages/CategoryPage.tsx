@@ -29,6 +29,7 @@ import { Game } from '../types';
 import { SEO } from '../components/SEO';
 import { GameCard } from '../components/GameCard';
 import { filterGamesForCategorySlug, getCategoryDisplayName, getDefaultSortForSlug } from '../utils/categoryRoutes';
+import { CategoryContentSection } from '../components/CategoryContentSection';
 
 interface CategoryMeta {
   label: string;
@@ -503,6 +504,14 @@ export const CategoryPage: React.FC<CategoryPageProps> = React.memo(({
                 ))}
               </div>
             </section>
+
+            {/* Rich category content for SEO and user value */}
+            <CategoryContentSection
+              slug={categoryId}
+              isDarkMode={isDarkMode}
+              categoryLabel={meta.label}
+              categoryColor={meta.color}
+            />
           </div>
         ) : (
           <div className="text-center py-24 space-y-6">

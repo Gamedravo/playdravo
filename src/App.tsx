@@ -118,6 +118,8 @@ const SubmitGamePage = lazy(() => import('./pages/SubmitGamePage').then(module =
 const CookiesPage = lazy(() => import('./pages/CookiesPage').then(module => ({ default: module.CookiesPage })));
 const HtmlSitemapPage = lazy(() => import('./pages/HtmlSitemapPage').then(module => ({ default: module.HtmlSitemapPage })));
 const PreviewDashboardPage = lazy(() => import('./pages/PreviewDashboardPage').then(m => ({ default: m.PreviewDashboardPage })));
+const BlogPage = lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
 
 const categoryKeyMap: Record<string, keyof typeof translations['en']> = {
   'Action': 'action',
@@ -1501,6 +1503,20 @@ function AppContent() {
                   <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
                   <PageLayout>
                     <HtmlSitemapPage isDarkMode={isDarkMode} t={t} />
+                  </PageLayout>
+                  </LazyRoute>
+                } />
+                <Route path="/blog" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                  <PageLayout>
+                    <BlogPage isDarkMode={isDarkMode} />
+                  </PageLayout>
+                  </LazyRoute>
+                } />
+                <Route path="/blog/:slug" element={
+                  <LazyRoute pathname={location.pathname} isDarkMode={isDarkMode}>
+                  <PageLayout>
+                    <BlogPostPage isDarkMode={isDarkMode} />
                   </PageLayout>
                   </LazyRoute>
                 } />

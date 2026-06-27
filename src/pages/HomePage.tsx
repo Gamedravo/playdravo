@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Gamepad2,
   Play,
@@ -28,6 +28,67 @@ import { GameGrid } from '../components/GameGrid';
 import { SEO } from '../components/SEO';
 import { SectionErrorBoundary } from '../components/SectionErrorBoundary';
 import { GameCard } from '../components/GameCard';
+
+const HOME_FAQ = [
+  { q: 'What is GameDravo?', a: 'GameDravo is a free browser gaming platform with over 1,000 HTML5 games across action, puzzle, racing, sports, multiplayer, and more categories. All games play instantly in your web browser — no downloads or installations required.' },
+  { q: 'Do I need to create an account to play?', a: 'No account is required to play any game on GameDravo. You can browse and play all games anonymously. Creating an optional account lets you save favorites, track your play history, and sync preferences across devices.' },
+  { q: 'Are all GameDravo games free?', a: 'Yes — every game on GameDravo is completely free to play. There are no subscription fees, no required in-app purchases, and no paywalls blocking gameplay. Some games have optional enhancements, but the core experience is always free.' },
+  { q: 'Do browser games work on mobile phones and tablets?', a: 'Many games on GameDravo are optimized for mobile and tablet play with full touch control support. Look for the "Mobile Ready" badge on game pages, or browse the Mobile Games category for games specifically selected for the best touch experience.' },
+  { q: 'What types of games are available on GameDravo?', a: 'GameDravo features games across 15+ categories including action, adventure, puzzle, racing, sports, multiplayer, shooter, strategy, arcade, fighting, simulator, and casual games. New games are added regularly to keep the catalog fresh.' },
+  { q: 'How do I play multiplayer games with friends?', a: 'Many multiplayer games on GameDravo allow you to create private rooms and share a link with friends. Look for "Create Room" or "Private Match" options in the game. Some multiplayer games also support two players sharing the same keyboard.' },
+];
+
+function HomeFaqSection({ isDarkMode }: { isDarkMode: boolean }) {
+  const [openIdx, setOpenIdx] = React.useState<number | null>(null);
+  return (
+    <section className="mt-8 mb-4" aria-label="Frequently asked questions">
+      <h2 className="text-xl font-black tracking-tight mb-6">Frequently Asked Questions</h2>
+      <div className="space-y-3">
+        {HOME_FAQ.map((item, idx) => (
+          <div
+            key={`faq-${idx}`}
+            className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-white/[0.02] border-white/[0.07]' : 'bg-black/[0.01] border-black/[0.07]'}`}
+            itemScope
+            itemType="https://schema.org/Question"
+          >
+            <button
+              onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+              className="w-full flex items-center justify-between px-5 py-4 text-left gap-4"
+              aria-expanded={openIdx === idx}
+            >
+              <span className="text-sm font-bold tracking-tight" itemProp="name">{item.q}</span>
+              <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${openIdx === idx ? 'rotate-90 text-accent' : isDarkMode ? 'text-white/30' : 'text-black/30'}`} />
+            </button>
+            {openIdx === idx && (
+              <div
+                className={`px-5 pb-5 text-sm leading-relaxed ${isDarkMode ? 'text-white/65' : 'text-black/65'}`}
+                itemScope
+                itemType="https://schema.org/Answer"
+                itemProp="acceptedAnswer"
+              >
+                <span itemProp="text">{item.a}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: HOME_FAQ.map(f => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          })
+        }}
+      />
+    </section>
+  );
+}
 
 interface HomePageProps {
   isDarkMode: boolean;
@@ -737,6 +798,143 @@ export const HomePage = React.memo(function HomePage({
 
         </LazyShelf>
       </SectionErrorBoundary>
+
+      {/* Why GameDravo — Features section */}
+      {selectedCategory === 'All' && !searchQuery && (
+        <section className={`mt-12 rounded-2xl border p-8 md:p-12 ${isDarkMode ? 'bg-white/[0.015] border-white/[0.06]' : 'bg-black/[0.01] border-black/[0.06]'}`} aria-label="Why choose GameDravo">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-[11px] font-bold uppercase tracking-widest mb-4">
+              <Sparkles className="w-3.5 h-3.5" />
+              Why GameDravo?
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">
+              Your Best Browser Gaming Hub
+            </h2>
+            <p className={`text-sm max-w-xl mx-auto leading-relaxed ${isDarkMode ? 'text-white/60' : 'text-black/60'}`}>
+              GameDravo curates over 1,000 free HTML5 games — no downloads, no accounts, no hidden fees. Just click and play on any device.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                icon: '⚡',
+                title: 'Instant Play — No Downloads',
+                desc: 'Every game loads directly in your browser. No install files, no waiting — from click to playing in under 5 seconds.'
+              },
+              {
+                icon: '📱',
+                title: 'Works on Every Device',
+                desc: 'GameDravo games are tested on mobile, tablet, and desktop. Play on any screen with touch or keyboard controls.'
+              },
+              {
+                icon: '🆓',
+                title: 'Always 100% Free',
+                desc: 'No subscriptions, no in-app purchases required to enjoy games. Every title in our catalog is completely free to play.'
+              },
+              {
+                icon: '🔒',
+                title: 'Safe & Curated',
+                desc: 'All games are reviewed before listing. No redirect traps, no aggressive ads injected into gameplay. Just clean games.'
+              },
+              {
+                icon: '🏆',
+                title: '1,000+ Quality Games',
+                desc: 'Action, puzzle, racing, multiplayer, strategy and more — a carefully curated catalog that grows every week.'
+              },
+              {
+                icon: '🌐',
+                title: 'No Account Needed',
+                desc: 'Browse and play anonymously. Sign up optionally to save favorites, track play history, and sync across devices.'
+              },
+            ].map((feature, idx) => (
+              <div
+                key={`why-${idx}`}
+                className={`flex items-start gap-4 p-5 rounded-2xl border transition-all hover:border-accent/30 ${isDarkMode ? 'bg-white/[0.02] border-white/[0.06]' : 'bg-black/[0.01] border-black/[0.05]'}`}
+              >
+                <span className="text-3xl shrink-0">{feature.icon}</span>
+                <div>
+                  <h3 className="text-sm font-bold tracking-tight mb-1.5">{feature.title}</h3>
+                  <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-white/55' : 'text-black/55'}`}>{feature.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Popular Categories quick links */}
+      {selectedCategory === 'All' && !searchQuery && (
+        <section className="mt-8" aria-label="Popular game categories">
+          <div className="mb-5">
+            <h2 className="text-xl font-black tracking-tight">Explore by Category</h2>
+            <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>Find your favorite genre and dive in</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {[
+              { label: 'Action', slug: 'action', emoji: '⚔️', color: '#ef4444' },
+              { label: 'Puzzle', slug: 'puzzle', emoji: '🧩', color: '#8b5cf6' },
+              { label: 'Racing', slug: 'racing', emoji: '🏎️', color: '#f59e0b' },
+              { label: 'Multiplayer', slug: 'multiplayer', emoji: '👥', color: '#06b6d4' },
+              { label: 'Sports', slug: 'sports', emoji: '⚽', color: '#22c55e' },
+              { label: 'Strategy', slug: 'strategy', emoji: '♟️', color: '#6366f1' },
+              { label: 'Shooter', slug: 'shooter', emoji: '🎯', color: '#f97316' },
+              { label: 'Casual', slug: 'casual', emoji: '🎮', color: '#ec4899' },
+              { label: 'Adventure', slug: 'adventure', emoji: '🗺️', color: '#10b981' },
+              { label: 'Simulator', slug: 'simulator', emoji: '🏙️', color: '#64748b' },
+              { label: 'Fighting', slug: 'fighting', emoji: '🥊', color: '#dc2626' },
+              { label: 'Arcade', slug: 'arcade', emoji: '🕹️', color: '#7c3aed' },
+            ].map(cat => (
+              <Link
+                key={cat.slug}
+                to={`/category/${cat.slug}`}
+                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border text-center transition-all hover:scale-105 hover:border-opacity-60 ${isDarkMode ? 'bg-white/[0.02] border-white/[0.07]' : 'bg-black/[0.01] border-black/[0.07]'}`}
+                style={{ borderColor: `${cat.color}25` }}
+              >
+                <span className="text-2xl">{cat.emoji}</span>
+                <span className="text-[11px] font-bold tracking-tight" style={{ color: cat.color }}>{cat.label}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Blog preview */}
+      {selectedCategory === 'All' && !searchQuery && (
+        <section className={`mt-8 rounded-2xl border p-6 md:p-8 ${isDarkMode ? 'bg-white/[0.015] border-white/[0.06]' : 'bg-black/[0.01] border-black/[0.05]'}`} aria-label="Gaming blog and guides">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-black tracking-tight">Gaming Guides &amp; Tips</h2>
+              <p className={`text-xs mt-1 ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>Expert articles to help you play better</p>
+            </div>
+            <Link to="/blog" className="flex items-center gap-1.5 text-accent text-xs font-bold hover:underline">
+              All Articles <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { emoji: '🏆', title: 'Best Browser Games 2026', desc: 'Our top picks across every genre — action, puzzle, racing, and more.', href: '/blog/best-browser-games-2026' },
+              { emoji: '⚡', title: 'Action Games: A Complete Guide', desc: 'Master movement, combat, and strategy in browser action games.', href: '/blog/action-games-guide' },
+              { emoji: '👥', title: 'Best Multiplayer Browser Games', desc: 'The best free games to play with friends — no downloads.', href: '/blog/multiplayer-browser-games' },
+            ].map(post => (
+              <Link
+                key={post.href}
+                to={post.href}
+                className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all hover:border-accent/30 ${isDarkMode ? 'bg-white/[0.02] border-white/[0.06]' : 'bg-black/[0.01] border-black/[0.05]'}`}
+              >
+                <span className="text-2xl">{post.emoji}</span>
+                <h3 className="text-sm font-bold tracking-tight group-hover:text-accent transition-colors leading-snug">{post.title}</h3>
+                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-white/50' : 'text-black/50'}`}>{post.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {selectedCategory === 'All' && !searchQuery && (
+        <HomeFaqSection isDarkMode={isDarkMode} />
+      )}
 
       {/* Footer wrapped in hidden container */}
       <div className="hidden">

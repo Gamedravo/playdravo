@@ -1,0 +1,87 @@
+Google AdSense rejected GameDravo for "Low Value Content". I want you to perform a complete audit of the entire website and fix every issue that could cause this rejection.
+
+Goals:
+- Increase the overall quality and uniqueness of the website.
+- Make GameDravo feel like a premium gaming platform rather than a simple game embed directory.
+
+Audit and improve the following:
+
+1. Homepage
+- Add more original content explaining what GameDravo is.
+- Include unique sections (Why GameDravo, Features, FAQ, Popular Categories, Recently Added, Editors' Picks, etc.).
+- Ensure there is substantial text content above and below the game listings.
+
+2. Category Pages
+- Every category page must have a unique SEO title.
+- Every category page must have a unique meta description.
+- Add at least 250–500 words of original descriptive content for each category.
+- Explain the category, gameplay, tips, why users enjoy it, and related genres.
+- Remove duplicate or generic text.
+
+3. Game Pages
+- Every game page must contain unique written content.
+- Add:
+  - Overview
+  - How to Play
+  - Controls
+  - Tips & Tricks
+  - Why You'll Like This Game
+  - Similar Games
+  - Frequently Asked Questions
+- Generate unique descriptions instead of reusing templates.
+
+4. Blog
+- Improve the blog section.
+- Create high-quality gaming articles (1000–2000 words).
+- Cover walkthroughs, gaming news, browser game recommendations, strategy guides, comparisons, and tutorials.
+- Internally link articles to related game pages.
+
+5. Internal Linking
+- Improve internal linking between:
+  - Homepage
+  - Categories
+  - Games
+  - Blog posts
+- Every page should naturally link to related content.
+
+6. Technical SEO
+- Fix duplicate titles.
+- Fix duplicate meta descriptions.
+- Fix canonical tags.
+- Ensure proper robots directives.
+- Improve structured data.
+- Validate sitemap.
+- Improve breadcrumbs.
+- Ensure all pages have proper H1, H2, and H3 hierarchy.
+
+7. User Experience
+- Improve page loading speed.
+- Improve Core Web Vitals.
+- Ensure mobile experience is excellent.
+- Remove empty sections and placeholders.
+- Ensure every page provides real value.
+
+8. Trust Signals
+- Improve About page.
+- Improve Contact page.
+- Improve Privacy Policy.
+- Improve Terms.
+- Improve Cookie Policy.
+- Add editorial information where appropriate.
+
+9. Content Quality
+- Identify thin-content pages.
+- Rewrite low-quality pages.
+- Expand pages with little original text.
+- Remove repetitive wording.
+- Make every important page unique.
+
+10. Final Audit
+After completing everything, generate a report listing:
+- All improvements made.
+- Remaining AdSense risks.
+- Remaining SEO issues.
+- Remaining thin-content pages.
+- Estimated AdSense readiness score (0–100).
+
+Do not make cosmetic changes only. Focus on creating genuinely valuable, original content that satisfies Google AdSense's "Low Value Content" policy while maintaining the GameDravo brand.

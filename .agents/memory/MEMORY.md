@@ -2,3 +2,4 @@
 - [Firebase migration](firebase-migration.md) — Firebase/Firestore replaced with PostgreSQL + REST API; Firebase files remain as stubs but are unused
 - [GameDravo theme system](gamedravo-theme.md) — Dark navy/purple theme (#080B16 bg, #7C3AED accent); HeaderBrand hides itself when sidebar is open to avoid duplicate logos
 - [Preview capture system](preview-capture.md) — Phase 2 preview pipeline: server-side scraper + manifest JSON; frontend merges on startup; admin at /admin/previews
+- [AdSense content system](adsense-content.md) — Blog at /blog + /blog/:slug; CategoryContentSection per-category; HomeFaqSection must be a named component (not hooks-in-map); all content in src/lib/blogContent.ts + src/lib/categoryContent.ts
